@@ -157,32 +157,79 @@
     if (e.key === 'Escape') closeModal();
   });
 
+  // ----- 6-1. 출시 안내메일 신청 (CTA + 모달 공통) -----
+  const SUBSCRIBE_ENDPOINT = 'https://api.bubiseo.com/landing/subscribe';
+
+  function setFormDisabled(form, disabled) {
+    form.querySelectorAll('input, button').forEach((el) => {
+      el.disabled = disabled;
+    });
+  }
+
+  async function submitSubscribeForm(form, opts) {
+    const businessName = (form.querySelector('input[name="businessName"]')?.value || '').trim();
+    const ownerName = (form.querySelector('input[name="ownerName"]')?.value || '').trim();
+    const email = (form.querySelector('input[name="email"]')?.value || '').trim();
+    if (!businessName || !ownerName || !email) return;
+
+    const btn = form.querySelector('button[type="submit"]');
+    const originalLabel = btn ? btn.textContent : '';
+    setFormDisabled(form, true);
+    if (btn) {
+      btn.textContent = '신청 중…';
+      btn.style.opacity = '0.7';
+    }
+
+    try {
+      const res = await fetch(SUBSCRIBE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName,
+          ownerName,
+          email,
+          source: form.getAttribute('data-source') || undefined,
+        }),
+      });
+      if (!res.ok) {
+        let msg = '신청 중 오류가 발생했어요';
+        try {
+          const data = await res.json();
+          if (data && data.error) msg = data.error;
+        } catch (_) {}
+        throw new Error(msg);
+      }
+      if (btn) btn.textContent = '신청 완료 ✓';
+      if (opts && typeof opts.onSuccess === 'function') opts.onSuccess();
+    } catch (err) {
+      setFormDisabled(form, false);
+      if (btn) {
+        btn.textContent = originalLabel || '다시 시도';
+        btn.style.opacity = '';
+      }
+      const message =
+        err && err.message
+          ? err.message
+          : '네트워크가 원활하지 않아요. 잠시 후 다시 시도해주세요.';
+      window.alert(message);
+    }
+  }
+
   const modalForm = document.querySelector('[data-modal-form]');
   if (modalForm) {
     modalForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const input = modalForm.querySelector('input');
-      if (!input || !input.value) return;
-      const btn = modalForm.querySelector('button');
-      btn.textContent = '신청 완료 ✓';
-      btn.disabled = true;
-      btn.style.opacity = '0.7';
-      setTimeout(() => closeModal(), 1200);
+      submitSubscribeForm(modalForm, {
+        onSuccess: () => setTimeout(() => closeModal(), 1200),
+      });
     });
   }
 
-  // CTA 안내메일 신청 폼
   const notifyForm = document.querySelector('[data-notify-form]');
   if (notifyForm) {
     notifyForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const input = notifyForm.querySelector('input');
-      if (!input || !input.value) return;
-      const btn = notifyForm.querySelector('button[type="submit"]');
-      btn.textContent = '신청 완료 ✓';
-      btn.disabled = true;
-      btn.style.opacity = '0.7';
-      input.disabled = true;
+      submitSubscribeForm(notifyForm);
     });
   }
 

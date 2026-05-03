@@ -1135,32 +1135,45 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin-bottom: 12px;
   text-align: center;
 }
-.cta__form-row {
+/* 3필드(사무소명/대표자명/이메일) 세로 스택 — 어두운 CTA 섹션용 */
+.cta__form-fields {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
+}
+.cta__form-fields input {
+  width: 100%;
+  padding: 14px 18px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 6px 6px 6px 22px;
-  align-items: center;
-  transition: border-color 0.2s, background 0.2s;
-}
-.cta__form-row:focus-within {
-  border-color: var(--brand);
-  background: rgba(255, 255, 255, 0.08);
-}
-.cta__form-row input {
-  flex: 1;
-  background: transparent;
-  border: 0;
-  outline: 0;
+  border-radius: 14px;
   color: var(--white);
   font-size: 15px;
   font-family: inherit;
-  padding: 12px 0;
+  outline: 0;
+  transition: border-color 0.2s, background 0.2s;
 }
-.cta__form-row input::placeholder { color: var(--gray-500); }
-.cta__form-row .btn { padding: 12px 22px; font-size: 14px; }
+.cta__form-fields input::placeholder { color: var(--gray-500); }
+.cta__form-fields input:focus {
+  border-color: var(--brand);
+  background: rgba(255, 255, 255, 0.10);
+}
+.cta__form-fields .btn {
+  margin-top: 4px;
+  padding: 14px 22px;
+  font-size: 15px;
+  width: 100%;
+}
+.cta__form-fields input:disabled,
+.cta__form-fields .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.modal__form input:disabled,
+.modal__form .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .cta__form-note {
   margin-top: 14px;
   font-size: 12px;
