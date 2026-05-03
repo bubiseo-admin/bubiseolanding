@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>부비서 — 부동산 비서, 손바닥 위에서</title>
+  <meta name="description" content="매물·고객·계약·일정까지. 공인중개사를 위한 가장 가까운 비서, 부비서." />
+  <meta property="og:title" content="부비서 — 부동산 비서" />
+  <meta property="og:description" content="매물·고객·계약·일정·확인설명서까지 한 손에. AI가 옆에서 도와드려요." />
+  <meta property="og:image" content="/assets/logo.png" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================== NAV ============================== -->
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" class="nav__logo" />
+      <span class="nav__name">부비서</span>
+    </a>
+    <nav class="nav__menu" aria-label="주요 메뉴">
+      <a href="#home">홈</a>
+      <a href="#property">매물</a>
+      <a href="#contract">계약</a>
+      <a href="#customer">고객</a>
+      <a href="#schedule">일정</a>
+      <a href="#settings">설정</a>
+      <a href="#desktop">데스크톱</a>
+    </nav>
+    <button class="nav__cta" type="button" data-cta>앱 받기</button>
+    <button class="nav__hamburger" type="button" aria-label="메뉴 열기" data-hamburger>
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero" id="top">
+    <div class="hero__aurora" aria-hidden="true">
+      <span class="hero__blob hero__blob--1"></span>
+      <span class="hero__blob hero__blob--2"></span>
+      <span class="hero__blob hero__blob--3"></span>
+    </div>
+
+    <div class="hero__inner">
+      <div class="badge badge--gradient" data-reveal>
+        <span class="badge__dot"></span>
+        부동산 비서, 부비서
+      </div>
+
+      <h1 class="hero__title" data-reveal data-reveal-delay="100">
+        <span class="line">매물부터 잔금까지,</span>
+        <span class="line gradient-text">나만의 부동산 AI비서</span>
+      </h1>
+
+      <p class="hero__sub" data-reveal data-reveal-delay="220">
+        매물 등록·고객 응대·계약서 작성·일정 관리까지<br />
+        하루의 거의 모든 일을 부비서가 옆에서 도와드려요.
+      </p>
+
+      <div class="hero__actions" data-reveal data-reveal-delay="320">
+        <button class="btn btn--primary" type="button" data-cta>
+          <span>앱 받기</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v14m0 0l-5-5m5 5l5-5M5 21h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a class="btn btn--ghost" href="#home">기능 둘러보기</a>
+      </div>
+
+      <div class="hero__stage" data-reveal data-reveal-delay="500">
+        <div class="phone phone--hero">
+          <video class="phone__video" muted autoplay loop playsinline preload="metadata" poster="assets/screen-property.png">
+            <source src="assets/demo-short.mov" type="video/mp4" />
+          </video>
+        </div>
+
+        <div class="hero__chip hero__chip--1" data-float="6">
+          <span class="chip__icon">⏱</span>
+          <div>
+            <div class="chip__t">계약 작성 시간</div>
+            <div class="chip__v"><strong>3분</strong> 컷</div>
+          </div>
+        </div>
+        <div class="hero__chip hero__chip--2" data-float="-8">
+          <span class="chip__icon">🔒</span>
+          <div>
+            <div class="chip__t">데이터 보관</div>
+            <div class="chip__v"><strong>한국 서버</strong> · 자동 백업</div>
+          </div>
+        </div>
+        <div class="hero__chip hero__chip--3" data-float="5">
+          <span class="chip__icon">✨</span>
+          <div>
+            <div class="chip__t">AI비서</div>
+            <div class="chip__v">물어보면 <strong>바로 답변</strong></div>
+          </div>
+        </div>
+        <div class="hero__chip hero__chip--4" data-float="-6">
+          <span class="chip__icon">📰</span>
+          <div>
+            <div class="chip__t">부동산 뉴스</div>
+            <div class="chip__v"><strong>매일</strong> 핵심만</div>
+          </div>
+        </div>
+        <div class="hero__chip hero__chip--5 hero__chip--big" data-float="7">
+          <span class="chip__icon">💬</span>
+          <div>
+            <div class="chip__t">커뮤니티</div>
+            <div class="chip__v"><strong>전국 중개사</strong>와 소통</div>
+          </div>
+        </div>
+        <div class="hero__chip hero__chip--6" data-float="-5">
+          <span class="chip__icon">📊</span>
+          <div>
+            <div class="chip__t">실거래가</div>
+            <div class="chip__v"><strong>최신</strong> 자동 갱신</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
+        <span></span>
+        <span class="hero__scroll-text">스크롤</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== HOME ============================== -->
+  <section class="section section--home" id="home">
+    <div class="section__inner section__inner--split">
+      <div class="section__copy" data-reveal>
+        <span class="eyebrow">홈 · AI비서</span>
+        <h2 class="section__title">
+          말로 묻고<br/>
+          <span class="gradient-text">한 줄로 답</span>받으세요.
+        </h2>
+        <p class="section__desc">
+          오늘 일정, 이번 주 계약, 잔금일이 언제인지 — <br/>
+          AI비서에게 평소 말투로 물어보면 즉시 알려드려요.<br/>
+          숫자 찾고, 시트 뒤지는 시간이 사라집니다.
+        </p>
+        <ul class="bullets">
+          <li>"오늘 일정 알려줘" — 캘린더 안 봐도 한 줄 요약</li>
+          <li>"이번주 계약 있어?" — 주소·날짜·담당자까지 정리</li>
+          <li>"잔금일 안 놓치게 알려줘" — 자동 알림</li>
+        </ul>
+      </div>
+
+      <div class="section__media" data-reveal data-reveal-delay="180">
+        <div class="phone phone--tilt-l">
+          <img src="assets/screen-ai.jpg" alt="AI비서가 오늘 일정과 이번 주 계약을 답하는 화면" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== PROPERTY ============================== -->
+  <section class="section section--property" id="property">
+    <div class="section__inner section__inner--split">
+      <div class="section__media section__media--reverse" data-reveal>
+        <div class="phone phone--tilt-r">
+          <img src="assets/screen-property.png" alt="매물 목록 — 상가, 단독주택, 빌라 등" />
+        </div>
+      </div>
+
+      <div class="section__copy" data-reveal data-reveal-delay="180">
+        <span class="eyebrow">매물</span>
+        <h2 class="section__title">
+          엑셀에 묻혀있던 매물,<br/>
+          <span class="gradient-text">손바닥 위에서.</span>
+        </h2>
+        <p class="section__desc">
+          시·도, 구·군, 거래유형까지 한 번에 거르고,<br/>
+          상가·빌라·오피스텔 가리지 않고 깔끔하게 관리합니다.<br/>
+          옆 사무소와의 <strong>공동중개</strong>도 앱에서 바로.
+        </p>
+        <div class="featgrid">
+          <div class="featgrid__card">
+            <div class="featgrid__icon">🔎</div>
+            <h4>한눈에 거르기</h4>
+            <p>지역·거래유형·매물종류로 빠른 필터링.</p>
+          </div>
+          <div class="featgrid__card">
+            <div class="featgrid__icon">🤝</div>
+            <h4>공동중개</h4>
+            <p>옆 사무소와 매물 공유·협업 요청을 한 번에.</p>
+          </div>
+          <div class="featgrid__card">
+            <div class="featgrid__icon">📂</div>
+            <h4>임대인 정보</h4>
+            <p>매물별 임대인·연락처·메모를 자동 연결.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== COBROKERAGE (신규) ============================== -->
+  <section class="section section--cobrokerage" id="cobrokerage">
+    <div class="section__inner section__inner--split">
+      <div class="section__copy" data-reveal>
+        <span class="eyebrow">공동중개</span>
+        <h2 class="section__title">
+          옆 사무소와 함께,<br/>
+          <span class="gradient-text">한 번에 거래.</span>
+        </h2>
+        <p class="section__desc">
+          옆 사무소의 매물도 한 화면에서 확인하고,<br/>
+          공동중개 요청·진행 상황을 채팅으로 깔끔하게.<br/>
+          협업이 어려웠던 일이 앱 안에서 자연스럽게 풀려요.
+        </p>
+        <ul class="bullets">
+          <li>매물 공유 — 다른 사무소 매물도 즉시 확인</li>
+          <li>공동중개 요청 한 번에 — 협업 절차 단순화</li>
+          <li>진행 상황 채팅으로 실시간 공유</li>
+        </ul>
+      </div>
+
+      <div class="section__media" data-reveal data-reveal-delay="180">
+        <div class="phone phone--tilt-l">
+          <img src="assets/screen-coshare.jpg" alt="공동중개 협업 화면" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CONTRACT — 메인 쇼케이스 ============================== -->
+  <section class="contract-show" id="contract">
+    <div class="contract-show__aurora" aria-hidden="true">
+      <span class="contract-show__blob contract-show__blob--1"></span>
+      <span class="contract-show__blob contract-show__blob--2"></span>
+      <span class="contract-show__blob contract-show__blob--3"></span>
+    </div>
+    <div class="contract-show__grid" aria-hidden="true"></div>
+
+    <div class="contract-show__intro" data-reveal>
+      <span class="eyebrow eyebrow--violet">★ 핵심 기능 · 계약 AI 위저드</span>
+      <h2 class="contract-show__title">
+        <span class="line">계약서·확인설명서를</span>
+        <span class="line gradient-text--violet">AI가 대신 작성합니다.</span>
+      </h2>
+      <p class="contract-show__sub">
+        부비서가 가장 자랑스러워하는 기능이에요. <br/>
+        매물·고객 정보를 그대로 끌어와 <strong>빈칸을 자동으로 채우고</strong>,<br/>
+        금액·날짜·면적은 <strong>AI가 한 번 더 검토</strong>합니다.
+      </p>
+    </div>
+
+    <div class="contract-show__stage" data-reveal data-reveal-delay="160">
+      <!-- 양쪽 떠다니는 칩: AI 작업 중 표시 (8개) -->
+      <div class="contract-show__chip contract-show__chip--l1" data-float="6">
+        <span class="dot dot--violet"></span>
+        <div>
+          <div class="chip__t">매물 정보 불러오는 중</div>
+          <div class="chip__v">서울 마포구 상수동 312-3</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--l2" data-float="-5">
+        <span class="dot dot--blue"></span>
+        <div>
+          <div class="chip__t">고객 정보 자동 연결</div>
+          <div class="chip__v">홍길동 · 010-1234-5678</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--l3" data-float="6">
+        <span class="dot dot--green"></span>
+        <div>
+          <div class="chip__t">금액 두 번 검토</div>
+          <div class="chip__v">보증금 3,000만 / 월 170만 ✓</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--l4" data-float="-6">
+        <span class="dot dot--amber"></span>
+        <div>
+          <div class="chip__t">특약사항 추천</div>
+          <div class="chip__v">근저당 안전 특약 자동 적용</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--r1" data-float="-7">
+        <span class="dot dot--blue"></span>
+        <div>
+          <div class="chip__t">임대인 정보 자동 연결</div>
+          <div class="chip__v">한철호 · 010-7777-1111</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--r2" data-float="6">
+        <span class="dot dot--violet"></span>
+        <div>
+          <div class="chip__t">실거래가 비교</div>
+          <div class="chip__v">시세 대비 -3% 적정</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--r3" data-float="-6">
+        <span class="dot dot--amber"></span>
+        <div>
+          <div class="chip__t">날짜 자동 입력</div>
+          <div class="chip__v">계약일 2026-05-08</div>
+        </div>
+      </div>
+      <div class="contract-show__chip contract-show__chip--r4" data-float="5">
+        <span class="dot dot--green"></span>
+        <div>
+          <div class="chip__t">근저당 자동 점검</div>
+          <div class="chip__v">등기부 위험 항목 0건</div>
+        </div>
+      </div>
+
+      <!-- 스포트라이트 영상 -->
+      <div class="contract-show__phone">
+        <div class="contract-show__halo"></div>
+        <div class="phone phone--big">
+          <video class="phone__video" muted loop playsinline preload="metadata" poster="assets/screen-property.png" data-lazy-video>
+            <source src="assets/demo-long.mov" type="video/mp4" />
+          </video>
+        </div>
+        <div class="contract-show__live">
+          <span class="contract-show__live-dot"></span>
+          AI 위저드 실시간 작동 중
+        </div>
+      </div>
+    </div>
+
+    <!-- 3단계 진행 표시 -->
+    <ol class="contract-steps" data-reveal data-reveal-delay="280">
+      <li class="contract-steps__item">
+        <div class="contract-steps__num">01</div>
+        <div class="contract-steps__line"></div>
+        <h4>자동 작성</h4>
+        <p>매물·고객·임대인 정보를 끌어다 빈칸을 자동으로 채워요. 손으로 옮겨 적을 일이 없어집니다.</p>
+      </li>
+      <li class="contract-steps__item">
+        <div class="contract-steps__num">02</div>
+        <div class="contract-steps__line"></div>
+        <h4>이중 검토</h4>
+        <p>금액·날짜·면적·주소를 AI가 한 번 더 살핍니다. 오타·자릿수 실수를 미리 잡아내요.</p>
+      </li>
+      <li class="contract-steps__item">
+        <div class="contract-steps__num">03</div>
+        <div class="contract-steps__line"></div>
+        <h4>안전 보관</h4>
+        <p>완성된 계약서는 한국 서버에 자동 보관 + 백업. 도장 찍기 직전까지 안심하세요.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============================== CUSTOMER ============================== -->
+  <section class="section section--customer" id="customer">
+    <div class="section__inner section__inner--split">
+      <div class="section__copy" data-reveal>
+        <span class="eyebrow">고객</span>
+        <h2 class="section__title">
+          전화번호부였던 명단,<br/>
+          <span class="gradient-text">살아있는 관계망.</span>
+        </h2>
+        <p class="section__desc">
+          신규 문의 → 미팅 → 계약중 → 잔금완료까지,<br/>
+          고객의 단계가 카드로 흐르듯 보입니다.<br/>
+          관심 지역·금액·메모를 자동으로 매칭해요.
+        </p>
+        <ul class="bullets">
+          <li>관심 지역과 매물을 자동 연결</li>
+          <li>마지막 통화·미팅이 며칠 전인지 한눈에</li>
+          <li>담당자별로 카드가 나뉘어 헷갈리지 않게</li>
+        </ul>
+      </div>
+
+      <div class="section__media" data-reveal data-reveal-delay="180">
+        <div class="phone phone--tilt-l">
+          <img src="assets/screen-customers.png" alt="고객 목록 — 신규/미팅중/계약중/계약완료" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CHAT (사내대화 신규) ============================== -->
+  <section class="section section--chat" id="chat">
+    <div class="section__inner section__inner--split">
+      <div class="section__media section__media--reverse" data-reveal>
+        <div class="phone phone--tilt-r">
+          <img src="assets/screen-chat.jpg" alt="사내 대화 — 직원 간 메시지" />
+        </div>
+      </div>
+
+      <div class="section__copy" data-reveal data-reveal-delay="180">
+        <span class="eyebrow">사내 대화</span>
+        <h2 class="section__title">
+          매물 옆에 두고<br/>
+          <span class="gradient-text">바로 메시지.</span>
+        </h2>
+        <p class="section__desc">
+          전체 직원 단톡, 1:1 메시지, '나에게 보내기' 메모장까지.<br/>
+          매물·계약을 메시지에 끼워 보내면 상대방이<br/>
+          탭 한 번으로 그 화면으로 이동해요.
+        </p>
+        <ul class="bullets">
+          <li>전체 대화방 + 1:1 메시지 + 본인 메모장</li>
+          <li>매물·계약 카드를 그대로 메시지에 첨부</li>
+          <li>읽음 표시 · 알림 OFF · 공지 고정</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SCHEDULE ============================== -->
+  <section class="section section--schedule" id="schedule">
+    <div class="section__inner section__inner--split">
+      <div class="section__media section__media--reverse" data-reveal>
+        <div class="phone phone--tilt-r">
+          <img src="assets/screen-schedule.png" alt="일정 캘린더 — 계약일/잔금일/미팅" />
+        </div>
+      </div>
+
+      <div class="section__copy" data-reveal data-reveal-delay="180">
+        <span class="eyebrow">일정</span>
+        <h2 class="section__title">
+          한 달이 한 화면에.<br/>
+          <span class="gradient-text">잔금일은 잊지 않아요</span>
+        </h2>
+        <p class="section__desc">
+          계약일·잔금일·미팅까지 색깔로 구분된 캘린더.<br/>
+          오늘 무엇이 있는지, 이번 주 무엇이 남았는지 — <br/>
+          앱을 켜는 순간 정리되어 있어요.
+        </p>
+        <div class="numgrid">
+          <div><strong>8</strong><span>이번 달 계약 일정</span></div>
+          <div><strong>2</strong><span>나의 일정</span></div>
+          <div><strong>1</strong><span>오늘 미팅</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SETTINGS ============================== -->
+  <section class="section section--settings" id="settings">
+    <div class="section__inner section__inner--split">
+      <div class="section__copy" data-reveal>
+        <span class="eyebrow">설정</span>
+        <h2 class="section__title">
+          사무소 운영을<br/>
+          <span class="gradient-text">한 손으로.</span>
+        </h2>
+        <p class="section__desc">
+          직원 승인, 급여 정산, 공유 서류함, 임대인 목록까지 — <br/>
+          사무소장이 챙겨야 할 일들을 설정 한 곳에 모아뒀어요.<br/>
+          알림은 필요한 것만, 화면은 보는 대로.
+        </p>
+        <ul class="bullets">
+          <li>직원 등록·역할 승인을 앱에서</li>
+          <li>월급여 자동 계산 · 정산 내역 보관</li>
+          <li>공유 서류함으로 사무소 자료 한 곳에</li>
+        </ul>
+      </div>
+
+      <div class="section__media" data-reveal data-reveal-delay="180">
+        <div class="phone phone--tilt-l">
+          <img src="assets/screen-settings.png" alt="설정 — 알림/홈화면/공유 서류함/급여관리/직원관리" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== TRUST ============================== -->
+  <section class="trust">
+    <div class="section__inner section__inner--col">
+      <div class="section__head" data-reveal>
+        <span class="eyebrow">데이터 안전</span>
+        <h2 class="section__title section__title--center">
+          맡기신 정보는<br/>
+          <span class="gradient-text">은행처럼 보관해요.</span>
+        </h2>
+      </div>
+      <div class="trust__grid" data-reveal data-reveal-delay="120">
+        <div class="trust__card">
+          <div class="trust__ico">🔐</div>
+          <h4>전송할 때 자물쇠</h4>
+          <p>앱과 서버 사이를 오가는 모든 데이터는 TLS 1.3 으로 암호화됩니다. 와이파이·LTE 어디서든 중간에 누가 들여다봐도 의미 없는 글자만 보여요. 고객 전화번호·계약 금액 같은 민감한 정보가 새어 나갈 일이 없습니다.</p>
+        </div>
+        <div class="trust__card">
+          <div class="trust__ico">💾</div>
+          <h4>매일 자동 백업</h4>
+          <p>매일 새벽 여러 곳에 복사본을 만들어둡니다. 실수로 매물이나 계약을 지워도 되돌릴 수 있고, 만약 어느 한 곳에 문제가 생겨도 다른 백업으로 즉시 복구돼요. 부비서 운영팀이 매일 백업이 정상인지 직접 점검합니다.</p>
+        </div>
+        <div class="trust__card">
+          <div class="trust__ico">🛡️</div>
+          <h4>권한은 사무소 단위</h4>
+          <p>옆 사무소 자료는 보이지 않아요. 내 사무소 직원만, 정해진 만큼만 봅니다. 직원도 본인이 담당한 고객·계약만 보이도록 자동 필터링되며, 대표는 전체 내용을 한 화면에서 관리할 수 있어요.</p>
+        </div>
+        <div class="trust__card">
+          <div class="trust__ico">🔑</div>
+          <h4>강력한 비밀번호 + Face ID</h4>
+          <p>가입 시 영문·숫자·특수문자를 포함한 10자 이상 비밀번호를 강제합니다. 한 번 로그인하면 Face ID/지문 인식으로 빠르게 다시 들어올 수 있어, 보안과 편의성을 함께 챙겼어요. 의심스러운 로그인 시도는 자동 차단됩니다.</p>
+        </div>
+        <div class="trust__card">
+          <div class="trust__ico">📋</div>
+          <h4>모든 변경은 기록</h4>
+          <p>누가 언제 어떤 매물을 수정했는지, 어떤 계약서를 누가 작성했는지 모두 자동으로 남습니다. 분쟁이 생겼을 때 객관적인 증거가 되고, 직원 실수도 빠르게 추적할 수 있어요. 기록은 사무소 대표만 열람 가능합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== FAQ ============================== -->
+  <section class="faq" id="faq">
+    <div class="section__inner section__inner--col">
+      <div class="section__head" data-reveal>
+        <span class="eyebrow">자주 묻는 질문</span>
+        <h2 class="section__title section__title--center">
+          궁금한 점을<br/>
+          <span class="gradient-text">바로 풀어드려요.</span>
+        </h2>
+      </div>
+
+      <div class="faq__list" data-reveal data-reveal-delay="120">
+        <details class="faq__item" id="faq-1">
+          <summary>
+            <span>앱 출시는 언제인가요?</span>
+            <span class="faq__chev" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq__body">
+            <p>2026년 6월 정식 출시를 목표로 마지막 점검 중이에요. 정식 출시 전까지는 베타 테스터로 참여하시면 먼저 사용해보실 수 있어요. 이메일 알림 신청해두시면 출시일에 맞춰 한 번만 안내드립니다.</p>
+          </div>
+        </details>
+
+        <details class="faq__item" id="faq-2">
+          <summary>
+            <span>사용료는 얼마인가요?</span>
+            <span class="faq__chev" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq__body">
+            <p>모바일 앱은 <strong>무료</strong>로 제공됩니다. 매물·고객·계약·일정·확인설명서·AI비서까지 모든 기본 기능을 무료로 쓰실 수 있어요. 향후 출시 예정인 데스크톱 버전 일부 고급 기능에 한해 유료 옵션이 추가될 수 있습니다.</p>
+          </div>
+        </details>
+
+        <details class="faq__item" id="faq-3">
+          <summary>
+            <span>데이터는 안전한가요?</span>
+            <span class="faq__chev" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq__body">
+            <p>모든 데이터는 AWS 서울 리전 국내 서버에 저장되고, 통신 구간은 TLS 1.3 으로 암호화됩니다. 매일 자동 백업이 여러 곳에 만들어지며, 비밀번호는 영문·숫자·특수문자 10자 이상을 강제하고 Face ID/지문 인증을 지원해요. 누가 무엇을 수정했는지 모든 변경 이력이 자동 기록됩니다.</p>
+          </div>
+        </details>
+
+        <details class="faq__item" id="faq-4">
+          <summary>
+            <span>기존 매물·고객 데이터를 옮길 수 있나요?</span>
+            <span class="faq__chev" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq__body">
+            <p>네, 가능합니다. 엑셀(.xlsx) 또는 CSV 파일을 보내주시면 부비서 운영팀이 직접 마이그레이션을 도와드려요. 기존에 쓰시던 솔루션이 있으면 그 형식 그대로 보내주셔도 변환 작업을 함께 진행합니다. 출시 후 데스크톱 버전에서는 직접 일괄 등록도 가능해질 예정입니다.</p>
+          </div>
+        </details>
+
+        <details class="faq__item" id="faq-5">
+          <summary>
+            <span>사무소 직원도 함께 사용할 수 있나요?</span>
+            <span class="faq__chev" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq__body">
+            <p>네, 사무소 단위로 직원 계정을 추가해 함께 쓰실 수 있어요. 대표는 전체 매물·고객·계약을 보고, 직원은 본인 담당 데이터만 보이도록 자동 권한 분리됩니다. 직원 가입 신청 → 대표 승인 후 즉시 사용 가능하며, 사내 채팅·일정 공유·공동중개도 모두 지원해요.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DESKTOP — DO NOT EDIT ============================== -->
+  <!--
+    이 섹션은 사용자 시안 그대로 보존됩니다. 디자인·문구 변경 금지.
+  -->
+  <section class="desktop-section" id="desktop">
+    <div class="desktop-section__inner">
+
+      <div class="desktop-section__badge">COMING SOON</div>
+
+      <h2 class="desktop-section__title">
+        <span>더 큰 화면에</span>
+        <span class="desktop-section__title--gradient">더 큰 가능성</span>
+      </h2>
+
+      <p class="desktop-section__sub">
+        매물 등록·계약 검토·확인설명서 작성을 한 번에 보고 비교할 수 있는<br/>
+        부비서 데스크톱이 곧 도착합니다.
+      </p>
+
+      <div class="desktop-section__laptop">
+        <div class="desktop-section__laptop-screen">
+          <div class="desktop-section__laptop-grid"></div>
+          <div class="desktop-section__laptop-content">
+            <div class="desktop-section__pill">
+              <span class="desktop-section__pill-dot"></span>
+              <span>준비 중</span>
+            </div>
+            <div class="desktop-section__laptop-text">
+              부비서 데스크톱 · for Mac &amp; Windows
+            </div>
+          </div>
+        </div>
+        <div class="desktop-section__laptop-base"></div>
+      </div>
+
+      <div class="desktop-section__cards">
+        <div class="desktop-section__card">
+          <h4>듀얼 윈도우 검토</h4>
+          <p>계약서와 확인설명서를 나란히 띄워 비교·검토. 모바일에서는 어려운 작업의 본격 무대.</p>
+        </div>
+        <div class="desktop-section__card">
+          <h4>벌크 등록·일괄 편집</h4>
+          <p>엑셀 시트의 매물 수십 건을 끌어다 한 번에 등록. 사무소 전체 데이터 마이그레이션도.</p>
+        </div>
+        <div class="desktop-section__card">
+          <h4>실시간 동기화</h4>
+          <p>모바일에서 등록한 매물·고객·계약이 데스크톱에 즉시 반영. 어디서 시작하든 끊김 없이.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CTA ============================== -->
+  <section class="cta" id="cta">
+    <div class="cta__inner" data-reveal>
+      <h2 class="cta__title">
+        6월부터<br/>
+        <span class="gradient-text">부비서와 함께.</span>
+      </h2>
+      <p class="cta__sub">설치 1분, 가입 30초. 첫 매물 등록까지 채 5분이 안 걸려요.</p>
+      <div class="cta__actions">
+        <button class="btn btn--primary btn--lg" type="button" data-cta>iOS 앱 받기</button>
+        <button class="btn btn--ghost btn--lg" type="button" data-cta>Android 앱 받기</button>
+      </div>
+
+      <form class="cta__form" data-notify-form>
+        <label class="cta__form-label">정식 출시 안내메일 받기</label>
+        <div class="cta__form-row">
+          <input type="email" placeholder="you@example.com" required aria-label="이메일" />
+          <button type="submit" class="btn btn--primary">신청</button>
+        </div>
+        <p class="cta__form-note">스팸 보내드리지 않아요. 정식 출시 한 번만 알려드립니다.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================== COMING SOON 2026.06 (마지막) ============================== -->
+  <section class="coming" id="coming">
+    <div class="coming__inner">
+      <span class="coming__badge" data-reveal>RELEASE · 2026.06</span>
+      <h2 class="coming__title" data-reveal data-reveal-delay="120">
+        <span>2026년 6월,</span>
+        <span class="gradient-text">정식 출시.</span>
+      </h2>
+      <p class="coming__sub" data-reveal data-reveal-delay="220">
+        매물·고객·계약·일정·확인설명서까지<br/>
+        하나의 앱에서, 6월에 만나요.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="assets/logo.png" alt="" class="footer__logo" />
+        <span>부비서</span>
+      </div>
+      <div class="footer__cols">
+        <div>
+          <h5>제품</h5>
+          <a href="#home">홈</a>
+          <a href="#property">매물</a>
+          <a href="#contract">계약</a>
+          <a href="#customer">고객</a>
+          <a href="#schedule">일정</a>
+          <a href="#settings">설정</a>
+          <a href="#desktop">데스크톱</a>
+        </div>
+        <div>
+          <h5>지원</h5>
+          <a href="#faq-1">앱 출시는 언제인가요?</a>
+          <a href="#faq-2">사용료는 얼마인가요?</a>
+          <a href="#faq-3">데이터는 안전한가요?</a>
+          <a href="#faq-4">기존 매물·고객 데이터를 옮길 수 있나요?</a>
+          <a href="#faq-5">사무소 직원도 함께 사용할 수 있나요?</a>
+          <a href="terms.html">이용약관</a>
+          <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div>
+          <h5>회사</h5>
+          <p class="footer__addr">회사명 : 부비서</p>
+          <p class="footer__addr">대표 : 이현우</p>
+          <p class="footer__addr">사업자등록번호 574-06-03306</p>
+          <p class="footer__addr">문의 <a href="mailto:admin@bubiseo.com">admin@bubiseo.com</a></p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Bubiseo. All rights reserved.</span>
+        <span>bubiseo.com</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================== MODAL: APP STORE COMING SOON ============================== -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal__x" type="button" aria-label="닫기" data-modal-close>×</button>
+      <div class="modal__icon">
+        <img src="assets/logo.png" alt="" />
+      </div>
+      <h3 id="modalTitle">곧 만나요</h3>
+      <p>부비서는 현재 베타 운영 중이에요. 정식 출시 알림을 받으시려면 이메일을 남겨주세요.</p>
+      <form class="modal__form" data-modal-form>
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit" class="btn btn--primary">알림 신청</button>
+      </form>
+      <p class="modal__sub">스팸 보내드리지 않아요. 정식 출시 한 번만 알려드립니다.</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
