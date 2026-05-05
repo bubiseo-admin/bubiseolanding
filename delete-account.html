@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>계정 삭제 요청 — 부비서</title>
+  <meta name="description" content="부비서 계정 삭제 요청 페이지" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <style>
+    .delete-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      font-family: 'Pretendard', -apple-system, sans-serif;
+    }
+    .delete-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #191F28;
+      margin: 0 0 8px;
+    }
+    .delete-sub {
+      color: #4E5968;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 32px;
+    }
+    .delete-card {
+      background: #F9FAFB;
+      border: 1px solid #E5E8EB;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .delete-card h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: #191F28;
+    }
+    .delete-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #4E5968;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .delete-card.warn {
+      background: #FFF5F5;
+      border-color: #FFD6D6;
+    }
+    .delete-card.warn h3 {
+      color: #D8323C;
+    }
+    .field {
+      margin-bottom: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #191F28;
+      margin-bottom: 6px;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #E5E8EB;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #FFFFFF;
+      box-sizing: border-box;
+    }
+    .field textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #6155F5;
+    }
+    .scope-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .scope-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #E5E8EB;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #FFFFFF;
+    }
+    .scope-opt input {
+      margin-top: 2px;
+    }
+    .scope-opt:hover {
+      border-color: #B0B8C1;
+    }
+    .scope-opt strong {
+      color: #191F28;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .scope-opt span {
+      color: #6B7684;
+      font-size: 12px;
+    }
+    .submit {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #6155F5, #5BA3E0);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 8px;
+    }
+    .submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .result {
+      padding: 24px;
+      border-radius: 14px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .result.success {
+      background: #F0F9F4;
+      border: 1px solid #C8E6CF;
+    }
+    .result.error {
+      background: #FFF5F5;
+      border: 1px solid #FFD6D6;
+    }
+    .result h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #191F28;
+    }
+    .result p {
+      margin: 0;
+      font-size: 14px;
+      color: #4E5968;
+      line-height: 1.6;
+    }
+    .hide { display: none; }
+  </style>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="index.html">← 홈으로</a>
+  </header>
+
+  <main class="delete-wrap">
+    <div id="form-view">
+      <h1 class="delete-title">계정 삭제 요청</h1>
+      <p class="delete-sub">
+        부비서 계정과 연결된 개인 데이터 삭제를 요청하실 수 있습니다.
+        앱에 로그인 가능하시다면 <b>앱 → 설정 → 내 계정 → 회원 탈퇴</b> 가 더 빠릅니다.
+      </p>
+
+      <div class="delete-card warn">
+        <h3>⚠️ 삭제 진행 후 영향</h3>
+        <ul>
+          <li>계정 즉시 비활성화 (모든 기기 자동 로그아웃)</li>
+          <li>매물·고객·일정·채팅·커뮤니티 게시글 등 개인 데이터 90일 후 영구 삭제</li>
+          <li>대표(OWNER)가 요청 시 소속 직원 계정도 일괄 비활성화</li>
+          <li>관계 법령상 보존 의무 데이터(계약 기록 5년, 본인확인 6개월 등)는 법정 기간 동안 보존 후 별도 파기</li>
+        </ul>
+      </div>
+
+      <div class="delete-card">
+        <h3>처리 절차</h3>
+        <ul>
+          <li>아래 폼 제출 → 입력하신 이메일로 인증 메일 발송 (24시간 유효)</li>
+          <li>이메일의 인증 링크 클릭 → 본인 확인 완료 → 즉시 비활성화</li>
+          <li>본인이 요청하지 않은 경우 인증 링크를 무시하시면 됩니다</li>
+        </ul>
+      </div>
+
+      <form id="delete-form">
+        <div class="field">
+          <label for="email">이메일 (가입 시 사용한 이메일) *</label>
+          <input type="email" id="email" name="email" required autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="phone">휴대폰 번호 (선택, 본인 확인 보조)</label>
+          <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" autocomplete="tel" />
+        </div>
+
+        <div class="field">
+          <label>삭제 범위</label>
+          <div class="scope-row">
+            <label class="scope-opt">
+              <input type="radio" name="scope" value="ALL" checked />
+              <div>
+                <strong>계정 + 모든 데이터 삭제 (권장)</strong>
+                <span>계정과 함께 매물·고객·계약·채팅 등 모든 개인 데이터 삭제</span>
+              </div>
+            </label>
+            <label class="scope-opt">
+              <input type="radio" name="scope" value="ACCOUNT_ONLY" />
+              <div>
+                <strong>계정만 삭제</strong>
+                <span>법령상 보존 데이터 외 모든 개인 데이터 삭제 (기본 동작과 동일)</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="reason">삭제 사유 (선택)</label>
+          <textarea id="reason" name="reason" placeholder="서비스 개선에 도움이 됩니다 (선택)"></textarea>
+        </div>
+
+        <button class="submit" type="submit" id="submit-btn">인증 메일 받기</button>
+      </form>
+    </div>
+
+    <div id="success-view" class="hide">
+      <div class="result success">
+        <h2>✅ 인증 메일을 보냈어요</h2>
+        <p>
+          입력하신 이메일로 인증 링크를 보냈습니다.<br/>
+          24시간 내에 메일을 확인하고 링크를 클릭해 주세요.
+        </p>
+      </div>
+    </div>
+
+    <div id="verify-view" class="hide">
+      <div class="result" id="verify-result">
+        <h2 id="verify-title">처리 중입니다...</h2>
+        <p id="verify-msg">잠시만 기다려 주세요.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="legal-foot">
+    © 2026 부비서. All rights reserved.
+  </footer>
+
+  <script>
+    const API_BASE = 'https://api.bubiseo.com';
+
+    async function handleVerifyToken(token) {
+      document.getElementById('form-view').classList.add('hide');
+      document.getElementById('verify-view').classList.remove('hide');
+      const resultEl = document.getElementById('verify-result');
+      const titleEl = document.getElementById('verify-title');
+      const msgEl = document.getElementById('verify-msg');
+
+      try {
+        const res = await fetch(
+          `${API_BASE}/account/delete-request/verify?token=${encodeURIComponent(token)}`,
+        );
+        const data = await res.json();
+        if (!res.ok) {
+          resultEl.classList.add('error');
+          titleEl.textContent = '❌ 인증 실패';
+          msgEl.textContent =
+            data.message || '인증 링크가 유효하지 않거나 만료되었습니다.';
+          return;
+        }
+        resultEl.classList.add('success');
+        titleEl.textContent = '✅ 계정 삭제 처리 완료';
+        msgEl.innerHTML =
+          '계정이 즉시 비활성화되었으며, 개인 데이터는 90일 후 영구 삭제됩니다.<br/>그동안 이용해 주셔서 감사합니다.';
+      } catch (err) {
+        resultEl.classList.add('error');
+        titleEl.textContent = '❌ 네트워크 오류';
+        msgEl.textContent = '잠시 후 다시 시도해 주세요.';
+      }
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = '전송 중...';
+
+      const fd = new FormData(e.target);
+      const payload = {
+        email: (fd.get('email') || '').toString().trim(),
+        phone: (fd.get('phone') || '').toString().trim() || undefined,
+        reason: (fd.get('reason') || '').toString().trim() || undefined,
+        scope: fd.get('scope') || 'ALL',
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/account/delete-request`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.message || '요청 처리 중 오류가 발생했습니다.');
+          btn.disabled = false;
+          btn.textContent = '인증 메일 받기';
+          return;
+        }
+        document.getElementById('form-view').classList.add('hide');
+        document.getElementById('success-view').classList.remove('hide');
+      } catch (err) {
+        alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        btn.disabled = false;
+        btn.textContent = '인증 메일 받기';
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      handleVerifyToken(token);
+    } else {
+      document.getElementById('delete-form').addEventListener('submit', handleSubmit);
+    }
+  </script>
+</body>
+</html>
