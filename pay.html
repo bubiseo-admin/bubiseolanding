@@ -365,7 +365,8 @@
         elCta.disabled = true;
         elCta.textContent = '카드 인증창을 여는 중...';
         try {
-          const res = await fetch('https://api.bubiseo.com/payments/inicis/init-billing', {
+          // 1) 백엔드에서 PortOne SDK 호출용 파라미터 수신
+          const initRes = await fetch('https://api.bubiseo.com/payments/portone/init', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -374,33 +375,55 @@
               desktopClientId,
             }),
           });
-          if (!res.ok) {
+          if (!initRes.ok) {
             let msg = '결제 요청에 실패했어요. 잠시 후 다시 시도해주세요.';
             try {
-              const j = await res.json();
+              const j = await initRes.json();
               msg = j.message || j.error || msg;
             } catch {}
             throw new Error(msg);
           }
-          const data = await res.json();
-          if (data.inicis && typeof window.INIStdPay !== 'undefined') {
-            const form = document.createElement('form');
-            form.id = 'SendPayForm_id';
-            form.method = 'POST';
-            Object.entries(data.inicis).forEach(([k, v]) => {
-              const input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = k;
-              input.value = String(v);
-              form.appendChild(input);
-            });
-            document.body.appendChild(form);
-            window.INIStdPay.pay('SendPayForm_id');
-            return;
+          const init = await initRes.json();
+          if (!window.PortOne) {
+            throw new Error('결제 SDK 가 로드되지 않았어요. 페이지를 새로고침해 주세요.');
           }
-          throw new Error('결제 SDK 가 로드되지 않았어요. 페이지를 새로고침해 주세요.');
+
+          // 2) PortOne V2 SDK 로 빌링키 발급 (카드 인증 0원)
+          const issueRes = await window.PortOne.requestIssueBillingKey({
+            storeId: init.portone.storeId,
+            channelKey: init.portone.channelKey,
+            issueId: init.portone.issueId,
+            billingKeyMethod: init.portone.billingKeyMethod,
+            customer: init.portone.customer,
+            orderName: init.portone.orderName,
+          });
+
+          if (!issueRes || issueRes.code) {
+            throw new Error(issueRes?.message || '카드 인증이 취소되었습니다');
+          }
+
+          // 3) 백엔드에 빌링키 전달 → Subscription 생성
+          const completeRes = await fetch('https://api.bubiseo.com/payments/portone/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId: init.orderId,
+              billingKey: issueRes.billingKey,
+              raw: issueRes,
+            }),
+          });
+          if (!completeRes.ok) {
+            let msg = '구독 생성에 실패했어요';
+            try {
+              const j = await completeRes.json();
+              msg = j.message || j.error || msg;
+            } catch {}
+            throw new Error(msg);
+          }
+          const completed = await completeRes.json();
+          location.href = completed.redirectUrl;
         } catch (err) {
-          showError(err.message || '결제 요청 중 오류가 발생했어요.');
+          showError(err?.message || '결제 요청 중 오류가 발생했어요.');
           elCta.disabled = false;
           elCta.textContent = '0원 카드 인증 시작';
         }
@@ -413,6 +436,6 @@
       refreshCta();
     })();
   </script>
-  <script src="https://stdpay.inicis.com/stdjs/INIStdPay.js" charset="UTF-8"></script>
+  <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 </body>
 </html>
