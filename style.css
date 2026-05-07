@@ -501,10 +501,52 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .section__media--reverse { order: -1; }
 
+/* ───── 스크린샷 갤러리 (한 섹션 안에 4장 그리드) ───── */
+.shots {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 520px;
+}
+.shots--three {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 600px;
+}
+.shots--single {
+  grid-template-columns: 1fr;
+  max-width: 320px;
+}
+.shots img {
+  width: 100%;
+  display: block;
+  border-radius: 18px;
+  background: #f5f5f7;
+  aspect-ratio: 9 / 19.5;
+  object-fit: cover;
+  box-shadow: 0 14px 36px rgba(15, 20, 30, 0.10), 0 2px 6px rgba(15, 20, 30, 0.04);
+  transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.5s;
+}
+.shots img:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px rgba(15, 20, 30, 0.16), 0 4px 10px rgba(15, 20, 30, 0.06);
+}
+.section--dark .shots img {
+  background: #1d1d1f;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
 @media (max-width: 920px) {
   .section__inner--split { grid-template-columns: 1fr; gap: 60px; }
   .section__media--reverse { order: 0; }
   .section__title { font-size: clamp(28px, 7.5vw, 48px); }
+  .shots { max-width: 100%; }
+  .shots--three { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 540px) {
+  .shots { gap: 10px; }
+  .shots--three { gap: 8px; }
 }
 
 /* === Bullets / Featgrid / Numgrid ============================== */
