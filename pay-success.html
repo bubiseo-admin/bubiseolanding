@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>결제 완료 — 부비서 데스크톱 PRO</title>
+  <meta name="description" content="결제가 완료되었습니다. 데스크톱에서 자동으로 PRO 가 활성화됩니다." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <style>
+    body { background: linear-gradient(180deg, #fbfbfd 0%, #f3f5fb 100%); min-height: 100vh; }
+    .result { max-width: 640px; margin: 0 auto; padding: 80px 20px; text-align: center; }
+    .result__icon {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 48px rgba(91,127,255,0.32);
+    }
+    .result__icon svg { width: 48px; height: 48px; stroke: #fff; stroke-width: 3; fill: none; }
+    .result__title {
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 800;
+      color: #1d1d1f;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+    .result__sub {
+      font-size: 16px;
+      color: #4e5968;
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+    .result__card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px 28px;
+      box-shadow: 0 12px 36px rgba(15,20,30,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .result__row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 14px;
+    }
+    .result__row:last-child { border-bottom: none; }
+    .result__row-label { color: #86868b; }
+    .result__row-value { color: #1d1d1f; font-weight: 600; }
+    .result__steps {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 28px;
+      text-align: left;
+      box-shadow: 0 12px 36px rgba(15,20,30,0.04);
+      margin-bottom: 24px;
+    }
+    .result__steps h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 14px;
+    }
+    .result__steps ol { padding-left: 22px; color: #4e5968; font-size: 14px; line-height: 1.75; }
+    .result__cta {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #ffffff !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.01em;
+    }
+    .result__cta:hover { text-decoration: none; opacity: 0.92; }
+    .result__cta--ghost {
+      background: transparent;
+      color: #5b7fff !important;
+      margin-left: 8px;
+      padding: 14px 20px;
+    }
+  </style>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="index.html">← 홈으로</a>
+  </header>
+
+  <main class="result">
+    <div class="result__icon">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 13 9 18 20 7" />
+      </svg>
+    </div>
+    <h1 class="result__title">결제가 완료되었어요</h1>
+    <p class="result__sub">
+      데스크톱 PRO 가 활성화되었습니다.<br />
+      부비서 데스크톱 앱에서 자동으로 로그인 화면을 거쳐 대시보드로 이동합니다.
+    </p>
+
+    <div class="result__card" id="orderCard">
+      <div class="result__row">
+        <span class="result__row-label">주문번호</span>
+        <span class="result__row-value" id="orderId">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">플랜</span>
+        <span class="result__row-value" id="planLabel">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">결제 금액</span>
+        <span class="result__row-value" id="amountLabel">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">결제수단</span>
+        <span class="result__row-value" id="methodLabel">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">다음 결제일</span>
+        <span class="result__row-value" id="nextLabel">—</span>
+      </div>
+    </div>
+
+    <div class="result__steps">
+      <h3>다음 단계</h3>
+      <ol>
+        <li>부비서 데스크톱 앱으로 돌아가세요. 자동으로 PRO 가 적용되고 QR 페어링이 다시 진행됩니다.</li>
+        <li>모바일 앱에서 데스크톱 QR 을 한 번 더 스캔하면 로그인이 완료됩니다.</li>
+        <li>30일 후 자동결제가 시작됩니다. 모바일 앱 → 설정 → 데스크톱 구독 관리에서 언제든 해지 가능합니다.</li>
+      </ol>
+    </div>
+
+    <a class="result__cta" href="index.html">홈으로 돌아가기</a>
+    <a class="result__cta result__cta--ghost" href="refund.html">환불 정책 보기</a>
+  </main>
+
+  <footer class="legal-foot">
+    © 2026 부비서. All rights reserved. ·
+    <a href="terms.html" style="color:#5b7fff;">이용약관</a> ·
+    <a href="privacy.html" style="color:#5b7fff;">개인정보처리방침</a> ·
+    <a href="refund.html" style="color:#5b7fff;">환불 정책</a>
+  </footer>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const orderId = params.get('orderId') || params.get('MOID') || '';
+      const plan = params.get('plan') || '';
+      const amount = params.get('amount') || params.get('TotPrice') || '';
+      const method = params.get('method') || params.get('payMethod') || '카드';
+      const nextBilling = params.get('nextBilling') || '';
+
+      function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el && value) el.textContent = value;
+      }
+
+      const planMap = { monthly: '월간 플랜 (19,900원/월)', yearly: '연간 플랜 (199,000원/년)' };
+      setText('orderId', orderId);
+      setText('planLabel', planMap[plan] || plan);
+      if (amount) setText('amountLabel', Number(amount).toLocaleString('ko-KR') + '원');
+      setText('methodLabel', method);
+      if (nextBilling) {
+        setText('nextLabel', nextBilling);
+      } else {
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 30);
+        setText('nextLabel', trialEnd.toISOString().slice(0, 10) + ' (무료체험 종료)');
+      }
+    })();
+  </script>
+</body>
+</html>
