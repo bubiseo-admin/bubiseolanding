@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>요금제 — 부비서 데스크톱</title>
+  <meta name="description" content="부비서 데스크톱 요금제 — 월 19,900원 / 연 199,000원, 무료체험 30일" />
+  <meta property="og:title" content="부비서 데스크톱 요금제" />
+  <meta property="og:description" content="월 19,900원 / 연 199,000원 — 30일 무료체험" />
+  <meta property="og:image" content="/assets/logo.png" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <style>
+    body { background: linear-gradient(180deg, #fbfbfd 0%, #f3f5fb 100%); }
+    .pricing { max-width: 1080px; margin: 0 auto; padding: 64px 24px 96px; }
+    .pricing__hero { text-align: center; margin-bottom: 56px; }
+    .pricing__eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(91, 127, 255, 0.12);
+      color: #5b7fff;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+    .pricing__title {
+      font-size: clamp(32px, 4.4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      color: #1d1d1f;
+      margin-bottom: 14px;
+    }
+    .pricing__sub {
+      font-size: 17px;
+      color: #424245;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .pricing__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 880px;
+      margin: 0 auto 48px;
+    }
+    @media (max-width: 720px) {
+      .pricing__grid { grid-template-columns: 1fr; }
+    }
+    .plan {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 36px 32px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 12px 36px rgba(15,20,30,0.05);
+      position: relative;
+    }
+    .plan--accent {
+      background: linear-gradient(180deg, #ffffff 0%, #f3f5ff 100%);
+      border: 1.5px solid #5b7fff;
+      box-shadow: 0 16px 48px rgba(91,127,255,0.18);
+    }
+    .plan__badge {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .plan__name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #5b7fff;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .plan__price {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #1d1d1f;
+      line-height: 1.1;
+    }
+    .plan__price small {
+      font-size: 16px;
+      font-weight: 600;
+      color: #86868b;
+      margin-left: 4px;
+    }
+    .plan__caption {
+      font-size: 13px;
+      color: #5b7fff;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .plan__divider { height: 1px; background: rgba(0,0,0,0.08); margin: 24px 0; }
+    .plan__feats { list-style: none; padding: 0; margin: 0; }
+    .plan__feats li {
+      font-size: 14.5px;
+      color: #424245;
+      padding: 8px 0 8px 28px;
+      position: relative;
+      line-height: 1.55;
+    }
+    .plan__feats li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 18px;
+      height: 18px;
+      background: rgba(91,127,255,0.12);
+      border-radius: 50%;
+    }
+    .plan__feats li::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 16px;
+      width: 8px;
+      height: 5px;
+      border-left: 2px solid #5b7fff;
+      border-bottom: 2px solid #5b7fff;
+      transform: rotate(-45deg);
+    }
+    .plan__cta {
+      display: block;
+      text-align: center;
+      width: 100%;
+      margin-top: 28px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #ffffff !important;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+    .plan__cta:hover { text-decoration: none; opacity: 0.92; }
+    .plan__cta--ghost {
+      background: #f3f5ff;
+      color: #5b7fff !important;
+    }
+    .pricing__notes {
+      max-width: 880px;
+      margin: 32px auto 0;
+      padding: 24px 28px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .pricing__notes h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 10px;
+    }
+    .pricing__notes ul {
+      list-style: disc;
+      padding-left: 22px;
+      color: #4e5968;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .pricing__faq { max-width: 760px; margin: 64px auto 0; }
+    .pricing__faq h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .pricing__faq details {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 16px 20px;
+      margin-bottom: 10px;
+    }
+    .pricing__faq summary {
+      font-weight: 600;
+      color: #1d1d1f;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .pricing__faq p {
+      margin-top: 12px;
+      color: #4e5968;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+  </style>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="index.html">← 홈으로</a>
+  </header>
+
+  <main class="pricing">
+    <div class="pricing__hero">
+      <span class="pricing__eyebrow">데스크톱 PRO</span>
+      <h1 class="pricing__title">부동산 사무소를 위한<br />가장 가까운 비서</h1>
+      <p class="pricing__sub">
+        모바일 앱은 무료입니다. 데스크톱 동시 사용은 PRO 플랜으로 제공됩니다.<br />
+        지금 가입하면 30일 동안 무료로 사용해 보실 수 있어요.
+      </p>
+    </div>
+
+    <div class="pricing__grid">
+      <!-- 월간 플랜 -->
+      <article class="plan">
+        <div class="plan__name">MONTHLY</div>
+        <div class="plan__price">19,900<small>원 / 월</small></div>
+        <div class="plan__caption">매월 자동결제 · 언제든 해지</div>
+        <div class="plan__divider"></div>
+        <ul class="plan__feats">
+          <li>데스크톱 + 모바일 동시 사용</li>
+          <li>매물·고객·계약·일정 무제한</li>
+          <li>AI 비서 (계약서·확인설명서 자동 작성)</li>
+          <li>실거래가·지도 자동 분석</li>
+          <li>알림·일정 동기화</li>
+        </ul>
+        <a class="plan__cta plan__cta--ghost" href="pay.html?plan=monthly">월간 플랜 시작</a>
+      </article>
+
+      <!-- 연간 플랜 -->
+      <article class="plan plan--accent">
+        <span class="plan__badge">2개월 할인</span>
+        <div class="plan__name">YEARLY</div>
+        <div class="plan__price">199,000<small>원 / 년</small></div>
+        <div class="plan__caption">월 16,583원 · 1년 결제</div>
+        <div class="plan__divider"></div>
+        <ul class="plan__feats">
+          <li>월간 플랜의 모든 기능</li>
+          <li>연 결제 시 2개월 무료 (39,800원 절약)</li>
+          <li>연간 결제 후 30일 내 100% 환불</li>
+          <li>업그레이드·우선 지원</li>
+          <li>신규 기능 우선 베타 액세스</li>
+        </ul>
+        <a class="plan__cta" href="pay.html?plan=yearly">연간 플랜 시작</a>
+      </article>
+    </div>
+
+    <div class="pricing__notes">
+      <h3>요금 안내</h3>
+      <ul>
+        <li>모바일 앱 (iOS / Android) 은 모든 기능을 무료로 제공합니다.</li>
+        <li>데스크톱 PRO 는 모바일 계정과 QR 페어링으로 연결됩니다.</li>
+        <li>30일 무료체험 — 무료기간 종료 24시간 전까지 해지 시 결제되지 않습니다.</li>
+        <li>결제는 KG이니시스를 통해 안전하게 처리됩니다 (신용카드 / 체크카드 / 계좌이체).</li>
+        <li>VAT 별도 (사업자 결제 시 세금계산서 발행 가능).</li>
+        <li>해지·환불 정책은 <a href="refund.html">환불 정책</a> 을 참고해 주세요.</li>
+      </ul>
+    </div>
+
+    <div class="pricing__faq">
+      <h2>자주 묻는 질문</h2>
+      <details>
+        <summary>무료체험은 어떻게 시작하나요?</summary>
+        <p>모바일 앱에서 회원가입 → 데스크톱에 QR 페어링하면 자동으로 30일 무료체험이 시작됩니다. 카드 등록은 결제 진행 시점에만 필요합니다.</p>
+      </details>
+      <details>
+        <summary>해지하면 즉시 데스크톱 사용이 막히나요?</summary>
+        <p>아니요. 결제한 기간이 끝날 때까지 계속 사용 가능합니다. 자동 결제만 다음 주기부터 멈춥니다.</p>
+      </details>
+      <details>
+        <summary>모바일 앱은 정말 평생 무료인가요?</summary>
+        <p>네. 모바일 앱은 출시 이후에도 무료로 모든 기능이 제공됩니다. 데스크톱 PRO 는 PC에서 동시 작업이 필요한 사무소를 위한 부가 서비스입니다.</p>
+      </details>
+      <details>
+        <summary>여러 직원이 함께 사용할 수 있나요?</summary>
+        <p>한 사무소 (실명·등록번호 인증 기준) 당 1개 데스크톱 + 다수 모바일 사용을 지원합니다. 다른 데스크톱에서 새로 페어링하면 기존 데스크톱은 자동 로그아웃됩니다.</p>
+      </details>
+      <details>
+        <summary>세금계산서를 받을 수 있나요?</summary>
+        <p>네. 사업자 결제 시 결제 완료 페이지에서 세금계산서 발행을 신청하실 수 있습니다.</p>
+      </details>
+    </div>
+  </main>
+
+  <footer class="legal-foot">
+    © 2026 부비서. All rights reserved. ·
+    <a href="terms.html" style="color:#5b7fff;">이용약관</a> ·
+    <a href="privacy.html" style="color:#5b7fff;">개인정보처리방침</a> ·
+    <a href="refund.html" style="color:#5b7fff;">환불 정책</a>
+  </footer>
+</body>
+</html>

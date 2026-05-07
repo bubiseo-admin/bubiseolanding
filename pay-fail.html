@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>결제 실패 — 부비서 데스크톱 PRO</title>
+  <meta name="description" content="결제가 완료되지 못했습니다." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <style>
+    body { background: linear-gradient(180deg, #fbfbfd 0%, #fff5f5 100%); min-height: 100vh; }
+    .result { max-width: 600px; margin: 0 auto; padding: 80px 20px; text-align: center; }
+    .result__icon {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f86b6b 0%, #f8a86b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 48px rgba(248,107,107,0.32);
+    }
+    .result__icon svg { width: 48px; height: 48px; stroke: #fff; stroke-width: 3; fill: none; }
+    .result__title {
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 800;
+      color: #1d1d1f;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+    .result__sub {
+      font-size: 16px;
+      color: #4e5968;
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+    .result__reason {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      text-align: left;
+      border-left: 4px solid #d72e2e;
+      box-shadow: 0 6px 20px rgba(15,20,30,0.04);
+    }
+    .result__reason-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #d72e2e;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .result__reason-text {
+      font-size: 14px;
+      color: #1d1d1f;
+      line-height: 1.55;
+    }
+    .result__hint {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      text-align: left;
+      box-shadow: 0 6px 20px rgba(15,20,30,0.04);
+    }
+    .result__hint h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 12px;
+    }
+    .result__hint ul {
+      list-style: disc;
+      padding-left: 22px;
+      color: #4e5968;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .result__cta {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #ffffff !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .result__cta:hover { text-decoration: none; opacity: 0.92; }
+    .result__cta--ghost {
+      background: transparent;
+      color: #5b7fff !important;
+      margin-left: 8px;
+      padding: 14px 20px;
+    }
+  </style>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="pay.html">← 결제로 돌아가기</a>
+  </header>
+
+  <main class="result">
+    <div class="result__icon">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="6" x2="18" y2="18" />
+        <line x1="18" y1="6" x2="6" y2="18" />
+      </svg>
+    </div>
+    <h1 class="result__title">결제가 완료되지 못했어요</h1>
+    <p class="result__sub">
+      걱정 마세요. 결제가 진행되지 않아 요금이 청구되지 않습니다.<br />
+      잠시 후 다시 시도해 주세요.
+    </p>
+
+    <div class="result__reason" id="reasonBox" style="display:none;">
+      <div class="result__reason-label">실패 사유</div>
+      <div class="result__reason-text" id="reasonText"></div>
+    </div>
+
+    <div class="result__hint">
+      <h3>다시 시도하실 때 확인해 주세요</h3>
+      <ul>
+        <li>카드 한도와 일일 결제 한도를 확인하세요.</li>
+        <li>해외카드는 일부 결제수단에서 제한될 수 있어요.</li>
+        <li>다른 카드 또는 계좌이체·가상계좌도 이용 가능합니다.</li>
+        <li>문제가 계속되면 <a href="mailto:admin@bubiseo.com" style="color:#5b7fff;">admin@bubiseo.com</a> 으로 문의 주세요.</li>
+      </ul>
+    </div>
+
+    <a class="result__cta" href="pay.html">다시 결제하기</a>
+    <a class="result__cta result__cta--ghost" href="index.html">홈으로</a>
+  </main>
+
+  <footer class="legal-foot">
+    © 2026 부비서. All rights reserved. ·
+    <a href="terms.html" style="color:#5b7fff;">이용약관</a> ·
+    <a href="privacy.html" style="color:#5b7fff;">개인정보처리방침</a> ·
+    <a href="refund.html" style="color:#5b7fff;">환불 정책</a>
+  </footer>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const reason = params.get('reason') || params.get('resultMsg') || params.get('msg') || '';
+      if (reason) {
+        document.getElementById('reasonText').textContent = reason;
+        document.getElementById('reasonBox').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>
