@@ -1219,8 +1219,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .footer__logo { width: 24px; height: 24px; border-radius: 6px; }
 .footer__cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 32px 28px;
   padding-bottom: 32px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
