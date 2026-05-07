@@ -105,10 +105,11 @@
         <polyline points="4 13 9 18 20 7" />
       </svg>
     </div>
-    <h1 class="result__title">결제가 완료되었어요</h1>
+    <h1 class="result__title">30일 무료체험이 시작됐어요</h1>
     <p class="result__sub">
-      데스크톱 PRO 가 활성화되었습니다.<br />
-      부비서 데스크톱 앱에서 자동으로 로그인 화면을 거쳐 대시보드로 이동합니다.
+      카드 인증이 완료되어 데스크톱 PRO 가 활성화되었습니다 (오늘 결제 0원).<br />
+      <strong>30일 후 첫 결제</strong>가 자동으로 진행되며,
+      무료체험 종료 24시간 전까지 모바일 앱에서 해지하시면 결제되지 않습니다.
     </p>
 
     <div class="result__card" id="orderCard">
@@ -121,16 +122,24 @@
         <span class="result__row-value" id="planLabel">—</span>
       </div>
       <div class="result__row">
-        <span class="result__row-label">결제 금액</span>
-        <span class="result__row-value" id="amountLabel">—</span>
+        <span class="result__row-label">오늘 결제 금액</span>
+        <span class="result__row-value" id="amountLabel">0원 (카드 인증)</span>
       </div>
       <div class="result__row">
         <span class="result__row-label">결제수단</span>
         <span class="result__row-value" id="methodLabel">—</span>
       </div>
       <div class="result__row">
-        <span class="result__row-label">다음 결제일</span>
+        <span class="result__row-label">무료체험 종료일</span>
+        <span class="result__row-value" id="trialEndLabel">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">첫 결제 예정일</span>
         <span class="result__row-value" id="nextLabel">—</span>
+      </div>
+      <div class="result__row">
+        <span class="result__row-label">첫 결제 예정 금액</span>
+        <span class="result__row-value" id="afterTrialLabel">—</span>
       </div>
     </div>
 
@@ -139,7 +148,8 @@
       <ol>
         <li>부비서 데스크톱 앱으로 돌아가세요. 자동으로 PRO 가 적용되고 QR 페어링이 다시 진행됩니다.</li>
         <li>모바일 앱에서 데스크톱 QR 을 한 번 더 스캔하면 로그인이 완료됩니다.</li>
-        <li>30일 후 자동결제가 시작됩니다. 모바일 앱 → 설정 → 데스크톱 구독 관리에서 언제든 해지 가능합니다.</li>
+        <li>30일 후 첫 결제가 진행됩니다. 무료체험 종료 24시간 전까지 모바일 → 설정 → "데스크톱 구독 관리" → "무료체험 해지" 를 누르시면 결제되지 않습니다.</li>
+        <li>결제 후에도 7일 이내 100% 환불, 8일 이후 잔여 일수 일할 환불이 가능합니다.</li>
       </ol>
     </div>
 
@@ -170,27 +180,39 @@
       const params = new URLSearchParams(location.search);
       const orderId = params.get('orderId') || params.get('MOID') || '';
       const plan = params.get('plan') || '';
-      const amount = params.get('amount') || params.get('TotPrice') || '';
-      const method = params.get('method') || params.get('payMethod') || '카드';
+      const amount = params.get('amount') || '';
+      const method = params.get('method') || params.get('payMethod') || '카드 (빌링키 등록)';
       const nextBilling = params.get('nextBilling') || '';
+      const trialEndsAt = params.get('trialEndsAt') || '';
 
       function setText(id, value) {
         const el = document.getElementById(id);
         if (el && value) el.textContent = value;
       }
+      function fmtDate(iso) {
+        try { return new Date(iso).toISOString().slice(0, 10); } catch { return iso; }
+      }
+      function fmtKrw(num) {
+        return Number(num).toLocaleString('ko-KR') + '원';
+      }
 
       const planMap = { monthly: '월간 플랜 (19,900원/월)', yearly: '연간 플랜 (199,000원/년)' };
       setText('orderId', orderId);
       setText('planLabel', planMap[plan] || plan);
-      if (amount) setText('amountLabel', Number(amount).toLocaleString('ko-KR') + '원');
       setText('methodLabel', method);
-      if (nextBilling) {
-        setText('nextLabel', nextBilling);
-      } else {
-        const trialEnd = new Date();
-        trialEnd.setDate(trialEnd.getDate() + 30);
-        setText('nextLabel', trialEnd.toISOString().slice(0, 10) + ' (무료체험 종료)');
-      }
+
+      // 30일 후 첫 결제 예정 — 빌링 흐름 기준
+      const trialEnd = trialEndsAt ? fmtDate(trialEndsAt) : (() => {
+        const d = new Date();
+        d.setDate(d.getDate() + 30);
+        return d.toISOString().slice(0, 10);
+      })();
+      setText('trialEndLabel', trialEnd);
+      setText('nextLabel', nextBilling || trialEnd);
+
+      // 첫 결제 예정 금액 — amount param 또는 plan 별 기본값
+      const planAmount = plan === 'yearly' ? 199000 : 19900;
+      setText('afterTrialLabel', amount ? fmtKrw(amount) : fmtKrw(planAmount));
     })();
   </script>
 </body>

@@ -238,13 +238,16 @@
       <div class="pay__section">
         <div class="pay__total">
           <span class="pay__total-label">
-            결제 금액
+            지금 결제 금액
             <span class="pay__free-badge">30일 무료체험</span>
           </span>
-          <span class="pay__total-amount" id="totalAmount">19,900원</span>
+          <span class="pay__total-amount" id="totalAmount">0원</span>
         </div>
         <div class="pay__id-help" style="margin-top:8px;">
-          첫 30일은 무료입니다. 무료체험 종료 24시간 전까지 해지하시면 결제가 진행되지 않습니다.
+          오늘은 <strong>0원</strong>이 청구됩니다 (카드 인증만).<br />
+          30일 후 자동으로 <strong id="afterTrialPrice">19,900원</strong>이 청구됩니다.
+          무료체험 종료 24시간 전까지 모바일 앱 → 설정 → "데스크톱 구독 관리" 에서
+          해지하면 결제되지 않아요.
         </div>
       </div>
 
@@ -261,11 +264,12 @@
         </div>
       </div>
 
-      <button id="payCta" class="pay__cta" type="button" disabled>결제하기</button>
+      <button id="payCta" class="pay__cta" type="button" disabled>0원 카드 인증 시작</button>
 
       <div class="pay__notice">
-        <strong>안전 결제</strong> — 신용카드·체크카드·계좌이체·가상계좌를 지원합니다.
-        결제 정보는 KG이니시스에 직접 전달되며 부비서는 카드 정보를 보관하지 않습니다.
+        <strong>안전 결제</strong> — 카드 인증은 KG이니시스 결제창에서 직접 진행되며,
+        부비서는 카드번호·CVC 등 결제 정보를 보관하지 않습니다. 정기결제용 빌링키만
+        암호화되어 저장됩니다.
       </div>
 
       <div class="pay__brands">
@@ -304,8 +308,8 @@
   <script>
     (function () {
       const plans = {
-        monthly: { name: '월간 플랜', priceLabel: '19,900<small>원 / 월</small>', amount: 19900, totalLabel: '19,900원' },
-        yearly: { name: '연간 플랜', priceLabel: '199,000<small>원 / 년</small>', amount: 199000, totalLabel: '199,000원' },
+        monthly: { name: '월간 플랜', priceLabel: '19,900<small>원 / 월</small>', amount: 19900, afterTrialLabel: '19,900원' },
+        yearly: { name: '연간 플랜', priceLabel: '199,000<small>원 / 년</small>', amount: 199000, afterTrialLabel: '199,000원' },
       };
 
       const params = new URLSearchParams(location.search);
@@ -316,6 +320,7 @@
       const elPlanName = document.getElementById('planName');
       const elPlanPrice = document.getElementById('planPrice');
       const elTotal = document.getElementById('totalAmount');
+      const elAfterTrial = document.getElementById('afterTrialPrice');
       const elEmail = document.getElementById('emailInput');
       const elAgree = document.getElementById('agreeAll');
       const elCta = document.getElementById('payCta');
@@ -329,7 +334,9 @@
         currentPlan = plan;
         elPlanName.textContent = plans[plan].name;
         elPlanPrice.innerHTML = plans[plan].priceLabel;
-        elTotal.textContent = plans[plan].totalLabel;
+        // 지금 결제 금액은 항상 0원 (무료체험 카드 인증)
+        elTotal.textContent = '0원';
+        if (elAfterTrial) elAfterTrial.textContent = plans[plan].afterTrialLabel;
         btnMonthly.classList.toggle('active', plan === 'monthly');
         btnYearly.classList.toggle('active', plan === 'yearly');
       }
@@ -356,28 +363,26 @@
       elCta.addEventListener('click', async () => {
         hideError();
         elCta.disabled = true;
-        elCta.textContent = '결제창을 여는 중...';
+        elCta.textContent = '카드 인증창을 여는 중...';
         try {
-          const res = await fetch('https://api.bubiseo.com/payments/inicis/init', {
+          const res = await fetch('https://api.bubiseo.com/payments/inicis/init-billing', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               plan: currentPlan,
               email: elEmail.value.trim(),
               desktopClientId,
-              returnUrl: location.origin + '/pay-success.html',
-              cancelUrl: location.origin + '/pay-fail.html',
             }),
           });
           if (!res.ok) {
-            const text = await res.text();
-            throw new Error(text || '결제 요청 실패');
+            let msg = '결제 요청에 실패했어요. 잠시 후 다시 시도해주세요.';
+            try {
+              const j = await res.json();
+              msg = j.message || j.error || msg;
+            } catch {}
+            throw new Error(msg);
           }
           const data = await res.json();
-          if (data.redirectUrl) {
-            location.href = data.redirectUrl;
-            return;
-          }
           if (data.inicis && typeof window.INIStdPay !== 'undefined') {
             const form = document.createElement('form');
             form.id = 'SendPayForm_id';
@@ -393,11 +398,11 @@
             window.INIStdPay.pay('SendPayForm_id');
             return;
           }
-          throw new Error('결제 응답이 올바르지 않아요. 잠시 후 다시 시도해 주세요.');
+          throw new Error('결제 SDK 가 로드되지 않았어요. 페이지를 새로고침해 주세요.');
         } catch (err) {
           showError(err.message || '결제 요청 중 오류가 발생했어요.');
           elCta.disabled = false;
-          elCta.textContent = '결제하기';
+          elCta.textContent = '0원 카드 인증 시작';
         }
       });
 
