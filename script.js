@@ -306,3 +306,41 @@
     counters.forEach((c) => cio.observe(c));
   }
 })();
+
+/* ============================================================
+   BETA TESTIMONIALS — 76명 슬라이더 자동 렌더 + 무한 스크롤
+   ============================================================ */
+(function () {
+  const list = (window.BUBISEO_TESTIMONIALS || []);
+  const track = document.querySelector('[data-beta-track]');
+  if (!track || list.length === 0) return;
+
+  // HTML escape (XSS 방지 — 데이터는 우리가 관리하지만 안전 습관)
+  const esc = (s) =>
+    String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+  const cardHtml = (t) => `
+    <article class="beta-card">
+      <div class="beta-card__top">
+        <span class="beta-card__region">${esc(t.region)}</span>
+        <span class="beta-card__verified">실사용</span>
+      </div>
+      <div class="beta-card__office">${esc(t.office)}</div>
+      <div class="beta-card__email">${esc(t.email)}</div>
+      <p class="beta-card__text">${esc(t.text)}</p>
+    </article>
+  `;
+
+  // 무한 스크롤을 위해 트랙에 카드를 2배 복제 (CSS keyframe 이 -50% 까지만 이동).
+  const html = list.map(cardHtml).join('');
+  track.innerHTML = html + html;
+
+  // 카운터 표시 (혹시 데이터 수가 바뀌면 자동 동기화)
+  const counter = document.querySelector('[data-beta-count]');
+  if (counter) counter.textContent = String(list.length);
+})();

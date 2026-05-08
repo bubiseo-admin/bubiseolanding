@@ -1409,3 +1409,175 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
 }
+
+/* ============================================================
+   BETA TESTIMONIALS — 사전 베타 76개 사무소 슬라이더
+   ============================================================ */
+.beta {
+  background: linear-gradient(180deg, #FAFBFE 0%, #F1F4FB 100%);
+  padding: 80px 0 64px;
+  border-top: 1px solid #E5E8EB;
+  border-bottom: 1px solid #E5E8EB;
+  overflow: hidden;
+}
+.beta__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.beta__head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.beta__sub {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #6B7480;
+  line-height: 1.6;
+}
+
+/* 슬라이더 — 무한 가로 스크롤 (CSS keyframe + 트랙 2배 복제) */
+.beta-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: 0 -24px;
+  padding: 16px 0;
+  /* 좌우 끝 페이드 */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.beta-slider__track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: betaScroll 180s linear infinite;
+  will-change: transform;
+}
+.beta-slider:hover .beta-slider__track {
+  animation-play-state: paused;
+}
+@keyframes betaScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* 카드 */
+.beta-card {
+  flex: 0 0 320px;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 16px;
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(15, 20, 25, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.beta-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(97, 85, 245, 0.12);
+  border-color: rgba(97, 85, 245, 0.3);
+}
+.beta-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.beta-card__region {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6155F5;
+  background: linear-gradient(135deg, rgba(97, 85, 245, 0.08), rgba(57, 175, 253, 0.08));
+  border: 1px solid rgba(97, 85, 245, 0.2);
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+.beta-card__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00A878;
+  letter-spacing: -0.2px;
+}
+.beta-card__verified::before {
+  content: '✓';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00A878;
+  color: #FFFFFF;
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+  font-weight: 900;
+}
+.beta-card__office {
+  font-size: 14px;
+  font-weight: 800;
+  color: #191F28;
+  letter-spacing: -0.3px;
+  line-height: 1.4;
+}
+.beta-card__email {
+  font-size: 12px;
+  color: #8B95A1;
+  font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  letter-spacing: -0.2px;
+}
+.beta-card__text {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #4E5968;
+  line-height: 1.55;
+  letter-spacing: -0.2px;
+  flex: 1;
+}
+
+/* 카운터 배지 (슬라이더 아래) */
+.beta__counter {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4E5968;
+}
+.beta__counter strong {
+  color: #6155F5;
+  font-weight: 800;
+}
+.beta__counter-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00A878;
+  box-shadow: 0 0 0 4px rgba(0, 168, 120, 0.18);
+  animation: betaPulse 1.6s ease-in-out infinite;
+}
+@keyframes betaPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(0, 168, 120, 0.18); }
+  50%      { box-shadow: 0 0 0 8px rgba(0, 168, 120, 0); }
+}
+
+/* 모바일 */
+@media (max-width: 640px) {
+  .beta { padding: 56px 0 48px; }
+  .beta-card { flex: 0 0 280px; padding: 16px 18px 14px; }
+  .beta-slider__track { animation-duration: 140s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beta-slider__track { animation: none; }
+  .beta__counter-dot { animation: none; }
+}
