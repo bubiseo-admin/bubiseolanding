@@ -686,6 +686,34 @@
     </div>
   </section>
 
+  <!-- ============================== BETA TESTIMONIALS (76명 슬라이더) ============================== -->
+  <section class="beta" id="beta">
+    <div class="beta__inner">
+      <div class="beta__head" data-reveal>
+        <span class="eyebrow">현재 베타 테스트 중</span>
+        <h2 class="section__title section__title--center">
+          전국 <span class="gradient-text">76개 사무소</span>가<br/>
+          먼저 써보고 있어요.
+        </h2>
+        <p class="beta__sub">
+          이름·이메일은 일부만 노출했어요. 모두 실제 사용 중인 사무소의 실사용 후기입니다.
+        </p>
+      </div>
+
+      <!-- 슬라이더: 데이터는 testimonials.js 에서 자동 렌더 -->
+      <div class="beta-slider" data-beta-slider>
+        <div class="beta-slider__track" data-beta-track>
+          <!-- testimonials.js 가 카드를 렌더해서 여기에 채움 -->
+        </div>
+      </div>
+
+      <div class="beta__counter" data-reveal>
+        <span class="beta__counter-dot"></span>
+        <span><strong data-beta-count>76</strong>개 사무소가 사전 베타에 참여 중</span>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================== CTA ============================== -->
   <section class="cta" id="cta">
     <div class="cta__inner" data-reveal>
@@ -700,7 +728,7 @@
       </div>
 
       <form class="cta__form" data-notify-form data-source="cta">
-        <label class="cta__form-label">한 번만 알림 받기 — 한 번만 늦지 않으려고요</label>
+        <label class="cta__form-label">내 사무소도 출시 알림 받기</label>
         <div class="cta__form-fields">
           <input name="businessName" type="text" placeholder="사무소명" required aria-label="사무소명" autocomplete="organization" maxlength="100" />
           <input name="ownerName" type="text" placeholder="대표자명" required aria-label="대표자명" autocomplete="name" maxlength="50" />
@@ -810,6 +838,7 @@
     </div>
   </div>
 
+  <script src="testimonials.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
