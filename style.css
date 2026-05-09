@@ -294,17 +294,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 .hero__title {
-  font-size: clamp(28px, 6vw, 72px);
+  font-size: clamp(20px, 5.2vw, 56px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.04em;
   margin-top: 28px;
-  text-wrap: balance;
-  /* 한국어 단어 단위 줄바꿈 — "부동/산" 같은 단어 중간 끊김 방지 */
   word-break: keep-all;
   line-break: strict;
 }
-.hero__title .line { display: block; }
+.hero__title .line {
+  display: block;
+  white-space: nowrap;
+}
 
 .hero__sub {
   margin: 28px auto 40px;
