@@ -158,10 +158,11 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .btn--lg { padding: 18px 36px; font-size: 16px; }
 
 /* dark 섹션 안의 ghost */
-.section--dark .btn--ghost,
-.cta .btn--ghost { color: var(--white); border-color: rgba(255, 255, 255, 0.4); }
-.section--dark .btn--ghost:hover,
-.cta .btn--ghost:hover { background: rgba(255, 255, 255, 0.08); }
+.section--dark .btn--ghost { color: var(--white); border-color: rgba(255, 255, 255, 0.4); }
+.section--dark .btn--ghost:hover { background: rgba(255, 255, 255, 0.08); }
+/* CTA 섹션(밝은 배경) 안의 ghost */
+.cta .btn--ghost { color: var(--near-black); border-color: #D5D9DF; }
+.cta .btn--ghost:hover { background: rgba(0, 0, 0, 0.04); border-color: #B8BFC7; }
 /* light 섹션 안의 ghost */
 .section--light .btn--ghost { color: var(--near-black); border-color: var(--gray-300); }
 .section--light .btn--ghost:hover { background: var(--gray-50); border-color: var(--gray-500); }
@@ -1115,66 +1116,22 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .desktop-section__laptop-base { margin: 0 -20px; }
 }
 
-/* === COMING SOON 2026.06 ============================== */
-
-.coming {
-  background: var(--off-white);
-  color: var(--near-black);
-  padding: clamp(120px, 16vw, 200px) 24px;
-  text-align: center;
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
-}
-.coming__inner { max-width: 880px; margin: 0 auto; }
-.coming__badge {
-  display: inline-block;
-  padding: 10px 22px;
-  border-radius: 999px;
-  background: var(--white);
-  border: 1px solid var(--gray-300);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--near-black);
-  margin-bottom: 28px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-.coming__title {
-  font-size: clamp(36px, 7vw, 96px);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  word-break: keep-all;
-  line-break: strict;
-}
-.coming__title span { display: block; }
-.coming__sub {
-  margin-top: 28px;
-  font-size: clamp(16px, 1.7vw, 21px);
-  color: var(--gray-500);
-  font-weight: 400;
-  line-height: 1.55;
-  word-break: keep-all;
-  line-break: strict;
-}
-
 /* === CTA ============================== */
 
 .cta {
   padding: clamp(140px, 18vw, 220px) 24px;
-  background: var(--black);
-  color: var(--white);
+  background: linear-gradient(180deg, #FAFBFE 0%, #F1F4FB 100%);
+  color: var(--near-black);
   text-align: center;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid #E5E8EB;
+  border-bottom: 1px solid #E5E8EB;
 }
 .cta::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(91, 127, 255, 0.18), transparent 70%);
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(91, 127, 255, 0.10), transparent 70%);
   pointer-events: none;
 }
 .cta__inner { position: relative; max-width: 760px; margin: 0 auto; }
@@ -1192,7 +1149,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   word-break: keep-all;
   line-break: strict;
   font-size: clamp(16px, 1.7vw, 20px);
-  color: var(--gray-300);
+  color: #6B7480;
   margin-bottom: 40px;
   font-weight: 400;
 }
@@ -1214,7 +1171,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin-bottom: 12px;
   text-align: center;
 }
-/* 3필드(사무소명/대표자명/이메일) 세로 스택 — 어두운 CTA 섹션용 */
+/* 3필드(사무소명/대표자명/이메일) 세로 스택 — 밝은 CTA 섹션용 */
 .cta__form-fields {
   display: flex;
   flex-direction: column;
@@ -1223,19 +1180,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .cta__form-fields input {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--white);
+  border: 1px solid #E5E8EB;
   border-radius: 14px;
-  color: var(--white);
+  color: var(--near-black);
   font-size: 15px;
   font-family: inherit;
   outline: 0;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
-.cta__form-fields input::placeholder { color: var(--gray-500); }
+.cta__form-fields input::placeholder { color: #9AA1AB; }
 .cta__form-fields input:focus {
   border-color: var(--brand);
-  background: rgba(255, 255, 255, 0.10);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(91, 127, 255, 0.15);
 }
 .cta__form-fields .btn {
   margin-top: 4px;
