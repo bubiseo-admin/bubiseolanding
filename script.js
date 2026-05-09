@@ -8,7 +8,7 @@
   // ----- 1. 스크롤 시 nav 배경 강화 / 활성 메뉴 표시 -----
   const nav = document.getElementById('nav');
   const navLinks = nav ? nav.querySelectorAll('.nav__menu a') : [];
-  const sections = ['top', 'home', 'property', 'cobrokerage', 'contract', 'customer', 'chat', 'schedule', 'settings', 'faq', 'desktop', 'cta', 'coming']
+  const sections = ['top', 'home', 'property', 'cobrokerage', 'contract', 'customer', 'chat', 'schedule', 'settings', 'faq', 'desktop', 'cta']
     .map((id) => document.getElementById(id))
     .filter(Boolean);
 
