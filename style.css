@@ -1136,14 +1136,17 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .cta__inner { position: relative; max-width: 760px; margin: 0 auto; }
 .cta__title {
-  font-size: clamp(36px, 7vw, 88px);
+  font-size: clamp(24px, 5.4vw, 56px);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   letter-spacing: -0.04em;
   margin-bottom: 24px;
-  text-wrap: balance;
   word-break: keep-all;
   line-break: strict;
+}
+.cta__title .line {
+  display: block;
+  white-space: nowrap;
 }
 .cta__sub {
   word-break: keep-all;
