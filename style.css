@@ -446,6 +446,17 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .section--schedule {
   background: var(--white);
 }
+/* ABOUT (회사 소개) — 본문 폭 좁혀 회사 메시지 가독성 강화 */
+.section--about {
+  background: var(--white);
+}
+.section--about .section__inner {
+  max-width: 980px;
+}
+.about__featgrid {
+  margin-top: 56px;
+  width: 100%;
+}
 /* SCHEDULE 헤드라인 한 줄 강제 — "잔금일은 잊지 않아요" 줄바꿈 방지 */
 .section--schedule .section__title {
   font-size: clamp(36px, 4.6vw, 60px);
