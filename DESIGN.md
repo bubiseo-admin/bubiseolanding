@@ -104,6 +104,7 @@ CSS 안에서 사용하는 미디어쿼리는 다음 폭들입니다 (전부 max
 |---|---|---|---|---|---|
 | 0 | NAV | `nav` | `.nav` | 글래스 블러 헤더 + 햄버거 (모바일) | 햄버거 상태 토글은 `script.js` 위존. 클래스 이름 유지 |
 | 1 | HERO | `top` | `.hero`, `.hero__title` | 두 줄 헤드라인 + 비디오 폰 mockup + 6개 부유 칩 | 두 줄 강제 (`white-space: nowrap`) — 카피 짧게 |
+| 1.5 | ABOUT (회사 소개) | `about` | `.section--about` | 회사 미션·비전 + 3가지 핵심 가치 (`.featgrid` 재사용) | 본문 폭 980px 로 좁혀 회사 메시지 가독성 강화. 흰 배경 |
 | 2 | HOME | `home` | `.section--home` | "한 손에 사무소 전체" | 스플릿 레이아웃 (텍스트 ↔ 폰) |
 | 3 | PROPERTY | `property` | `.section--property` | 매물 자동 분석 | 흰 배경 (시각 휴식) |
 | 4 | COBROKERAGE | `cobrokerage` | `.section--cobrokerage` | 공동중개 (신규) | |
