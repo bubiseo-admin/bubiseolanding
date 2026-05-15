@@ -16,7 +16,7 @@
 | `script.js` (346줄) | nav 스크롤스파이·reveal·모달·폼 submit·해시 라우팅 | 🟡 동작 보존 (UI만 바꾸기) |
 | `testimonials.js` (110줄) | 베타 76개 사무소 데이터 + 슬라이더 카드 렌더 | 🟢 자유 (구조 단순) |
 | `products.html` (315줄) | 데스크톱 PRO 요금제 페이지. `<style>` 인라인 200줄 | 🟢 자유 |
-| `pay.html`, `pay-success.html`, `pay-fail.html` | KG이니시스 결제 흐름 (PG 페이지) | 🔴 동작 우선 — 결제 파라미터 건드리지 말 것 |
+| `pay.html`, `pay-success.html`, `pay-fail.html` | 결제 흐름 (PG = 토스페이먼츠 예정). 현재 `pay.html` 본문은 과거 PortOne+KG이니시스 가정으로 짜여 있어 백엔드 토스 전환과 함께 통째 재작성 필요 | 🔴 동작 우선 — 결제 파라미터·SDK 건드리지 말 것 |
 | `delete-account.html` | 계정 삭제 신청 폼 | 🟢 자유 |
 | `legal.css` | 약관·개인정보처리방침 공통 스타일 (위 페이지들이 공유) | 🟡 변경 시 약관 페이지 동시 점검 |
 | `terms.html`, `privacy.html`, `refund.html`, `location.html` | 약관·개인정보·환불·위치기반 동의 — `.md` 원본을 그대로 보여주는 페이지 | 🔴 텍스트는 법무 검토본 — 손대지 말 것 |
@@ -223,7 +223,7 @@ CSS 안에서 사용하는 미디어쿼리는 다음 폭들입니다 (전부 max
 ## 6. "건드리면 안 되는 곳" 🔴
 
 1. **DESKTOP 섹션 (`#desktop`, `.desktop-section__*`)** — `style.css` 라인 960~ "DO NOT EDIT" 주석. 별도 디자인 톤으로 보존.
-2. **결제 페이지 (`pay.html`, `pay-success.html`, `pay-fail.html`)** — KG이니시스 PG 파라미터·콜백 URL 손대지 말 것. 스타일은 자유.
+2. **결제 페이지 (`pay.html`, `pay-success.html`, `pay-fail.html`)** — PG 는 토스페이먼츠로 전환 예정 (백엔드 통합 완료 시점에 `pay.html` SDK 재작성 필요). PG 파라미터·콜백 URL 손대지 말 것. 스타일은 자유.
 3. **약관 페이지 텍스트 (`terms.md`, `privacy.md`, `refund.md`, `location.md`)** — 법무 검토본. 표시 레이아웃만 바꾸기.
 4. **`data-*` 속성 & `is-*` 상태 클래스** — JS 동작 키. 이름 유지.
 5. **`testimonials.js` 의 76개 데이터** — 실제 사전 베타 참가자 정보. 추가는 가능, 임의 변경 금지.
