@@ -173,44 +173,81 @@
         부비서 <span class="gradient-text">요금제</span>
       </h2>
       <p class="main-section__desc" data-reveal data-reveal-delay="160">
-        대표님은 <strong>무료</strong>, 직원 추가 시에만 비용이 발생합니다.
+        모바일은 <strong>전원 무료</strong>. 데스크톱은 대표 무료, 직원만 월 9,900원.
       </p>
 
       <div class="main-pricing" data-reveal data-reveal-delay="220">
-        <article class="pricing-card pricing-card--free">
-          <span class="pricing-card__badge">추천</span>
-          <h3 class="pricing-card__plan">무료</h3>
-          <p class="pricing-card__target">대표 1인</p>
-          <div class="pricing-card__price">
-            <strong>0</strong><span class="pricing-card__unit">원</span>
+
+        <!-- 모바일 앱 — 전원 무료 -->
+        <article class="pricing-platform pricing-platform--mobile">
+          <header class="pricing-platform__head">
+            <div class="pricing-platform__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5" y="2" width="14" height="20" rx="2.5"/>
+                <line x1="11.5" y1="18" x2="12.5" y2="18"/>
+              </svg>
+            </div>
+            <div class="pricing-platform__title">
+              <h3 class="pricing-platform__name">모바일 앱</h3>
+              <p class="pricing-platform__os">iOS · Android</p>
+            </div>
+          </header>
+
+          <div class="pricing-platform__price-block">
+            <strong class="pricing-platform__price-big">전원 무료</strong>
+            <span class="pricing-platform__price-sub">대표 · 직원 모두</span>
           </div>
-          <ul class="pricing-card__features">
-            <li>모바일 앱 전체 기능</li>
-            <li>데스크톱 앱 전체 기능</li>
-            <li>AI 어시스턴트</li>
-            <li>매물·계약·고객·일정 관리</li>
-            <li>커뮤니티</li>
+
+          <ul class="pricing-platform__features">
+            <li>매물·고객·계약·일정 관리</li>
+            <li>확인설명서 자동 작성</li>
+            <li>AI 비서 대화</li>
+            <li>사내 채팅·커뮤니티</li>
           </ul>
         </article>
 
-        <article class="pricing-card pricing-card--paid">
-          <h3 class="pricing-card__plan">직원 추가</h3>
-          <p class="pricing-card__target">직원 1명당</p>
-          <div class="pricing-card__price">
-            <span class="pricing-card__cycle">월</span><strong>9,900</strong><span class="pricing-card__unit">원</span>
+        <!-- 데스크톱 부비서 PRO — 대표 무료, 직원 월 9,900원 -->
+        <article class="pricing-platform pricing-platform--desktop">
+          <header class="pricing-platform__head">
+            <div class="pricing-platform__icon pricing-platform__icon--blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="pricing-platform__title">
+              <h3 class="pricing-platform__name">데스크톱 부비서 PRO</h3>
+              <p class="pricing-platform__os">macOS · Windows</p>
+            </div>
+          </header>
+
+          <div class="pricing-roles">
+            <div class="pricing-role pricing-role--free">
+              <span class="pricing-role__label">대표 1인</span>
+              <span class="pricing-role__price">무료</span>
+            </div>
+            <div class="pricing-role pricing-role--paid">
+              <span class="pricing-role__label">직원 추가 (1명당)</span>
+              <span class="pricing-role__price">
+                <em>월</em><strong>9,900</strong><small>원</small>
+              </span>
+            </div>
           </div>
-          <ul class="pricing-card__features">
-            <li>직원 전용 데스크톱 계정</li>
+
+          <ul class="pricing-platform__features">
+            <li>큰 화면에서 매물·계약 작성</li>
+            <li>모바일과 실시간 동기화</li>
             <li>대표가 직원 계정 생성·관리</li>
-            <li>직원도 모바일 앱 무료 사용</li>
-            <li>월 중 추가 시 일할 계산</li>
+            <li>월 중 직원 추가 시 일할 계산</li>
           </ul>
         </article>
+
       </div>
 
       <p class="main-pricing__note" data-reveal data-reveal-delay="320">
-        부동산 규모에 상관없이 <strong>대표님은 무료</strong>입니다.<br/>
-        직원이 데스크톱을 사용할 때만 비용이 발생합니다.
+        부동산 규모에 상관없이 <strong>대표님은 두 앱 모두 무료</strong>입니다.<br/>
+        직원이 데스크톱을 사용할 때만 1인당 월 9,900원이 발생합니다.
       </p>
     </div>
   </section>
