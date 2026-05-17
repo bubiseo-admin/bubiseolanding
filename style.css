@@ -2178,3 +2178,263 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .main-footer__cols { grid-template-columns: 1fr; gap: 20px; }
   .main-footer__bottom { flex-direction: column; gap: 6px; }
 }
+
+
+/* =================================================================
+   DESKTOP APP + PRICING — 메인 페이지 (index.html) 추가 섹션
+   ─────────────────────────────────────────────────────────────────
+   .main-* 네임스페이스. 기존 .main-section / .eyebrow / .main-section__title
+   / .main-section__desc 컴포넌트 재사용.
+   ================================================================= */
+
+/* ─── DESKTOP APP — 3 포인트 + 다운로드 버튼 2개 ─────────────── */
+.main-desktop-bullets {
+  margin: 56px auto 0;
+  max-width: 720px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+.main-desktop-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: 16px;
+  font-size: 15px;
+  color: var(--near-black);
+  line-height: 1.55;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.main-desktop-bullets li:hover {
+  border-color: rgba(91, 127, 255, 0.3);
+  transform: translateX(2px);
+}
+.main-desktop-bullets li > svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--brand);
+}
+.main-desktop-bullets li > span {
+  flex: 1;
+}
+
+.main-desktop-download {
+  margin-top: 48px;
+  display: inline-flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn-platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  background: var(--near-black);
+  color: var(--white);
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+.btn-platform:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+}
+.btn-platform--blue {
+  background: #0064FF;
+}
+.btn-platform--blue:hover {
+  background: #0057DE;
+  box-shadow: 0 10px 26px rgba(0, 100, 255, 0.32);
+}
+
+/* ─── PRICING — 2 카드 (무료 / 직원 추가) + 안내 ─────────────── */
+.main-section--pricing {
+  background: linear-gradient(180deg, var(--white) 0%, #f6f8ff 100%);
+}
+.main-pricing {
+  margin: 64px auto 0;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  text-align: left;
+}
+.pricing-card {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: 24px;
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.pricing-card:hover {
+  transform: translateY(-3px);
+}
+
+/* 무료 — 그라데이션 테두리 + 추천 배지 */
+.pricing-card--free {
+  border-color: rgba(91, 127, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(91, 127, 255, 0.08), 0 10px 32px rgba(91, 127, 255, 0.08);
+}
+.pricing-card--free:hover {
+  border-color: rgba(91, 127, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(91, 127, 255, 0.12), 0 18px 40px rgba(91, 127, 255, 0.14);
+}
+.pricing-card__badge {
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: var(--grad-violet);
+  color: var(--white);
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(91, 127, 255, 0.3);
+}
+
+/* 직원 추가 — 블루 포인트 */
+.pricing-card--paid {
+  border-color: rgba(0, 100, 255, 0.20);
+}
+.pricing-card--paid:hover {
+  border-color: rgba(0, 100, 255, 0.5);
+  box-shadow: 0 14px 36px rgba(0, 100, 255, 0.12);
+}
+
+.pricing-card__plan {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--near-black);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.pricing-card__target {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 22px;
+}
+.pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 28px;
+}
+.pricing-card__cycle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-500);
+  margin-right: 4px;
+}
+.pricing-card__price strong {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--near-black);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.pricing-card--paid .pricing-card__price strong {
+  color: #0064FF;
+}
+.pricing-card__unit {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--near-black);
+}
+.pricing-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pricing-card__features li {
+  position: relative;
+  padding-left: 26px;
+  font-size: 14px;
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+.pricing-card__features li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background-color: rgba(91, 127, 255, 0.12);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><path d='M4 9l3 3 6-7' fill='none' stroke='%235b7fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.pricing-card--paid .pricing-card__features li::before {
+  background-color: rgba(0, 100, 255, 0.12);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><path d='M4 9l3 3 6-7' fill='none' stroke='%230064FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+.main-pricing__note {
+  margin: 40px auto 0;
+  max-width: 640px;
+  font-size: 14px;
+  color: var(--gray-500);
+  line-height: 1.7;
+}
+.main-pricing__note strong {
+  color: var(--near-black);
+}
+
+/* ─── 모바일 / 태블릿 반응형 ──────────────────────────────────── */
+@media (max-width: 720px) {
+  .main-desktop-bullets {
+    margin-top: 36px;
+    gap: 10px;
+  }
+  .main-desktop-bullets li {
+    padding: 14px 16px;
+    font-size: 14px;
+    gap: 12px;
+  }
+  .main-desktop-download {
+    margin-top: 32px;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    gap: 10px;
+  }
+  .btn-platform {
+    justify-content: center;
+    padding: 14px 22px;
+    font-size: 14px;
+  }
+  .main-pricing {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 44px;
+    max-width: 420px;
+  }
+  .pricing-card {
+    padding: 28px 24px 24px;
+  }
+  .pricing-card__price strong {
+    font-size: 36px;
+  }
+  .main-pricing__note {
+    font-size: 13px;
+    margin-top: 28px;
+  }
+}
