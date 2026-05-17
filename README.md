@@ -30,7 +30,6 @@
 
 | 파일 | 용도 |
 |---|---|
-| `products.html` | 데스크톱 PRO 요금제 |
 | `pay.html`, `pay-success.html`, `pay-fail.html` | 결제 흐름 (PG: 토스페이먼츠 예정 — pay.html SDK 는 백엔드 전환과 함께 재작성 대기) |
 | `delete-account.html` | 계정 삭제 신청 폼 |
 | `terms.html` / `terms.md` | 이용약관 |

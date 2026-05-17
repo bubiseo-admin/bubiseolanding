@@ -215,23 +215,17 @@
     }
   }
 
-  const modalForm = document.querySelector('[data-modal-form]');
-  if (modalForm) {
-    modalForm.addEventListener('submit', (e) => {
+  // 한 페이지에 [data-notify-form] 이 여러 개일 수 있음 (예: 메인 페이지 = 모달 + CTA 섹션).
+  // 모달 안의 폼은 성공 시 1.2초 후 모달 자동 닫기, 섹션 안 폼은 폼 자체 success 표시만 유지.
+  document.querySelectorAll('[data-notify-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      submitSubscribeForm(modalForm, {
+      const inModal = !!form.closest('.modal');
+      submitSubscribeForm(form, inModal ? {
         onSuccess: () => setTimeout(() => closeModal(), 1200),
-      });
+      } : undefined);
     });
-  }
-
-  const notifyForm = document.querySelector('[data-notify-form]');
-  if (notifyForm) {
-    notifyForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      submitSubscribeForm(notifyForm);
-    });
-  }
+  });
 
   // ----- 7. 영상 — 작은 영상은 자동재생, 큰 영상(data-lazy-video)은 viewport 진입 시 -----
   document.querySelectorAll('video').forEach((v) => {
