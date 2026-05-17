@@ -1860,70 +1860,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   word-break: keep-all;
 }
 
-.main-hero__stores {
+/* 메인 히어로 안의 다운로드 그리드 — 위쪽 여백만 조정. 카드 자체 스타일은
+   .download-grid / .download-card (app.html 의 #download 섹션과 공유) 사용 */
+.main-hero__download {
   margin-top: 56px;
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.store-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 24px 14px 20px;
-  border-radius: 14px;
-  background: var(--near-black);
-  color: var(--white);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-}
-.store-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14); }
-.store-btn__icon { width: 26px; height: 26px; color: var(--white); flex-shrink: 0; }
-.store-btn__t {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.15;
-  text-align: left;
-}
-.store-btn__t small { font-size: 11px; opacity: 0.85; letter-spacing: -0.01em; }
-.store-btn__t strong { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
-
-.main-qr {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-left: 6px;
-}
-.main-qr__box {
-  width: 64px; height: 64px;
-  padding: 6px;
-  background: var(--white);
-  border: 1px solid var(--gray-100);
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
-}
-.main-qr__inner {
-  width: 100%; height: 100%;
-  border-radius: 8px;
-  background:
-    repeating-linear-gradient(45deg, var(--near-black) 0 4px, var(--white) 4px 8px),
-    var(--near-black);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-.main-qr__caption {
-  font-size: 11px;
-  color: var(--gray-500);
-  letter-spacing: -0.01em;
 }
 
 .main-hero__scroll {
@@ -2227,8 +2167,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   }
   .main-nav.is-open .main-nav__support { top: calc(100% + 220px); }
   .main-hero { padding: 110px 20px 64px; }
-  .main-hero__stores { gap: 10px; }
-  .main-qr { margin-left: 0; margin-top: 8px; }
+  .main-hero__download { margin-top: 36px; }
   .main-section { padding: 72px 20px; }
   .main-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .main-footer__cols { grid-template-columns: 1fr; gap: 20px; }
