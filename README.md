@@ -15,14 +15,15 @@
 
 순수 정적 HTML/CSS/JS — 빌드 도구 없음. main 브랜치 푸시 시 GitHub Pages 자동 배포.
 
-### 본체 (랜딩)
+### 본체 (이중 페이지 구조 — 2026-05-12 개편)
 
 | 파일 | 용도 |
 |---|---|
-| `index.html` | 랜딩 본체 (14개 섹션 + 모달) |
-| `style.css` | Apple Keynote 톤 디자인 시스템 |
-| `script.js` | 스크롤스파이·reveal·모달·폼·해시 라우팅 |
-| `testimonials.js` | 베타 76개 사무소 데이터 + 슬라이더 |
+| `index.html` (메인) | 회사 대표 페이지 — miso 스타일 풀스크린 미니멀 (5섹션 + 모달). `body.body--main` + `.main-*` 네임스페이스 |
+| `app.html` (제품 상세) | 구 랜딩 본체 — 17개 섹션 + 모달. 매물·계약·고객·일정 등 기능 상세 모두 보존 |
+| `style.css` | 두 페이지 공통 스타일. 1~1707줄 = app.html, 1710줄~ = `.main-*` 메인 페이지 전용 |
+| `script.js` | 3개 IIFE — app.html 인터랙션 / 베타 슬라이더 / 메인 페이지 nav. `getElementById` null 체크로 두 페이지 한 파일 공존 |
+| `testimonials.js` | 베타 76개 사무소 데이터 + 슬라이더 (app.html 전용) |
 | `DESIGN.md` | 디자인 시스템 / 리디자인 가이드 (단일 진입점) |
 
 ### 서브 페이지

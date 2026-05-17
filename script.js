@@ -344,3 +344,33 @@
   const counter = document.querySelector('[data-beta-count]');
   if (counter) counter.textContent = String(list.length);
 })();
+
+
+/* ============================================================
+   MAIN PAGE (index.html) — 미니멀 메인 페이지 nav 동작
+   ─────────────────────────────────────────────────────────────
+   - .main-nav 스크롤 시 is-scrolled 토글 (경계선 등장)
+   - 햄버거 클릭 시 .main-nav.is-open 토글
+   - .main-nav__menu a 클릭 시 메뉴 닫기
+   ============================================================ */
+(function () {
+  'use strict';
+  const mainNav = document.getElementById('mainNav');
+  if (!mainNav) return; // 제품 상세 (app.html) 에서는 동작 안 함
+
+  function onScroll() {
+    mainNav.classList.toggle('is-scrolled', window.scrollY > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const hamburger = mainNav.querySelector('[data-main-hamburger]');
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      mainNav.classList.toggle('is-open');
+    });
+    mainNav.querySelectorAll('.main-nav__menu a, .main-nav__support a').forEach((a) =>
+      a.addEventListener('click', () => mainNav.classList.remove('is-open'))
+    );
+  }
+})();
