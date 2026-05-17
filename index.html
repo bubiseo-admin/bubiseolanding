@@ -181,21 +181,13 @@
         <!-- 모바일 앱 — 전원 무료 -->
         <article class="pricing-platform pricing-platform--mobile">
           <header class="pricing-platform__head">
-            <div class="pricing-platform__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="5" y="2" width="14" height="20" rx="2.5"/>
-                <line x1="11.5" y1="18" x2="12.5" y2="18"/>
-              </svg>
-            </div>
-            <div class="pricing-platform__title">
-              <h3 class="pricing-platform__name">모바일 앱</h3>
-              <p class="pricing-platform__os">iOS · Android</p>
-            </div>
+            <h3 class="pricing-platform__name">모바일 앱</h3>
+            <p class="pricing-platform__os">iOS · Android</p>
           </header>
 
-          <div class="pricing-platform__price-block">
-            <strong class="pricing-platform__price-big">전원 무료</strong>
-            <span class="pricing-platform__price-sub">대표 · 직원 모두</span>
+          <div class="pricing-platform__price">
+            <strong class="pricing-platform__price-main">무료</strong>
+            <span class="pricing-platform__price-note">대표 · 직원 모두</span>
           </div>
 
           <ul class="pricing-platform__features">
@@ -206,33 +198,21 @@
           </ul>
         </article>
 
-        <!-- 데스크톱 부비서 PRO — 대표 무료, 직원 월 9,900원 -->
+        <!-- 데스크톱 부비서 PRO — 대표 무료 + 직원 추가 시 9,900원 -->
         <article class="pricing-platform pricing-platform--desktop">
           <header class="pricing-platform__head">
-            <div class="pricing-platform__icon pricing-platform__icon--blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="3" width="20" height="14" rx="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-            </div>
-            <div class="pricing-platform__title">
-              <h3 class="pricing-platform__name">데스크톱 부비서 PRO</h3>
-              <p class="pricing-platform__os">macOS · Windows</p>
-            </div>
+            <h3 class="pricing-platform__name">데스크톱 부비서 PRO</h3>
+            <p class="pricing-platform__os">macOS · Windows</p>
           </header>
 
-          <div class="pricing-roles">
-            <div class="pricing-role pricing-role--free">
-              <span class="pricing-role__label">대표 1인</span>
-              <span class="pricing-role__price">무료</span>
-            </div>
-            <div class="pricing-role pricing-role--paid">
-              <span class="pricing-role__label">직원 추가 (1명당)</span>
-              <span class="pricing-role__price">
-                <em>월</em><strong>9,900</strong><small>원</small>
-              </span>
-            </div>
+          <div class="pricing-platform__price">
+            <strong class="pricing-platform__price-main">무료</strong>
+            <span class="pricing-platform__price-note">대표 1인 기준</span>
+          </div>
+
+          <div class="pricing-platform__addon">
+            <span class="pricing-platform__addon-label">+ 직원 추가</span>
+            <span class="pricing-platform__addon-price">월 <strong>9,900</strong>원<small>/명</small></span>
           </div>
 
           <ul class="pricing-platform__features">
