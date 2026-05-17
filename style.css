@@ -1701,10 +1701,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .download-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
-/* 모바일 — 1열 */
+/* 모바일 — 2 x 2 유지 (카드 내부 여백·폰트 축소) */
 @media (max-width: 560px) {
-  .download-grid { grid-template-columns: 1fr; max-width: 360px; }
-  .download-card { padding: 28px 24px 24px; }
+  .download-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 100%; }
+  .download-card { padding: 20px 12px 16px; border-radius: 18px; }
+  .download-card__icon { width: 40px; height: 40px; margin-bottom: 12px; }
+  .download-card__platform { font-size: 17px; margin-bottom: 4px; }
+  .download-card__sub { font-size: 11px; margin-bottom: 12px; min-height: 14px; line-height: 1.35; }
+  .download-card__status { font-size: 10px; padding: 4px 9px; margin-bottom: 14px; }
+  .download-card__btn { padding: 10px 8px; font-size: 11px; border-radius: 10px; }
 }
 
 
@@ -1838,10 +1843,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin-bottom: 36px;
 }
 .main-hero__title {
-  font-size: clamp(40px, 8vw, 112px);
+  font-size: clamp(28px, 5.5vw, 68px);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.04em;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
   color: var(--near-black);
   word-break: keep-all;
   line-break: strict;
