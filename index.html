@@ -107,16 +107,22 @@
           </a>
         </article>
 
-        <article class="download-card download-card--coming">
+        <article class="download-card">
           <div class="download-card__icon" aria-hidden="true">
             <svg viewBox="0 0 448 512" fill="currentColor"><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>
           </div>
           <div class="download-card__platform">Windows</div>
           <div class="download-card__sub">Windows 10 (64-bit) 이상</div>
-          <div class="download-card__status">곧 만나요</div>
-          <button class="download-card__btn" type="button" disabled aria-label="Windows 다운로드 — 출시 예정">
-            Windows 출시 예정
-          </button>
+          <div class="download-card__status download-card__status--live">지금 다운로드</div>
+          <!-- 2026-05-18 — Windows 데스크톱 v0.1.16 NSIS 인스톨러 정식 다운로드 활성화.
+               버전 업그레이드 시 href 와 버튼 텍스트의 버전 번호 같이 갱신할 것.
+               ⚠️ 코드 사이닝 인증서 미보유 → 첫 실행 시 SmartScreen "PC 보호" 경고 가능.
+                  사용자는 "추가 정보" → "실행" 클릭해서 진행. -->
+          <a class="download-card__btn download-card__btn--live"
+             href="https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/v0.1.16/Bubiseo-Setup-0.1.16.exe"
+             aria-label="Windows 부비서 데스크톱 v0.1.16 다운로드">
+            Windows 다운로드 (v0.1.16)
+          </a>
         </article>
 
       </div>
