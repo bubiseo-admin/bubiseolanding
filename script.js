@@ -227,6 +227,54 @@
     });
   });
 
+  // ----- 6-2. 추가 기능 요청 (POST /landing/feature-request) -----
+  // 2026-05-19 — bubiseo.com #products 섹션 폼. Slack 알림은 백엔드에서 발송.
+  const FEATURE_REQUEST_ENDPOINT = 'https://api.bubiseo.com/landing/feature-request';
+  document.querySelectorAll('[data-feature-request-form]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const businessName = (form.querySelector('input[name="businessName"]')?.value || '').trim();
+      const contact = (form.querySelector('input[name="contact"]')?.value || '').trim();
+      const title = (form.querySelector('input[name="title"]')?.value || '').trim();
+      const body = (form.querySelector('textarea[name="body"]')?.value || '').trim();
+      if (!businessName || !contact || !title || !body) return;
+
+      const btn = form.querySelector('button[type="submit"]');
+      const original = btn ? btn.innerHTML : '';
+      setFormDisabled(form, true);
+      if (btn) {
+        btn.innerHTML = '전송 중…';
+        btn.style.opacity = '0.7';
+      }
+
+      try {
+        const res = await fetch(FEATURE_REQUEST_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ businessName, contact, title, body }),
+        });
+        if (!res.ok) {
+          let msg = '요청 전송 중 오류가 발생했어요';
+          try {
+            const data = await res.json();
+            if (data && (data.message || data.error)) msg = data.message || data.error;
+          } catch (_) {}
+          throw new Error(msg);
+        }
+        // 성공 — 폼 자리에 성공 메시지만 노출 (CSS .is-success)
+        form.classList.add('is-success');
+        form.querySelectorAll('input, textarea, button').forEach((el) => { el.value = ''; });
+      } catch (err) {
+        setFormDisabled(form, false);
+        if (btn) {
+          btn.innerHTML = original || '다시 시도';
+          btn.style.opacity = '';
+        }
+        window.alert(err && err.message ? err.message : '네트워크 오류 — 잠시 후 다시 시도해주세요.');
+      }
+    });
+  });
+
   // ----- 7. 영상 — 작은 영상은 자동재생, 큰 영상(data-lazy-video)은 viewport 진입 시 -----
   document.querySelectorAll('video').forEach((v) => {
     v.muted = true;
