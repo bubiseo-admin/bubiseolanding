@@ -1703,6 +1703,26 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: var(--gray-500);
   text-align: center;
 }
+/* 2026-05-18 — Windows SmartScreen 안내 페이지 진입 힌트 (다운로드 그리드 직후). */
+.hero-install-hint {
+  margin: 22px auto 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.7;
+}
+.hero-install-hint__link {
+  color: var(--brand);
+  font-weight: 700;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  margin-left: 4px;
+  transition: opacity 0.2s ease;
+}
+.hero-install-hint__link:hover { opacity: 0.7; }
+@media (max-width: 640px) {
+  .hero-install-hint { font-size: 12px; }
+}
 .download-note__link {
   color: var(--brand);
   font-weight: 600;
