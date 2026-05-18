@@ -1654,8 +1654,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin-bottom: 22px;
   letter-spacing: 0.02em;
 }
+/* 2026-05-18 — 다운로드 활성 상태 (macOS) — 초록 톤 강조 */
+.download-card__status--live {
+  color: #0a8f5d;
+  background: rgba(0, 200, 150, 0.12);
+}
 
 .download-card__btn {
+  display: inline-block;
   width: 100%;
   padding: 13px 16px;
   border-radius: 14px;
@@ -1666,6 +1672,9 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   border: 1px solid var(--gray-100);
   cursor: not-allowed;
   letter-spacing: -0.01em;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
   transition: background 0.3s ease;
 }
 .download-card__btn:not(:disabled) {
@@ -1674,9 +1683,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   border-color: transparent;
   cursor: pointer;
 }
-.download-card__btn:not(:disabled):hover {
+/* 2026-05-18 — <a> 태그용 활성 변형 (HTML 의 :not(:disabled) 셀렉터가 <a> 에는 안 먹힘) */
+.download-card__btn--live {
+  background: var(--grad-violet);
+  color: var(--white);
+  border-color: transparent;
+  cursor: pointer;
+}
+.download-card__btn:not(:disabled):hover,
+.download-card__btn--live:hover {
   transform: scale(1.02);
   box-shadow: 0 8px 24px -8px rgba(91, 127, 255, 0.5);
+  color: var(--white);
 }
 
 .download-note {
