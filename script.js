@@ -351,7 +351,9 @@
         if (!data || !Array.isArray(data.slots)) throw new Error('형식 오류');
         grid.innerHTML = data.slots.map(renderSlot).join('');
         if (updatedEl) {
-          updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · 최근 ${data.periodDays}일 누적`;
+          // 2026-05-19 — basis: 'cumulative' (출시 이후 누적). 어드민 AdminAdStatsScreen 과 동일 산출.
+          const basisLabel = data.basis === 'cumulative' ? '출시 이후 누적' : (data.periodDays ? `최근 ${data.periodDays}일 누적` : '누적');
+          updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · ${basisLabel}`;
         }
       })
       .catch(() => {
