@@ -610,7 +610,7 @@
           if (promoEl) {
             if (mode === 'C' && data.betaPromo) {
               promoEl.hidden = false;
-              promoEl.innerHTML = `🎁 <strong>베타 광고주 모집</strong> · ${data.betaPromo.months}개월 무료 (회원 늘면 정식가 전환)`;
+              promoEl.innerHTML = `🎁 <strong>베타 광고주 모집</strong> · ${data.betaPromo.months}개월 무료 · 정식가 전환 시 알려드립니다`;
             } else if (mode === 'B' && data.guaranteedFloor) {
               promoEl.hidden = false;
               promoEl.innerHTML = `🚀 <strong>런칭 보장가</strong> · 활성 회원 ${fmtKrw(data.guaranteedFloor)}명 기준 단가 적용`;
