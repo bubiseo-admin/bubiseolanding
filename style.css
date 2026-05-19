@@ -4036,16 +4036,11 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
                 호버 시 팝오버 잠시 노출.
    ================================================================= */
 
-/* v3 슬롯 카드 (텍스트만) — 4 column grid (2026-05-19 대시보드 이미지/동영상 분리로 4개) */
+/* v3 슬롯 카드 (텍스트만) — 3 column grid (대시보드 동영상은 나중에 추가, 현재 3슬롯) */
 .adq__slots-grid-v3 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-@media (max-width: 1180px) {
-  .adq__slots-grid-v3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 .adq__slot-v3 {
   position: relative;
@@ -4226,10 +4221,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     drop-shadow(0 12px 22px rgba(15, 23, 42, 0.12));
 }
 
-/* :has() — 어떤 슬롯이 hover / checked 일 때 해당 이미지를 등장시킴 */
+/* :has() — 어떤 슬롯이 hover / checked 일 때 해당 이미지를 등장시킴
+   2026-05-19 사용자 명시: DASHBOARD → DASHBOARD_IMAGE 로 value 변경 매칭.
+   (DASHBOARD_VIDEO 는 나중에 추가 — 현재 미사용) */
 @media (hover: hover) {
   .adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img[data-for="HOME_POPUP"],
-  .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD"]) .adq__shared-img[data-for="DASHBOARD"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_IMAGE"]) .adq__shared-img[data-for="DASHBOARD_IMAGE"],
   .adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img[data-for="PROPERTY_LIST"] {
     opacity: 1;
     visibility: visible;
@@ -4242,7 +4239,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   }
 }
 .adq__section--slots:has(input[value="HOME_POPUP"]:checked) .adq__shared-img[data-for="HOME_POPUP"],
-.adq__section--slots:has(input[value="DASHBOARD"]:checked) .adq__shared-img[data-for="DASHBOARD"],
+.adq__section--slots:has(input[value="DASHBOARD_IMAGE"]:checked) .adq__shared-img[data-for="DASHBOARD_IMAGE"],
 .adq__section--slots:has(input[value="PROPERTY_LIST"]:checked) .adq__shared-img[data-for="PROPERTY_LIST"] {
   opacity: 1;
   visibility: visible;
@@ -4258,11 +4255,9 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__section--slots:has(input:checked) .adq__shared-hint {
   opacity: 0;
 }
-/* hover 가 selected 보다 우선: hover 중인 슬롯이 있으면 selected 이미지 가려야 함.
-   :has() 가 둘 다 매칭하면 우선순위는 같음 → 시각적 충돌은 hover 가 무조건 보이도록
-   `hover image` 의 z-index 를 살짝 올려 처리 (둘이 다른 슬롯일 때만 의미). */
+/* hover 가 selected 보다 우선 */
 .adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img:not([data-for="HOME_POPUP"]),
-.adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD"]) .adq__shared-img:not([data-for="DASHBOARD"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_IMAGE"]) .adq__shared-img:not([data-for="DASHBOARD_IMAGE"]),
 .adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img:not([data-for="PROPERTY_LIST"]) {
   opacity: 0 !important;
   visibility: hidden !important;
@@ -4547,13 +4542,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 .adq__notice-grid {
   display: grid;
-  /* 2026-05-19 사용자 명시: 대시보드 이미지/동영상 분리 → 4 슬롯 */
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  /* 2026-05-19 대시보드 동영상은 나중에 추가 — 현재 3슬롯 */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   margin-bottom: 14px;
-}
-@media (max-width: 1180px) {
-  .adq__notice-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .adq__stat {

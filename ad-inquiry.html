@@ -98,10 +98,9 @@
       </header>
 
       <div class="adq__notice-grid" data-ad-stats-grid>
-        <!-- 로딩 placeholder (JS 가 fetch 후 교체) — 4슬롯: 홈팝업/대시보드(이미지)/대시보드(동영상)/매물목록 -->
+        <!-- 로딩 placeholder — 3슬롯: 홈팝업/대시보드(이미지)/매물목록 · 대시보드(동영상) 임시 제거 -->
         <div class="adq__stat adq__stat--loading"><span>홈 팝업</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>대시보드 (이미지)</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>대시보드 (동영상)</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>매물 목록</span><em>불러오는 중…</em></div>
       </div>
 
@@ -153,26 +152,13 @@
             </span>
           </label>
 
-          <!-- 3) DASHBOARD_VIDEO -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="DASHBOARD_VIDEO" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">03</span>
-              <span class="adq__slot-name">대시보드 배너 (동영상) 🎬</span>
-              <span class="adq__slot-size">1500 × 300 · 약 5.5초</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">홈 화면 가로 띠 동영상</span>
-                <span class="adq__slot-desc-line">시선 집중 효과 ↑ · 단가 4,000원/인</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
+          <!-- 2026-05-19 사용자 명시: 대시보드(동영상) 슬롯 나중에 추가 — 임시 제거 -->
 
-          <!-- 4) PROPERTY_LIST -->
+          <!-- 3) PROPERTY_LIST -->
           <label class="adq__slot-v3">
             <input type="radio" name="adType" value="PROPERTY_LIST" required />
             <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">04</span>
+              <span class="adq__slot-num">03</span>
               <span class="adq__slot-name">매물 목록</span>
               <span class="adq__slot-size">1080 × 1080</span>
               <span class="adq__slot-desc">
@@ -197,9 +183,6 @@
           <img class="adq__shared-img" data-for="DASHBOARD_IMAGE"
                src="assets/ad-preview-dashboard.jpg"
                alt="대시보드 배너 이미지 광고 실제 노출 미리보기" loading="lazy" />
-          <img class="adq__shared-img" data-for="DASHBOARD_VIDEO"
-               src="assets/ad-preview-dashboard.jpg"
-               alt="대시보드 배너 동영상 광고 실제 노출 미리보기" loading="lazy" />
           <img class="adq__shared-img" data-for="PROPERTY_LIST"
                src="assets/ad-preview-list.jpg"
                alt="매물 목록 광고 실제 노출 미리보기" loading="lazy" />
