@@ -2857,8 +2857,9 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   display: flex;
   flex-direction: column;
 }
-/* fieldset 기본 padding 제거 (.adq__section 이 자체 패딩 가짐) */
-.adq__form fieldset { margin: 0; min-width: 0; }
+/* fieldset 기본 padding 제거 (.adq__section 이 자체 패딩 가짐).
+   margin 은 손대지 않음 — .adq__section { margin-bottom } 가 STEP 간격을 결정. */
+.adq__form fieldset { min-width: 0; }
 .adq__form legend { padding: 0; }
 .adq__section--inputs > * + * { margin-top: 18px; }
 
@@ -2989,7 +2990,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__actions {
   display: flex;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: 40px;       /* STEP 2 카드와 버튼 사이 여백 */
+  margin-bottom: 24px;    /* 버튼 ↔ 안내글 사이 여백 */
 }
 .adq__submit {
   display: inline-flex;
@@ -3015,7 +3017,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-size: 12px;
   color: var(--gray-500);
   line-height: 1.55;
-  margin: 0;
+  margin: 16px 0 0;       /* 버튼과의 추가 간격 (위 .adq__actions margin-bottom 과 합산) */
 }
 .adq__legal a { color: var(--brand); text-decoration: underline; }
 
