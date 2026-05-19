@@ -2849,13 +2849,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: var(--gray-500);
   line-height: 1.6;
   margin: 0 auto;
-  max-width: 560px;
-  /* 한글 단어 중간 끊김 방지 — "회신드 / 립니다" 같은 분리 방지.
-     text-wrap: pretty 는 실험적 속성으로 일부 환경에서 한글 어절을 끊는 사례가 있어 제거.
-     !important 로 어떤 override 도 차단. */
+  max-width: 100%;
   word-break: keep-all !important;
   line-break: strict !important;
   overflow-wrap: normal !important;
+}
+/* 각 줄을 명시 block + nowrap → 데스크톱·모바일 모두 줄바뀜 발생 0 보장 */
+.adq__sub-line {
+  display: block;
+  white-space: nowrap;
 }
 
 /* ─── Form 컨테이너 (v2: 섹션들이 각자 카드) ──────────────── */
@@ -4092,6 +4094,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: -0.01em;
   margin-top: 4px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+/* 슬롯 카드 desc 내부 각 줄 — block + nowrap (줄바뀜 절대 방지) */
+.adq__slot-card-v3 .adq__slot-desc-line {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .adq__slot-check-v3 {
   display: inline-flex;
