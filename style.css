@@ -4478,3 +4478,185 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .prd__num { font-size: 11px; padding: 4px 10px; }
   .prd__sub-line { white-space: normal; }
 }
+
+
+/* =================================================================
+   AD STATS NOTICE — /ad-inquiry 상단 공지사항 (2026-05-19)
+   24h 갱신, 최근 30일 누적 광고 효과 통계 (impressions · clicks · CTR).
+   ================================================================= */
+
+.adq__notice {
+  margin-bottom: 40px;
+  padding: 28px clamp(20px, 3.5vw, 36px);
+  background: linear-gradient(135deg, #fff7ed, #fef3c7);
+  border: 1px solid #fde68a;
+  border-radius: 22px;
+  box-shadow: 0 10px 28px -16px rgba(245, 158, 11, 0.20);
+}
+.adq__notice-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.adq__notice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--white);
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  border: 1px solid #fcd34d;
+  white-space: nowrap;
+}
+.adq__notice-sub {
+  font-size: 13px;
+  color: #92400e;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+  min-width: 240px;
+}
+.adq__notice-sub strong { font-weight: 800; color: #78350f; }
+
+.adq__notice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.adq__stat {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(252, 211, 77, 0.6);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.adq__stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -14px rgba(146, 64, 14, 0.25);
+}
+.adq__stat-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.adq__stat-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #78350f;
+  letter-spacing: -0.02em;
+}
+.adq__stat-size {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b45309;
+  letter-spacing: 0.04em;
+  font-feature-settings: 'tnum';
+}
+.adq__stat-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.adq__stat-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+}
+.adq__stat-metric-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.adq__stat-metric-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: #78350f;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'tnum';
+}
+.adq__stat-metric-value--ctr {
+  background: var(--grad-violet);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* "수집 중" 상태 (impressions < 100) */
+.adq__stat--insufficient .adq__stat-metrics {
+  opacity: 0.55;
+}
+.adq__stat-insufficient {
+  font-size: 11px;
+  color: #b45309;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.01em;
+  padding: 4px 8px;
+  background: rgba(252, 211, 77, 0.35);
+  border-radius: 6px;
+  margin-top: -2px;
+}
+
+/* loading placeholder */
+.adq__stat--loading {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px dashed rgba(252, 211, 77, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+  text-align: center;
+}
+.adq__stat--loading span {
+  font-size: 13px;
+  font-weight: 800;
+  color: #78350f;
+}
+.adq__stat--loading em {
+  font-style: normal;
+  font-size: 12px;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.adq__notice-foot {
+  font-size: 11px;
+  color: #b45309;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-align: right;
+  font-feature-settings: 'tnum';
+}
+
+/* 반응형 */
+@media (max-width: 720px) {
+  .adq__notice { padding: 22px 18px; margin-bottom: 28px; }
+  .adq__notice-grid { grid-template-columns: 1fr; gap: 10px; }
+  .adq__notice-head { gap: 8px; }
+  .adq__notice-sub { font-size: 12px; min-width: 0; flex: 1 1 100%; }
+}

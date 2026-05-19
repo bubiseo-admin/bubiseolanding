@@ -292,6 +292,75 @@
     });
   });
 
+  // ----- 6-2-c. 광고 효과 통계 fetch (24h 캐시 — /ad-inquiry 페이지 공지사항) -----
+  // 2026-05-19 — 백엔드 GET /landing/ad-stats 호출 → [data-ad-stats-grid] 채움.
+  //   응답 자체에 24h Cache-Control 헤더가 붙어 브라우저·CDN 캐시. 페이지 로드 시 한 번 호출.
+  const adStatsContainer = document.querySelector('[data-ad-stats]');
+  if (adStatsContainer) {
+    const grid = adStatsContainer.querySelector('[data-ad-stats-grid]');
+    const updatedEl = adStatsContainer.querySelector('[data-ad-stats-updated]');
+
+    const fmtNumber = (n) => {
+      if (n >= 10000) return (n / 10000).toFixed(n >= 100000 ? 0 : 1) + '만';
+      if (n >= 1000) return n.toLocaleString();
+      return String(n);
+    };
+    const fmtUpdatedAt = (iso) => {
+      try {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '—';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const h = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${y}.${m}.${day} ${h}:${min} KST`;
+      } catch (_) { return '—'; }
+    };
+    const renderSlot = (slot) => {
+      const insufficient = slot.insufficient;
+      return `
+        <div class="adq__stat ${insufficient ? 'adq__stat--insufficient' : ''}">
+          <div class="adq__stat-head">
+            <span class="adq__stat-name">${slot.label}</span>
+            <span class="adq__stat-size">${slot.size}</span>
+          </div>
+          <div class="adq__stat-metrics">
+            <div class="adq__stat-metric">
+              <span class="adq__stat-metric-label">노출</span>
+              <span class="adq__stat-metric-value">${fmtNumber(slot.impressions)}</span>
+            </div>
+            <div class="adq__stat-metric">
+              <span class="adq__stat-metric-label">클릭</span>
+              <span class="adq__stat-metric-value">${fmtNumber(slot.clicks)}</span>
+            </div>
+            <div class="adq__stat-metric">
+              <span class="adq__stat-metric-label">CTR</span>
+              <span class="adq__stat-metric-value adq__stat-metric-value--ctr">${slot.ctr.toFixed(2)}%</span>
+            </div>
+          </div>
+          ${insufficient ? '<div class="adq__stat-insufficient">데이터 수집 중 — 출시 후 본격 공개</div>' : ''}
+        </div>
+      `;
+    };
+
+    fetch('https://api.bubiseo.com/landing/ad-stats', { credentials: 'omit' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!grid) return;
+        if (!data || !Array.isArray(data.slots)) throw new Error('형식 오류');
+        grid.innerHTML = data.slots.map(renderSlot).join('');
+        if (updatedEl) {
+          updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · 최근 ${data.periodDays}일 누적`;
+        }
+      })
+      .catch(() => {
+        if (grid) {
+          grid.innerHTML = '<div class="adq__stat--loading" style="grid-column: 1 / -1;"><span>통계 불러오기 실패</span><em>잠시 후 새로고침해주세요</em></div>';
+        }
+      });
+  }
+
   // ----- 6-3-a. 광고 슬롯 radio toggle 동작 -----
   // 2026-05-19 — 사용자 명시: 선택된 슬롯 재클릭 시 선택 취소.
   //   기본 radio 는 한 번 선택되면 같은 그룹 내 다른 항목 선택 전까지 해제 불가.
