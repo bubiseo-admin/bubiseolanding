@@ -4768,3 +4768,248 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq-gate__box { padding: 32px 24px 24px; border-radius: 20px; }
   .adq-gate__title { font-size: 20px; }
 }
+
+/* =================================================================
+   AD-INQUIRY 우측 사이드바 — 활성 회원수 + 슬롯별 단가 + 결제 정책
+   ─────────────────────────────────────────────────────────────────
+   2026-05-19 사용자 명시 — 부비서 = 초정확 타겟 매체.
+   1인당 월 단가 × 활성 회원수 = 슬롯 가격 모델.
+   ================================================================= */
+
+/* 2칼럼 레이아웃 — desktop 980px 이상에서 사이드바 우측 sticky */
+.adq__body {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.adq__main { min-width: 0; }
+
+@media (min-width: 980px) {
+  .adq__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 56px;
+    align-items: start;
+  }
+  .adq__sidebar {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+  }
+}
+
+@media (max-width: 979px) {
+  .adq__sidebar {
+    margin-top: 48px;
+  }
+}
+
+/* ─── 사이드바 공통 ──────────────────────────────────────── */
+.adq__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.adq__sidebar-card,
+.adq__sidebar-prices,
+.adq__sidebar-policy {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px 22px;
+  border: 1px solid #ECEEF1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* ─── 활성 회원수 카드 (강조) ─────────────────────────────── */
+.adq__sidebar-card--users {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EEF6FF 100%);
+  border-color: rgba(97, 85, 245, 0.18);
+  text-align: center;
+  padding: 28px 22px;
+}
+.adq__sidebar-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6E7680;
+  letter-spacing: 0.2px;
+  margin-bottom: 12px;
+}
+.adq__sidebar-users {
+  display: inline-block;
+  font-size: 48px;
+  font-weight: 900;
+  color: #191F28;
+  letter-spacing: -2px;
+  font-family: 'Pretendard', sans-serif;
+  font-feature-settings: 'tnum';
+  vertical-align: middle;
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.adq__sidebar-unit {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4E5968;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.adq__sidebar-sub {
+  display: block;
+  font-size: 12px;
+  color: #8B95A1;
+  margin-top: 8px;
+  font-weight: 500;
+}
+.adq__sidebar-meta {
+  display: block;
+  font-size: 11px;
+  color: #B0B8C1;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(97, 85, 245, 0.10);
+}
+.adq__sidebar-meta em {
+  font-style: normal;
+  font-weight: 700;
+  color: #6E7680;
+  font-feature-settings: 'tnum';
+}
+
+/* ─── 슬롯별 단가 카드 (3개) ─────────────────────────────── */
+.adq__sidebar-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 0;
+}
+.adq__sidebar-price {
+  padding: 18px 22px;
+  border-bottom: 1px solid #F2F4F6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.adq__sidebar-price:last-child { border-bottom: 0; }
+.adq__sidebar-price--loading {
+  text-align: center;
+  color: #B0B8C1;
+  font-size: 13px;
+  padding: 32px 0;
+}
+.adq__sidebar-price-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #191F28;
+  letter-spacing: -0.3px;
+}
+.adq__sidebar-price-size {
+  font-size: 11px;
+  color: #9CA3A8;
+  font-feature-settings: 'tnum';
+}
+.adq__sidebar-price-desc {
+  font-size: 11px;
+  color: #6E7680;
+  margin-top: 2px;
+  line-height: 1.45;
+}
+.adq__sidebar-price-formula {
+  font-size: 11px;
+  color: #9CA3A8;
+  margin-top: 6px;
+  font-feature-settings: 'tnum';
+}
+.adq__sidebar-price-formula strong {
+  font-weight: 600;
+  color: #6E7680;
+}
+.adq__sidebar-price-total {
+  font-size: 22px;
+  font-weight: 800;
+  color: #191F28;
+  margin-top: 6px;
+  letter-spacing: -0.5px;
+  font-feature-settings: 'tnum';
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.adq__sidebar-price-total small {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8B95A1;
+}
+.adq__sidebar-price-total .adq__sidebar-price-zero {
+  font-size: 13px;
+  font-weight: 600;
+  color: #B0B8C1;
+}
+
+/* ─── 결제 정책 박스 ─────────────────────────────────────── */
+.adq__sidebar-policy {
+  background: #FAFBFC;
+  border-color: #E5E8EC;
+}
+.adq__sidebar-policy-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #191F28;
+  margin: 0 0 10px;
+  letter-spacing: -0.2px;
+}
+.adq__sidebar-policy-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.adq__sidebar-policy-list li {
+  font-size: 12px;
+  color: #4E5968;
+  line-height: 1.55;
+  padding-left: 14px;
+  position: relative;
+}
+.adq__sidebar-policy-list li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  top: -2px;
+  font-weight: 900;
+  color: #6155F5;
+}
+.adq__sidebar-policy-list strong {
+  color: #191F28;
+  font-weight: 700;
+}
+.adq__sidebar-policy-foot {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #ECEEF1;
+  font-size: 11px;
+  color: #9CA3A8;
+  font-feature-settings: 'tnum';
+}
+.adq__sidebar-policy-foot span {
+  font-weight: 700;
+  color: #6E7680;
+}
+
+/* 모바일 더 컴팩트 */
+@media (max-width: 480px) {
+  .adq__sidebar-card,
+  .adq__sidebar-prices,
+  .adq__sidebar-policy {
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+  .adq__sidebar-users { font-size: 40px; }
+  .adq__sidebar-price-total { font-size: 20px; }
+}

@@ -469,6 +469,75 @@
       });
   }
 
+  // ----- 6-2-e. 광고 단가 사이드바 fetch (활성 회원수 × 1인당 단가) -----
+  // 2026-05-19 사용자 명시 — /ad-inquiry 우측 사이드바에 활성 회원수 + 슬롯별 월 단가 + 결제 정책.
+  //   매월 1일 KST 자정에 백엔드 캐시 자동 갱신.
+  const adPricingContainer = document.querySelector('[data-ad-pricing]');
+  if (adPricingContainer) {
+    const activeEl = adPricingContainer.querySelector('[data-ad-pricing-active]');
+    const totalEl = adPricingContainer.querySelector('[data-ad-pricing-total]');
+    const monthEl = adPricingContainer.querySelector('[data-ad-pricing-month]');
+    const nextEl = adPricingContainer.querySelector('[data-ad-pricing-next]');
+    const pricesEl = adPricingContainer.querySelector('[data-ad-pricing-prices]');
+
+    const fmtKrw = (n) => (n || 0).toLocaleString('ko-KR');
+    const fmtRenewal = (iso) => {
+      try {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '—';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}.${m}.${day}`;
+      } catch (_) { return '—'; }
+    };
+    const renderPrice = (s, activeUsers) => {
+      const isZero = !s.monthlyKrw;
+      return `
+        <div class="adq__sidebar-price">
+          <span class="adq__sidebar-price-label">${s.label}</span>
+          <span class="adq__sidebar-price-size">${s.size}</span>
+          <span class="adq__sidebar-price-desc">${s.description || ''}</span>
+          <span class="adq__sidebar-price-formula">
+            <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(activeUsers)}명
+          </span>
+          <span class="adq__sidebar-price-total">
+            ${isZero
+              ? '<span class="adq__sidebar-price-zero">활성 회원 0명 — 단가 산정 대기</span>'
+              : `${fmtKrw(s.monthlyKrw)}<small>원/월</small>`
+            }
+          </span>
+        </div>
+      `;
+    };
+
+    fetch('https://api.bubiseo.com/landing/ad-pricing', {
+      credentials: 'omit',
+      headers: adqGateAuthHeader(),
+    })
+      .then((r) => {
+        if (r.status === 401) { adqGateHandle401(); throw new Error('GATE_EXPIRED'); }
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then((data) => {
+        if (!data || typeof data.activeUsers !== 'number') throw new Error('형식 오류');
+        if (activeEl) activeEl.textContent = fmtKrw(data.activeUsers);
+        if (totalEl) totalEl.textContent = fmtKrw(data.totalRegistered);
+        if (monthEl) monthEl.textContent = data.pricingMonth || '—';
+        if (nextEl) nextEl.textContent = fmtRenewal(data.nextRenewalAt);
+        if (pricesEl && Array.isArray(data.slots)) {
+          pricesEl.innerHTML = data.slots.map((s) => renderPrice(s, data.activeUsers)).join('');
+        }
+      })
+      .catch((err) => {
+        if (err && err.message === 'GATE_EXPIRED') return;
+        if (pricesEl) {
+          pricesEl.innerHTML = '<div class="adq__sidebar-price adq__sidebar-price--loading">단가 정보 불러오기 실패</div>';
+        }
+      });
+  }
+
   // ----- 6-3-a. 광고 슬롯 radio toggle 동작 -----
   // 2026-05-19 — 사용자 명시: 선택된 슬롯 재클릭 시 선택 취소.
   //   기본 radio 는 한 번 선택되면 같은 그룹 내 다른 항목 선택 전까지 해제 불가.

@@ -79,6 +79,10 @@
       </p>
     </section>
 
+    <!-- ═══ 2026-05-19 — 본문 + 우측 사이드바 2칼럼 레이아웃 ═══ -->
+    <div class="adq__body">
+    <div class="adq__main">
+
     <!-- ═══ 공지사항 — 광고 효과 통계 (24h 갱신, 출시 이후 누적) ═══ -->
     <section class="adq__notice" data-ad-stats aria-live="polite">
       <header class="adq__notice-head">
@@ -217,6 +221,50 @@
         부비서 <a href="privacy.html">개인정보처리방침</a> 에 따라 안전하게 보관됩니다.
       </p>
     </form>
+
+    </div><!-- /.adq__main -->
+
+    <!-- ═══ 우측 사이드바 — 활성 회원수 + 슬롯별 월 단가 + 결제 정책 ═══ -->
+    <!--
+      2026-05-19 사용자 명시:
+        · 부비서 = 초정확 타겟 매체 → 1인당 월 단가 × 활성 회원수 = 슬롯 가격
+        · 매물 목록 3,500원 / 대시보드 3,000원 / 로그인 팝업 2,500원 (1인당/월)
+        · 패키지 X — 슬롯 단독 계약
+        · 모든 광고 매월 1일 자동 재결제
+        · 1회 계약 최장 3개월
+        · 3개월 만료 후 재계약 시 그 시점 활성 회원수 기준 재산정
+    -->
+    <aside class="adq__sidebar" data-ad-pricing>
+      <!-- 활성 회원수 카드 -->
+      <div class="adq__sidebar-card adq__sidebar-card--users">
+        <span class="adq__sidebar-label">현재 부비서 활성 공인중개사</span>
+        <span class="adq__sidebar-users" data-ad-pricing-active>—</span>
+        <span class="adq__sidebar-unit">명</span>
+        <span class="adq__sidebar-sub">최근 30일 활동 기준 (MAU)</span>
+        <span class="adq__sidebar-meta">누적 가입 <em data-ad-pricing-total>—</em> 명</span>
+      </div>
+
+      <!-- 슬롯별 단가 카드 (JS 가 렌더) -->
+      <div class="adq__sidebar-prices" data-ad-pricing-prices>
+        <div class="adq__sidebar-price adq__sidebar-price--loading">불러오는 중…</div>
+      </div>
+
+      <!-- 결제 정책 박스 -->
+      <div class="adq__sidebar-policy">
+        <h4 class="adq__sidebar-policy-title">📋 결제 정책</h4>
+        <ul class="adq__sidebar-policy-list">
+          <li>매월 <strong>1일 자동 재결제</strong> · 이번 달 단가 적용</li>
+          <li>1회 계약 <strong>최장 3개월</strong></li>
+          <li>3개월 만료 후 재계약 시 <strong>그 시점 활성 회원수 기준 재산정</strong></li>
+        </ul>
+        <p class="adq__sidebar-policy-foot">
+          <span data-ad-pricing-month>—</span> 단가 기준 ·
+          다음 갱신: <span data-ad-pricing-next>—</span>
+        </p>
+      </div>
+    </aside>
+
+    </div><!-- /.adq__body -->
 
   </main>
 
