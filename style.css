@@ -3432,10 +3432,28 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   border-radius: 24px;
   background: var(--white);
   padding: clamp(24px, 4vw, 40px) clamp(20px, 3.5vw, 36px);
-  margin-bottom: 56px;
+  margin-bottom: 120px;   /* STEP 1 ↔ STEP 2 명확히 분리 — 56px → 120px */
   box-shadow: 0 12px 36px -22px rgba(15, 23, 42, 0.10);
+  position: relative;
 }
 .adq__section + .adq__section { margin-top: 0; }
+
+/* STEP 1 → STEP 2 사이 시각 구분선 — 점점 흐려지는 보라 다이아몬드 */
+.adq__section--slots::after {
+  content: '';
+  position: absolute;
+  bottom: -64px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: var(--brand);
+  opacity: 0.4;
+  box-shadow:
+    0 22px 0 0 rgba(91, 127, 255, 0.25),
+    0 44px 0 0 rgba(91, 127, 255, 0.10);
+  pointer-events: none;
+}
 .adq__section-head {
   display: block;
   margin-bottom: 24px;
@@ -4157,13 +4175,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     transform 0.42s var(--ease-spring),
     visibility 0s linear 0.28s;
   pointer-events: none;
-  border-radius: 22px;
-  border: 8px solid #1f2937;
-  background: #1f2937;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  /* 2026-05-19 — 사용자 명시: 휴대폰 테두리 거의 없는 느낌. 두꺼운 8px frame 제거.
+     실선 1px(거의 안 보이는 회색) 만 남겨 모서리 살짝 강조. 라운드는 유지. */
+  border-radius: 28px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: transparent;
   filter:
-    drop-shadow(0 32px 60px rgba(15, 23, 42, 0.38))
-    drop-shadow(0 14px 24px rgba(15, 23, 42, 0.18));
+    drop-shadow(0 28px 50px rgba(15, 23, 42, 0.22))
+    drop-shadow(0 12px 22px rgba(15, 23, 42, 0.12));
 }
 
 /* :has() — 어떤 슬롯이 hover / checked 일 때 해당 이미지를 등장시킴 */
