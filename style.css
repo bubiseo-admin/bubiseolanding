@@ -2850,10 +2850,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   line-height: 1.6;
   margin: 0 auto;
   max-width: 560px;
-  /* 한글 단어 중간 끊김 방지 — "회신드 / 립니다" 같은 분리 방지. */
-  word-break: keep-all;
-  line-break: strict;
-  text-wrap: pretty;
+  /* 한글 단어 중간 끊김 방지 — "회신드 / 립니다" 같은 분리 방지.
+     text-wrap: pretty 는 실험적 속성으로 일부 환경에서 한글 어절을 끊는 사례가 있어 제거.
+     !important 로 어떤 override 도 차단. */
+  word-break: keep-all !important;
+  line-break: strict !important;
+  overflow-wrap: normal !important;
 }
 
 /* ─── Form 컨테이너 (v2: 섹션들이 각자 카드) ──────────────── */
