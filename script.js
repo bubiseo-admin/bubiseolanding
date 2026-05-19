@@ -510,8 +510,7 @@
   // === 광고 단가 사이드바 로더 (A/B/C 모드별 렌더) ===
   let loadAdPricing = function () { /* no-op fallback */ };
   if (adPricingContainer) {
-    const activeEl = adPricingContainer.querySelector('[data-ad-pricing-active]');
-    const totalEl = adPricingContainer.querySelector('[data-ad-pricing-total]');
+    const accountsEl = adPricingContainer.querySelector('[data-ad-pricing-accounts]');
     const reEl = adPricingContainer.querySelector('[data-ad-pricing-re]');
     const ownerEl = adPricingContainer.querySelector('[data-ad-pricing-owners]');
     const empEl = adPricingContainer.querySelector('[data-ad-pricing-employees]');
@@ -533,7 +532,7 @@
       } catch (_) { return '—'; }
     };
 
-    const renderPrice = (s, activeUsers, mode, guaranteedFloor) => {
+    const renderPrice = (s, accountCount, mode, guaranteedFloor) => {
       // 모드별 단가 카드 렌더 — 100% 실데이터.
       //   A: 정상가 그대로
       //   B: 보장 회원수 기준 (활성 N명 < 50 → 50명 기준으로 표시 + 라벨)
@@ -565,7 +564,7 @@
           <span class="adq__sidebar-price-size">${s.size}</span>
           <span class="adq__sidebar-price-desc">${s.description || ''}</span>
           <span class="adq__sidebar-price-formula">
-            <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(activeUsers)}명
+            <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
           </span>
           ${totalHtml}
         </div>
@@ -586,9 +585,8 @@
           return r.json();
         })
         .then((data) => {
-          if (!data || typeof data.activeUsers !== 'number') throw new Error('형식 오류');
-          if (activeEl) activeEl.textContent = fmtKrw(data.activeUsers);
-          if (totalEl) totalEl.textContent = fmtKrw(data.totalRegistered);
+          if (!data || typeof data.accountCount !== 'number') throw new Error('형식 오류');
+          if (accountsEl) accountsEl.textContent = fmtKrw(data.accountCount);
           if (reEl) reEl.textContent = fmtKrw(data.realEstateCount);
           if (ownerEl) ownerEl.textContent = fmtKrw(data.ownerCount);
           if (empEl) empEl.textContent = fmtKrw(data.employeeCount);
@@ -617,7 +615,7 @@
 
           if (pricesEl && Array.isArray(data.slots)) {
             pricesEl.innerHTML = data.slots
-              .map((s) => renderPrice(s, data.activeUsers, mode, data.guaranteedFloor))
+              .map((s) => renderPrice(s, data.accountCount, mode, data.guaranteedFloor))
               .join('');
           }
         })
