@@ -2998,11 +2998,11 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__actions {
   display: flex;
   justify-content: center;
-  margin-top: 20px;       /* STEP 2 카드와 버튼 사이 여백 — 사용자 명시: 절반 줄임 */
+  margin-top: 16px;       /* STEP 2 카드와 버튼 사이 여백 — 사용자 명시: 더 줄임 */
   margin-bottom: 24px;    /* 버튼 ↔ 안내글 사이 여백 */
 }
-/* STEP 2 (마지막 섹션) — 다음에 STEP 가 없으므로 큰 시각 분리 불필요. 버튼으로 자연 흐름. */
-.adq__section--inputs { margin-bottom: 60px; }   /* 기본 120px 의 절반 */
+/* STEP 2 (마지막 섹션) — 버튼까지 짧은 자연 흐름. */
+.adq__section--inputs { margin-bottom: 24px; }   /* 60px → 24px 으로 추가 축소 */
 .adq__submit {
   display: inline-flex;
   align-items: center;
