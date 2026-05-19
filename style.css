@@ -4022,11 +4022,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
                 호버 시 팝오버 잠시 노출.
    ================================================================= */
 
-/* v3 슬롯 카드 (텍스트만) — 3 column grid */
+/* v3 슬롯 카드 (텍스트만) — 4 column grid (2026-05-19 대시보드 이미지/동영상 분리로 4개) */
 .adq__slots-grid-v3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 1180px) {
+  .adq__slots-grid-v3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .adq__slot-v3 {
   position: relative;
