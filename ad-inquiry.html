@@ -59,44 +59,156 @@
     <!-- 폼 — submit 핸들러는 script.js 의 [data-ad-inquiry-form] 처리 -->
     <form class="adq__form" data-ad-inquiry-form novalidate>
 
-      <!-- 광고 슬롯 4종 (radio) -->
+      <!-- 광고 슬롯 4종 (radio) — 각 슬롯에 실제 앱 노출 미리보기 포함 -->
       <fieldset class="adq__slots">
-        <legend class="adq__legend">광고 슬롯 <span class="adq__req">*</span></legend>
+        <legend class="adq__legend">광고 슬롯 <span class="adq__req">*</span> <span class="adq__hint">(실제 앱 노출 미리보기 — 어떤 위치·크기로 보이는지 확인하세요)</span></legend>
         <div class="adq__slots-grid">
+
+          <!-- 1) HOME_POPUP — 로그인 직후 4:5 풀이미지 팝업 -->
           <label class="adq__slot">
             <input type="radio" name="adType" value="HOME_POPUP" required />
             <span class="adq__slot-inner">
-              <span class="adq__slot-icon">🏠</span>
-              <span class="adq__slot-name">홈 팝업</span>
-              <span class="adq__slot-size">1080 × 1350</span>
-              <span class="adq__slot-desc">앱 첫 진입 시 노출. 3:4 세로형</span>
+              <span class="adq__slot-head">
+                <span class="adq__slot-icon">🏠</span>
+                <span class="adq__slot-text">
+                  <span class="adq__slot-name">홈 팝업</span>
+                  <span class="adq__slot-size">1080 × 1350</span>
+                </span>
+              </span>
+
+              <!-- 미리보기: 폰 + 어두운 overlay + 중앙 4:5 팝업 + 하단 닫기바 -->
+              <span class="adq__preview" aria-hidden="true">
+                <span class="adq__phone adq__phone--popup">
+                  <span class="adq__phone-overlay"></span>
+                  <span class="adq__popup">
+                    <span class="adq__popup-image">광고 이미지<br/><small>1080 × 1350</small></span>
+                    <span class="adq__popup-footer">
+                      <span>오늘 하루 보지 않기</span>
+                      <span>닫기</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+
+              <span class="adq__slot-desc">앱 로그인 직후 한 번 노출 · 3:4 세로형 · 클릭률 가장 높음</span>
             </span>
           </label>
+
+          <!-- 2) DASHBOARD — 홈 상단 5:1 가로 띠 배너 -->
           <label class="adq__slot">
             <input type="radio" name="adType" value="DASHBOARD" required />
             <span class="adq__slot-inner">
-              <span class="adq__slot-icon">📊</span>
-              <span class="adq__slot-name">대시보드</span>
-              <span class="adq__slot-size">1500 × 300</span>
-              <span class="adq__slot-desc">홈 상단 가로 배너. 5:1 와이드</span>
+              <span class="adq__slot-head">
+                <span class="adq__slot-icon">📊</span>
+                <span class="adq__slot-text">
+                  <span class="adq__slot-name">대시보드</span>
+                  <span class="adq__slot-size">1500 × 300</span>
+                </span>
+              </span>
+
+              <span class="adq__preview" aria-hidden="true">
+                <span class="adq__phone adq__phone--dashboard">
+                  <span class="adq__phone-statusbar"></span>
+                  <span class="adq__phone-greeting">
+                    <span class="adq__phone-greet-lg"></span>
+                    <span class="adq__phone-greet-sm"></span>
+                  </span>
+                  <!-- 광고 띠 -->
+                  <span class="adq__strip">
+                    <span class="adq__strip-image">광고 이미지 1500×300</span>
+                    <span class="adq__strip-badge">광고</span>
+                  </span>
+                  <span class="adq__dash-card"></span>
+                  <span class="adq__dash-card"></span>
+                  <span class="adq__dash-card"></span>
+                </span>
+              </span>
+
+              <span class="adq__slot-desc">홈 상단 가로 배너 · 5:1 와이드 · 매일 사용자 진입 시 노출</span>
             </span>
           </label>
+
+          <!-- 3) PROPERTY_LIST — 매물 리스트 사이 네이티브 카드 -->
           <label class="adq__slot">
             <input type="radio" name="adType" value="PROPERTY_LIST" required />
             <span class="adq__slot-inner">
-              <span class="adq__slot-icon">🏘️</span>
-              <span class="adq__slot-name">매물 목록</span>
-              <span class="adq__slot-size">1080 × 1080</span>
-              <span class="adq__slot-desc">매물 리스트 사이 노출. 1:1 정사각</span>
+              <span class="adq__slot-head">
+                <span class="adq__slot-icon">🏘️</span>
+                <span class="adq__slot-text">
+                  <span class="adq__slot-name">매물 목록</span>
+                  <span class="adq__slot-size">1080 × 1080</span>
+                </span>
+              </span>
+
+              <span class="adq__preview" aria-hidden="true">
+                <span class="adq__phone adq__phone--list">
+                  <span class="adq__list-row">
+                    <span class="adq__list-text">
+                      <span class="adq__list-line adq__list-line--meta">매매 · 아파트</span>
+                      <span class="adq__list-line adq__list-line--addr"></span>
+                      <span class="adq__list-line adq__list-line--price"></span>
+                      <span class="adq__list-line adq__list-line--small"></span>
+                    </span>
+                    <span class="adq__list-thumb"></span>
+                  </span>
+                  <!-- 광고 행 (NativeListAd 스타일) -->
+                  <span class="adq__list-row adq__list-row--ad">
+                    <span class="adq__list-text">
+                      <span class="adq__list-line adq__list-line--ad-advertiser">광고주명</span>
+                      <span class="adq__list-line adq__list-line--ad-subtitle">부제 (보라 강조)</span>
+                      <span class="adq__list-line adq__list-line--ad-description">메인 강조 문구</span>
+                      <span class="adq__list-line adq__list-line--ad-body">본문 한 줄</span>
+                      <span class="adq__list-ad-brand">
+                        <span>브랜드명</span><span class="adq__list-ad-badge">AD</span>
+                      </span>
+                    </span>
+                    <span class="adq__list-thumb adq__list-thumb--ad">1080×1080</span>
+                  </span>
+                  <span class="adq__list-row">
+                    <span class="adq__list-text">
+                      <span class="adq__list-line adq__list-line--meta">전세 · 빌라</span>
+                      <span class="adq__list-line adq__list-line--addr"></span>
+                      <span class="adq__list-line adq__list-line--price"></span>
+                      <span class="adq__list-line adq__list-line--small"></span>
+                    </span>
+                    <span class="adq__list-thumb"></span>
+                  </span>
+                </span>
+              </span>
+
+              <span class="adq__slot-desc">매물 리스트 사이 자연스럽게 노출 · 1:1 정사각 · 매물 카드와 동일 레이아웃</span>
             </span>
           </label>
+
+          <!-- 4) COMMUNITY — 커뮤니티 그리드 4:5 타일 -->
           <label class="adq__slot">
             <input type="radio" name="adType" value="COMMUNITY" required />
             <span class="adq__slot-inner">
-              <span class="adq__slot-icon">💬</span>
-              <span class="adq__slot-name">커뮤니티</span>
-              <span class="adq__slot-size">1080 × 1350</span>
-              <span class="adq__slot-desc">중개사 커뮤니티 피드. 3:4 세로형</span>
+              <span class="adq__slot-head">
+                <span class="adq__slot-icon">💬</span>
+                <span class="adq__slot-text">
+                  <span class="adq__slot-name">커뮤니티</span>
+                  <span class="adq__slot-size">1080 × 1350</span>
+                </span>
+              </span>
+
+              <span class="adq__preview" aria-hidden="true">
+                <span class="adq__phone adq__phone--grid">
+                  <span class="adq__grid">
+                    <span class="adq__tile"></span>
+                    <span class="adq__tile adq__tile--ad">
+                      <span class="adq__tile-ad-text">광고<br/>이미지<br/><small>1080×1350</small></span>
+                      <span class="adq__tile-ad-badge">AD</span>
+                    </span>
+                    <span class="adq__tile"></span>
+                    <span class="adq__tile"></span>
+                    <span class="adq__tile"></span>
+                    <span class="adq__tile"></span>
+                  </span>
+                </span>
+              </span>
+
+              <span class="adq__slot-desc">중개사 커뮤니티 피드 그리드 · 3:4 세로형 · AD 뱃지 자동 부착</span>
             </span>
           </label>
         </div>

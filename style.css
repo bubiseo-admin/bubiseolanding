@@ -3066,3 +3066,356 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__form { padding: 24px 20px; gap: 20px; }
   .adq__slot-inner { padding: 14px 14px 12px; }
 }
+
+
+/* =================================================================
+   AD INQUIRY — 4 슬롯 폰 미리보기 (2026-05-19)
+   각 슬롯의 실제 앱 노출 모습을 폰 mockup 으로 재현.
+   원본 컴포넌트 참고:
+     - LoginPopupAd     → .adq__phone--popup
+     - DashboardStripAd → .adq__phone--dashboard
+     - NativeListAd     → .adq__phone--list
+     - GridTileAd       → .adq__phone--grid
+   ================================================================= */
+
+/* 슬롯 카드 헤더 (아이콘 + 이름 + 사이즈) — 기존 inline 구조를 row 로 분리 */
+.adq__slot-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.adq__slot-text { display: flex; flex-direction: column; gap: 1px; }
+.adq__slot .adq__slot-icon { font-size: 22px; line-height: 1; margin-bottom: 0; }
+.adq__slot .adq__slot-name { display: block; font-size: 15px; font-weight: 800; color: var(--near-black); letter-spacing: -0.02em; }
+.adq__slot .adq__slot-size { display: block; font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: 0.04em; font-feature-settings: 'tnum'; }
+.adq__slot .adq__slot-desc { display: block; font-size: 12px; color: var(--gray-500); line-height: 1.5; margin-top: auto; padding-top: 8px; }
+.adq__slot-inner { display: flex; flex-direction: column; gap: 0; padding-bottom: 16px; }
+
+/* ─── 폰 mockup base ──────────────────────────────────────── */
+.adq__preview {
+  display: block;
+  margin: 14px auto 12px;
+  padding: 14px 0;
+  background: linear-gradient(180deg, #f7f8fb, #eef0f5);
+  border-radius: 12px;
+  border: 1px solid var(--gray-100);
+}
+.adq__phone {
+  position: relative;
+  display: block;
+  width: 180px;
+  margin: 0 auto;
+  background: #fafbfc;
+  border: 6px solid #1f2937;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.30);
+}
+/* aspect-ratio 폰 비율 — 9:18 정도 (모바일 폰 표준) */
+.adq__phone::before {
+  content: '';
+  display: block;
+  padding-bottom: 200%;
+}
+/* 모든 phone variant 의 내부 자식들은 absolute 로 배치 */
+.adq__phone > * {
+  position: absolute;
+}
+
+/* ─── 1) HOME_POPUP 미리보기 ─────────────────────────────── */
+.adq__phone--popup {
+  background: #f3f4f6;
+}
+.adq__phone--popup::after {
+  /* 폰 뒷배경 (홈 화면 흐릿한 콘텐츠 표현) */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(155, 165, 178, 0.18) 0 10px, transparent 10px 36px);
+}
+.adq__phone-overlay {
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  z-index: 1;
+}
+.adq__popup {
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 76%;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, #c7d2fe, #ddd6fe);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.5);
+}
+.adq__popup-image {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6155F5;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-align: center;
+  line-height: 1.5;
+}
+.adq__popup-image small { font-size: 8px; color: #8B95A1; font-weight: 600; }
+.adq__popup-footer {
+  height: 22px;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 600;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── 2) DASHBOARD 미리보기 ─────────────────────────────── */
+.adq__phone--dashboard { background: #fff; }
+.adq__phone-statusbar {
+  top: 0; left: 0; right: 0;
+  height: 18px;
+  background: linear-gradient(180deg, #f3f4f6, #fff);
+  border-bottom: 1px solid #e5e7eb;
+}
+.adq__phone-greeting {
+  top: 24px;
+  left: 12px; right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.adq__phone-greet-lg {
+  display: block;
+  height: 10px;
+  width: 60%;
+  background: #1f2937;
+  border-radius: 3px;
+}
+.adq__phone-greet-sm {
+  display: block;
+  height: 6px;
+  width: 40%;
+  background: #d1d5db;
+  border-radius: 2px;
+}
+.adq__strip {
+  top: 68px;
+  left: 12px; right: 12px;
+  aspect-ratio: 5 / 1;
+  background: linear-gradient(135deg, #6155F5, #39AFFD);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px -4px rgba(97, 85, 245, 0.5);
+}
+.adq__strip-image {
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.adq__strip-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+.adq__dash-card {
+  left: 12px; right: 12px;
+  height: 28px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+.adq__dash-card:nth-of-type(3) { top: 116px; }
+.adq__dash-card:nth-of-type(4) { top: 150px; }
+.adq__dash-card:nth-of-type(5) { top: 184px; }
+
+/* ─── 3) PROPERTY_LIST 미리보기 ─────────────────────────── */
+.adq__phone--list { background: #fff; }
+.adq__phone--list .adq__list-row {
+  position: relative;
+  left: 0; right: 0;
+  padding: 10px 12px;
+  background: #fff;
+  border-bottom: 1px solid #f1f3f5;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.adq__phone--list .adq__list-row:nth-of-type(1) { top: 0; }
+.adq__phone--list .adq__list-row:nth-of-type(2) { top: 90px; }
+.adq__phone--list .adq__list-row:nth-of-type(3) { top: 192px; }
+.adq__list-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.adq__list-line {
+  display: block;
+  border-radius: 2px;
+}
+.adq__list-line--meta {
+  font-size: 7px;
+  color: #8B95A1;
+  font-weight: 600;
+  background: none;
+  height: auto;
+}
+.adq__list-line--addr {
+  height: 8px;
+  width: 80%;
+  background: #d1d5db;
+}
+.adq__list-line--price {
+  height: 10px;
+  width: 60%;
+  background: #1f2937;
+  margin-top: 2px;
+}
+.adq__list-line--small {
+  height: 6px;
+  width: 50%;
+  background: #e5e7eb;
+}
+.adq__list-thumb {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #d1d5db, #f3f4f6);
+  border-radius: 6px;
+}
+
+/* PROPERTY_LIST 광고 행 — NativeListAd 스타일 1:1 */
+.adq__list-row--ad {
+  background: #fff !important;
+}
+.adq__list-line--ad-advertiser {
+  font-size: 7px;
+  color: #8B95A1;
+  font-weight: 600;
+  background: none;
+  height: auto;
+}
+.adq__list-line--ad-subtitle {
+  font-size: 9px;
+  color: #6155F5;
+  font-weight: 800;
+  background: none;
+  height: auto;
+  margin-top: 1px;
+}
+.adq__list-line--ad-description {
+  font-size: 9px;
+  color: #191F28;
+  font-weight: 800;
+  background: none;
+  height: auto;
+}
+.adq__list-line--ad-body {
+  font-size: 7px;
+  color: #4E5968;
+  background: none;
+  height: auto;
+}
+.adq__list-ad-brand {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 7px;
+  color: #8B95A1;
+  font-weight: 600;
+  margin-top: 1px;
+}
+.adq__list-ad-badge {
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 6px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+.adq__list-thumb--ad {
+  background: linear-gradient(135deg, #c7d2fe, #ddd6fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  font-weight: 700;
+  color: #6155F5;
+  text-align: center;
+}
+
+/* ─── 4) COMMUNITY 미리보기 ─────────────────────────────── */
+.adq__phone--grid { background: #fff; }
+.adq__grid {
+  inset: 0;
+  padding: 10px 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  grid-auto-rows: auto;
+}
+.adq__tile {
+  display: block;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  border-radius: 4px;
+  position: relative;
+}
+.adq__tile--ad {
+  background: linear-gradient(135deg, #6155F5, #39AFFD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.adq__tile-ad-text {
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-align: center;
+  line-height: 1.4;
+}
+.adq__tile-ad-text small { font-size: 6px; opacity: 0.85; font-weight: 600; }
+.adq__tile-ad-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 6px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+/* ─── selected 상태일 때 폰 mockup 도 살짝 강조 ──────────── */
+.adq__slot input[type="radio"]:checked + .adq__slot-inner .adq__preview {
+  background: linear-gradient(180deg, rgba(91, 127, 255, 0.10), rgba(165, 128, 255, 0.06));
+  border-color: rgba(91, 127, 255, 0.25);
+}
+.adq__slot input[type="radio"]:checked + .adq__slot-inner .adq__phone {
+  border-color: var(--brand);
+  box-shadow: 0 10px 26px -10px rgba(91, 127, 255, 0.4);
+}
+
+/* ─── 모바일 폰 미리보기 폭 축소 ──────────────────────────── */
+@media (max-width: 720px) {
+  .adq__phone { width: 160px; }
+}
