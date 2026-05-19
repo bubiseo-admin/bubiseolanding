@@ -227,10 +227,12 @@
     });
   });
 
-  // ----- 6-2. 추가 기능 요청 (POST /landing/feature-request) -----
-  // 2026-05-19 — bubiseo.com #products 섹션 폼. Slack 알림은 백엔드에서 발송.
+  // ----- 6-2. 추가 기능 요청 / 일반 문의 (POST /landing/feature-request) -----
+  // 2026-05-19 — products.html 의 두 폼 (data-feature-request-form / data-contact-form)
+  //   둘 다 같은 엔드포인트로 전송. 백엔드에서 Slack #문의 채널 알림.
+  // 2026-05-19 — products.html 의 .prd__form 에는 성공 시 success 블록 inject.
   const FEATURE_REQUEST_ENDPOINT = 'https://api.bubiseo.com/landing/feature-request';
-  document.querySelectorAll('[data-feature-request-form]').forEach((form) => {
+  document.querySelectorAll('[data-feature-request-form], [data-contact-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const businessName = (form.querySelector('input[name="businessName"]')?.value || '').trim();
@@ -261,9 +263,24 @@
           } catch (_) {}
           throw new Error(msg);
         }
-        // 성공 — 폼 자리에 성공 메시지만 노출 (CSS .is-success)
+        // 성공
         form.classList.add('is-success');
-        form.querySelectorAll('input, textarea, button').forEach((el) => { el.value = ''; });
+        if (form.classList.contains('prd__form')) {
+          // products.html 의 폼 — 성공 블록 inject (.prd__success)
+          const isContact = form.hasAttribute('data-contact-form');
+          const success = document.createElement('div');
+          success.className = 'prd__success';
+          success.innerHTML =
+            '<div class="prd__success-icon">✓</div>' +
+            '<div class="prd__success-title">' +
+            (isContact ? '문의가 정상 접수되었습니다' : '요청이 정상 접수되었습니다') +
+            '</div>' +
+            '<div class="prd__success-text">등록하신 연락처로 영업일 1~3일 이내에 회신드릴게요.<br/>감사합니다.</div>';
+          form.appendChild(success);
+        } else {
+          // 기타 폼 (구 index.html #products 등) — 입력값 초기화만
+          form.querySelectorAll('input, textarea, button').forEach((el) => { el.value = ''; });
+        }
       } catch (err) {
         setFormDisabled(form, false);
         if (btn) {
