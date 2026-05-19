@@ -558,10 +558,17 @@
           ? `<span class="adq__sidebar-price-total"><span class="adq__sidebar-price-zero">활성 회원 0명 — 단가 산정 대기</span></span>`
           : `<span class="adq__sidebar-price-total">${eff}<small>원/월</small></span>`;
       }
+      const durationHtml = s.duration
+        ? `<span class="adq__sidebar-price-duration">⏱ ${s.duration}</span>`
+        : '';
+      const isVideo = s.key === 'DASHBOARD_VIDEO';
       return `
-        <div class="adq__sidebar-price">
+        <div class="adq__sidebar-price ${isVideo ? 'adq__sidebar-price--video' : ''}">
           <span class="adq__sidebar-price-label">${s.label}</span>
-          <span class="adq__sidebar-price-size">${s.size}</span>
+          <span class="adq__sidebar-price-meta">
+            <span class="adq__sidebar-price-size">${s.size}</span>
+            ${durationHtml}
+          </span>
           <span class="adq__sidebar-price-desc">${s.description || ''}</span>
           <span class="adq__sidebar-price-formula">
             <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
