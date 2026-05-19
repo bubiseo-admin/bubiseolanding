@@ -2850,6 +2850,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   line-height: 1.6;
   margin: 0 auto;
   max-width: 560px;
+  /* 한글 단어 중간 끊김 방지 — "회신드 / 립니다" 같은 분리 방지. */
+  word-break: keep-all;
+  line-break: strict;
+  text-wrap: pretty;
 }
 
 /* ─── Form 컨테이너 (v2: 섹션들이 각자 카드) ──────────────── */
