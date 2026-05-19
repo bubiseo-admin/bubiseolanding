@@ -3983,3 +3983,252 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 /* ─── ✕ 기존 v1 폰 미리보기 (.adq__phone--popup / --dashboard /
         --list / --grid) 와 .adq__slot / .adq__slots-grid 는 데드.
         호환 위해 남기지 않고 사용 0건 → CSS 청소 가능 (다음 PR). */
+
+
+/* =================================================================
+   AD INQUIRY v3 — 텍스트 카드 + 떠다니는 이미지 floater (2026-05-19)
+   사용자 명시: 글자/이미지 같은 색션 X, 이미지는 화면 위에 떠다니는 느낌,
+                호버 시 팝오버 잠시 노출.
+   ================================================================= */
+
+/* v3 슬롯 카드 (텍스트만) — 3 column grid */
+.adq__slots-grid-v3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.adq__slot-v3 {
+  position: relative;
+  cursor: pointer;
+  display: block;
+}
+.adq__slot-v3 input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.adq__slot-card-v3 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 22px;
+  background: var(--white);
+  border: 2px solid var(--gray-100);
+  border-radius: 18px;
+  height: 100%;
+  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.adq__slot-v3:hover .adq__slot-card-v3 {
+  border-color: rgba(91, 127, 255, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px -16px rgba(91, 127, 255, 0.25);
+}
+.adq__slot-v3 input[type="radio"]:checked + .adq__slot-card-v3 {
+  border-color: var(--brand);
+  background: linear-gradient(135deg, rgba(91, 127, 255, 0.04), rgba(165, 128, 255, 0.03));
+  box-shadow: 0 0 0 4px rgba(91, 127, 255, 0.10), 0 18px 38px -20px rgba(91, 127, 255, 0.35);
+}
+
+.adq__slot-card-v3 .adq__slot-num {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: var(--gray-300);
+  font-feature-settings: 'tnum';
+  margin-bottom: 4px;
+}
+.adq__slot-v3 input[type="radio"]:checked + .adq__slot-card-v3 .adq__slot-num {
+  color: var(--brand);
+}
+.adq__slot-card-v3 .adq__slot-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--near-black);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.adq__slot-card-v3 .adq__slot-size {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: 0.06em;
+  font-feature-settings: 'tnum';
+}
+.adq__slot-card-v3 .adq__slot-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+  flex: 1;
+}
+.adq__slot-check-v3 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--gray-300);
+  color: var(--gray-700);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: var(--white);
+  margin-top: 12px;
+  transition: all 0.18s;
+}
+.adq__slot-v3 input[type="radio"]:checked + .adq__slot-card-v3 .adq__slot-check-v3 {
+  background: var(--grad-violet);
+  border-color: transparent;
+  color: var(--white);
+  box-shadow: 0 8px 20px -10px rgba(124, 58, 237, 0.5);
+}
+.adq__slot-v3 input[type="radio"]:checked + .adq__slot-card-v3 .adq__slot-check-v3::after {
+  content: ' ✓';
+}
+
+/* ─── 공유 floater — 텍스트 카드 섹션과 분리된 시각 영역 ── */
+.adq__shared-floater {
+  position: relative;
+  margin-top: 28px;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(80% 60% at 50% 30%, rgba(91, 127, 255, 0.07), transparent 70%),
+    linear-gradient(180deg, rgba(247, 248, 251, 0.6), rgba(238, 240, 245, 0.6));
+  border: 1px dashed var(--gray-100);
+  border-radius: 22px;
+  overflow: visible;
+}
+.adq__shared-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--gray-500);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
+  text-align: center;
+  letter-spacing: -0.01em;
+  padding: 24px;
+  transition: opacity 0.3s;
+}
+.adq__shared-hint strong { color: var(--near-black); font-weight: 800; }
+.adq__shared-hint-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--grad-violet);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 4px;
+  animation: adqHintBounce 1.8s ease-in-out infinite;
+}
+@keyframes adqHintBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.adq__shared-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%) scale(0.92) rotate(-1deg);
+  transform-origin: center;
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s var(--ease-spring),
+    visibility 0s linear 0.28s;
+  pointer-events: none;
+  border-radius: 22px;
+  border: 8px solid #1f2937;
+  background: #1f2937;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  filter:
+    drop-shadow(0 32px 60px rgba(15, 23, 42, 0.38))
+    drop-shadow(0 14px 24px rgba(15, 23, 42, 0.18));
+}
+
+/* :has() — 어떤 슬롯이 hover / checked 일 때 해당 이미지를 등장시킴 */
+@media (hover: hover) {
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img[data-for="HOME_POPUP"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD"]) .adq__shared-img[data-for="DASHBOARD"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img[data-for="PROPERTY_LIST"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1) rotate(-2deg);
+    transition:
+      opacity 0.28s ease,
+      transform 0.42s var(--ease-spring),
+      visibility 0s linear 0s;
+    animation: adqSharedFloat 4s ease-in-out 0.4s infinite;
+  }
+}
+.adq__section--slots:has(input[value="HOME_POPUP"]:checked) .adq__shared-img[data-for="HOME_POPUP"],
+.adq__section--slots:has(input[value="DASHBOARD"]:checked) .adq__shared-img[data-for="DASHBOARD"],
+.adq__section--slots:has(input[value="PROPERTY_LIST"]:checked) .adq__shared-img[data-for="PROPERTY_LIST"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1) rotate(-2deg);
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s var(--ease-spring),
+    visibility 0s linear 0s;
+  animation: adqSharedFloat 4s ease-in-out 0.4s infinite;
+}
+/* 슬롯이 hover OR selected 일 때 안내 hint 숨김 */
+.adq__section--slots:has(.adq__slot-v3:hover) .adq__shared-hint,
+.adq__section--slots:has(input:checked) .adq__shared-hint {
+  opacity: 0;
+}
+/* hover 가 selected 보다 우선: hover 중인 슬롯이 있으면 selected 이미지 가려야 함.
+   :has() 가 둘 다 매칭하면 우선순위는 같음 → 시각적 충돌은 hover 가 무조건 보이도록
+   `hover image` 의 z-index 를 살짝 올려 처리 (둘이 다른 슬롯일 때만 의미). */
+.adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img:not([data-for="HOME_POPUP"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD"]) .adq__shared-img:not([data-for="DASHBOARD"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img:not([data-for="PROPERTY_LIST"]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  animation: none !important;
+}
+
+@keyframes adqSharedFloat {
+  0%, 100% { transform: translate(-50%, -50%)            scale(1) rotate(-2deg); }
+  50%      { transform: translate(-50%, calc(-50% - 8px)) scale(1) rotate(-2.5deg); }
+}
+
+/* ─── 반응형 ──────────────────────────────────────────────── */
+@media (max-width: 880px) {
+  .adq__slots-grid-v3 {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .adq__shared-floater {
+    min-height: 440px;
+  }
+  .adq__shared-img {
+    width: 200px;
+  }
+}
+@media (max-width: 480px) {
+  .adq__shared-floater {
+    min-height: 380px;
+  }
+  .adq__shared-img {
+    width: 170px;
+  }
+}

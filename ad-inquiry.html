@@ -67,170 +67,61 @@
           <span class="adq__section-sub">실제 앱에 어떻게 노출되는지 폰 미리보기로 확인하세요.</span>
         </legend>
 
-        <div class="adq__slots-grid-v2">
-
-          <!-- 1) HOME_POPUP — 부비서 COMING SOON 팝업 (실제 스크린샷 기준) -->
-          <label class="adq__slot-v2">
+        <!-- v3: 텍스트 카드 (이미지 분리) — 호버/선택 시 아래 floater 에 실제 스크린샷이 떠다님. -->
+        <div class="adq__slots-grid-v3">
+          <!-- 1) HOME_POPUP -->
+          <label class="adq__slot-v3">
             <input type="radio" name="adType" value="HOME_POPUP" required />
-            <span class="adq__slot-card">
-              <span class="adq__slot-meta">
-                <span class="adq__slot-num">01</span>
-                <span class="adq__slot-text">
-                  <span class="adq__slot-name">홈 팝업</span>
-                  <span class="adq__slot-size">1080 × 1350</span>
-                  <span class="adq__slot-desc">앱 로그인 직후 한 번 노출 · 3:4 세로형<br/>가장 눈에 띄는 자리. 클릭률 최상</span>
-                </span>
-                <span class="adq__slot-check">선택</span>
-              </span>
-
-              <span class="adq__phone-v2" aria-hidden="true">
-                <span class="adq__phone-notch"></span>
-                <span class="adq__phone-screen">
-                  <!-- 흐릿한 홈 배경 -->
-                  <span class="adq__bg-home">
-                    <span class="adq__bg-line adq__bg-line--lg"></span>
-                    <span class="adq__bg-line adq__bg-line--md"></span>
-                    <span class="adq__bg-card"></span>
-                    <span class="adq__bg-card"></span>
-                  </span>
-                  <!-- 어두운 overlay -->
-                  <span class="adq__phone-dim"></span>
-                  <!-- COMING SOON 팝업 -->
-                  <span class="adq__popup-v2">
-                    <span class="adq__popup-grad">
-                      <span class="adq__popup-brand">
-                        <span class="adq__popup-logo"></span>
-                        <span class="adq__popup-brandname">부비서</span>
-                      </span>
-                      <span class="adq__popup-cs">COMING<br/>SOON</span>
-                      <span class="adq__popup-divider"></span>
-                      <span class="adq__popup-taglines">
-                        <span>'당신만의 부동산 AI비서'</span>
-                        <span>'새로운 부동산 솔루션'</span>
-                      </span>
-                      <span class="adq__popup-cta">아래 링크를 통해 사전신청에 참여해주세요!</span>
-                      <span class="adq__popup-launch">정식출시 6월 예정</span>
-                      <span class="adq__popup-url">www.bubiseo.com</span>
-                    </span>
-                    <span class="adq__popup-footer-v2">
-                      <span>오늘 하루 보지 않기</span>
-                      <span class="adq__popup-divider-v"></span>
-                      <span>닫기</span>
-                    </span>
-                  </span>
-                </span>
-              </span>
+            <span class="adq__slot-card-v3">
+              <span class="adq__slot-num">01</span>
+              <span class="adq__slot-name">홈 팝업</span>
+              <span class="adq__slot-size">1080 × 1350</span>
+              <span class="adq__slot-desc">앱 로그인 직후 한 번 노출 · 3:4 세로형<br/>가장 눈에 띄는 자리. 클릭률 최상</span>
+              <span class="adq__slot-check-v3">이 슬롯 선택</span>
             </span>
           </label>
 
-          <!-- 2) DASHBOARD — 홈 화면 하단 yellow strip 광고 -->
-          <label class="adq__slot-v2">
+          <!-- 2) DASHBOARD -->
+          <label class="adq__slot-v3">
             <input type="radio" name="adType" value="DASHBOARD" required />
-            <span class="adq__slot-card">
-              <span class="adq__slot-meta">
-                <span class="adq__slot-num">02</span>
-                <span class="adq__slot-text">
-                  <span class="adq__slot-name">대시보드</span>
-                  <span class="adq__slot-size">1500 × 300</span>
-                  <span class="adq__slot-desc">홈 화면 가로 띠 배너 · 5:1 와이드<br/>매일 사용자 진입 시 노출. 도달률 최대</span>
-                </span>
-                <span class="adq__slot-check">선택</span>
-              </span>
-
-              <span class="adq__phone-v2" aria-hidden="true">
-                <span class="adq__phone-notch"></span>
-                <span class="adq__phone-screen">
-                  <!-- 상단 부비서 헤더 -->
-                  <span class="adq__home-header">
-                    <span class="adq__home-logo">부비서</span>
-                    <span class="adq__home-profile"></span>
-                  </span>
-                  <span class="adq__home-sub"></span>
-                  <!-- 전체 매물 카드 -->
-                  <span class="adq__home-card adq__home-card--props"></span>
-                  <!-- 커뮤니티 인기글 (mini) -->
-                  <span class="adq__home-sec-title"></span>
-                  <span class="adq__home-comm-row">
-                    <span class="adq__home-comm-tile"></span>
-                    <span class="adq__home-comm-tile"></span>
-                  </span>
-                  <!-- 광고 띠 (yellow) -->
-                  <span class="adq__strip-v2">
-                    <span class="adq__strip-badge-v2">AD</span>
-                    <span class="adq__strip-content">광고 이미지 1500×300</span>
-                    <span class="adq__strip-dots"><span></span><span></span><span></span><span></span></span>
-                  </span>
-                </span>
-              </span>
+            <span class="adq__slot-card-v3">
+              <span class="adq__slot-num">02</span>
+              <span class="adq__slot-name">대시보드</span>
+              <span class="adq__slot-size">1500 × 300</span>
+              <span class="adq__slot-desc">홈 화면 가로 띠 배너 · 5:1 와이드<br/>매일 사용자 진입 시 노출. 도달률 최대</span>
+              <span class="adq__slot-check-v3">이 슬롯 선택</span>
             </span>
           </label>
 
-          <!-- 3) PROPERTY_LIST — 매물 리스트 사이 네이티브 광고 (부비서8 광고 기준) -->
-          <label class="adq__slot-v2">
+          <!-- 3) PROPERTY_LIST -->
+          <label class="adq__slot-v3">
             <input type="radio" name="adType" value="PROPERTY_LIST" required />
-            <span class="adq__slot-card">
-              <span class="adq__slot-meta">
-                <span class="adq__slot-num">03</span>
-                <span class="adq__slot-text">
-                  <span class="adq__slot-name">매물 목록</span>
-                  <span class="adq__slot-size">1080 × 1080</span>
-                  <span class="adq__slot-desc">매물 리스트 사이 자연스럽게 노출 · 1:1 정사각<br/>매물 카드와 동일 레이아웃이라 거부감 적음</span>
-                </span>
-                <span class="adq__slot-check">선택</span>
-              </span>
-
-              <span class="adq__phone-v2" aria-hidden="true">
-                <span class="adq__phone-notch"></span>
-                <span class="adq__phone-screen">
-                  <!-- 매물 헤더 -->
-                  <span class="adq__list-header">
-                    <span class="adq__list-title">매물</span>
-                    <span class="adq__list-icons"></span>
-                  </span>
-                  <span class="adq__list-filters">
-                    <span></span><span></span><span></span>
-                  </span>
-                  <!-- 일반 매물 카드 1 -->
-                  <span class="adq__list-row-v2">
-                    <span class="adq__list-text-v2">
-                      <span class="adq__list-l1">상가 · 월세</span>
-                      <span class="adq__list-l2">서울 마포구 상수동 312-3</span>
-                      <span class="adq__list-l3">보증금 3,000만원 · 월세 170만원</span>
-                      <span class="adq__list-l4">전용 16.6평 · 관리비 10만원</span>
-                    </span>
-                    <span class="adq__list-thumb-v2 adq__list-thumb-v2--photo"></span>
-                  </span>
-                  <!-- 광고 행 (부비서8 광고) -->
-                  <span class="adq__list-row-v2 adq__list-row-v2--ad">
-                    <span class="adq__list-text-v2">
-                      <span class="adq__list-l1">부비서8</span>
-                      <span class="adq__list-l2 adq__list-l2--ad">부비서를 이용해주셔서 감사합니다.</span>
-                      <span class="adq__list-l3 adq__list-l3--ad">1인 부동산대표는 평생무료</span>
-                      <span class="adq__list-l4">iOS · Android · MacOS · Windows</span>
-                      <span class="adq__list-l5-row">
-                        <span>모든 기기 지원</span>
-                        <span class="adq__list-l5-badge">AD</span>
-                      </span>
-                    </span>
-                    <span class="adq__list-thumb-v2 adq__list-thumb-v2--ad">
-                      <span class="adq__list-thumb-hex"></span>
-                    </span>
-                  </span>
-                  <!-- 일반 매물 카드 2 -->
-                  <span class="adq__list-row-v2">
-                    <span class="adq__list-text-v2">
-                      <span class="adq__list-l1">단독주택 · 매매</span>
-                      <span class="adq__list-l2">경기 광주시 신현동 896-11</span>
-                      <span class="adq__list-l3">11억 7,000만원</span>
-                      <span class="adq__list-l4">전용 50평 · 관리비 1만원</span>
-                    </span>
-                    <span class="adq__list-thumb-v2 adq__list-thumb-v2--photo2"></span>
-                  </span>
-                </span>
-              </span>
+            <span class="adq__slot-card-v3">
+              <span class="adq__slot-num">03</span>
+              <span class="adq__slot-name">매물 목록</span>
+              <span class="adq__slot-size">1080 × 1080</span>
+              <span class="adq__slot-desc">매물 리스트 사이 자연스럽게 노출 · 1:1 정사각<br/>매물 카드와 동일 레이아웃이라 거부감 적음</span>
+              <span class="adq__slot-check-v3">이 슬롯 선택</span>
             </span>
           </label>
+        </div>
 
+        <!-- 공유 floater — 글자와 이미지 섹션 분리. 호버/선택 시 실제 스크린샷이 둥둥 떠다님 -->
+        <div class="adq__shared-floater" aria-hidden="true">
+          <span class="adq__shared-hint">
+            <span class="adq__shared-hint-arrow">↑</span>
+            슬롯에 마우스를 올리거나 선택하면<br/>
+            <strong>실제 앱 노출 화면</strong>이 여기에 표시됩니다.
+          </span>
+          <img class="adq__shared-img" data-for="HOME_POPUP"
+               src="assets/IMAGE%202026-05-19%2014%3A47%3A11.jpg"
+               alt="홈 팝업 광고 실제 노출 미리보기" loading="lazy" />
+          <img class="adq__shared-img" data-for="DASHBOARD"
+               src="assets/IMAGE%202026-05-19%2014%3A47%3A07.jpg"
+               alt="대시보드 광고 실제 노출 미리보기" loading="lazy" />
+          <img class="adq__shared-img" data-for="PROPERTY_LIST"
+               src="assets/IMAGE%202026-05-19%2014%3A47%3A09.jpg"
+               alt="매물 목록 광고 실제 노출 미리보기" loading="lazy" />
         </div>
       </fieldset>
 
