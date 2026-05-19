@@ -6,45 +6,75 @@
   'use strict';
 
   // ----- 0. /ad-inquiry 비밀번호 게이트 (광고주 전용 페이지) -----
-  // 2026-05-19 — 매일 비밀번호 변경 운영. SHA-256 해시 비교, sessionStorage 통과 표식.
-  //   · 평문 비밀번호는 코드에 없음 (해시만 박힘).
-  //   · 같은 탭에서 새로고침해도 통과 표식 유지 — 탭 닫으면 초기화.
-  //   · "비번 바꿔" 요청 시 → openssl/printf|shasum -a 256 으로 새 해시 계산 → 아래 상수만 갱신 → push.
-  const ADQ_GATE_PASSWORD_HASH = '52ecc5bc2e28c532deac2d0068c5de17d4996f4dff2eec2ec0f2a3082b312e37';
-  const ADQ_GATE_FLAG_KEY = 'adqGateUnlocked.v1';
+  // 2026-05-19 강화 — 백엔드 검증 방식.
+  //   · 평문 비번 입력 → POST /landing/ad-inquiry/unlock → 토큰 발급(서버 메모리 24h).
+  //   · 토큰 sessionStorage 저장 → /landing/ad-stats fetch 시 Authorization: Bearer <token>.
+  //   · view-source 우회 차단 — 통계 숫자는 백엔드가 토큰 없으면 안 줌.
+  //   · 같은 탭 새로고침: 토큰 유지. 탭 닫으면 초기화. 백엔드 만료(24h) 시 자동 재로그인.
+  //   · "비번 바꿔" 운영: 어시스턴트가 SSH + curl 한 줄로 POST /admin/rotate (어드민 키 헤더).
+  const ADQ_GATE_TOKEN_KEY = 'adqGateToken.v2';
+  const ADQ_GATE_UNLOCK_URL = 'https://api.bubiseo.com/landing/ad-inquiry/unlock';
   const adqGate = document.getElementById('adqGate');
   if (adqGate) {
     const tryUnlock = () => {
       adqGate.remove();
       document.body.classList.remove('adq-locked');
     };
-    const isUnlocked = (() => {
-      try { return sessionStorage.getItem(ADQ_GATE_FLAG_KEY) === '1'; }
-      catch (_) { return false; }
+    const hasToken = (() => {
+      try {
+        const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
+        return Boolean(t && /^[A-Fa-f0-9]{64}$/.test(t));
+      } catch (_) { return false; }
     })();
-    if (isUnlocked) {
+    if (hasToken) {
       tryUnlock();
     } else {
       const form = document.getElementById('adqGateForm');
       const input = document.getElementById('adqGateInput');
       const err = document.getElementById('adqGateErr');
+      const submitBtn = form ? form.querySelector('.adq-gate__submit') : null;
       const box = adqGate.querySelector('.adq-gate__box');
-      const sha256Hex = async (str) => {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-        return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
-      };
       if (form && input && err && box) {
+        let busy = false;
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
+          if (busy) return;
           const v = (input.value || '').trim();
           if (!v) return;
-          let hash;
-          try { hash = await sha256Hex(v); } catch (_) { hash = ''; }
-          if (hash && hash === ADQ_GATE_PASSWORD_HASH) {
-            try { sessionStorage.setItem(ADQ_GATE_FLAG_KEY, '1'); } catch (_) { /* ignore */ }
+          busy = true;
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '확인 중…';
+          }
+          err.hidden = true;
+          let ok = false;
+          let token = '';
+          try {
+            const r = await fetch(ADQ_GATE_UNLOCK_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ password: v }),
+              credentials: 'omit',
+            });
+            if (r.ok) {
+              const data = await r.json();
+              if (data && typeof data.token === 'string' && /^[A-Fa-f0-9]{64}$/.test(data.token)) {
+                token = data.token;
+                ok = true;
+              }
+            }
+          } catch (_) { /* network error → 실패 처리 */ }
+          busy = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '입장';
+          }
+          if (ok) {
+            try { sessionStorage.setItem(ADQ_GATE_TOKEN_KEY, token); } catch (_) { /* ignore */ }
             tryUnlock();
           } else {
             err.hidden = false;
+            err.textContent = '비밀번호가 일치하지 않거나 네트워크 오류입니다.';
             box.classList.add('is-shake');
             setTimeout(() => box.classList.remove('is-shake'), 420);
             input.value = '';
@@ -53,6 +83,20 @@
         });
       }
     }
+  }
+
+  // 통계 fetch 시 사용할 게이트 토큰 헤더 생성 헬퍼.
+  function adqGateAuthHeader() {
+    try {
+      const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
+      if (t && /^[A-Fa-f0-9]{64}$/.test(t)) return { Authorization: 'Bearer ' + t };
+    } catch (_) { /* ignore */ }
+    return {};
+  }
+  // 토큰 만료 등으로 401 받으면 sessionStorage 비우고 페이지 reload (게이트 다시 표시).
+  function adqGateHandle401() {
+    try { sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY); } catch (_) { /* ignore */ }
+    window.location.reload();
   }
 
   // ----- 1. 스크롤 시 nav 배경 강화 / 활성 메뉴 표시 -----
@@ -394,8 +438,19 @@
       `;
     };
 
-    fetch('https://api.bubiseo.com/landing/ad-stats', { credentials: 'omit' })
-      .then((r) => r.json())
+    fetch('https://api.bubiseo.com/landing/ad-stats', {
+      credentials: 'omit',
+      headers: adqGateAuthHeader(),
+    })
+      .then(async (r) => {
+        if (r.status === 401) {
+          // 게이트 토큰 만료 — 비우고 페이지 reload (게이트 다시 표시).
+          adqGateHandle401();
+          throw new Error('GATE_EXPIRED');
+        }
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then((data) => {
         if (!grid) return;
         if (!data || !Array.isArray(data.slots)) throw new Error('형식 오류');
@@ -406,7 +461,8 @@
           updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · ${basisLabel}`;
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err && err.message === 'GATE_EXPIRED') return; // reload 중
         if (grid) {
           grid.innerHTML = '<div class="adq__stat--loading" style="grid-column: 1 / -1;"><span>통계 불러오기 실패</span><em>잠시 후 새로고침해주세요</em></div>';
         }
