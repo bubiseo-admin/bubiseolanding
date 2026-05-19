@@ -469,7 +469,7 @@
               <span class="adq__stat-metric-value adq__stat-metric-value--ctr">${slot.ctr.toFixed(2)}%</span>
             </div>
           </div>
-          ${insufficient ? '<div class="adq__stat-insufficient">데이터 수집 중 — 출시 후 본격 공개</div>' : ''}
+          ${''/* 2026-05-19 사용자 명시: '데이터 수집 중 — 출시 후 본격 공개' 안내 문구 제거 */}
         </div>
       `;
     };
