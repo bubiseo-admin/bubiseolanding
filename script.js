@@ -275,6 +275,59 @@
     });
   });
 
+  // ----- 6-3. 광고 문의 (POST /landing/ad-inquiry) -----
+  // 2026-05-19 — /ad-inquiry.html 의 [data-ad-inquiry-form]. Slack #문의 채널로 알림.
+  const AD_INQUIRY_ENDPOINT = 'https://api.bubiseo.com/landing/ad-inquiry';
+  document.querySelectorAll('[data-ad-inquiry-form]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const companyName = (form.querySelector('input[name="companyName"]')?.value || '').trim();
+      const contactPerson = (form.querySelector('input[name="contactPerson"]')?.value || '').trim();
+      const contact = (form.querySelector('input[name="contact"]')?.value || '').trim();
+      const adType = form.querySelector('input[name="adType"]:checked')?.value || '';
+      const body = (form.querySelector('textarea[name="body"]')?.value || '').trim();
+
+      // 클라이언트 1차 검증
+      if (!adType) { window.alert('광고 슬롯을 선택해주세요.'); return; }
+      if (!companyName) { window.alert('회사명을 입력해주세요.'); return; }
+      if (!contactPerson) { window.alert('담당자명을 입력해주세요.'); return; }
+      if (!contact) { window.alert('전화번호 또는 이메일을 입력해주세요.'); return; }
+      if (body.length < 30) { window.alert('광고 문의 내용은 30자 이상 입력해주세요.'); return; }
+
+      const btn = form.querySelector('button[type="submit"]');
+      const original = btn ? btn.innerHTML : '';
+      setFormDisabled(form, true);
+      if (btn) { btn.textContent = '보내는 중…'; btn.style.opacity = '0.7'; }
+
+      try {
+        const res = await fetch(AD_INQUIRY_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ companyName, contactPerson, contact, adType, body }),
+        });
+        if (!res.ok) {
+          let msg = '문의 전송 중 오류가 발생했어요';
+          try { const data = await res.json(); if (data && data.message) msg = data.message; } catch (_) {}
+          throw new Error(msg);
+        }
+        // 성공 — 폼을 success 상태로 전환
+        form.classList.add('is-success');
+        const successEl = document.createElement('div');
+        successEl.className = 'adq__success';
+        successEl.innerHTML = `
+          <div class="adq__success-icon">✓</div>
+          <div class="adq__success-title">광고 문의가 접수되었습니다</div>
+          <div class="adq__success-text">담당자가 영업일 1~2일 내 입력하신 연락처로 회신드립니다.<br/>문의 주셔서 감사합니다.</div>
+        `;
+        form.appendChild(successEl);
+      } catch (err) {
+        setFormDisabled(form, false);
+        if (btn) { btn.innerHTML = original || '다시 시도'; btn.style.opacity = ''; }
+        window.alert(err && err.message ? err.message : '네트워크 오류 — 잠시 후 다시 시도해주세요.');
+      }
+    });
+  });
+
   // ----- 7. 영상 — 작은 영상은 자동재생, 큰 영상(data-lazy-video)은 viewport 진입 시 -----
   document.querySelectorAll('video').forEach((v) => {
     v.muted = true;

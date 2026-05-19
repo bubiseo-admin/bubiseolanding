@@ -1,0 +1,182 @@
+<!doctype html>
+<!--
+  부비서 — 광고 문의 페이지
+  ─────────────────────────────────────────────────────────────
+  광고주(회사) 대상 — 부비서 4개 광고 슬롯 (홈팝업·대시보드·매물목록·커뮤니티) 신청 폼.
+  Submit → POST https://api.bubiseo.com/landing/ad-inquiry → DB 저장 + Slack #문의 채널 알림.
+  ─────────────────────────────────────────────────────────────
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>광고 문의 — 부비서</title>
+  <meta name="description" content="부비서 앱·데스크톱의 광고 슬롯(홈 팝업·대시보드·매물 목록·커뮤니티) 문의. 전국 공인중개사 사무소가 매일 사용하는 채널." />
+  <meta property="og:title" content="광고 문의 — 부비서" />
+  <meta property="og:description" content="부비서 광고 슬롯 4종 (홈 팝업·대시보드·매물 목록·커뮤니티) 문의 접수." />
+  <meta property="og:image" content="/assets/logo.png" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="body--main">
+
+  <!-- ============================== MAIN NAV ============================== -->
+  <header class="main-nav" id="mainNav">
+    <a class="main-nav__brand" href="/" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" class="main-nav__logo" />
+      <span class="main-nav__name">부비서</span>
+    </a>
+    <nav class="main-nav__menu" aria-label="주요 메뉴">
+      <a href="index.html#top">홈</a>
+      <a href="index.html#products">제품</a>
+      <a href="app.html">기능</a>
+      <a href="index.html#pricing">요금제</a>
+      <a href="ad-inquiry.html" class="is-active" aria-current="page">광고 문의</a>
+    </nav>
+    <nav class="main-nav__support" aria-label="지원 메뉴">
+      <a href="mailto:admin@bubiseo.com">고객 지원</a>
+    </nav>
+  </header>
+
+  <!-- ============================== AD INQUIRY PAGE ============================== -->
+  <main class="adq" id="ad-inquiry">
+    <section class="adq__head">
+      <span class="adq__eyebrow">For Advertisers</span>
+      <h1 class="adq__title">
+        부비서에 <span class="gradient-text">광고하기</span>
+      </h1>
+      <p class="adq__sub">
+        전국 공인중개사 사무소가 매일 사용하는 채널.<br/>
+        아래 4개 슬롯 중 원하시는 형태를 선택해 문의 남겨주시면 영업일 1~2일 내 회신드립니다.
+      </p>
+    </section>
+
+    <!-- 폼 — submit 핸들러는 script.js 의 [data-ad-inquiry-form] 처리 -->
+    <form class="adq__form" data-ad-inquiry-form novalidate>
+
+      <!-- 광고 슬롯 4종 (radio) -->
+      <fieldset class="adq__slots">
+        <legend class="adq__legend">광고 슬롯 <span class="adq__req">*</span></legend>
+        <div class="adq__slots-grid">
+          <label class="adq__slot">
+            <input type="radio" name="adType" value="HOME_POPUP" required />
+            <span class="adq__slot-inner">
+              <span class="adq__slot-icon">🏠</span>
+              <span class="adq__slot-name">홈 팝업</span>
+              <span class="adq__slot-size">1080 × 1350</span>
+              <span class="adq__slot-desc">앱 첫 진입 시 노출. 3:4 세로형</span>
+            </span>
+          </label>
+          <label class="adq__slot">
+            <input type="radio" name="adType" value="DASHBOARD" required />
+            <span class="adq__slot-inner">
+              <span class="adq__slot-icon">📊</span>
+              <span class="adq__slot-name">대시보드</span>
+              <span class="adq__slot-size">1500 × 300</span>
+              <span class="adq__slot-desc">홈 상단 가로 배너. 5:1 와이드</span>
+            </span>
+          </label>
+          <label class="adq__slot">
+            <input type="radio" name="adType" value="PROPERTY_LIST" required />
+            <span class="adq__slot-inner">
+              <span class="adq__slot-icon">🏘️</span>
+              <span class="adq__slot-name">매물 목록</span>
+              <span class="adq__slot-size">1080 × 1080</span>
+              <span class="adq__slot-desc">매물 리스트 사이 노출. 1:1 정사각</span>
+            </span>
+          </label>
+          <label class="adq__slot">
+            <input type="radio" name="adType" value="COMMUNITY" required />
+            <span class="adq__slot-inner">
+              <span class="adq__slot-icon">💬</span>
+              <span class="adq__slot-name">커뮤니티</span>
+              <span class="adq__slot-size">1080 × 1350</span>
+              <span class="adq__slot-desc">중개사 커뮤니티 피드. 3:4 세로형</span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- 회사·연락처 -->
+      <div class="adq__row">
+        <label class="adq__field">
+          <span class="adq__label">회사명·광고주 <span class="adq__req">*</span></span>
+          <input type="text" name="companyName" required maxlength="100" autocomplete="organization" placeholder="예: 메리츠부동산" />
+        </label>
+        <label class="adq__field">
+          <span class="adq__label">담당자명 <span class="adq__req">*</span></span>
+          <input type="text" name="contactPerson" required maxlength="50" autocomplete="name" placeholder="예: 김광고" />
+        </label>
+      </div>
+
+      <label class="adq__field">
+        <span class="adq__label">연락처 <span class="adq__req">*</span></span>
+        <input type="text" name="contact" required maxlength="200" placeholder="전화번호 또는 이메일 (예: 010-1234-5678 또는 contact@company.com)" />
+      </label>
+
+      <label class="adq__field">
+        <span class="adq__label">광고 문의 내용 <span class="adq__req">*</span> <span class="adq__hint">(30~3000자)</span></span>
+        <textarea name="body" required minlength="30" maxlength="3000" rows="7"
+          placeholder="광고 진행 시기·기간·예산·디자인 보유 여부·기타 문의사항을 자유롭게 적어주세요."></textarea>
+      </label>
+
+      <div class="adq__actions">
+        <button type="submit" class="adq__submit">광고 문의하기 →</button>
+      </div>
+
+      <p class="adq__legal">
+        제출하신 정보는 광고 문의 회신 목적으로만 사용되며,
+        부비서 <a href="privacy.html">개인정보처리방침</a> 에 따라 안전하게 보관됩니다.
+      </p>
+    </form>
+
+  </main>
+
+  <!-- ============================== FOOTER (간소) ============================== -->
+  <footer class="main-footer">
+    <div class="main-footer__inner">
+      <div class="main-footer__brand">
+        <img src="assets/logo.png" alt="" class="main-footer__logo" />
+        <span>부비서</span>
+      </div>
+      <div class="main-footer__cols">
+        <div>
+          <h5>제품</h5>
+          <a href="app.html">부비서 앱 (모바일)</a>
+          <a href="index.html#desktop">부비서 데스크톱</a>
+          <a href="index.html#pricing">요금제</a>
+        </div>
+        <div>
+          <h5>회사</h5>
+          <a href="mailto:admin@bubiseo.com">고객 지원</a>
+          <a href="ad-inquiry.html">광고 문의</a>
+          <a href="delete-account.html">계정 삭제 요청</a>
+        </div>
+        <div>
+          <h5>약관·정책</h5>
+          <a href="terms.html">이용약관</a>
+          <a href="privacy.html">개인정보처리방침</a>
+          <a href="refund.html">환불 정책</a>
+          <a href="location.html">위치기반서비스 이용약관</a>
+        </div>
+      </div>
+      <div class="main-footer__biz">
+        <p>상호 : 부비서 · 대표자 : 이현우 · 사업자등록번호 : 574-06-03306</p>
+        <p>사업장 주소 : 경기도 양주시 옥정동 891-1, 라피아노스위첸3단지</p>
+        <p>연락처 : <a href="tel:+821095655505">010-9565-5505</a> · 이메일 : <a href="mailto:admin@bubiseo.com">admin@bubiseo.com</a> · 결제대행 : 토스페이먼츠</p>
+      </div>
+      <div class="main-footer__bottom">
+        <span>© 2026 Bubiseo. All rights reserved.</span>
+        <span>bubiseo.com</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
