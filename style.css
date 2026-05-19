@@ -4547,9 +4547,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 .adq__notice-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  /* 2026-05-19 사용자 명시: 대시보드 이미지/동영상 분리 → 4 슬롯 */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
   margin-bottom: 14px;
+}
+@media (max-width: 1180px) {
+  .adq__notice-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .adq__stat {
