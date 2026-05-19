@@ -5250,3 +5250,31 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #4E5968;
   font-weight: 700;
 }
+
+/* 2026-05-19 사용자 명시 — 슬롯 카드 노출 정책 (rotationPolicy) 작은 메타 리스트 */
+.adq__sidebar-price-rotation {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  background: #F8F9FB;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.adq__sidebar-price-rotation li {
+  font-size: 11px;
+  color: #4E5968;
+  line-height: 1.5;
+  padding-left: 10px;
+  position: relative;
+  font-weight: 500;
+}
+.adq__sidebar-price-rotation li::before {
+  content: '·';
+  position: absolute;
+  left: 2px;
+  top: -2px;
+  color: #C9CCD1;
+  font-weight: 700;
+}

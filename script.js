@@ -562,6 +562,12 @@
         ? `<span class="adq__sidebar-price-duration">⏱ ${s.duration}</span>`
         : '';
       const isVideo = s.key === 'DASHBOARD_VIDEO';
+      // 2026-05-19 사용자 명시: 노출 정책 (rotationPolicy) 작은 메타 줄 표시
+      const rotationHtml = Array.isArray(s.rotationPolicy) && s.rotationPolicy.length
+        ? `<ul class="adq__sidebar-price-rotation">
+             ${s.rotationPolicy.map((line) => `<li>${line}</li>`).join('')}
+           </ul>`
+        : '';
       return `
         <div class="adq__sidebar-price ${isVideo ? 'adq__sidebar-price--video' : ''}">
           <span class="adq__sidebar-price-label">${s.label}</span>
@@ -570,6 +576,7 @@
             ${durationHtml}
           </span>
           <span class="adq__sidebar-price-desc">${s.description || ''}</span>
+          ${rotationHtml}
           <span class="adq__sidebar-price-formula">
             <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
           </span>
