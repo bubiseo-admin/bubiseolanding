@@ -1998,7 +1998,21 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 /* ─── MAIN PAGE 반응형 ─────────────────────────────────────── */
 @media (max-width: 980px) {
-  .main-nav { padding: 14px 24px; gap: 16px; }
+  /* 2026-05-19 사용자 명시: 모바일에서 헤더 스크롤 따라오지 않게.
+     fixed → absolute 변경 — 페이지 최상단에 두고 스크롤하면 자연스럽게 사라짐. */
+  .main-nav {
+    position: absolute;
+    padding: 14px 24px;
+    gap: 16px;
+    /* 스크롤 시 사라지므로 blur 배경/transition 불필요 (성능↑) */
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .main-nav.is-scrolled {
+    border-bottom-color: transparent;
+    background: #ffffff;
+  }
   .main-nav__menu { gap: 24px; font-size: 14px; }
   .main-nav__support { font-size: 14px; }
   .main-footer__cols { grid-template-columns: repeat(2, 1fr); }
