@@ -3432,9 +3432,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   border-radius: 24px;
   background: var(--white);
   padding: clamp(24px, 4vw, 40px) clamp(20px, 3.5vw, 36px);
-  margin-bottom: 24px;
+  margin-bottom: 56px;
   box-shadow: 0 12px 36px -22px rgba(15, 23, 42, 0.10);
 }
+.adq__section + .adq__section { margin-top: 0; }
 .adq__section-head {
   display: block;
   margin-bottom: 24px;
@@ -4118,6 +4119,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: -0.01em;
   padding: 24px;
   transition: opacity 0.3s;
+  position: relative;
+  z-index: 1;   /* 이미지보다 위에 보이도록 (이미지 opacity 0 일 때 hint 가 가독성 확보) */
 }
 .adq__shared-hint strong { color: var(--near-black); font-weight: 800; }
 .adq__shared-hint-arrow {
