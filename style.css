@@ -4801,12 +4801,31 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__main { min-width: 0; }
 
-@media (min-width: 980px) {
+@media (min-width: 980px) and (max-width: 1199px) {
+  /* 태블릿/작은 데스크톱: 사이드바 좁고 단가 카드 위→아래 (모바일과 동일 흐름) */
   .adq__body {
     display: grid;
     grid-template-columns: 340px minmax(0, 1fr);
-    gap: 56px;
+    gap: 48px;
     align-items: start;
+  }
+  .adq__sidebar {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+    order: 0;
+  }
+  .adq__main { order: 1; min-width: 0; }
+}
+
+@media (min-width: 1200px) {
+  /* 2026-05-19 사용자 명시 — 데스크톱: 사이드바 폭 460px + 단가 카드 좌측 말풍선 */
+  .adq__body {
+    display: grid;
+    grid-template-columns: 460px minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+    max-width: 1320px;
   }
   .adq__sidebar {
     position: sticky;
@@ -5277,4 +5296,87 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   top: -2px;
   color: #C9CCD1;
   font-weight: 700;
+}
+
+/* 2026-05-19 사용자 명시 — 데스크톱(≥1200px): 단가 카드 좌측 말풍선 (설명) + 우측 메인 (가격), 꼬리로 이어짐 */
+.adq__sidebar-price-bubble {
+  /* 모바일/태블릿 기본: 메인 위에 흐름대로 표시 */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.adq__sidebar-price-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (min-width: 1200px) {
+  .adq__sidebar-price {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 22px;
+    align-items: start;
+    position: relative;
+    padding: 22px;
+  }
+  .adq__sidebar-price-bubble {
+    background: #F8F9FB;
+    border: 1px solid #ECEEF1;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 0;
+    align-self: start;
+    position: relative;
+  }
+  /* 말풍선 꼬리 — 카드의 메인 영역(가격)을 향함 */
+  .adq__sidebar-price-bubble::after {
+    content: '';
+    position: absolute;
+    right: -7px;
+    top: 16px;
+    width: 0;
+    height: 0;
+    border: 7px solid transparent;
+    border-left-color: #F8F9FB;
+    z-index: 2;
+  }
+  .adq__sidebar-price-bubble::before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 15px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-left-color: #ECEEF1;
+    z-index: 1;
+  }
+  /* bubble 안의 description/rotation 폰트 약간 조정 (좁아진 폭 대응) */
+  .adq__sidebar-price-bubble .adq__sidebar-price-desc {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #4E5968;
+    font-weight: 500;
+  }
+  .adq__sidebar-price-bubble .adq__sidebar-price-rotation {
+    background: transparent;
+    padding: 0;
+    margin: 8px 0 0;
+    border-top: 1px solid #ECEEF1;
+    padding-top: 8px;
+  }
+  .adq__sidebar-price-bubble .adq__sidebar-price-rotation li {
+    font-size: 11px;
+    color: #6E7680;
+    line-height: 1.45;
+  }
+}
+
+/* bubble 내용 없는 슬롯 (로그인 팝업 — 정책 없음) — 우측 메인만 표시 */
+@media (min-width: 1200px) {
+  .adq__sidebar-price:not(:has(.adq__sidebar-price-bubble)) {
+    grid-template-columns: 1fr;
+  }
 }

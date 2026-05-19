@@ -562,25 +562,35 @@
         ? `<span class="adq__sidebar-price-duration">⏱ ${s.duration}</span>`
         : '';
       const isVideo = s.key === 'DASHBOARD_VIDEO';
-      // 2026-05-19 사용자 명시: 노출 정책 (rotationPolicy) 작은 메타 줄 표시
+      // 2026-05-19 사용자 명시:
+      //   · 노출 정책 (rotationPolicy) 메타 줄 표시
+      //   · 데스크톱: 좌측 설명 bubble + 우측 가격 영역 (꼬리로 이어짐)
+      //   · 모바일: 위에서 아래로 단순 배치
       const rotationHtml = Array.isArray(s.rotationPolicy) && s.rotationPolicy.length
         ? `<ul class="adq__sidebar-price-rotation">
              ${s.rotationPolicy.map((line) => `<li>${line}</li>`).join('')}
            </ul>`
         : '';
+      const hasBubbleContent = (s.description && s.description.trim()) || rotationHtml;
       return `
         <div class="adq__sidebar-price ${isVideo ? 'adq__sidebar-price--video' : ''}">
-          <span class="adq__sidebar-price-label">${s.label}</span>
-          <span class="adq__sidebar-price-meta">
-            <span class="adq__sidebar-price-size">${s.size}</span>
-            ${durationHtml}
-          </span>
-          <span class="adq__sidebar-price-desc">${s.description || ''}</span>
-          ${rotationHtml}
-          <span class="adq__sidebar-price-formula">
-            <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
-          </span>
-          ${totalHtml}
+          ${hasBubbleContent ? `
+            <div class="adq__sidebar-price-bubble">
+              ${s.description ? `<span class="adq__sidebar-price-desc">${s.description}</span>` : ''}
+              ${rotationHtml}
+            </div>
+          ` : ''}
+          <div class="adq__sidebar-price-main">
+            <span class="adq__sidebar-price-label">${s.label}</span>
+            <span class="adq__sidebar-price-meta">
+              <span class="adq__sidebar-price-size">${s.size}</span>
+              ${durationHtml}
+            </span>
+            <span class="adq__sidebar-price-formula">
+              <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
+            </span>
+            ${totalHtml}
+          </div>
         </div>
       `;
     };
