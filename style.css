@@ -4499,13 +4499,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    24h 갱신, 최근 30일 누적 광고 효과 통계 (impressions · clicks · CTR).
    ================================================================= */
 
+/* 2026-05-19 리디자인 — 오렌지 그라데이션 → 미니멀 흰 배경 + 가벼운 보더 */
 .adq__notice {
   margin-bottom: 40px;
-  padding: 28px clamp(20px, 3.5vw, 36px);
-  background: linear-gradient(135deg, #fff7ed, #fef3c7);
-  border: 1px solid #fde68a;
-  border-radius: 22px;
-  box-shadow: 0 10px 28px -16px rgba(245, 158, 11, 0.20);
+  padding: 26px clamp(20px, 3.5vw, 32px);
+  background: #ffffff;
+  border: 1px solid #ECEEF1;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 .adq__notice-head {
   display: flex;
@@ -4518,19 +4519,19 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
-  background: var(--white);
-  color: #92400e;
+  background: #F8F9FB;
+  color: #191F28;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  border: 1px solid #fcd34d;
+  border: 1px solid #ECEEF1;
   white-space: nowrap;
 }
 .adq__notice-sub {
-  font-size: 13px;
-  color: #92400e;
+  font-size: 12.5px;
+  color: #6E7680;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.55;
@@ -4538,7 +4539,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   flex: 1;
   min-width: 240px;
 }
-.adq__notice-sub strong { font-weight: 800; color: #78350f; }
+.adq__notice-sub strong { font-weight: 700; color: #191F28; }
 
 .adq__notice-grid {
   display: grid;
@@ -4839,47 +4840,40 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* ─── 활성 회원수 카드 (강조) ─────────────────────────────── */
+/* ─── 활성 회원수 카드 (2026-05-19 리디자인: 단순 흰 배경 + 큰 검정 숫자) ─── */
 .adq__sidebar-card--users {
-  background: linear-gradient(135deg, #F5F3FF 0%, #EEF6FF 100%);
-  border-color: rgba(97, 85, 245, 0.18);
+  background: #ffffff;
   text-align: center;
-  padding: 28px 22px;
+  padding: 26px 22px;
 }
 .adq__sidebar-label {
   display: block;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: #6E7680;
-  letter-spacing: 0.2px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .adq__sidebar-users {
   display: inline-block;
-  font-size: 48px;
-  font-weight: 900;
+  font-size: 42px;
+  font-weight: 800;
   color: #191F28;
-  letter-spacing: -2px;
-  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -1.5px;
   font-feature-settings: 'tnum';
   vertical-align: middle;
-  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 .adq__sidebar-unit {
   display: inline-block;
-  font-size: 18px;
-  font-weight: 700;
-  color: #4E5968;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6E7680;
   margin-left: 4px;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 .adq__sidebar-sub {
   display: block;
-  font-size: 12px;
-  color: #8B95A1;
+  font-size: 11px;
+  color: #9CA3A8;
   margin-top: 8px;
   font-weight: 500;
 }
@@ -4887,13 +4881,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   display: block;
   font-size: 11px;
   color: #B0B8C1;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(97, 85, 245, 0.10);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #F2F4F6;
 }
 .adq__sidebar-meta em {
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   color: #6E7680;
   font-feature-settings: 'tnum';
 }
@@ -4968,16 +4962,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #B0B8C1;
 }
 
-/* ─── 결제 정책 박스 ─────────────────────────────────────── */
+/* ─── 결제 정책 박스 (2026-05-19 리디자인: 회색 배경 제거) ─── */
 .adq__sidebar-policy {
-  background: #FAFBFC;
-  border-color: #E5E8EC;
+  /* 흰 배경 + 가벼운 보더 (공통 카드 스타일 그대로) */
 }
 .adq__sidebar-policy-title {
   font-size: 13px;
   font-weight: 700;
   color: #191F28;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   letter-spacing: -0.2px;
 }
 .adq__sidebar-policy-list {
@@ -4992,7 +4985,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-size: 12px;
   color: #4E5968;
   line-height: 1.55;
-  padding-left: 14px;
+  padding-left: 12px;
   position: relative;
 }
 .adq__sidebar-policy-list li::before {
@@ -5000,8 +4993,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   position: absolute;
   left: 4px;
   top: -2px;
-  font-weight: 900;
-  color: #6155F5;
+  font-weight: 700;
+  color: #C9CCD1;
 }
 .adq__sidebar-policy-list strong {
   color: #191F28;
@@ -5009,14 +5002,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__sidebar-policy-foot {
   margin: 14px 0 0;
-  padding-top: 12px;
-  border-top: 1px solid #ECEEF1;
+  padding-top: 10px;
+  border-top: 1px solid #F2F4F6;
   font-size: 11px;
   color: #9CA3A8;
   font-feature-settings: 'tnum';
 }
 .adq__sidebar-policy-foot span {
-  font-weight: 700;
+  font-weight: 600;
   color: #6E7680;
 }
 
@@ -5045,72 +5038,69 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   gap: 12px;
   padding: 4px 2px;
 }
+/* 모드 배지 — 2026-05-19 리디자인: 그라데이션 제거, 미니멀 chip */
 .adq__sidebar-mode {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  color: #ffffff;
-  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-  text-transform: none;
+  font-weight: 600;
+  color: #4E5968;
+  background: #F8F9FB;
+  border: 1px solid #ECEEF1;
 }
-.adq__sidebar-mode[data-mode="A"] { background: #4E5968; }
-.adq__sidebar-mode[data-mode="B"] { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); }
-.adq__sidebar-mode[data-mode="C"] { background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%); }
+.adq__sidebar-mode[data-mode="C"] { color: #191F28; }
+.adq__sidebar-mode[data-mode="B"] { color: #191F28; }
+.adq__sidebar-mode[data-mode="A"] { color: #4E5968; }
 
-/* 새로고침 버튼 */
+/* 새로고침 버튼 — 그림자 강조 제거, 차분한 hover */
 .adq__sidebar-refresh {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 12px;
+  padding: 5px 11px;
   background: #ffffff;
-  border: 1px solid #E5E8EC;
+  border: 1px solid #ECEEF1;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #4E5968;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6E7680;
   font-family: 'Pretendard', sans-serif;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s, color 0.15s;
 }
 .adq__sidebar-refresh:hover {
-  border-color: #6155F5;
-  color: #6155F5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(97, 85, 245, 0.15);
+  border-color: #C9CCD1;
+  color: #191F28;
 }
-.adq__sidebar-refresh:active { transform: translateY(0); }
-.adq__sidebar-refresh:disabled { opacity: 0.6; cursor: wait; }
-.adq__sidebar-refresh svg { transition: transform 0.6s ease; color: currentColor; }
+.adq__sidebar-refresh:disabled { opacity: 0.5; cursor: wait; }
+.adq__sidebar-refresh svg { color: currentColor; }
 .adq__sidebar-refresh.is-spinning svg { animation: adqRefreshSpin 0.8s linear infinite; }
 @keyframes adqRefreshSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* 모드 promo 배너 (베타 무료/런칭 보장가) */
+/* 모드 promo 배너 — 2026-05-19 리디자인: 오렌지 그라데이션 제거, 단순 텍스트 */
 .adq__sidebar-promo {
-  background: linear-gradient(135deg, #FFF9F0 0%, #FFF4E0 100%);
-  border: 1px solid rgba(247, 147, 30, 0.25);
+  background: #ffffff;
+  border: 1px solid #ECEEF1;
   border-radius: 14px;
-  padding: 14px 16px;
-  font-size: 12.5px;
-  color: #6B4413;
-  line-height: 1.5;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: #6E7680;
+  line-height: 1.55;
   font-weight: 500;
+  text-align: center;
 }
 .adq__sidebar-promo[hidden] { display: none !important; }
 .adq__sidebar-promo strong {
-  color: #C2410C;
-  font-weight: 800;
+  color: #191F28;
+  font-weight: 700;
 }
 
-/* 부동산/대표/직원 수 카드 (3분할) */
+/* 부동산/대표/직원 수 카드 (3분할) — 2026-05-19 리디자인: 폰트 크기·굵기만 강조 */
 .adq__sidebar-stats {
   background: #ffffff;
   border: 1px solid #ECEEF1;
@@ -5120,7 +5110,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   overflow: hidden;
 }
 .adq__sidebar-stat {
-  padding: 14px 8px;
+  padding: 16px 8px;
   text-align: center;
   border-right: 1px solid #F2F4F6;
   display: flex;
@@ -5130,10 +5120,9 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__sidebar-stat:last-child { border-right: 0; }
 .adq__sidebar-stat-label {
-  font-size: 10.5px;
+  font-size: 11px;
   color: #8B95A1;
   font-weight: 500;
-  letter-spacing: -0.2px;
 }
 .adq__sidebar-stat-value {
   font-size: 22px;
@@ -5145,9 +5134,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin-top: 4px;
 }
 .adq__sidebar-stat-unit {
-  font-size: 10.5px;
-  color: #6E7680;
-  font-weight: 600;
+  font-size: 11px;
+  color: #8B95A1;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
 /* A/B/C 모드별 가격 표시 — strikethrough (C 무료), 보장가 라벨 (B), 정가 (A) */
@@ -5158,22 +5148,24 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-weight: 600;
 }
 .adq__sidebar-price-free {
-  display: block;
-  margin-top: 4px;
+  /* 2026-05-19 리디자인: 그라데이션 텍스트 유지 (사용자가 좋아한 부분), 폰트 크기만 약간 정리 */
+  display: inline-block;
+  margin-left: 6px;
   background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 17px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  vertical-align: baseline;
 }
 .adq__sidebar-price-note {
   display: block;
   margin-top: 4px;
   font-size: 11px;
-  color: #C2410C;
-  font-weight: 600;
+  color: #6E7680;
+  font-weight: 500;
 }
 
 @media (max-width: 480px) {
@@ -5181,7 +5173,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__sidebar-stat-label { font-size: 10px; }
 }
 
-/* 2026-05-19 사용자 명시 — 대시보드 배너 이미지/동영상 분리 표시 */
+/* 슬롯 메타 (size + duration) — 2026-05-19 리디자인: 미니멀 회색 톤 */
 .adq__sidebar-price-meta {
   display: flex;
   align-items: center;
@@ -5193,87 +5185,67 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(97, 85, 245, 0.08);
-  color: #6155F5;
-  font-size: 10.5px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8B95A1;
   font-feature-settings: 'tnum';
 }
-.adq__sidebar-price--video .adq__sidebar-price-duration {
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.12) 0%, rgba(247, 147, 30, 0.12) 100%);
-  color: #C2410C;
-}
-.adq__sidebar-price--video .adq__sidebar-price-label::after {
-  content: '🎬';
-  margin-left: 6px;
-  font-size: 13px;
+.adq__sidebar-price-duration::before {
+  content: '·';
+  margin-right: 4px;
+  color: #C9CCD1;
 }
 
-/* 2026-05-19 사용자 명시 — 광고가 모바일+데스크톱 양쪽 노출됨을 명시 안내 */
-
-/* 페이지 상단 — 큰 cross-platform 배지 */
+/* 페이지 상단 cross-platform — 2026-05-19 리디자인: 그라데이션 chip 제거, 미니멀 텍스트 */
 .adq__cross-platform {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
-  margin: 24px auto 0;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, rgba(97, 85, 245, 0.06) 0%, rgba(57, 175, 253, 0.06) 100%);
-  border: 1px solid rgba(97, 85, 245, 0.18);
-  border-radius: 999px;
+  margin: 20px auto 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
   font-size: 13px;
-  font-weight: 600;
-  color: #1f2937;
-  width: fit-content;
-  max-width: 100%;
+  font-weight: 500;
+  color: #6E7680;
 }
 .adq__cross-platform-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
-  background: #ffffff;
-  border-radius: 999px;
+  padding: 0;
+  background: transparent;
+  border: 0;
   font-weight: 700;
   font-size: 13px;
-  color: #4b5563;
-  border: 1px solid #e5e7eb;
+  color: #191F28;
 }
 .adq__cross-platform-plus {
-  font-weight: 800;
-  color: #6155F5;
-  font-size: 14px;
+  color: #C9CCD1;
+  font-weight: 400;
+  font-size: 13px;
 }
 .adq__cross-platform-text {
-  font-weight: 600;
-  color: #374151;
+  font-weight: 500;
+  color: #6E7680;
 }
 @media (max-width: 480px) {
-  .adq__cross-platform {
-    font-size: 12px;
-    gap: 6px;
-    padding: 10px 14px;
-  }
-  .adq__cross-platform-badge { font-size: 12px; padding: 3px 9px; }
+  .adq__cross-platform { font-size: 12px; gap: 6px; }
+  .adq__cross-platform-badge { font-size: 12px; }
 }
 
-/* STEP 1 영역 — section-head 안의 안내 줄 */
+/* STEP 1 영역 안내 줄 — 2026-05-19 리디자인: 보라 박스 제거, 미니멀 텍스트 */
 .adq__section-platform {
   display: block;
-  margin-top: 10px;
-  padding: 8px 14px;
-  background: rgba(97, 85, 245, 0.06);
-  border-radius: 10px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #4b5563;
-  width: fit-content;
+  margin-top: 8px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8B95A1;
 }
 .adq__section-platform strong {
-  color: #6155F5;
-  font-weight: 800;
+  color: #4E5968;
+  font-weight: 700;
 }
