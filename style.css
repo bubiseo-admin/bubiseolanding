@@ -4660,3 +4660,111 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__notice-head { gap: 8px; }
   .adq__notice-sub { font-size: 12px; min-width: 0; flex: 1 1 100%; }
 }
+
+/* =================================================================
+   AD-INQUIRY 페이지 전용 — 상단 메뉴 숨김 + 비밀번호 게이트
+   ─────────────────────────────────────────────────────────────────
+   2026-05-19 — 광고주 전용 페이지로 잠금. 매일 비밀번호 변경 운영.
+   ================================================================= */
+
+/* 상단 메뉴 4개 (홈/기능/요금제/광고문의) 숨김 — 우측 "고객 지원" 만 유지 */
+.body--ad-inquiry .main-nav__menu { display: none !important; }
+
+/* 잠금 상태: main / header / footer 모두 숨김 (게이트 통과 전) */
+.adq-locked .main-nav,
+.adq-locked .main-footer,
+.adq-locked .adq { visibility: hidden; }
+
+/* 비밀번호 게이트 오버레이 */
+.adq-gate {
+  position: fixed; inset: 0;
+  background: rgba(15, 17, 22, 0.96);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 99999;
+  padding: 24px;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+.adq-gate__box {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 44px 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+.adq-gate__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #191F28;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+.adq-gate__sub {
+  font-size: 14px;
+  color: #6E7680;
+  margin: 0 0 28px;
+  font-weight: 500;
+}
+.adq-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.adq-gate__input {
+  padding: 16px 18px;
+  font-size: 16px;
+  border: 1.5px solid #E5E8EC;
+  border-radius: 14px;
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 600;
+  font-family: 'Pretendard', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.adq-gate__input:focus { border-color: #6155F5; }
+.adq-gate__submit {
+  padding: 15px;
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.adq-gate__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(97, 85, 245, 0.35);
+}
+.adq-gate__submit:active { transform: translateY(0); }
+.adq-gate__err {
+  margin: 14px 0 0;
+  color: #E74C3C;
+  font-size: 13px;
+  font-weight: 600;
+}
+.adq-gate__legal {
+  margin: 28px 0 0;
+  font-size: 12px;
+  color: #9CA3A8;
+  line-height: 1.5;
+}
+.adq-gate__box.is-shake { animation: adqGateShake 0.4s ease; }
+@keyframes adqGateShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+@media (max-width: 480px) {
+  .adq-gate__box { padding: 32px 24px 24px; border-radius: 20px; }
+  .adq-gate__title { font-size: 20px; }
+}

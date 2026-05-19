@@ -5,6 +5,56 @@
 (function () {
   'use strict';
 
+  // ----- 0. /ad-inquiry 비밀번호 게이트 (광고주 전용 페이지) -----
+  // 2026-05-19 — 매일 비밀번호 변경 운영. SHA-256 해시 비교, sessionStorage 통과 표식.
+  //   · 평문 비밀번호는 코드에 없음 (해시만 박힘).
+  //   · 같은 탭에서 새로고침해도 통과 표식 유지 — 탭 닫으면 초기화.
+  //   · "비번 바꿔" 요청 시 → openssl/printf|shasum -a 256 으로 새 해시 계산 → 아래 상수만 갱신 → push.
+  const ADQ_GATE_PASSWORD_HASH = '52ecc5bc2e28c532deac2d0068c5de17d4996f4dff2eec2ec0f2a3082b312e37';
+  const ADQ_GATE_FLAG_KEY = 'adqGateUnlocked.v1';
+  const adqGate = document.getElementById('adqGate');
+  if (adqGate) {
+    const tryUnlock = () => {
+      adqGate.remove();
+      document.body.classList.remove('adq-locked');
+    };
+    const isUnlocked = (() => {
+      try { return sessionStorage.getItem(ADQ_GATE_FLAG_KEY) === '1'; }
+      catch (_) { return false; }
+    })();
+    if (isUnlocked) {
+      tryUnlock();
+    } else {
+      const form = document.getElementById('adqGateForm');
+      const input = document.getElementById('adqGateInput');
+      const err = document.getElementById('adqGateErr');
+      const box = adqGate.querySelector('.adq-gate__box');
+      const sha256Hex = async (str) => {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+      };
+      if (form && input && err && box) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const v = (input.value || '').trim();
+          if (!v) return;
+          let hash;
+          try { hash = await sha256Hex(v); } catch (_) { hash = ''; }
+          if (hash && hash === ADQ_GATE_PASSWORD_HASH) {
+            try { sessionStorage.setItem(ADQ_GATE_FLAG_KEY, '1'); } catch (_) { /* ignore */ }
+            tryUnlock();
+          } else {
+            err.hidden = false;
+            box.classList.add('is-shake');
+            setTimeout(() => box.classList.remove('is-shake'), 420);
+            input.value = '';
+            input.focus();
+          }
+        });
+      }
+    }
+  }
+
   // ----- 1. 스크롤 시 nav 배경 강화 / 활성 메뉴 표시 -----
   const nav = document.getElementById('nav');
   const navLinks = nav ? nav.querySelectorAll('.nav__menu a') : [];

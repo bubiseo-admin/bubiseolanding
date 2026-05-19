@@ -23,7 +23,29 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="body--main">
+<body class="body--main body--ad-inquiry adq-locked">
+
+  <!-- ============================== 비밀번호 게이트 ============================== -->
+  <!--
+    2026-05-19 — /ad-inquiry 페이지 잠금. 매일 비밀번호 변경 운영.
+    · sessionStorage 통과 표식 — 같은 탭에서 새로고침 시 재입력 없음 (탭 닫으면 초기화).
+    · SHA-256 해시 비교 — 평문 비번은 코드에 없음.
+    · 캐주얼 차단 수준 (작정한 사용자는 view-source 로 컨텐츠 일부 확인 가능 — 추후 백엔드 검증으로 강화 가능).
+  -->
+  <div class="adq-gate" id="adqGate" role="dialog" aria-modal="true" aria-labelledby="adqGateTitle">
+    <div class="adq-gate__box">
+      <h1 id="adqGateTitle" class="adq-gate__title">광고주 전용 페이지</h1>
+      <p class="adq-gate__sub">오늘의 비밀번호를 입력해 주세요.</p>
+      <form class="adq-gate__form" id="adqGateForm" autocomplete="off">
+        <input type="password" id="adqGateInput" class="adq-gate__input"
+               autocomplete="new-password" inputmode="text" autofocus
+               aria-label="비밀번호" />
+        <button type="submit" class="adq-gate__submit">입장</button>
+      </form>
+      <p class="adq-gate__err" id="adqGateErr" hidden>비밀번호가 일치하지 않습니다.</p>
+      <p class="adq-gate__legal">담당자에게 오늘의 비밀번호를 안내받으세요. 매일 갱신됩니다.</p>
+    </div>
+  </div>
 
   <!-- ============================== MAIN NAV ============================== -->
   <header class="main-nav" id="mainNav">
