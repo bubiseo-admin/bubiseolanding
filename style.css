@@ -2852,17 +2852,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   max-width: 560px;
 }
 
-/* ─── Form ────────────────────────────────────────────────── */
+/* ─── Form 컨테이너 (v2: 섹션들이 각자 카드) ──────────────── */
 .adq__form {
-  background: var(--white);
-  border: 1px solid var(--gray-100);
-  border-radius: 24px;
-  padding: clamp(28px, 4vw, 48px);
-  box-shadow: 0 12px 36px -20px rgba(15, 23, 42, 0.10);
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
+/* fieldset 기본 padding 제거 (.adq__section 이 자체 패딩 가짐) */
+.adq__form fieldset { margin: 0; min-width: 0; }
+.adq__form legend { padding: 0; }
+.adq__section--inputs > * + * { margin-top: 18px; }
 
 .adq__legend {
   font-size: 14px;
@@ -3419,3 +3417,569 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 @media (max-width: 720px) {
   .adq__phone { width: 160px; }
 }
+
+
+/* =================================================================
+   AD INQUIRY v2 — 단계 분리 + 3 슬롯 + 스크린샷 충실 미리보기
+   (2026-05-19 사용자 명시: 광고슬롯·입력칸 섹션 분리, COMMUNITY 제거,
+    HOME_POPUP 은 "COMING SOON" 부비서 팝업 그대로 / DASHBOARD 는 yellow
+    strip / PROPERTY_LIST 는 "부비서8" 광고 행 재현)
+   ================================================================= */
+
+/* ─── 섹션(STEP) 공통 ─────────────────────────────────────── */
+.adq__section {
+  border: 1px solid var(--gray-100);
+  border-radius: 24px;
+  background: var(--white);
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 3.5vw, 36px);
+  margin-bottom: 24px;
+  box-shadow: 0 12px 36px -22px rgba(15, 23, 42, 0.10);
+}
+.adq__section-head {
+  display: block;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed var(--gray-100);
+}
+.adq__step {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--white);
+  background: var(--grad-violet);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+.adq__section-title {
+  display: block;
+  font-size: clamp(18px, 2.4vw, 22px);
+  font-weight: 800;
+  color: var(--near-black);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.adq__section-sub {
+  display: block;
+  font-size: 13px;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+/* ─── 슬롯 카드 (v2) ──────────────────────────────────────── */
+.adq__slots-grid-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.adq__slot-v2 {
+  position: relative;
+  cursor: pointer;
+  display: block;
+}
+.adq__slot-v2 input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.adq__slot-card {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 28px;
+  align-items: center;
+  padding: 24px 28px;
+  background: var(--white);
+  border: 2px solid var(--gray-100);
+  border-radius: 20px;
+  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.adq__slot-v2:hover .adq__slot-card {
+  border-color: rgba(91, 127, 255, 0.4);
+  transform: translateY(-2px);
+}
+.adq__slot-v2 input[type="radio"]:checked + .adq__slot-card {
+  border-color: var(--brand);
+  background: linear-gradient(135deg, rgba(91, 127, 255, 0.04), rgba(165, 128, 255, 0.03));
+  box-shadow: 0 0 0 4px rgba(91, 127, 255, 0.10), 0 18px 38px -20px rgba(91, 127, 255, 0.35);
+}
+
+.adq__slot-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.adq__slot-num {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: var(--gray-300);
+  font-feature-settings: 'tnum';
+}
+.adq__slot-v2 input[type="radio"]:checked + .adq__slot-card .adq__slot-num {
+  color: var(--brand);
+}
+.adq__slot-v2 .adq__slot-text { display: flex; flex-direction: column; gap: 6px; }
+.adq__slot-v2 .adq__slot-name {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 900;
+  color: var(--near-black);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.adq__slot-v2 .adq__slot-size {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: 0.06em;
+  font-feature-settings: 'tnum';
+  margin-bottom: 4px;
+}
+.adq__slot-v2 .adq__slot-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+.adq__slot-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--gray-300);
+  color: var(--gray-500);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--white);
+  transition: all 0.18s;
+}
+.adq__slot-check::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+.adq__slot-v2 input[type="radio"]:checked + .adq__slot-card .adq__slot-check {
+  background: var(--grad-violet);
+  border-color: transparent;
+  color: var(--white);
+}
+.adq__slot-v2 input[type="radio"]:checked + .adq__slot-card .adq__slot-check::before {
+  background: var(--white);
+  border-color: var(--white);
+  box-shadow: inset 0 0 0 3px var(--brand);
+}
+
+/* ─── 폰 mockup v2 base ───────────────────────────────────── */
+.adq__phone-v2 {
+  position: relative;
+  width: 240px;
+  margin: 0 auto;
+  background: #1f2937;
+  border-radius: 28px;
+  padding: 8px;
+  box-shadow: 0 18px 36px -16px rgba(15, 23, 42, 0.35);
+}
+.adq__phone-v2::before {
+  content: '';
+  display: block;
+  padding-bottom: 200%;
+}
+.adq__phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 18px;
+  background: #0f172a;
+  border-radius: 999px;
+  z-index: 10;
+}
+.adq__phone-screen {
+  position: absolute;
+  inset: 8px;
+  background: #fff;
+  border-radius: 22px;
+  overflow: hidden;
+  display: block;
+}
+
+/* ─── 1) HOME_POPUP — "COMING SOON" 부비서 팝업 ─────────── */
+.adq__bg-home {
+  position: absolute;
+  inset: 0;
+  padding: 26px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.adq__bg-line { display: block; height: 12px; border-radius: 3px; background: #e5e7eb; }
+.adq__bg-line--lg { width: 70%; height: 16px; background: #c7d2fe; }
+.adq__bg-line--md { width: 40%; }
+.adq__bg-card {
+  display: block;
+  height: 64px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  margin-top: 4px;
+}
+.adq__phone-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  z-index: 1;
+}
+.adq__popup-v2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  aspect-ratio: 4 / 5;
+  z-index: 2;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.5);
+}
+.adq__popup-grad {
+  flex: 1;
+  background: linear-gradient(180deg, #60a5fa 0%, #06b6d4 60%, #1e3a8a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px 10px;
+  color: #fff;
+  position: relative;
+}
+.adq__popup-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+.adq__popup-logo {
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #c7d2fe, #ddd6fe);
+  border-radius: 4px;
+}
+.adq__popup-brandname {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.adq__popup-cs {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin: 8px 0;
+}
+.adq__popup-divider {
+  display: block;
+  width: 70%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+  margin: 6px 0 8px;
+}
+.adq__popup-taglines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 7px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.adq__popup-cta {
+  font-size: 7px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0.92;
+}
+.adq__popup-launch {
+  margin-top: auto;
+  font-size: 7px;
+  font-weight: 700;
+  opacity: 0.92;
+}
+.adq__popup-url {
+  font-size: 6px;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+.adq__popup-footer-v2 {
+  display: flex;
+  height: 22px;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  font-size: 7px;
+  color: #fff;
+  font-weight: 600;
+}
+.adq__popup-footer-v2 > span:not(.adq__popup-divider-v) { flex: 1; text-align: center; }
+.adq__popup-divider-v { width: 1px; height: 12px; background: rgba(255, 255, 255, 0.15); }
+
+/* ─── 2) DASHBOARD — yellow strip 광고 ──────────────────── */
+.adq__home-header {
+  position: absolute;
+  top: 14px; left: 14px; right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.adq__home-logo {
+  font-size: 14px;
+  font-weight: 900;
+  color: #6155F5;
+  letter-spacing: -0.02em;
+}
+.adq__home-profile {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c7d2fe, #ddd6fe);
+}
+.adq__home-sub {
+  position: absolute;
+  top: 36px; left: 14px;
+  width: 60%; height: 8px;
+  background: #1f2937;
+  border-radius: 2px;
+}
+.adq__home-card--props {
+  position: absolute;
+  top: 56px; left: 14px; right: 14px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px -6px rgba(15, 23, 42, 0.08);
+}
+.adq__home-sec-title {
+  position: absolute;
+  top: 108px; left: 14px;
+  width: 50px; height: 8px;
+  background: #6155F5;
+  border-radius: 2px;
+}
+.adq__home-comm-row {
+  position: absolute;
+  top: 124px; left: 14px; right: 14px;
+  display: flex;
+  gap: 6px;
+}
+.adq__home-comm-tile {
+  flex: 1;
+  height: 60px;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  border-radius: 8px;
+}
+/* yellow strip ad */
+.adq__strip-v2 {
+  position: absolute;
+  top: 198px; left: 14px; right: 14px;
+  height: 44px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px -6px rgba(251, 191, 36, 0.5);
+}
+.adq__strip-badge-v2 {
+  position: absolute;
+  top: 4px; left: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+.adq__strip-content {
+  color: #92400e;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.adq__strip-dots {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+}
+.adq__strip-dots span {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(146, 64, 14, 0.4);
+}
+.adq__strip-dots span:first-child { background: #92400e; }
+
+/* ─── 3) PROPERTY_LIST — 부비서8 광고 행 ────────────────── */
+.adq__list-header {
+  position: absolute;
+  top: 14px; left: 14px; right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.adq__list-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: #6155F5;
+  letter-spacing: -0.02em;
+}
+.adq__list-icons {
+  width: 60px; height: 14px;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+.adq__list-filters {
+  position: absolute;
+  top: 40px; left: 14px; right: 14px;
+  display: flex;
+  gap: 4px;
+}
+.adq__list-filters span {
+  flex: 1;
+  height: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+}
+
+.adq__phone--list .adq__list-row-v2,
+.adq__list-row-v2 {
+  position: absolute;
+  left: 0; right: 0;
+  display: flex;
+  padding: 8px 12px;
+  background: #fff;
+  border-bottom: 1px solid #f1f3f5;
+  align-items: flex-start;
+  gap: 8px;
+}
+.adq__phone-v2 .adq__list-row-v2:nth-of-type(3) { top: 68px; }
+.adq__phone-v2 .adq__list-row-v2:nth-of-type(4) { top: 150px; }
+.adq__phone-v2 .adq__list-row-v2:nth-of-type(5) { top: 230px; }
+
+.adq__list-text-v2 {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.adq__list-l1 {
+  font-size: 7px;
+  font-weight: 700;
+  color: #8B95A1;
+  letter-spacing: -0.02em;
+}
+.adq__list-l2 {
+  font-size: 8px;
+  font-weight: 800;
+  color: #191F28;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.adq__list-l3 {
+  font-size: 8px;
+  font-weight: 800;
+  color: #6155F5;
+  letter-spacing: -0.02em;
+}
+.adq__list-l4 {
+  font-size: 6.5px;
+  color: #4E5968;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.adq__list-thumb-v2 {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+.adq__list-thumb-v2--photo { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+.adq__list-thumb-v2--photo2 { background: linear-gradient(135deg, #d1d5db, #f3f4f6); }
+
+/* 광고 행 */
+.adq__list-row-v2--ad {
+  background: #fff;
+}
+.adq__list-l2--ad {
+  color: #6155F5;
+  font-weight: 800;
+}
+.adq__list-l3--ad {
+  color: #191F28;
+}
+.adq__list-l5-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 6.5px;
+  color: #8B95A1;
+  font-weight: 600;
+}
+.adq__list-l5-badge {
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 6px;
+  font-weight: 800;
+  padding: 0 3px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+.adq__list-thumb-v2--ad {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.adq__list-thumb-hex {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #c4b5fd, #a78bfa, #60a5fa);
+  /* hexagon-ish 모양 */
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  filter: drop-shadow(0 4px 10px rgba(124, 58, 237, 0.30));
+}
+
+/* ─── 반응형 — 카드 stack ─────────────────────────────── */
+@media (max-width: 880px) {
+  .adq__slot-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 22px;
+  }
+  .adq__slot-meta { align-items: flex-start; }
+  .adq__phone-v2 { width: 220px; }
+}
+@media (max-width: 480px) {
+  .adq__phone-v2 { width: 200px; }
+  .adq__section { padding: 22px 18px; }
+  .adq__slot-v2 .adq__slot-name { font-size: 20px; }
+}
+
+/* ─── ✕ 기존 v1 폰 미리보기 (.adq__phone--popup / --dashboard /
+        --list / --grid) 와 .adq__slot / .adq__slots-grid 는 데드.
+        호환 위해 남기지 않고 사용 0건 → CSS 청소 가능 (다음 PR). */
