@@ -4776,7 +4776,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    1인당 월 단가 × 활성 회원수 = 슬롯 가격 모델.
    ================================================================= */
 
-/* 2칼럼 레이아웃 — desktop 980px 이상에서 사이드바 우측 sticky */
+/* 2칼럼 레이아웃 — 2026-05-19 사용자 명시: 사이드바 왼쪽 */
 .adq__body {
   display: block;
   width: 100%;
@@ -4788,7 +4788,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 @media (min-width: 980px) {
   .adq__body {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: 340px minmax(0, 1fr);
     gap: 56px;
     align-items: start;
   }
@@ -4796,13 +4796,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     position: sticky;
     top: 100px;
     align-self: start;
+    order: 0;
   }
+  .adq__main { order: 1; min-width: 0; }
 }
 
 @media (max-width: 979px) {
-  .adq__sidebar {
-    margin-top: 48px;
-  }
+  /* 모바일: 사이드바를 본문 위에 표시 — 활성 회원/단가가 먼저 보이게 */
+  .adq__body { display: flex; flex-direction: column; }
+  .adq__sidebar { order: 0; margin-bottom: 48px; }
+  .adq__main { order: 1; }
 }
 
 /* ─── 사이드바 공통 ──────────────────────────────────────── */
@@ -5012,4 +5015,153 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   }
   .adq__sidebar-users { font-size: 40px; }
   .adq__sidebar-price-total { font-size: 20px; }
+}
+
+/* =================================================================
+   AD-INQUIRY 사이드바 추가 요소 (2026-05-19 추가)
+   ─ 새로고침 버튼, 모드 배지, 부동산/직원 수 카드, A/B/C 모드별 가격 표시
+   ================================================================= */
+
+/* 사이드바 상단 툴바 (모드 배지 + 새로고침) */
+.adq__sidebar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 2px;
+}
+.adq__sidebar-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  text-transform: none;
+}
+.adq__sidebar-mode[data-mode="A"] { background: #4E5968; }
+.adq__sidebar-mode[data-mode="B"] { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); }
+.adq__sidebar-mode[data-mode="C"] { background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%); }
+
+/* 새로고침 버튼 */
+.adq__sidebar-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: #ffffff;
+  border: 1px solid #E5E8EC;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4E5968;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.adq__sidebar-refresh:hover {
+  border-color: #6155F5;
+  color: #6155F5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(97, 85, 245, 0.15);
+}
+.adq__sidebar-refresh:active { transform: translateY(0); }
+.adq__sidebar-refresh:disabled { opacity: 0.6; cursor: wait; }
+.adq__sidebar-refresh svg { transition: transform 0.6s ease; color: currentColor; }
+.adq__sidebar-refresh.is-spinning svg { animation: adqRefreshSpin 0.8s linear infinite; }
+@keyframes adqRefreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 모드 promo 배너 (베타 무료/런칭 보장가) */
+.adq__sidebar-promo {
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFF4E0 100%);
+  border: 1px solid rgba(247, 147, 30, 0.25);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: #6B4413;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.adq__sidebar-promo[hidden] { display: none !important; }
+.adq__sidebar-promo strong {
+  color: #C2410C;
+  font-weight: 800;
+}
+
+/* 부동산/대표/직원 수 카드 (3분할) */
+.adq__sidebar-stats {
+  background: #ffffff;
+  border: 1px solid #ECEEF1;
+  border-radius: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+}
+.adq__sidebar-stat {
+  padding: 14px 8px;
+  text-align: center;
+  border-right: 1px solid #F2F4F6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.adq__sidebar-stat:last-child { border-right: 0; }
+.adq__sidebar-stat-label {
+  font-size: 10.5px;
+  color: #8B95A1;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+.adq__sidebar-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #191F28;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+.adq__sidebar-stat-unit {
+  font-size: 10.5px;
+  color: #6E7680;
+  font-weight: 600;
+}
+
+/* A/B/C 모드별 가격 표시 — strikethrough (C 무료), 보장가 라벨 (B), 정가 (A) */
+.adq__sidebar-price-strike {
+  text-decoration: line-through;
+  color: #B0B8C1;
+  font-size: 13px;
+  font-weight: 600;
+}
+.adq__sidebar-price-free {
+  display: block;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+.adq__sidebar-price-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #C2410C;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .adq__sidebar-stat-value { font-size: 19px; }
+  .adq__sidebar-stat-label { font-size: 10px; }
 }

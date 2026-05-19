@@ -13,6 +13,7 @@
   //   · 같은 탭 새로고침: 토큰 유지. 탭 닫으면 초기화. 백엔드 만료(24h) 시 자동 재로그인.
   //   · "비번 바꿔" 운영: 어시스턴트가 SSH + curl 한 줄로 POST /admin/rotate (어드민 키 헤더).
   const ADQ_GATE_TOKEN_KEY = 'adqGateToken.v2';
+  const ADQ_GATE_RELOAD_COUNT_KEY = 'adqGateReloadCount.v2';
   const ADQ_GATE_UNLOCK_URL = 'https://api.bubiseo.com/landing/ad-inquiry/unlock';
   const adqGate = document.getElementById('adqGate');
   if (adqGate) {
@@ -70,8 +71,15 @@
             submitBtn.textContent = '입장';
           }
           if (ok) {
-            try { sessionStorage.setItem(ADQ_GATE_TOKEN_KEY, token); } catch (_) { /* ignore */ }
+            try {
+              sessionStorage.setItem(ADQ_GATE_TOKEN_KEY, token);
+              sessionStorage.removeItem(ADQ_GATE_RELOAD_COUNT_KEY);
+            } catch (_) { /* ignore */ }
             tryUnlock();
+            // 게이트 통과 직후 통계/단가 fetch 트리거 (reload 없이 즉시).
+            if (typeof window.adqLoadProtected === 'function') {
+              try { window.adqLoadProtected(); } catch (_) { /* ignore */ }
+            }
           } else {
             err.hidden = false;
             err.textContent = '비밀번호가 일치하지 않거나 네트워크 오류입니다.';
@@ -93,9 +101,30 @@
     } catch (_) { /* ignore */ }
     return {};
   }
-  // 토큰 만료 등으로 401 받으면 sessionStorage 비우고 페이지 reload (게이트 다시 표시).
+  function adqHasGateToken() {
+    try {
+      const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
+      return Boolean(t && /^[A-Fa-f0-9]{64}$/.test(t));
+    } catch (_) { return false; }
+  }
+  // 401 시 무한 reload 방지 — 2회 초과 시 reload 안 함, 게이트만 표시.
   function adqGateHandle401() {
-    try { sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY); } catch (_) { /* ignore */ }
+    let n = 0;
+    try { n = parseInt(sessionStorage.getItem(ADQ_GATE_RELOAD_COUNT_KEY) || '0', 10) || 0; } catch (_) {}
+    if (n >= 2) {
+      // 무한 루프 방지 — 토큰만 비우고 게이트 표시 (reload X).
+      try {
+        sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY);
+        sessionStorage.removeItem(ADQ_GATE_RELOAD_COUNT_KEY);
+      } catch (_) {}
+      // 게이트가 이미 사라진 상태라면 다시 보여주기 위해 DOM 재구성보다 단순 메시지 표시.
+      console.warn('[adq-gate] 인증 반복 실패 — reload 중단, 비번 재입력 필요');
+      return;
+    }
+    try {
+      sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY);
+      sessionStorage.setItem(ADQ_GATE_RELOAD_COUNT_KEY, String(n + 1));
+    } catch (_) { /* ignore */ }
     window.location.reload();
   }
 
@@ -386,10 +415,17 @@
     });
   });
 
-  // ----- 6-2-c. 광고 효과 통계 fetch (24h 캐시 — /ad-inquiry 페이지 공지사항) -----
-  // 2026-05-19 — 백엔드 GET /landing/ad-stats 호출 → [data-ad-stats-grid] 채움.
-  //   응답 자체에 24h Cache-Control 헤더가 붙어 브라우저·CDN 캐시. 페이지 로드 시 한 번 호출.
+  // ----- 6-2-c. 광고 효과 통계 + 단가 fetch (게이트 토큰 필수, 100% 실데이터) -----
+  // 2026-05-19 — 무한 reload 버그 수정:
+  //   · fetch 전 토큰 가드 — 토큰 없으면 fetch 시도 자체 안 함.
+  //   · 401 시 reload 카운터 2회 제한 — 무한 루프 방지.
+  //   · 새로고침 버튼: ?refresh=1 쿼리 → 백엔드 캐시 우회 → 그 시점 실데이터.
   const adStatsContainer = document.querySelector('[data-ad-stats]');
+  const adPricingContainer = document.querySelector('[data-ad-pricing]');
+  let isRefreshing = false;
+
+  // === 광고 효과 통계 로더 ===
+  let loadAdStats = function () { /* no-op fallback */ };
   if (adStatsContainer) {
     const grid = adStatsContainer.querySelector('[data-ad-stats-grid]');
     const updatedEl = adStatsContainer.querySelector('[data-ad-stats-updated]');
@@ -438,49 +474,54 @@
       `;
     };
 
-    fetch('https://api.bubiseo.com/landing/ad-stats', {
-      credentials: 'omit',
-      headers: adqGateAuthHeader(),
-    })
-      .then(async (r) => {
-        if (r.status === 401) {
-          // 게이트 토큰 만료 — 비우고 페이지 reload (게이트 다시 표시).
-          adqGateHandle401();
-          throw new Error('GATE_EXPIRED');
-        }
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
+    loadAdStats = function (refresh) {
+      if (!adqHasGateToken()) return; // 토큰 없으면 fetch 안 함 (무한 reload 방지)
+      const url = 'https://api.bubiseo.com/landing/ad-stats' + (refresh ? '?refresh=1' : '');
+      return fetch(url, {
+        credentials: 'omit',
+        headers: adqGateAuthHeader(),
+        cache: refresh ? 'no-store' : 'default',
       })
-      .then((data) => {
-        if (!grid) return;
-        if (!data || !Array.isArray(data.slots)) throw new Error('형식 오류');
-        grid.innerHTML = data.slots.map(renderSlot).join('');
-        if (updatedEl) {
-          // 2026-05-19 — basis: 'cumulative' (출시 이후 누적). 어드민 AdminAdStatsScreen 과 동일 산출.
-          const basisLabel = data.basis === 'cumulative' ? '출시 이후 누적' : (data.periodDays ? `최근 ${data.periodDays}일 누적` : '누적');
-          updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · ${basisLabel}`;
-        }
-      })
-      .catch((err) => {
-        if (err && err.message === 'GATE_EXPIRED') return; // reload 중
-        if (grid) {
-          grid.innerHTML = '<div class="adq__stat--loading" style="grid-column: 1 / -1;"><span>통계 불러오기 실패</span><em>잠시 후 새로고침해주세요</em></div>';
-        }
-      });
+        .then((r) => {
+          if (r.status === 401) { adqGateHandle401(); throw new Error('GATE_EXPIRED'); }
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then((data) => {
+          if (!grid) return;
+          if (!data || !Array.isArray(data.slots)) throw new Error('형식 오류');
+          grid.innerHTML = data.slots.map(renderSlot).join('');
+          if (updatedEl) {
+            const basisLabel = data.basis === 'cumulative' ? '출시 이후 누적' : (data.periodDays ? `최근 ${data.periodDays}일 누적` : '누적');
+            updatedEl.textContent = `최근 갱신 ${fmtUpdatedAt(data.updatedAt)} · ${basisLabel}`;
+          }
+        })
+        .catch((err) => {
+          if (err && err.message === 'GATE_EXPIRED') return;
+          if (grid) {
+            grid.innerHTML = '<div class="adq__stat--loading" style="grid-column: 1 / -1;"><span>통계 불러오기 실패</span><em>잠시 후 새로고침해주세요</em></div>';
+          }
+        });
+    };
+    // 페이지 로드 시 첫 호출 (토큰 있는 경우만).
+    if (adqHasGateToken()) loadAdStats(false);
   }
 
-  // ----- 6-2-e. 광고 단가 사이드바 fetch (활성 회원수 × 1인당 단가) -----
-  // 2026-05-19 사용자 명시 — /ad-inquiry 우측 사이드바에 활성 회원수 + 슬롯별 월 단가 + 결제 정책.
-  //   매월 1일 KST 자정에 백엔드 캐시 자동 갱신.
-  const adPricingContainer = document.querySelector('[data-ad-pricing]');
+  // === 광고 단가 사이드바 로더 (A/B/C 모드별 렌더) ===
+  let loadAdPricing = function () { /* no-op fallback */ };
   if (adPricingContainer) {
     const activeEl = adPricingContainer.querySelector('[data-ad-pricing-active]');
     const totalEl = adPricingContainer.querySelector('[data-ad-pricing-total]');
+    const reEl = adPricingContainer.querySelector('[data-ad-pricing-re]');
+    const ownerEl = adPricingContainer.querySelector('[data-ad-pricing-owners]');
+    const empEl = adPricingContainer.querySelector('[data-ad-pricing-employees]');
     const monthEl = adPricingContainer.querySelector('[data-ad-pricing-month]');
     const nextEl = adPricingContainer.querySelector('[data-ad-pricing-next]');
+    const modeEl = adPricingContainer.querySelector('[data-ad-pricing-mode-badge]');
+    const promoEl = adPricingContainer.querySelector('[data-ad-pricing-promo]');
     const pricesEl = adPricingContainer.querySelector('[data-ad-pricing-prices]');
 
-    const fmtKrw = (n) => (n || 0).toLocaleString('ko-KR');
+    const fmtKrw = (n) => (Number(n) || 0).toLocaleString('ko-KR');
     const fmtRenewal = (iso) => {
       try {
         const d = new Date(iso);
@@ -491,8 +532,33 @@
         return `${y}.${m}.${day}`;
       } catch (_) { return '—'; }
     };
-    const renderPrice = (s, activeUsers) => {
-      const isZero = !s.monthlyKrw;
+
+    const renderPrice = (s, activeUsers, mode, guaranteedFloor) => {
+      // 모드별 단가 카드 렌더 — 100% 실데이터.
+      //   A: 정상가 그대로
+      //   B: 보장 회원수 기준 (활성 N명 < 50 → 50명 기준으로 표시 + 라벨)
+      //   C: 정상가 strike + 베타 무료 배지
+      const list = fmtKrw(s.listMonthlyKrw);
+      const eff = fmtKrw(s.effectiveMonthlyKrw);
+      let totalHtml;
+      if (mode === 'C' && s.isFree) {
+        totalHtml = `
+          <span class="adq__sidebar-price-total">
+            <span class="adq__sidebar-price-strike">${list}원/월</span>
+            <span class="adq__sidebar-price-free">베타 3개월 무료</span>
+          </span>`;
+      } else if (mode === 'B') {
+        totalHtml = `
+          <span class="adq__sidebar-price-total">
+            ${eff}<small>원/월</small>
+          </span>
+          <span class="adq__sidebar-price-note">런칭 보장가 (회원 ${fmtKrw(guaranteedFloor || 0)}명 기준)</span>`;
+      } else {
+        const isZero = s.effectiveMonthlyKrw === 0;
+        totalHtml = isZero
+          ? `<span class="adq__sidebar-price-total"><span class="adq__sidebar-price-zero">활성 회원 0명 — 단가 산정 대기</span></span>`
+          : `<span class="adq__sidebar-price-total">${eff}<small>원/월</small></span>`;
+      }
       return `
         <div class="adq__sidebar-price">
           <span class="adq__sidebar-price-label">${s.label}</span>
@@ -501,41 +567,99 @@
           <span class="adq__sidebar-price-formula">
             <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(activeUsers)}명
           </span>
-          <span class="adq__sidebar-price-total">
-            ${isZero
-              ? '<span class="adq__sidebar-price-zero">활성 회원 0명 — 단가 산정 대기</span>'
-              : `${fmtKrw(s.monthlyKrw)}<small>원/월</small>`
-            }
-          </span>
+          ${totalHtml}
         </div>
       `;
     };
 
-    fetch('https://api.bubiseo.com/landing/ad-pricing', {
-      credentials: 'omit',
-      headers: adqGateAuthHeader(),
-    })
-      .then((r) => {
-        if (r.status === 401) { adqGateHandle401(); throw new Error('GATE_EXPIRED'); }
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
+    loadAdPricing = function (refresh) {
+      if (!adqHasGateToken()) return;
+      const url = 'https://api.bubiseo.com/landing/ad-pricing' + (refresh ? '?refresh=1' : '');
+      return fetch(url, {
+        credentials: 'omit',
+        headers: adqGateAuthHeader(),
+        cache: refresh ? 'no-store' : 'default',
       })
-      .then((data) => {
-        if (!data || typeof data.activeUsers !== 'number') throw new Error('형식 오류');
-        if (activeEl) activeEl.textContent = fmtKrw(data.activeUsers);
-        if (totalEl) totalEl.textContent = fmtKrw(data.totalRegistered);
-        if (monthEl) monthEl.textContent = data.pricingMonth || '—';
-        if (nextEl) nextEl.textContent = fmtRenewal(data.nextRenewalAt);
-        if (pricesEl && Array.isArray(data.slots)) {
-          pricesEl.innerHTML = data.slots.map((s) => renderPrice(s, data.activeUsers)).join('');
-        }
-      })
-      .catch((err) => {
-        if (err && err.message === 'GATE_EXPIRED') return;
-        if (pricesEl) {
-          pricesEl.innerHTML = '<div class="adq__sidebar-price adq__sidebar-price--loading">단가 정보 불러오기 실패</div>';
-        }
-      });
+        .then((r) => {
+          if (r.status === 401) { adqGateHandle401(); throw new Error('GATE_EXPIRED'); }
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then((data) => {
+          if (!data || typeof data.activeUsers !== 'number') throw new Error('형식 오류');
+          if (activeEl) activeEl.textContent = fmtKrw(data.activeUsers);
+          if (totalEl) totalEl.textContent = fmtKrw(data.totalRegistered);
+          if (reEl) reEl.textContent = fmtKrw(data.realEstateCount);
+          if (ownerEl) ownerEl.textContent = fmtKrw(data.ownerCount);
+          if (empEl) empEl.textContent = fmtKrw(data.employeeCount);
+          if (monthEl) monthEl.textContent = data.pricingMonth || '—';
+          if (nextEl) nextEl.textContent = fmtRenewal(data.nextRenewalAt);
+
+          // 모드 배지 / 베타 promo 배너
+          const mode = data.displayMode || 'A';
+          if (modeEl) {
+            const label = { A: '실시간 단가', B: '런칭 보장가', C: '베타 무료' }[mode] || '단가';
+            modeEl.textContent = label;
+            modeEl.dataset.mode = mode;
+          }
+          if (promoEl) {
+            if (mode === 'C' && data.betaPromo) {
+              promoEl.hidden = false;
+              promoEl.innerHTML = `🎁 <strong>베타 광고주 모집</strong> · ${data.betaPromo.months}개월 무료 (회원 늘면 정식가 전환)`;
+            } else if (mode === 'B' && data.guaranteedFloor) {
+              promoEl.hidden = false;
+              promoEl.innerHTML = `🚀 <strong>런칭 보장가</strong> · 활성 회원 ${fmtKrw(data.guaranteedFloor)}명 기준 단가 적용`;
+            } else {
+              promoEl.hidden = true;
+              promoEl.innerHTML = '';
+            }
+          }
+
+          if (pricesEl && Array.isArray(data.slots)) {
+            pricesEl.innerHTML = data.slots
+              .map((s) => renderPrice(s, data.activeUsers, mode, data.guaranteedFloor))
+              .join('');
+          }
+        })
+        .catch((err) => {
+          if (err && err.message === 'GATE_EXPIRED') return;
+          if (pricesEl) {
+            pricesEl.innerHTML = '<div class="adq__sidebar-price adq__sidebar-price--loading">단가 정보 불러오기 실패</div>';
+          }
+        });
+    };
+    if (adqHasGateToken()) loadAdPricing(false);
+  }
+
+  // 게이트 통과 직후 한 번에 두 로더 트리거 (reload 없이).
+  window.adqLoadProtected = function () {
+    if (typeof loadAdStats === 'function') loadAdStats(false);
+    if (typeof loadAdPricing === 'function') loadAdPricing(false);
+  };
+
+  // === 새로고침 버튼 ===
+  // 사용자 명시: 클릭 시 통계+부동산/직원 수+단가 모두 그 시점 실데이터로 갱신.
+  const refreshBtn = document.querySelector('[data-ad-refresh]');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async () => {
+      if (isRefreshing) return;
+      if (!adqHasGateToken()) return;
+      isRefreshing = true;
+      refreshBtn.classList.add('is-spinning');
+      refreshBtn.disabled = true;
+      try {
+        await Promise.all([
+          typeof loadAdStats === 'function' ? loadAdStats(true) : Promise.resolve(),
+          typeof loadAdPricing === 'function' ? loadAdPricing(true) : Promise.resolve(),
+        ]);
+      } catch (_) { /* ignore */ }
+      // 회전 애니메이션 자연스럽게 끊기게 약간 지연.
+      setTimeout(() => {
+        refreshBtn.classList.remove('is-spinning');
+        refreshBtn.disabled = false;
+        isRefreshing = false;
+      }, 600);
+    });
   }
 
   // ----- 6-3-a. 광고 슬롯 radio toggle 동작 -----

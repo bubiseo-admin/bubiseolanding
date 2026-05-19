@@ -235,16 +235,51 @@
         · 3개월 만료 후 재계약 시 그 시점 활성 회원수 기준 재산정
     -->
     <aside class="adq__sidebar" data-ad-pricing>
-      <!-- 활성 회원수 카드 -->
+      <!-- 사이드바 헤더 — 모드 배지 + 새로고침 버튼 -->
+      <div class="adq__sidebar-toolbar">
+        <span class="adq__sidebar-mode" data-ad-pricing-mode-badge data-mode="C">베타 무료</span>
+        <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M23 4v6h-6"></path>
+            <path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+          </svg>
+          <span>새로고침</span>
+        </button>
+      </div>
+
+      <!-- 모드 배너 (베타 무료 / 런칭 보장가) -->
+      <div class="adq__sidebar-promo" data-ad-pricing-promo hidden></div>
+
+      <!-- 활성 회원수 카드 (메인 강조) -->
       <div class="adq__sidebar-card adq__sidebar-card--users">
         <span class="adq__sidebar-label">현재 부비서 활성 공인중개사</span>
         <span class="adq__sidebar-users" data-ad-pricing-active>—</span>
         <span class="adq__sidebar-unit">명</span>
-        <span class="adq__sidebar-sub">최근 30일 활동 기준 (MAU)</span>
+        <span class="adq__sidebar-sub">최근 30일 활동 기준 (MAU · 100% 실데이터)</span>
         <span class="adq__sidebar-meta">누적 가입 <em data-ad-pricing-total>—</em> 명</span>
       </div>
 
-      <!-- 슬롯별 단가 카드 (JS 가 렌더) -->
+      <!-- 통계 카드 — 부동산 사무소 / 대표 / 직원 (실데이터) -->
+      <div class="adq__sidebar-stats">
+        <div class="adq__sidebar-stat">
+          <span class="adq__sidebar-stat-label">부동산 사무소</span>
+          <span class="adq__sidebar-stat-value" data-ad-pricing-re>—</span>
+          <span class="adq__sidebar-stat-unit">곳</span>
+        </div>
+        <div class="adq__sidebar-stat">
+          <span class="adq__sidebar-stat-label">대표 (OWNER)</span>
+          <span class="adq__sidebar-stat-value" data-ad-pricing-owners>—</span>
+          <span class="adq__sidebar-stat-unit">명</span>
+        </div>
+        <div class="adq__sidebar-stat">
+          <span class="adq__sidebar-stat-label">직원 (EMPLOYEE)</span>
+          <span class="adq__sidebar-stat-value" data-ad-pricing-employees>—</span>
+          <span class="adq__sidebar-stat-unit">명</span>
+        </div>
+      </div>
+
+      <!-- 슬롯별 단가 카드 (JS 가 렌더, 모드별 다름) -->
       <div class="adq__sidebar-prices" data-ad-pricing-prices>
         <div class="adq__sidebar-price adq__sidebar-price--loading">불러오는 중…</div>
       </div>
