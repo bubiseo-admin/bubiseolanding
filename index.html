@@ -3,7 +3,7 @@
   부비서 — 회사 대표 홈페이지 (메인)
   ─────────────────────────────────────────────────────────────
   miso.co.kr 스타일 미니멀 풀스크린 메인 페이지.
-  제품 상세는 ./app.html. 요금제는 본 페이지 #pricing 섹션에 통합.
+  제품 상세는 ./app.html. 무료 안내는 본 페이지 #pricing 섹션.
   🎨 리디자인 시 ./DESIGN.md 먼저 읽어주세요.
   ─────────────────────────────────────────────────────────────
 -->
@@ -36,7 +36,7 @@
       <a href="#top">홈</a>
       <a href="products.html" hidden style="display:none">제품</a>
       <a href="app.html">기능</a>
-      <a href="#pricing">요금제</a>
+      <a href="#pricing">무료</a>
       <!-- 2026-05-19 — 사용자 명시: 메뉴에서 숨김 (페이지 자체는 ad-inquiry.html 로 접근 가능). -->
       <a href="ad-inquiry.html" hidden style="display:none">광고 문의</a>
     </nav>
@@ -255,15 +255,16 @@
 
   <!-- 2026-05-19 — #products 섹션은 별도 products.html 페이지로 이전. -->
 
-  <!-- ============================== PRICING (요금제) ============================== -->
+  <!-- ============================== FREE (전부 무료 안내) ============================== -->
   <section class="main-section main-section--light main-section--pricing" id="pricing">
     <div class="main-section__inner">
-      <span class="eyebrow" data-reveal>Pricing</span>
+      <span class="eyebrow" data-reveal>Free</span>
       <h2 class="main-section__title" data-reveal data-reveal-delay="80">
-        부비서 <span class="gradient-text">요금제</span>
+        결제해야 사용 가능한 줄 알았죠?<br/>
+        <span class="gradient-text">전부 무료입니다.</span>
       </h2>
       <p class="main-section__desc" data-reveal data-reveal-delay="160">
-        모바일은 <strong>전원 무료</strong>. 데스크톱은 대표 무료, 직원만 월 9,900원.
+        자유롭게 사용하세요.
       </p>
 
       <div class="main-pricing" data-reveal data-reveal-delay="220">
@@ -289,36 +290,30 @@
           </ul>
         </article>
 
-        <!-- 데스크톱 부비서 PRO — 대표 무료 + 직원 추가 시 9,900원 -->
+        <!-- 데스크톱 앱 — 전원 무료 -->
         <article class="pricing-platform pricing-platform--desktop">
           <header class="pricing-platform__head">
-            <h3 class="pricing-platform__name">데스크톱 부비서 PRO</h3>
+            <h3 class="pricing-platform__name">데스크톱 앱</h3>
             <p class="pricing-platform__os">macOS · Windows</p>
           </header>
 
           <div class="pricing-platform__price">
             <strong class="pricing-platform__price-main">무료</strong>
-            <span class="pricing-platform__price-note">대표 1인 기준</span>
-          </div>
-
-          <div class="pricing-platform__addon">
-            <span class="pricing-platform__addon-label">+ 직원 추가</span>
-            <span class="pricing-platform__addon-price">월 <strong>9,900</strong>원<small>/명</small></span>
+            <span class="pricing-platform__price-note">대표 · 직원 모두</span>
           </div>
 
           <ul class="pricing-platform__features">
             <li>큰 화면에서 매물·계약 작성</li>
             <li>모바일과 실시간 동기화</li>
             <li>직원 관리 — 직급·권한·급여 관리</li>
-            <li>월 중 직원 추가 시 일할 계산</li>
+            <li>전국 공동중개망 · 사내 채팅 · 커뮤니티</li>
           </ul>
         </article>
 
       </div>
 
       <p class="main-pricing__note" data-reveal data-reveal-delay="320">
-        부동산 규모에 상관없이 <strong>대표님은 두 앱 모두 무료</strong>입니다.<br/>
-        직원이 데스크톱을 사용할 때만 1인당 월 9,900원이 발생합니다.
+        공인중개사 및 중개보조원분들을 응원합니다 :)
       </p>
     </div>
   </section>
@@ -390,7 +385,7 @@
           <h5>제품</h5>
           <a href="app.html">부비서 앱 (모바일)</a>
           <a href="#desktop">부비서 데스크톱</a>
-          <a href="#pricing">요금제</a>
+          <a href="#pricing">무료 안내</a>
         </div>
         <div>
           <h5>회사</h5>
