@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260520c" />
+  <link rel="stylesheet" href="style.css?v=20260520d" />
 </head>
 <body class="body--main body--ad-inquiry adq-locked">
 
@@ -213,6 +213,30 @@
 
     </div><!-- /.adq__body -->
 
+    <!-- 2026-05-20 [사용자 명시] 결제할 광고 선택 + 결제하기 (토스페이먼츠 링크 추후 도입) -->
+    <section class="adq__checkout" data-ad-checkout>
+      <header class="adq__checkout-head">
+        <span class="adq__checkout-badge">🧾 광고 결제</span>
+        <h2 class="adq__checkout-title">결제할 광고를 선택하세요</h2>
+        <p class="adq__checkout-sub">원하시는 광고 슬롯을 선택하시면 합계 금액이 표시됩니다. 슬롯은 <strong>여러 개 동시 선택</strong>할 수 있습니다.</p>
+      </header>
+
+      <div class="adq__checkout-grid" data-ad-checkout-grid>
+        <div class="adq__checkout-loading">불러오는 중…</div>
+      </div>
+
+      <div class="adq__checkout-summary" data-ad-checkout-summary hidden>
+        <span class="adq__checkout-summary-label">선택한 광고 <strong data-ad-checkout-count>0</strong>개</span>
+        <span class="adq__checkout-summary-total" data-ad-checkout-total>—</span>
+      </div>
+
+      <div class="adq__checkout-actions">
+        <button type="button" class="adq__checkout-btn" data-ad-checkout-pay disabled>결제하기</button>
+      </div>
+
+      <p class="adq__checkout-notice" data-ad-checkout-notice hidden></p>
+    </section>
+
   </main>
 
   <!-- ============================== FOOTER (간소) ============================== -->
@@ -255,6 +279,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260520c"></script>
+  <script src="script.js?v=20260520d"></script>
 </body>
 </html>

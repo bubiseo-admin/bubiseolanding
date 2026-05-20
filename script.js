@@ -643,11 +643,19 @@
               .map((s) => renderPrice(s, data.accountCount, mode, data.guaranteedFloor))
               .join('');
           }
+
+          // 2026-05-20 [사용자 명시] 하단 "결제할 광고 선택" 섹션도 같은 데이터로 렌더.
+          if (typeof window.renderAdCheckout === 'function') {
+            window.renderAdCheckout(data, mode);
+          }
         })
         .catch((err) => {
           if (err && err.message === 'GATE_EXPIRED') return;
           if (pricesEl) {
             pricesEl.innerHTML = '<div class="adq__sidebar-price adq__sidebar-price--loading">단가 정보 불러오기 실패</div>';
+          }
+          if (typeof window.renderAdCheckoutError === 'function') {
+            window.renderAdCheckoutError();
           }
         });
     };
@@ -683,6 +691,108 @@
         isRefreshing = false;
       }, 600);
     });
+  }
+
+  // === 결제할 광고 선택 + 결제하기 (2026-05-20 [사용자 명시]) ===
+  // 광고주가 단가·통계를 확인한 뒤 결제할 광고 슬롯을 다중 선택 → 합계 표시.
+  // 토스페이먼츠 결제링크는 추후 도입 (현재 승인 대기) — 링크 확정 시
+  // 아래 TOSS_PAYMENT_LINK 상수만 채우면 결제하기 버튼이 새 창으로 결제 진행.
+  const TOSS_PAYMENT_LINK = '';
+  const checkoutContainer = document.querySelector('[data-ad-checkout]');
+  if (checkoutContainer) {
+    const checkoutGrid = checkoutContainer.querySelector('[data-ad-checkout-grid]');
+    const checkoutSummary = checkoutContainer.querySelector('[data-ad-checkout-summary]');
+    const checkoutCountEl = checkoutContainer.querySelector('[data-ad-checkout-count]');
+    const checkoutTotalEl = checkoutContainer.querySelector('[data-ad-checkout-total]');
+    const checkoutPayBtn = checkoutContainer.querySelector('[data-ad-checkout-pay]');
+    const checkoutNoticeEl = checkoutContainer.querySelector('[data-ad-checkout-notice]');
+    const fmtKrwCheckout = (n) => (Number(n) || 0).toLocaleString('ko-KR');
+
+    function escAttr(v) {
+      return String(v == null ? '' : v).replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    function syncCheckoutSummary() {
+      const checked = checkoutGrid
+        ? Array.prototype.slice.call(
+            checkoutGrid.querySelectorAll('.adq__checkout-check:checked'),
+          )
+        : [];
+      const count = checked.length;
+      const total = checked.reduce((s, el) => s + (Number(el.dataset.price) || 0), 0);
+      if (checkoutCountEl) checkoutCountEl.textContent = String(count);
+      if (checkoutTotalEl) {
+        checkoutTotalEl.textContent =
+          count === 0 ? '—' : total > 0 ? `${fmtKrwCheckout(total)}원/월` : '베타 3개월 무료';
+      }
+      if (checkoutSummary) checkoutSummary.hidden = count === 0;
+      if (checkoutPayBtn) checkoutPayBtn.disabled = count === 0;
+      if (checkoutNoticeEl) {
+        checkoutNoticeEl.hidden = true;
+        checkoutNoticeEl.textContent = '';
+      }
+    }
+
+    // loadAdPricing 응답(단가 사이드바와 동일 데이터)으로 선택 카드 렌더.
+    window.renderAdCheckout = function (data, mode) {
+      if (!checkoutGrid || !data || !Array.isArray(data.slots)) return;
+      checkoutGrid.innerHTML = data.slots
+        .map((s) => {
+          const isFreeBeta = mode === 'C' && s.isFree;
+          const price = isFreeBeta ? 0 : Number(s.effectiveMonthlyKrw) || 0;
+          const priceLabel = isFreeBeta
+            ? '베타 3개월 무료'
+            : price > 0
+              ? `${fmtKrwCheckout(price)}원/월`
+              : '단가 산정 대기';
+          return `
+            <label class="adq__checkout-card">
+              <input type="checkbox" class="adq__checkout-check"
+                     data-key="${escAttr(s.key)}" data-price="${price}" data-label="${escAttr(s.label)}" />
+              <span class="adq__checkout-card-body">
+                <span class="adq__checkout-card-name">${escAttr(s.label)}</span>
+                <span class="adq__checkout-card-meta">${escAttr(s.size || '')}</span>
+              </span>
+              <span class="adq__checkout-card-price ${isFreeBeta ? 'is-free' : ''}">${priceLabel}</span>
+            </label>`;
+        })
+        .join('');
+      syncCheckoutSummary();
+    };
+
+    window.renderAdCheckoutError = function () {
+      if (checkoutGrid) {
+        checkoutGrid.innerHTML =
+          '<div class="adq__checkout-loading">광고 목록을 불러오지 못했습니다. 새로고침해주세요.</div>';
+      }
+      if (checkoutSummary) checkoutSummary.hidden = true;
+      if (checkoutPayBtn) checkoutPayBtn.disabled = true;
+    };
+
+    if (checkoutGrid) {
+      checkoutGrid.addEventListener('change', (e) => {
+        const t = e.target;
+        if (t && t.classList && t.classList.contains('adq__checkout-check')) {
+          syncCheckoutSummary();
+        }
+      });
+    }
+
+    if (checkoutPayBtn) {
+      checkoutPayBtn.addEventListener('click', () => {
+        if (checkoutPayBtn.disabled) return;
+        // 토스페이먼츠 결제링크 도입 후: TOSS_PAYMENT_LINK 채우면 새 창 결제로 전환.
+        if (TOSS_PAYMENT_LINK) {
+          window.open(TOSS_PAYMENT_LINK, '_blank', 'noopener');
+          return;
+        }
+        if (checkoutNoticeEl) {
+          checkoutNoticeEl.hidden = false;
+          checkoutNoticeEl.textContent =
+            '토스페이먼츠 결제 연동을 준비 중입니다. 선택해 주셔서 감사합니다 — 담당자가 영업일 1~2일 내 입력하신 연락처로 결제 안내를 드립니다.';
+        }
+      });
+    }
   }
 
   // ----- 6-3-a. 광고 슬롯 radio toggle 동작 -----
