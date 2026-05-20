@@ -4457,10 +4457,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__notice-head {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 20px;
+}
+.adq__notice-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .adq__notice-badge {
   display: inline-flex;
@@ -4760,8 +4765,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   /* 태블릿/작은 데스크톱: 사이드바 좁고 단가 카드 위→아래 (모바일과 동일 흐름) */
   .adq__body {
     display: grid;
-    grid-template-columns: 340px minmax(0, 1fr);
-    gap: 48px;
+    grid-template-columns: 384px minmax(0, 1fr);
+    gap: 44px;
     align-items: start;
   }
   .adq__sidebar {
@@ -4774,13 +4779,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 @media (min-width: 1200px) {
-  /* 2026-05-19 사용자 명시 — 데스크톱: 사이드바 폭 460px + 단가 카드 좌측 말풍선 */
+  /* 2026-05-20 사용자 명시 — 데스크톱: 사이드바 폭 확장 (단가 카드 줄바꿈 제거) */
   .adq__body {
     display: grid;
-    grid-template-columns: 460px minmax(0, 1fr);
+    grid-template-columns: 528px minmax(0, 1fr);
     gap: 48px;
     align-items: start;
-    max-width: 1320px;
+    max-width: 1440px;
   }
   .adq__sidebar {
     position: sticky;
@@ -5004,31 +5009,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ─ 새로고침 버튼, 모드 배지, 부동산/직원 수 카드, A/B/C 모드별 가격 표시
    ================================================================= */
 
-/* 사이드바 상단 툴바 (모드 배지 + 새로고침) */
-.adq__sidebar-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 4px 2px;
-}
-/* 모드 배지 — 2026-05-19 리디자인: 그라데이션 제거, 미니멀 chip */
-.adq__sidebar-mode {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #4E5968;
-  background: #F8F9FB;
-  border: 1px solid #ECEEF1;
-}
-.adq__sidebar-mode[data-mode="C"] { color: #191F28; }
-.adq__sidebar-mode[data-mode="B"] { color: #191F28; }
-.adq__sidebar-mode[data-mode="A"] { color: #4E5968; }
-
-/* 새로고침 버튼 — 그림자 강조 제거, 차분한 hover */
+/* 새로고침 버튼 — 광고 효과 통계 헤더 우측. 그림자 강조 제거, 차분한 hover */
 .adq__sidebar-refresh {
   display: inline-flex;
   align-items: center;
@@ -5334,4 +5315,76 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__sidebar-price:not(:has(.adq__sidebar-price-bubble)) {
     grid-template-columns: 1fr;
   }
+}
+
+/* =================================================================
+   AD-INQUIRY 광고 미리보기 — 데모 계정 안내 섹션 (2026-05-20 [사용자 명시])
+   STEP1 광고 슬롯 선택 제거 → 광고주가 데모 계정으로 앱에서 직접 확인.
+   ================================================================= */
+.adq__demo-head {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed var(--gray-100);
+}
+.adq__demo-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #F8F9FB;
+  border: 1px solid #ECEEF1;
+  font-size: 12px;
+  font-weight: 700;
+  color: #191F28;
+  margin-bottom: 14px;
+}
+.adq__demo-title {
+  font-size: clamp(19px, 2.4vw, 24px);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  color: var(--near-black);
+  margin: 0 0 8px;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+.adq__demo-sub {
+  font-size: 13.5px;
+  color: var(--gray-500);
+  line-height: 1.65;
+  margin: 0;
+  word-break: keep-all;
+}
+.adq__demo-account {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 0 0 16px;
+}
+.adq__demo-hint {
+  font-size: 12.5px;
+  color: var(--gray-500);
+  line-height: 1.6;
+  margin: 0 0 22px;
+  word-break: keep-all;
+}
+.adq__demo-actions { display: flex; }
+.adq__demo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--grad-violet);
+  color: #ffffff;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  box-shadow: 0 12px 28px -14px rgba(124, 58, 237, 0.45);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.adq__demo-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px -14px rgba(124, 58, 237, 0.55);
 }

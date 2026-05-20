@@ -516,7 +516,6 @@
     const empEl = adPricingContainer.querySelector('[data-ad-pricing-employees]');
     const monthEl = adPricingContainer.querySelector('[data-ad-pricing-month]');
     const nextEl = adPricingContainer.querySelector('[data-ad-pricing-next]');
-    const modeEl = adPricingContainer.querySelector('[data-ad-pricing-mode-badge]');
     const promoEl = adPricingContainer.querySelector('[data-ad-pricing-promo]');
     const pricesEl = adPricingContainer.querySelector('[data-ad-pricing-prices]');
 
@@ -617,13 +616,8 @@
           if (monthEl) monthEl.textContent = data.pricingMonth || '—';
           if (nextEl) nextEl.textContent = fmtRenewal(data.nextRenewalAt);
 
-          // 모드 배지 / 베타 promo 배너
+          // 베타 promo 배너
           const mode = data.displayMode || 'A';
-          if (modeEl) {
-            const label = { A: '실시간 단가', B: '런칭 보장가', C: '베타 무료' }[mode] || '단가';
-            modeEl.textContent = label;
-            modeEl.dataset.mode = mode;
-          }
           if (promoEl) {
             if (mode === 'C' && data.betaPromo) {
               promoEl.hidden = false;

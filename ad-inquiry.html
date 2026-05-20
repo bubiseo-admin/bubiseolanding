@@ -93,7 +93,17 @@
     <!-- ═══ 공지사항 — 광고 효과 통계 (24h 갱신, 출시 이후 누적) ═══ -->
     <section class="adq__notice" data-ad-stats aria-live="polite">
       <header class="adq__notice-head">
-        <span class="adq__notice-badge">📊 광고 효과 통계</span>
+        <div class="adq__notice-head-row">
+          <span class="adq__notice-badge">📊 광고 효과 통계</span>
+          <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+            </svg>
+            <span>새로고침</span>
+          </button>
+        </div>
         <p class="adq__notice-sub">광고주분들이 참고하실 수 있도록 <strong>24시간마다 갱신</strong>됩니다 · 출시 이후 누적 데이터 기준 (부비서 자체광고만) · <strong>📱 모바일 + 💻 데스크톱 통합 집계</strong></p>
       </header>
 
@@ -108,144 +118,31 @@
       <p class="adq__notice-foot" data-ad-stats-updated>—</p>
     </section>
 
-    <!-- 2026-05-20 [사용자 명시] STEP2 광고주 정보 입력 폼은 products.html 03번 「광고 문의」 섹션으로 이전.
-         이 페이지에는 광고 슬롯 안내(STEP1) + 광고 효과 통계 + 단가만 남김. -->
-    <div class="adq__form">
+    <!-- 2026-05-20 [사용자 명시] STEP1 광고 슬롯 선택 제거 → 데모 계정 안내 섹션으로 교체.
+         광고주가 데모 계정으로 부비서 앱에 직접 로그인해 광고 노출을 확인.
+         계정 정보는 이미지(assets/demo-account.png)로 — HTML 평문 노출 방지. -->
+    <section class="adq__section adq__demo">
+      <div class="adq__demo-head">
+        <span class="adq__demo-badge">📱 광고 미리보기</span>
+        <h2 class="adq__demo-title">광고가 실제로 어떻게 노출되는지 직접 확인하세요</h2>
+        <p class="adq__demo-sub">
+          아래 데모 계정으로 부비서 앱에 로그인하시면, 홈 팝업·대시보드 배너·매물 목록·커뮤니티 배너에
+          광고가 어떻게 송출되는지 직접 보실 수 있습니다.
+        </p>
+      </div>
 
-      <!-- ═══════ STEP 1 — 광고 슬롯 선택 ═══════ -->
-      <fieldset class="adq__section adq__section--slots">
-        <legend class="adq__section-head">
-          <span class="adq__step">STEP 1</span>
-          <span class="adq__section-title">광고 슬롯 선택 <span class="adq__req">*</span></span>
-          <span class="adq__section-sub">실제 앱에 어떻게 노출되는지 폰 미리보기로 확인하세요.</span>
-          <!-- 2026-05-19 사용자 명시: 모바일+데스크톱 양쪽 노출 안내 -->
-          <span class="adq__section-platform">📱 모바일 앱 + 💻 데스크톱 앱에 <strong>동일하게 노출</strong>됩니다</span>
-        </legend>
+      <img class="adq__demo-account" src="assets/demo-account.png"
+           alt="광고 미리보기 데모 계정 정보" width="560" loading="lazy" />
 
-        <!-- 2026-05-20 [사용자 명시] 페이지 전체가 좌우 2컬럼(왼쪽 단가 / 오른쪽 본문)이므로
-             오른쪽 컬럼 안에서는 중첩 2단을 풀고 — 슬롯 카드 그리드(전체폭) + 폰 미리보기(아래) 세로 배치. -->
-        <div class="adq__slots-grid-v3">
-          <!-- 1) HOME_POPUP -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="HOME_POPUP" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">01</span>
-              <span class="adq__slot-name">홈 팝업</span>
-              <span class="adq__slot-size">1080 × 1350</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">로그인 직후 한 번 노출</span>
-                <span class="adq__slot-desc-line">3:4 세로형 · 클릭률 최상</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
+      <p class="adq__demo-hint">
+        부비서 앱을 설치한 뒤 위 계정으로 로그인하시면 됩니다.
+        등록번호 입력 없이 이메일·비밀번호만으로 로그인되는 광고 미리보기 전용 계정입니다.
+      </p>
 
-          <!-- 2) DASHBOARD_IMAGE -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="DASHBOARD_IMAGE" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">02</span>
-              <span class="adq__slot-name">대시보드 배너 (이미지)</span>
-              <span class="adq__slot-size">1500 × 300 · 약 3.5초</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">홈 화면 가로 띠 배너</span>
-                <span class="adq__slot-desc-line">5:1 와이드 · 도달률 최대</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
-
-          <!-- 3) DASHBOARD_VIDEO — 2026-05-20 [사용자 명시] 대시보드 배너 동영상 슬롯 추가 -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="DASHBOARD_VIDEO" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">03</span>
-              <span class="adq__slot-name">대시보드 배너 (동영상)</span>
-              <span class="adq__slot-size">1500 × 300 · 약 5.5초</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">홈 화면 가로 띠 동영상</span>
-                <span class="adq__slot-desc-line">5:1 와이드 · 시선 집중도 최상</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
-
-          <!-- 4) PROPERTY_LIST -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="PROPERTY_LIST" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">04</span>
-              <span class="adq__slot-name">매물 목록</span>
-              <span class="adq__slot-size">1080 × 1080</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">매물 리스트 사이 자연 노출</span>
-                <span class="adq__slot-desc-line">1:1 · 매물 카드와 동일</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
-
-          <!-- 5) COMMUNITY_BANNER_IMAGE — 2026-05-20 [사용자 명시] 커뮤니티 배너 이미지 슬롯 추가 -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="COMMUNITY_BANNER_IMAGE" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">05</span>
-              <span class="adq__slot-name">커뮤니티 배너 (이미지)</span>
-              <span class="adq__slot-size">1500 × 300 · 약 3.5초</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">커뮤니티 헤더↔분류 사이 띠 배너</span>
-                <span class="adq__slot-desc-line">5:1 와이드 · 부담 없는 단가</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
-
-          <!-- 6) COMMUNITY_BANNER_VIDEO — 2026-05-20 [사용자 명시] 커뮤니티 배너 동영상 슬롯 추가 -->
-          <label class="adq__slot-v3">
-            <input type="radio" name="adType" value="COMMUNITY_BANNER_VIDEO" required />
-            <span class="adq__slot-card-v3">
-              <span class="adq__slot-num">06</span>
-              <span class="adq__slot-name">커뮤니티 배너 (동영상)</span>
-              <span class="adq__slot-size">1500 × 300 · 약 5.5초</span>
-              <span class="adq__slot-desc">
-                <span class="adq__slot-desc-line">커뮤니티 헤더↔분류 사이 띠 동영상</span>
-                <span class="adq__slot-desc-line">5:1 와이드 · 합리적 단가</span>
-              </span>
-              <span class="adq__slot-check-v3">이 슬롯 선택</span>
-            </span>
-          </label>
-        </div>
-
-        <!-- 공유 floater — 글자와 이미지 섹션 분리. 호버/선택 시 실제 스크린샷이 둥둥 떠다님 -->
-        <div class="adq__shared-floater" aria-hidden="true">
-          <span class="adq__shared-hint">
-            <span class="adq__shared-hint-arrow">↑</span>
-            슬롯에 마우스를 올리거나 선택하면<br/>
-            <strong>실제 앱 노출 화면</strong>이 여기에 표시됩니다.
-          </span>
-          <img class="adq__shared-img" data-for="HOME_POPUP"
-               src="assets/ad-preview-popup.jpg"
-               alt="홈 팝업 광고 실제 노출 미리보기" loading="lazy" />
-          <img class="adq__shared-img" data-for="DASHBOARD_IMAGE"
-               src="assets/ad-preview-dashboard.jpg"
-               alt="대시보드 배너 이미지 광고 실제 노출 미리보기" loading="lazy" />
-          <!-- 2026-05-20 [사용자 명시] 대시보드 동영상·커뮤니티 배너는 동일 5:1 띠 — 대시보드 미리보기 이미지 재사용 -->
-          <img class="adq__shared-img" data-for="DASHBOARD_VIDEO"
-               src="assets/ad-preview-dashboard.jpg"
-               alt="대시보드 배너 동영상 광고 실제 노출 미리보기" loading="lazy" />
-          <img class="adq__shared-img" data-for="PROPERTY_LIST"
-               src="assets/ad-preview-list.jpg"
-               alt="매물 목록 광고 실제 노출 미리보기" loading="lazy" />
-          <img class="adq__shared-img" data-for="COMMUNITY_BANNER_IMAGE"
-               src="assets/ad-preview-dashboard.jpg"
-               alt="커뮤니티 배너 이미지 광고 실제 노출 미리보기" loading="lazy" />
-          <img class="adq__shared-img" data-for="COMMUNITY_BANNER_VIDEO"
-               src="assets/ad-preview-dashboard.jpg"
-               alt="커뮤니티 배너 동영상 광고 실제 노출 미리보기" loading="lazy" />
-        </div>
-      </fieldset>
-
-    </div>
+      <div class="adq__demo-actions">
+        <a class="adq__demo-btn" href="index.html">부비서 앱 다운로드 →</a>
+      </div>
+    </section>
 
     </div><!-- /.adq__main -->
 
@@ -262,19 +159,6 @@
         · 슬롯별 단가 카드는 백엔드 /landing/ad-pricing 응답을 JS 가 동적 렌더 (위 메모는 참고용)
     -->
     <aside class="adq__sidebar" data-ad-pricing>
-      <!-- 사이드바 헤더 — 모드 배지 + 새로고침 버튼 -->
-      <div class="adq__sidebar-toolbar">
-        <span class="adq__sidebar-mode" data-ad-pricing-mode-badge data-mode="C">베타 무료</span>
-        <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M23 4v6h-6"></path>
-            <path d="M1 20v-6h6"></path>
-            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
-          </svg>
-          <span>새로고침</span>
-        </button>
-      </div>
-
       <!-- 모드 배너 (베타 무료 / 런칭 보장가) -->
       <div class="adq__sidebar-promo" data-ad-pricing-promo hidden></div>
 
