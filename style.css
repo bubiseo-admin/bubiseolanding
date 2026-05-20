@@ -3416,32 +3416,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ================================================================= */
 
 /* ─── 섹션(STEP) 공통 ─────────────────────────────────────── */
+/* 2026-05-20 [사용자 명시] STEP2 제거 후 — 과한 분리 여백·다이아몬드 구분선 정리. */
 .adq__section {
   border: 1px solid var(--gray-100);
   border-radius: 24px;
   background: var(--white);
   padding: clamp(24px, 4vw, 40px) clamp(20px, 3.5vw, 36px);
-  margin-bottom: 120px;   /* STEP 1 ↔ STEP 2 명확히 분리 — 56px → 120px */
+  margin-bottom: 20px;
   box-shadow: 0 12px 36px -22px rgba(15, 23, 42, 0.10);
   position: relative;
-}
-.adq__section + .adq__section { margin-top: 0; }
-
-/* STEP 1 → STEP 2 사이 시각 구분선 — 점점 흐려지는 보라 다이아몬드 */
-.adq__section--slots::after {
-  content: '';
-  position: absolute;
-  bottom: -64px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 12px;
-  height: 12px;
-  background: var(--brand);
-  opacity: 0.4;
-  box-shadow:
-    0 22px 0 0 rgba(91, 127, 255, 0.25),
-    0 44px 0 0 rgba(91, 127, 255, 0.10);
-  pointer-events: none;
 }
 .adq__section-head {
   display: block;
@@ -4000,17 +3983,11 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ================================================================= */
 
 /* v3 슬롯 카드 (텍스트만) — 3 column grid (대시보드 동영상은 나중에 추가, 현재 3슬롯) */
-/* 2026-05-20 [사용자 명시] STEP 1 헤더 아래 좌우 2단 — 왼쪽 슬롯 카드 / 오른쪽 폰 미리보기. */
-.adq__slots-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-}
+/* 2026-05-20 [사용자 명시] 페이지가 좌우 2컬럼(왼쪽 단가 / 오른쪽 본문)이므로
+   오른쪽 컬럼 안에서는 슬롯 카드를 전체폭 반응형 그리드로 — 중첩 2단 제거. */
 .adq__slots-grid-v3 {
-  flex: 1;
-  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
   gap: 16px;
 }
 .adq__slot-v3 {
@@ -4116,14 +4093,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   content: ' ✓';
 }
 
-/* ─── 공유 floater — 우측 컬럼 폰 미리보기 영역 ─────────────
-   2026-05-20 [사용자 명시] 좌우 2단 — 오른쪽 고정폭 + sticky (스크롤 시 따라옴). */
+/* ─── 공유 floater — 슬롯 그리드 아래 폰 미리보기 영역 ─────────
+   2026-05-20 [사용자 명시] 슬롯 카드 그리드 바로 아래 전체폭 블록. 호버/선택 시 스크린샷 표시. */
 .adq__shared-floater {
-  position: sticky;
-  top: 24px;
-  flex: 0 0 320px;
-  align-self: flex-start;
-  min-height: 520px;
+  position: relative;
+  margin-top: 20px;
+  min-height: 460px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4253,36 +4228,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 /* ─── 반응형 ──────────────────────────────────────────────── */
 @media (max-width: 880px) {
-  /* 2026-05-20 [사용자 명시] 좁은 화면 — 좌우 2단 → 세로 스택 (슬롯 위 / 폰 미리보기 아래). */
-  .adq__slots-layout {
-    flex-direction: column;
-  }
-  .adq__slots-grid-v3 {
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .adq__shared-floater {
-    position: static;
-    flex: none;
-    width: 100%;
-    min-height: 440px;
-  }
-  .adq__shared-img {
-    width: 200px;
-  }
-}
-@media (max-width: 560px) {
-  .adq__slots-grid-v3 {
-    grid-template-columns: 1fr;
-  }
+  .adq__shared-floater { min-height: 400px; }
+  .adq__shared-img { width: 200px; }
 }
 @media (max-width: 480px) {
-  .adq__shared-floater {
-    min-height: 380px;
-  }
-  .adq__shared-img {
-    width: 170px;
-  }
+  .adq__shared-floater { min-height: 360px; }
+  .adq__shared-img { width: 170px; }
 }
 
 
@@ -4535,29 +4486,29 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__notice-sub strong { font-weight: 700; color: #191F28; }
 
+/* 2026-05-20 [사용자 명시] 슬롯 4종 반응형 그리드 — 컬럼 폭에 맞춰 자동 줄바꿈. */
 .adq__notice-grid {
   display: grid;
-  /* 2026-05-19 대시보드 동영상은 나중에 추가 — 현재 3슬롯 */
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
   margin-bottom: 14px;
 }
 
+/* 2026-05-20 [사용자 명시] 통계 카드 — 주황 톤 폐기. 페이지 전체(흰/보라/회색)와 통일된 모던 카드. */
 .adq__stat {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(252, 211, 77, 0.6);
+  background: #ffffff;
+  border: 1px solid #ECEEF1;
   border-radius: 14px;
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .adq__stat:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px -14px rgba(146, 64, 14, 0.25);
+  border-color: rgba(91, 127, 255, 0.32);
+  box-shadow: 0 14px 28px -16px rgba(91, 127, 255, 0.22);
 }
 .adq__stat-head {
   display: flex;
@@ -4568,13 +4519,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__stat-name {
   font-size: 14px;
   font-weight: 800;
-  color: #78350f;
+  color: #191F28;
   letter-spacing: -0.02em;
 }
 .adq__stat-size {
   font-size: 11px;
   font-weight: 700;
-  color: #b45309;
+  color: var(--brand);
   letter-spacing: 0.04em;
   font-feature-settings: 'tnum';
 }
@@ -4587,22 +4538,22 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 8px 4px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 8px;
+  gap: 3px;
+  padding: 10px 4px;
+  background: #F8F9FB;
+  border-radius: 10px;
 }
 .adq__stat-metric-label {
   font-size: 10px;
   font-weight: 700;
-  color: #92400e;
+  color: #8B95A1;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 .adq__stat-metric-value {
   font-size: 16px;
   font-weight: 900;
-  color: #78350f;
+  color: #191F28;
   letter-spacing: -0.02em;
   font-feature-settings: 'tnum';
 }
@@ -4616,47 +4567,47 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 /* "수집 중" 상태 (impressions < 100) */
 .adq__stat--insufficient .adq__stat-metrics {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 .adq__stat-insufficient {
   font-size: 11px;
-  color: #b45309;
+  color: var(--brand);
   font-weight: 700;
   text-align: center;
   letter-spacing: -0.01em;
-  padding: 4px 8px;
-  background: rgba(252, 211, 77, 0.35);
-  border-radius: 6px;
+  padding: 5px 8px;
+  background: rgba(91, 127, 255, 0.08);
+  border-radius: 8px;
   margin-top: -2px;
 }
 
 /* loading placeholder */
 .adq__stat--loading {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px dashed rgba(252, 211, 77, 0.8);
+  background: #F8F9FB;
+  border: 1px dashed #D9DEE5;
   display: flex;
   flex-direction: column;
   gap: 6px;
   align-items: center;
   justify-content: center;
-  min-height: 110px;
+  min-height: 116px;
   text-align: center;
 }
 .adq__stat--loading span {
   font-size: 13px;
   font-weight: 800;
-  color: #78350f;
+  color: #191F28;
 }
 .adq__stat--loading em {
   font-style: normal;
   font-size: 12px;
-  color: #b45309;
+  color: #8B95A1;
   font-weight: 600;
 }
 
 .adq__notice-foot {
   font-size: 11px;
-  color: #b45309;
+  color: #9CA3A8;
   letter-spacing: -0.01em;
   margin: 0;
   text-align: right;
@@ -4666,9 +4617,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 /* 반응형 */
 @media (max-width: 720px) {
   .adq__notice { padding: 22px 18px; margin-bottom: 28px; }
-  .adq__notice-grid { grid-template-columns: 1fr; gap: 10px; }
+  .adq__notice-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .adq__notice-head { gap: 8px; }
   .adq__notice-sub { font-size: 12px; min-width: 0; flex: 1 1 100%; }
+}
+@media (max-width: 420px) {
+  .adq__notice-grid { grid-template-columns: 1fr; }
 }
 
 /* =================================================================
