@@ -706,7 +706,8 @@
   });
 
   // ----- 6-3. 광고 문의 (POST /landing/ad-inquiry) -----
-  // 2026-05-19 — /ad-inquiry.html 의 [data-ad-inquiry-form]. Slack #문의 채널로 알림.
+  // 2026-05-20 [사용자 명시] /ad-inquiry.html STEP2 → products.html 03번 「광고 문의」 폼으로 이전.
+  //   슬롯 선택(adType) 없이 광고주 정보만으로 제출. Slack #문의 채널로 알림.
   const AD_INQUIRY_ENDPOINT = 'https://api.bubiseo.com/landing/ad-inquiry';
   document.querySelectorAll('[data-ad-inquiry-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
@@ -714,11 +715,9 @@
       const companyName = (form.querySelector('input[name="companyName"]')?.value || '').trim();
       const contactPerson = (form.querySelector('input[name="contactPerson"]')?.value || '').trim();
       const contact = (form.querySelector('input[name="contact"]')?.value || '').trim();
-      const adType = form.querySelector('input[name="adType"]:checked')?.value || '';
       const body = (form.querySelector('textarea[name="body"]')?.value || '').trim();
 
-      // 클라이언트 1차 검증
-      if (!adType) { window.alert('광고 슬롯을 선택해주세요.'); return; }
+      // 클라이언트 1차 검증 (슬롯 선택 없음 — 광고주 정보만)
       if (!companyName) { window.alert('회사명을 입력해주세요.'); return; }
       if (!contactPerson) { window.alert('담당자명을 입력해주세요.'); return; }
       if (!contact) { window.alert('전화번호 또는 이메일을 입력해주세요.'); return; }
@@ -733,22 +732,21 @@
         const res = await fetch(AD_INQUIRY_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ companyName, contactPerson, contact, adType, body }),
+          body: JSON.stringify({ companyName, contactPerson, contact, body }),
         });
         if (!res.ok) {
           let msg = '문의 전송 중 오류가 발생했어요';
           try { const data = await res.json(); if (data && data.message) msg = data.message; } catch (_) {}
           throw new Error(msg);
         }
-        // 성공 — 폼을 success 상태로 전환
+        // 성공 — products.html 폼 스타일(.prd__success)로 success 블록 inject
         form.classList.add('is-success');
         const successEl = document.createElement('div');
-        successEl.className = 'adq__success';
-        successEl.innerHTML = `
-          <div class="adq__success-icon">✓</div>
-          <div class="adq__success-title">광고 문의가 접수되었습니다</div>
-          <div class="adq__success-text">담당자가 영업일 1~2일 내 입력하신 연락처로 회신드립니다.<br/>문의 주셔서 감사합니다.</div>
-        `;
+        successEl.className = 'prd__success';
+        successEl.innerHTML =
+          '<div class="prd__success-icon">✓</div>' +
+          '<div class="prd__success-title">광고 문의가 정상 접수되었습니다</div>' +
+          '<div class="prd__success-text">담당자가 영업일 1~2일 내 입력하신 연락처로 회신드립니다.<br/>문의 주셔서 감사합니다.</div>';
         form.appendChild(successEl);
       } catch (err) {
         setFormDisabled(form, false);

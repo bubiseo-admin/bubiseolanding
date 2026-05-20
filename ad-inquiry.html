@@ -108,8 +108,9 @@
       <p class="adq__notice-foot" data-ad-stats-updated>—</p>
     </section>
 
-    <!-- 폼 — submit 핸들러는 script.js 의 [data-ad-inquiry-form] 처리 -->
-    <form class="adq__form" data-ad-inquiry-form novalidate>
+    <!-- 2026-05-20 [사용자 명시] STEP2 광고주 정보 입력 폼은 products.html 03번 「광고 문의」 섹션으로 이전.
+         이 페이지에는 광고 슬롯 안내(STEP1) + 광고 효과 통계 + 단가만 남김. -->
+    <div class="adq__form">
 
       <!-- ═══════ STEP 1 — 광고 슬롯 선택 ═══════ -->
       <fieldset class="adq__section adq__section--slots">
@@ -246,49 +247,13 @@
         </div><!-- /.adq__slots-layout -->
       </fieldset>
 
-      <!-- ═══════ STEP 2 — 광고주 정보 입력 ═══════ -->
-      <fieldset class="adq__section adq__section--inputs">
-        <legend class="adq__section-head">
-          <span class="adq__step">STEP 2</span>
-          <span class="adq__section-title">광고주 정보 입력 <span class="adq__req">*</span></span>
-          <span class="adq__section-sub">담당자가 영업일 1~2일 내 입력하신 연락처로 회신드립니다.</span>
-        </legend>
-
-        <!-- 회사·담당자 -->
-      <div class="adq__row">
-        <label class="adq__field">
-          <span class="adq__label">회사명·광고주 <span class="adq__req">*</span></span>
-          <input type="text" name="companyName" required maxlength="100" autocomplete="organization" placeholder="예: 메리츠부동산" />
-        </label>
-        <label class="adq__field">
-          <span class="adq__label">담당자명 <span class="adq__req">*</span></span>
-          <input type="text" name="contactPerson" required maxlength="50" autocomplete="name" placeholder="예: 김광고" />
-        </label>
-      </div>
-
-      <label class="adq__field">
-        <span class="adq__label">연락처 <span class="adq__req">*</span></span>
-        <input type="text" name="contact" required maxlength="200" placeholder="전화번호 또는 이메일 (예: 010-1234-5678 또는 contact@company.com)" />
-      </label>
-
-      <label class="adq__field">
-        <span class="adq__label">광고 문의 내용 <span class="adq__req">*</span> <span class="adq__hint">(30~3000자)</span></span>
-        <textarea name="body" required minlength="30" maxlength="3000" rows="7"
-          placeholder="광고 진행 시기·기간·예산·디자인 보유 여부·기타 문의사항을 자유롭게 적어주세요."></textarea>
-      </label>
-
-      </fieldset>
-
-      <!-- 제출 -->
-      <div class="adq__actions">
-        <button type="submit" class="adq__submit">광고 문의하기 →</button>
-      </div>
-
+      <!-- 2026-05-20 [사용자 명시] STEP2 광고주 정보 입력 폼 → products.html 03번 「광고 문의」 로 이전 완료.
+           광고 문의 신청은 products.html 의 「광고 문의」 섹션에서 진행. -->
       <p class="adq__legal">
-        제출하신 정보는 광고 문의 회신 목적으로만 사용되며,
-        부비서 <a href="privacy.html">개인정보처리방침</a> 에 따라 안전하게 보관됩니다.
+        광고 문의·신청은 <a href="products.html#광고문의">광고 문의 페이지</a> 에서 진행하실 수 있습니다.
+        위 슬롯 안내와 광고 효과 통계를 참고해 주세요.
       </p>
-    </form>
+    </div>
 
     </div><!-- /.adq__main -->
 
