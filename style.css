@@ -4035,12 +4035,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__slot-v3 input[type="radio"]:checked + .adq__slot-card-v3 .adq__slot-num {
   color: var(--brand);
 }
+/* 2026-05-20 [사용자 명시] 슬롯명 22px → 17px — 카드 폭에서 글자 잘림 사고 수정, 단가 사이드바 톤으로 절제. */
 .adq__slot-card-v3 .adq__slot-name {
-  font-size: 22px;
-  font-weight: 900;
+  font-size: 17px;
+  font-weight: 800;
   color: var(--near-black);
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  word-break: keep-all;
 }
 .adq__slot-card-v3 .adq__slot-size {
   font-size: 12px;
@@ -4510,17 +4512,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   border-color: rgba(91, 127, 255, 0.32);
   box-shadow: 0 14px 28px -16px rgba(91, 127, 255, 0.22);
 }
+/* 2026-05-20 [사용자 명시] 헤드 세로 정렬 — 슬롯명이 길어도 사이즈가 밀려 깨지지 않게. */
 .adq__stat-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  gap: 3px;
 }
 .adq__stat-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
   color: #191F28;
   letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 .adq__stat-size {
   font-size: 11px;
@@ -4528,6 +4531,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: var(--brand);
   letter-spacing: 0.04em;
   font-feature-settings: 'tnum';
+  white-space: nowrap;
 }
 .adq__stat-metrics {
   display: grid;
@@ -4539,16 +4543,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 10px 4px;
+  padding: 11px 4px;
   background: #F8F9FB;
   border-radius: 10px;
 }
+/* 2026-05-20 [사용자 명시] 라벨·값 줄바꿈 방지 — "클릭" 등이 세로로 쪼개지던 사고 수정. */
 .adq__stat-metric-label {
   font-size: 10px;
   font-weight: 700;
   color: #8B95A1;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .adq__stat-metric-value {
   font-size: 16px;
@@ -4556,6 +4562,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #191F28;
   letter-spacing: -0.02em;
   font-feature-settings: 'tnum';
+  white-space: nowrap;
 }
 .adq__stat-metric-value--ctr {
   background: var(--grad-violet);
