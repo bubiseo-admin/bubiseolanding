@@ -4566,8 +4566,9 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   text-transform: uppercase;
   white-space: nowrap;
 }
+/* 2026-05-20 [사용자 명시] 노출/클릭/CTR 값 폰트 축소 (16→13). */
 .adq__stat-metric-value {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 900;
   color: #191F28;
   letter-spacing: -0.02em;
@@ -4580,22 +4581,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-}
-
-/* "수집 중" 상태 (impressions < 100) */
-.adq__stat--insufficient .adq__stat-metrics {
-  opacity: 0.5;
-}
-.adq__stat-insufficient {
-  font-size: 11px;
-  color: var(--brand);
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: -0.01em;
-  padding: 5px 8px;
-  background: rgba(91, 127, 255, 0.08);
-  border-radius: 8px;
-  margin-top: -2px;
 }
 
 /* loading placeholder */

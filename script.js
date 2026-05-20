@@ -448,9 +448,8 @@
       } catch (_) { return '—'; }
     };
     const renderSlot = (slot) => {
-      const insufficient = slot.insufficient;
       return `
-        <div class="adq__stat ${insufficient ? 'adq__stat--insufficient' : ''}">
+        <div class="adq__stat">
           <div class="adq__stat-head">
             <span class="adq__stat-name">${slot.label}</span>
             <span class="adq__stat-size">${slot.size}</span>
