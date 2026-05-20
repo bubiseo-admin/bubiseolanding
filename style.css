@@ -4000,9 +4000,17 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ================================================================= */
 
 /* v3 슬롯 카드 (텍스트만) — 3 column grid (대시보드 동영상은 나중에 추가, 현재 3슬롯) */
+/* 2026-05-20 [사용자 명시] STEP 1 헤더 아래 좌우 2단 — 왼쪽 슬롯 카드 / 오른쪽 폰 미리보기. */
+.adq__slots-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
 .adq__slots-grid-v3 {
+  flex: 1;
+  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 .adq__slot-v3 {
@@ -4108,10 +4116,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   content: ' ✓';
 }
 
-/* ─── 공유 floater — 텍스트 카드 섹션과 분리된 시각 영역 ── */
+/* ─── 공유 floater — 우측 컬럼 폰 미리보기 영역 ─────────────
+   2026-05-20 [사용자 명시] 좌우 2단 — 오른쪽 고정폭 + sticky (스크롤 시 따라옴). */
 .adq__shared-floater {
-  position: relative;
-  margin-top: 28px;
+  position: sticky;
+  top: 24px;
+  flex: 0 0 320px;
+  align-self: flex-start;
   min-height: 520px;
   display: flex;
   align-items: center;
@@ -4185,12 +4196,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 /* :has() — 어떤 슬롯이 hover / checked 일 때 해당 이미지를 등장시킴
-   2026-05-19 사용자 명시: DASHBOARD → DASHBOARD_IMAGE 로 value 변경 매칭.
-   (DASHBOARD_VIDEO 는 나중에 추가 — 현재 미사용) */
+   2026-05-20 [사용자 명시] 6슬롯 전부 매칭 (DASHBOARD_VIDEO / COMMUNITY_BANNER_IMAGE / COMMUNITY_BANNER_VIDEO 추가). */
 @media (hover: hover) {
   .adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img[data-for="HOME_POPUP"],
   .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_IMAGE"]) .adq__shared-img[data-for="DASHBOARD_IMAGE"],
-  .adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img[data-for="PROPERTY_LIST"] {
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_VIDEO"]) .adq__shared-img[data-for="DASHBOARD_VIDEO"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img[data-for="PROPERTY_LIST"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="COMMUNITY_BANNER_IMAGE"]) .adq__shared-img[data-for="COMMUNITY_BANNER_IMAGE"],
+  .adq__section--slots:has(.adq__slot-v3:hover input[value="COMMUNITY_BANNER_VIDEO"]) .adq__shared-img[data-for="COMMUNITY_BANNER_VIDEO"] {
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, -50%) scale(1) rotate(-2deg);
@@ -4203,7 +4216,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__section--slots:has(input[value="HOME_POPUP"]:checked) .adq__shared-img[data-for="HOME_POPUP"],
 .adq__section--slots:has(input[value="DASHBOARD_IMAGE"]:checked) .adq__shared-img[data-for="DASHBOARD_IMAGE"],
-.adq__section--slots:has(input[value="PROPERTY_LIST"]:checked) .adq__shared-img[data-for="PROPERTY_LIST"] {
+.adq__section--slots:has(input[value="DASHBOARD_VIDEO"]:checked) .adq__shared-img[data-for="DASHBOARD_VIDEO"],
+.adq__section--slots:has(input[value="PROPERTY_LIST"]:checked) .adq__shared-img[data-for="PROPERTY_LIST"],
+.adq__section--slots:has(input[value="COMMUNITY_BANNER_IMAGE"]:checked) .adq__shared-img[data-for="COMMUNITY_BANNER_IMAGE"],
+.adq__section--slots:has(input[value="COMMUNITY_BANNER_VIDEO"]:checked) .adq__shared-img[data-for="COMMUNITY_BANNER_VIDEO"] {
   opacity: 1;
   visibility: visible;
   transform: translate(-50%, -50%) scale(1) rotate(-2deg);
@@ -4218,10 +4234,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__section--slots:has(input:checked) .adq__shared-hint {
   opacity: 0;
 }
-/* hover 가 selected 보다 우선 */
+/* hover 가 selected 보다 우선 — hover 중인 슬롯 외 다른 이미지 숨김 */
 .adq__section--slots:has(.adq__slot-v3:hover input[value="HOME_POPUP"]) .adq__shared-img:not([data-for="HOME_POPUP"]),
 .adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_IMAGE"]) .adq__shared-img:not([data-for="DASHBOARD_IMAGE"]),
-.adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img:not([data-for="PROPERTY_LIST"]) {
+.adq__section--slots:has(.adq__slot-v3:hover input[value="DASHBOARD_VIDEO"]) .adq__shared-img:not([data-for="DASHBOARD_VIDEO"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="PROPERTY_LIST"]) .adq__shared-img:not([data-for="PROPERTY_LIST"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="COMMUNITY_BANNER_IMAGE"]) .adq__shared-img:not([data-for="COMMUNITY_BANNER_IMAGE"]),
+.adq__section--slots:has(.adq__slot-v3:hover input[value="COMMUNITY_BANNER_VIDEO"]) .adq__shared-img:not([data-for="COMMUNITY_BANNER_VIDEO"]) {
   opacity: 0 !important;
   visibility: hidden !important;
   animation: none !important;
@@ -4234,15 +4253,27 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 /* ─── 반응형 ──────────────────────────────────────────────── */
 @media (max-width: 880px) {
+  /* 2026-05-20 [사용자 명시] 좁은 화면 — 좌우 2단 → 세로 스택 (슬롯 위 / 폰 미리보기 아래). */
+  .adq__slots-layout {
+    flex-direction: column;
+  }
   .adq__slots-grid-v3 {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 14px;
   }
   .adq__shared-floater {
+    position: static;
+    flex: none;
+    width: 100%;
     min-height: 440px;
   }
   .adq__shared-img {
     width: 200px;
+  }
+}
+@media (max-width: 560px) {
+  .adq__slots-grid-v3 {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 480px) {
