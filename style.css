@@ -2795,16 +2795,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    네임스페이스 .adq / .adq-* — 다른 섹션과 충돌 0.
    ================================================================= */
 
+/* 2026-05-20 [사용자 명시] 2칼럼 폐기 — 모든 섹션을 화면 60% 폭으로 중앙정렬. */
 .adq {
-  max-width: 1480px;
+  width: 60%;
   margin: 0 auto;
-  padding: clamp(96px, 12vw, 140px) clamp(20px, 4vw, 40px) 80px;
+  padding: clamp(96px, 12vw, 140px) 0 80px;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--near-black);
 }
+/* 좁은 화면(태블릿·모바일)에서는 60% 가 너무 좁아 가독성 확보용으로 넓힘 */
+@media (max-width: 1100px) {
+  .adq { width: 88%; }
+}
 
-/* 2026-05-20 — 페이지는 2칼럼 본문을 위해 넓게(1280px), 히어로 텍스트만 좁게 중앙 */
-.adq__head { text-align: center; margin: 0 auto 56px; max-width: 760px; }
+.adq__head { text-align: center; margin: 0 0 56px; }
 .adq__eyebrow {
   display: inline-block;
   font-size: 12px;
@@ -4753,59 +4757,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    1인당 월 단가 × 활성 회원수 = 슬롯 가격 모델.
    ================================================================= */
 
-/* 2칼럼 레이아웃 — 2026-05-19 사용자 명시: 사이드바 왼쪽 */
+/* 2026-05-20 [사용자 명시] 2칼럼 폐기 — 모든 섹션 중앙 단일 칼럼 세로 스택. */
 .adq__body {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
   width: 100%;
-  max-width: 1480px;
-  margin: 0 auto;
 }
-.adq__main { min-width: 0; }
-
-@media (min-width: 980px) and (max-width: 1199px) {
-  /* 태블릿/작은 데스크톱: 사이드바 좁고 단가 카드 위→아래 (모바일과 동일 흐름) */
-  .adq__body {
-    display: grid;
-    grid-template-columns: 384px minmax(0, 1fr);
-    gap: 44px;
-    align-items: start;
-  }
-  .adq__sidebar {
-    position: sticky;
-    top: 100px;
-    align-self: start;
-    order: 0;
-  }
-  .adq__main { order: 1; min-width: 0; }
+.adq__main,
+.adq__sidebar {
+  width: 100%;
+  min-width: 0;
 }
 
-@media (min-width: 1200px) {
-  /* 2026-05-20 사용자 명시 — 데스크톱: 본문(우측) 폭을 페이지 여백만큼 넓힘.
-     사이드바 528px 고정, 나머지(우측 main)는 824px 안팎으로 확보. */
-  .adq__body {
-    display: grid;
-    grid-template-columns: 528px minmax(0, 1fr);
-    gap: 48px;
-    align-items: start;
-    max-width: 1480px;
-  }
-  .adq__sidebar {
-    position: sticky;
-    top: 100px;
-    align-self: start;
-    order: 0;
-  }
-  .adq__main { order: 1; min-width: 0; }
-}
-
-@media (max-width: 979px) {
-  /* 모바일: 사이드바를 본문 위에 표시 — 활성 회원/단가가 먼저 보이게 */
-  .adq__body { display: flex; flex-direction: column; }
-  .adq__sidebar { order: 0; margin-bottom: 48px; }
-  .adq__main { order: 1; }
-}
-
-/* ─── 사이드바 공통 ──────────────────────────────────────── */
+/* ─── 사이드바(가입 계정·단가) — 단일 칼럼 내 세로 스택 ─────────── */
 .adq__sidebar {
   display: flex;
   flex-direction: column;
