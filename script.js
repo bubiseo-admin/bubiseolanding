@@ -449,11 +449,18 @@
     };
     const renderSlot = (slot) => {
       const insufficient = slot.insufficient;
+      // 2026-05-20 [사용자 명시] 대시보드 배너 #N 카드 — 이미지/동영상 구분 배지.
+      const typeBadge = slot.mediaType
+        ? `<span class="adq__stat-type adq__stat-type--${slot.mediaType}">${slot.mediaType === 'video' ? '🎬 동영상' : '🖼️ 이미지'}</span>`
+        : '';
       return `
         <div class="adq__stat ${insufficient ? 'adq__stat--insufficient' : ''}">
           <div class="adq__stat-head">
             <span class="adq__stat-name">${slot.label}</span>
-            <span class="adq__stat-size">${slot.size}</span>
+            <span class="adq__stat-meta">
+              <span class="adq__stat-size">${slot.size}</span>
+              ${typeBadge}
+            </span>
           </div>
           <div class="adq__stat-metrics">
             <div class="adq__stat-metric">
