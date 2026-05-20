@@ -2796,7 +2796,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ================================================================= */
 
 .adq {
-  max-width: 1280px;
+  max-width: 1480px;
   margin: 0 auto;
   padding: clamp(96px, 12vw, 140px) clamp(20px, 4vw, 40px) 80px;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -4757,7 +4757,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__body {
   display: block;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1480px;
   margin: 0 auto;
 }
 .adq__main { min-width: 0; }
@@ -4780,13 +4780,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 @media (min-width: 1200px) {
-  /* 2026-05-20 사용자 명시 — 데스크톱: 사이드바 폭 확장 (단가 카드 줄바꿈 제거) */
+  /* 2026-05-20 사용자 명시 — 데스크톱: 본문(우측) 폭을 페이지 여백만큼 넓힘.
+     사이드바 528px 고정, 나머지(우측 main)는 824px 안팎으로 확보. */
   .adq__body {
     display: grid;
     grid-template-columns: 528px minmax(0, 1fr);
     gap: 48px;
     align-items: start;
-    max-width: 1440px;
+    max-width: 1480px;
   }
   .adq__sidebar {
     position: sticky;
