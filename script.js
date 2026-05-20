@@ -795,27 +795,6 @@
     }
   }
 
-  // ----- 6-3-a. 광고 슬롯 radio toggle 동작 -----
-  // 2026-05-19 — 사용자 명시: 선택된 슬롯 재클릭 시 선택 취소.
-  //   기본 radio 는 한 번 선택되면 같은 그룹 내 다른 항목 선택 전까지 해제 불가.
-  //   여기서는 같은 슬롯 재클릭 = 토글 해제 동작.
-  document.querySelectorAll('input[name="adType"]').forEach((radio) => {
-    // mousedown 시 click 직전 상태 캡처 (브라우저는 click 핸들러 호출 시점에는 이미 checked=true 로 세팅됨)
-    radio.addEventListener('mousedown', () => {
-      radio.dataset.wasChecked = radio.checked ? '1' : '0';
-    });
-    radio.addEventListener('touchstart', () => {
-      radio.dataset.wasChecked = radio.checked ? '1' : '0';
-    }, { passive: true });
-    radio.addEventListener('click', () => {
-      if (radio.dataset.wasChecked === '1') {
-        radio.checked = false;
-        radio.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-      radio.dataset.wasChecked = '';
-    });
-  });
-
   // ----- 6-3. 광고 문의 (POST /landing/ad-inquiry) -----
   // 2026-05-20 [사용자 명시] /ad-inquiry.html STEP2 → products.html 03번 「광고 문의」 폼으로 이전.
   //   슬롯 선택(adType) 없이 광고주 정보만으로 제출. Slack #문의 채널로 알림.
