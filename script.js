@@ -535,27 +535,9 @@
       //   A: 정상가 그대로
       //   B: 보장 회원수 기준 (활성 N명 < 50 → 50명 기준으로 표시 + 라벨)
       //   C: 정상가 strike + 베타 무료 배지
-      const list = fmtKrw(s.listMonthlyKrw);
-      const eff = fmtKrw(s.effectiveMonthlyKrw);
-      let totalHtml;
-      if (mode === 'C' && s.isFree) {
-        totalHtml = `
-          <span class="adq__sidebar-price-total">
-            <span class="adq__sidebar-price-strike">${list}원/월</span>
-            <span class="adq__sidebar-price-free">베타 3개월 무료</span>
-          </span>`;
-      } else if (mode === 'B') {
-        totalHtml = `
-          <span class="adq__sidebar-price-total">
-            ${eff}<small>원/월</small>
-          </span>
-          <span class="adq__sidebar-price-note">런칭 보장가 (회원 ${fmtKrw(guaranteedFloor || 0)}명 기준)</span>`;
-      } else {
-        const isZero = s.effectiveMonthlyKrw === 0;
-        totalHtml = isZero
-          ? `<span class="adq__sidebar-price-total"><span class="adq__sidebar-price-zero">활성 회원 0명 — 단가 산정 대기</span></span>`
-          : `<span class="adq__sidebar-price-total">${eff}<small>원/월</small></span>`;
-      }
+      // 2026-05-21 [사용자 명시] 광고 단가 금액 — 전부 "측정중" 표시 (실금액 미노출).
+      const totalHtml =
+        '<span class="adq__sidebar-price-total"><span class="adq__sidebar-price-zero">측정중</span></span>';
       const durationHtml = s.duration
         ? `<span class="adq__sidebar-price-duration">⏱ ${s.duration}</span>`
         : '';
@@ -583,9 +565,6 @@
             <span class="adq__sidebar-price-meta">
               <span class="adq__sidebar-price-size">${s.size}</span>
               ${durationHtml}
-            </span>
-            <span class="adq__sidebar-price-formula">
-              <strong>${fmtKrw(s.perUserKrw)}원</strong> × ${fmtKrw(accountCount)}명
             </span>
             ${totalHtml}
           </div>
@@ -698,8 +677,6 @@
     const checkoutTotalEl = checkoutContainer.querySelector('[data-ad-checkout-total]');
     const checkoutPayBtn = checkoutContainer.querySelector('[data-ad-checkout-pay]');
     const checkoutNoticeEl = checkoutContainer.querySelector('[data-ad-checkout-notice]');
-    const fmtKrwCheckout = (n) => (Number(n) || 0).toLocaleString('ko-KR');
-
     function escAttr(v) {
       return String(v == null ? '' : v).replace(/"/g, '&quot;').replace(/</g, '&lt;');
     }
@@ -711,11 +688,10 @@
           )
         : [];
       const count = checked.length;
-      const total = checked.reduce((s, el) => s + (Number(el.dataset.price) || 0), 0);
       if (checkoutCountEl) checkoutCountEl.textContent = String(count);
       if (checkoutTotalEl) {
-        checkoutTotalEl.textContent =
-          count === 0 ? '—' : total > 0 ? `${fmtKrwCheckout(total)}원/월` : '베타 3개월 무료';
+        // 2026-05-21 [사용자 명시] 합계 금액 — "측정중" 표시.
+        checkoutTotalEl.textContent = count === 0 ? '—' : '측정중';
       }
       if (checkoutSummary) checkoutSummary.hidden = count === 0;
       if (checkoutPayBtn) checkoutPayBtn.disabled = count === 0;
@@ -732,11 +708,8 @@
         .map((s) => {
           const isFreeBeta = mode === 'C' && s.isFree;
           const price = isFreeBeta ? 0 : Number(s.effectiveMonthlyKrw) || 0;
-          const priceLabel = isFreeBeta
-            ? '베타 3개월 무료'
-            : price > 0
-              ? `${fmtKrwCheckout(price)}원/월`
-              : '단가 산정 대기';
+          // 2026-05-21 [사용자 명시] 슬롯별 광고 금액 — "측정중" 표시.
+          const priceLabel = '측정중';
           return `
             <label class="adq__checkout-card">
               <input type="checkbox" class="adq__checkout-check"
