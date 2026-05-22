@@ -5525,3 +5525,55 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   line-height: 1.6;
   letter-spacing: -0.01em;
 }
+
+/* =================================================================
+   AD-INQUIRY 재구성 (2026-05-22) — 상단 베타/계정수 + 배너 광고 소개
+   ================================================================= */
+
+/* 상단 영역 — 베타 promo + 가입 계정수 + 사무소/대표/직원 통계 */
+.adq__top {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 배너 광고 소개 섹션 */
+.adq__banner-ad {
+  max-width: 1100px;
+  margin: 0 auto 52px;
+}
+.adq__banner-ad-title {
+  font-size: 30px;
+  font-weight: 900;
+  color: #191F28;
+  letter-spacing: -1px;
+  margin: 0 0 10px;
+}
+.adq__banner-ad-desc {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4E5968;
+  letter-spacing: -0.3px;
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+.adq__banner-ad-imgs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.adq__banner-ad-imgs img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  border: 1px solid #ECEEF1;
+  background: #F8F9FB;
+}
+@media (max-width: 720px) {
+  .adq__banner-ad-imgs { grid-template-columns: 1fr; gap: 14px; }
+  .adq__banner-ad-title { font-size: 24px; }
+  .adq__banner-ad-desc { font-size: 14px; }
+}

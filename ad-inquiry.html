@@ -86,81 +86,8 @@
       </p>
     </section>
 
-    <!-- ═══ 2026-05-19 — 본문 + 우측 사이드바 2칼럼 레이아웃 ═══ -->
-    <div class="adq__body">
-    <div class="adq__main">
-
-    <!-- ═══ 공지사항 — 광고 효과 통계 (24h 갱신, 출시 이후 누적) ═══ -->
-    <section class="adq__notice" data-ad-stats aria-live="polite">
-      <header class="adq__notice-head">
-        <div class="adq__notice-head-row">
-          <span class="adq__notice-badge">📊 광고 효과 통계</span>
-          <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
-            </svg>
-            <span>새로고침</span>
-          </button>
-        </div>
-        <p class="adq__notice-sub">광고주분들이 참고하실 수 있도록 <strong>24시간마다 갱신</strong>됩니다 · 출시 이후 누적 데이터 기준 (부비서 자체광고만) · <strong>📱 모바일 + 💻 데스크톱 통합 집계</strong></p>
-      </header>
-
-      <div class="adq__notice-grid" data-ad-stats-grid>
-        <!-- 로딩 placeholder — 홈팝업/대시보드배너/매물목록/커뮤니티배너/사내대화배너. 실제 슬롯은 JS 가 채움 -->
-        <div class="adq__stat adq__stat--loading"><span>홈 팝업</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>대시보드 배너</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>매물 목록</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>커뮤니티 배너</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>사내대화 배너</span><em>불러오는 중…</em></div>
-      </div>
-
-      <p class="adq__notice-foot" data-ad-stats-updated>—</p>
-    </section>
-
-    <!-- 2026-05-20 [사용자 명시] STEP1 광고 슬롯 선택 제거 → 데모 계정 안내 섹션으로 교체.
-         광고주가 데모 계정으로 부비서 앱에 직접 로그인해 광고 노출을 확인.
-         계정 정보는 이미지(assets/demo-account.png)로 — HTML 평문 노출 방지. -->
-    <section class="adq__section adq__demo">
-      <div class="adq__demo-head">
-        <span class="adq__demo-badge">📱 광고 미리보기</span>
-        <h2 class="adq__demo-title">광고가 실제로 어떻게 노출되는지 직접 확인하세요</h2>
-        <p class="adq__demo-sub">
-          아래 데모 계정으로 부비서 앱에 로그인하시면, 홈 팝업·대시보드 배너·매물 목록·커뮤니티 배너·사내대화 배너에
-          광고가 어떻게 송출되는지 직접 보실 수 있습니다.
-        </p>
-      </div>
-
-      <img class="adq__demo-account" src="assets/demo-account.png"
-           alt="광고 미리보기 데모 계정 정보" width="560" loading="lazy" />
-
-      <p class="adq__demo-hint">
-        부비서 앱을 설치한 뒤 위 계정으로 로그인하시면 됩니다.
-        등록번호 입력 없이 이메일·비밀번호만으로 로그인되는 광고 미리보기 전용 계정입니다.
-      </p>
-
-      <div class="adq__demo-actions">
-        <a class="adq__demo-btn" href="index.html">부비서 앱 다운로드 →</a>
-      </div>
-    </section>
-
-    </div><!-- /.adq__main -->
-
-    <!-- ═══ 우측 사이드바 — 활성 회원수 + 슬롯별 월 단가 + 결제 정책 ═══ -->
-    <!--
-      2026-05-19 사용자 명시 · 2026-05-20 슬롯 추가:
-        · 부비서 = 초정확 타겟 매체 → 1인당 월 단가 × 활성 회원수 = 슬롯 가격
-        · 매물 목록 3,500 / 대시보드(이미지) 3,000 / 대시보드(동영상) 4,000 /
-          로그인 팝업 2,500 / 커뮤니티 배너(이미지) 2,000 / 커뮤니티 배너(동영상) 3,000 /
-          사내대화 배너(이미지) 2,000 / 사내대화 배너(동영상) 3,000 (1인당/월)
-        · 패키지 X — 슬롯 단독 계약
-        · 모든 광고 매월 1일 자동 재결제
-        · 1회 계약 최장 3개월
-        · 3개월 만료 후 재계약 시 그 시점 활성 회원수 기준 재산정
-        · 슬롯별 단가 카드는 백엔드 /landing/ad-pricing 응답을 JS 가 동적 렌더 (위 메모는 참고용)
-    -->
-    <aside class="adq__sidebar" data-ad-pricing>
+    <!-- 2026-05-22 [사용자 명시] 베타 광고주 모집 + 가입 계정수 — 페이지 최상단 -->
+    <section class="adq__top" data-ad-pricing>
       <!-- 모드 배너 (베타 무료 / 런칭 보장가) -->
       <div class="adq__sidebar-promo" data-ad-pricing-promo hidden></div>
 
@@ -191,51 +118,46 @@
           <span class="adq__sidebar-stat-unit">명</span>
         </div>
       </div>
+    </section>
 
-      <!-- 슬롯별 단가 카드 (JS 가 렌더, 모드별 다름) -->
-      <div class="adq__sidebar-prices" data-ad-pricing-prices>
-        <div class="adq__sidebar-price adq__sidebar-price--loading">불러오는 중…</div>
+    <!-- 2026-05-22 [사용자 명시] 배너 광고 소개 — 노출 예시 이미지 3장 가로 -->
+    <section class="adq__banner-ad">
+      <h2 class="adq__banner-ad-title">배너 광고</h2>
+      <p class="adq__banner-ad-desc">앱 내 대시보드, 사내메신저, 커뮤니티에 배너로 노출됩니다.</p>
+      <div class="adq__banner-ad-imgs">
+        <img src="ad-images/IMG_3235.jpg" alt="부비서 앱 배너 광고 노출 예시 — 대시보드" loading="lazy" />
+        <img src="ad-images/IMG_3238.jpg" alt="부비서 앱 배너 광고 노출 예시 — 사내메신저" loading="lazy" />
+        <img src="ad-images/IMG_3239.jpg" alt="부비서 앱 배너 광고 노출 예시 — 커뮤니티" loading="lazy" />
       </div>
+    </section>
 
-      <!-- 결제 정책 박스 -->
-      <div class="adq__sidebar-policy">
-        <h4 class="adq__sidebar-policy-title">📋 결제 정책</h4>
-        <ul class="adq__sidebar-policy-list">
-          <li>매월 <strong>1일 자동 재결제</strong> · 이번 달 단가 적용</li>
-          <li>1회 계약 <strong>최장 3개월</strong></li>
-          <li>3개월 만료 후 재계약 시 <strong>그 시점 활성 회원수 기준 재산정</strong></li>
-        </ul>
-        <p class="adq__sidebar-policy-foot">
-          <span data-ad-pricing-month>—</span> 단가 기준 ·
-          다음 갱신: <span data-ad-pricing-next>—</span>
-        </p>
-      </div>
-    </aside>
-
-    </div><!-- /.adq__body -->
-
-    <!-- 2026-05-20 [사용자 명시] 결제할 광고 선택 + 결제하기 (토스페이먼츠 링크 추후 도입) -->
-    <section class="adq__checkout" data-ad-checkout>
-      <header class="adq__checkout-head">
-        <span class="adq__checkout-badge">🧾 광고 결제</span>
-        <h2 class="adq__checkout-title">결제할 광고를 선택하세요</h2>
-        <p class="adq__checkout-sub">원하시는 광고 슬롯을 선택하시면 합계 금액이 표시됩니다. 슬롯은 <strong>여러 개 동시 선택</strong>할 수 있습니다.</p>
+    <!-- ═══ 공지사항 — 광고 효과 통계 (24h 갱신, 출시 이후 누적) ═══ -->
+    <section class="adq__notice" data-ad-stats aria-live="polite">
+      <header class="adq__notice-head">
+        <div class="adq__notice-head-row">
+          <span class="adq__notice-badge">📊 광고 효과 통계</span>
+          <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+            </svg>
+            <span>새로고침</span>
+          </button>
+        </div>
+        <p class="adq__notice-sub">광고주분들이 참고하실 수 있도록 <strong>24시간마다 갱신</strong>됩니다 · 출시 이후 누적 데이터 기준 (부비서 자체광고만) · <strong>📱 모바일 + 💻 데스크톱 통합 집계</strong></p>
       </header>
 
-      <div class="adq__checkout-grid" data-ad-checkout-grid>
-        <div class="adq__checkout-loading">불러오는 중…</div>
+      <div class="adq__notice-grid" data-ad-stats-grid>
+        <!-- 로딩 placeholder — 홈팝업/대시보드배너/매물목록/커뮤니티배너/사내대화배너. 실제 슬롯은 JS 가 채움 -->
+        <div class="adq__stat adq__stat--loading"><span>홈 팝업</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>대시보드 배너</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>매물 목록</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>커뮤니티 배너</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>사내대화 배너</span><em>불러오는 중…</em></div>
       </div>
 
-      <div class="adq__checkout-summary" data-ad-checkout-summary hidden>
-        <span class="adq__checkout-summary-label">선택한 광고 <strong data-ad-checkout-count>0</strong>개</span>
-        <span class="adq__checkout-summary-total" data-ad-checkout-total>—</span>
-      </div>
-
-      <div class="adq__checkout-actions">
-        <button type="button" class="adq__checkout-btn" data-ad-checkout-pay disabled>결제하기</button>
-      </div>
-
-      <p class="adq__checkout-notice" data-ad-checkout-notice hidden></p>
+      <p class="adq__notice-foot" data-ad-stats-updated>—</p>
     </section>
 
   </main>
