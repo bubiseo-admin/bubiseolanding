@@ -2,7 +2,7 @@
 <!--
   부비서 — 광고 문의 페이지
   ─────────────────────────────────────────────────────────────
-  광고주(회사) 대상 — 부비서 4개 광고 슬롯 (홈팝업·대시보드·매물목록·커뮤니티) 신청 폼.
+  광고주(회사) 대상 — 부비서 5개 광고 슬롯 (홈팝업·대시보드·매물목록·커뮤니티·사내대화) 신청 폼.
   Submit → POST https://api.bubiseo.com/landing/ad-inquiry → DB 저장 + Slack #문의 채널 알림.
   ─────────────────────────────────────────────────────────────
 -->
@@ -11,9 +11,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>광고 문의 — 부비서</title>
-  <meta name="description" content="부비서 앱·데스크톱의 광고 슬롯(홈 팝업·대시보드·매물 목록·커뮤니티) 문의. 전국 공인중개사 사무소가 매일 사용하는 채널." />
+  <meta name="description" content="부비서 앱·데스크톱의 광고 슬롯(홈 팝업·대시보드·매물 목록·커뮤니티·사내대화) 문의. 전국 공인중개사 사무소가 매일 사용하는 채널." />
   <meta property="og:title" content="광고 문의 — 부비서" />
-  <meta property="og:description" content="부비서 광고 슬롯 4종 (홈 팝업·대시보드·매물 목록·커뮤니티) 문의 접수." />
+  <meta property="og:description" content="부비서 광고 슬롯 5종 (홈 팝업·대시보드·매물 목록·커뮤니티·사내대화) 문의 접수." />
   <meta property="og:image" content="/assets/logo.png" />
   <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/png" href="/assets/logo.png" />
@@ -108,11 +108,12 @@
       </header>
 
       <div class="adq__notice-grid" data-ad-stats-grid>
-        <!-- 로딩 placeholder — 홈팝업/대시보드배너/매물목록/커뮤니티배너. 실제 슬롯은 JS 가 채움 -->
+        <!-- 로딩 placeholder — 홈팝업/대시보드배너/매물목록/커뮤니티배너/사내대화배너. 실제 슬롯은 JS 가 채움 -->
         <div class="adq__stat adq__stat--loading"><span>홈 팝업</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>대시보드 배너</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>매물 목록</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>커뮤니티 배너</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>사내대화 배너</span><em>불러오는 중…</em></div>
       </div>
 
       <p class="adq__notice-foot" data-ad-stats-updated>—</p>
@@ -126,7 +127,7 @@
         <span class="adq__demo-badge">📱 광고 미리보기</span>
         <h2 class="adq__demo-title">광고가 실제로 어떻게 노출되는지 직접 확인하세요</h2>
         <p class="adq__demo-sub">
-          아래 데모 계정으로 부비서 앱에 로그인하시면, 홈 팝업·대시보드 배너·매물 목록·커뮤니티 배너에
+          아래 데모 계정으로 부비서 앱에 로그인하시면, 홈 팝업·대시보드 배너·매물 목록·커뮤니티 배너·사내대화 배너에
           광고가 어떻게 송출되는지 직접 보실 수 있습니다.
         </p>
       </div>
@@ -151,7 +152,8 @@
       2026-05-19 사용자 명시 · 2026-05-20 슬롯 추가:
         · 부비서 = 초정확 타겟 매체 → 1인당 월 단가 × 활성 회원수 = 슬롯 가격
         · 매물 목록 3,500 / 대시보드(이미지) 3,000 / 대시보드(동영상) 4,000 /
-          로그인 팝업 2,500 / 커뮤니티 배너(이미지) 2,000 / 커뮤니티 배너(동영상) 3,000 (1인당/월)
+          로그인 팝업 2,500 / 커뮤니티 배너(이미지) 2,000 / 커뮤니티 배너(동영상) 3,000 /
+          사내대화 배너(이미지) 2,000 / 사내대화 배너(동영상) 3,000 (1인당/월)
         · 패키지 X — 슬롯 단독 계약
         · 모든 광고 매월 1일 자동 재결제
         · 1회 계약 최장 3개월
