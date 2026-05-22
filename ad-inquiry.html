@@ -61,6 +61,15 @@
       <a href="ad-inquiry.html" class="is-active" aria-current="page">광고 문의</a>
     </nav>
     <nav class="main-nav__support" aria-label="지원 메뉴">
+      <!-- 2026-05-22 [사용자 명시] 광고 효과 통계 새로고침 버튼 — 고객 지원 왼쪽 -->
+      <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+        </svg>
+        <span>새로고침</span>
+      </button>
       <a href="products.html">고객 지원</a>
     </nav>
   </header>
@@ -146,38 +155,24 @@
       <header class="adq__notice-head">
         <div class="adq__notice-head-row">
           <span class="adq__notice-badge">📊 광고 효과 통계</span>
-          <button type="button" class="adq__sidebar-refresh" data-ad-refresh aria-label="최신 데이터 새로고침" title="최신 데이터로 다시 불러오기">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
-            </svg>
-            <span>새로고침</span>
-          </button>
         </div>
         <p class="adq__notice-sub">광고주분들이 참고하실 수 있도록 <strong>24시간마다 갱신</strong>됩니다 · 출시 이후 누적 데이터 기준 (부비서 자체광고만) · <strong>📱 모바일 + 💻 데스크톱 통합 집계</strong></p>
       </header>
 
       <div class="adq__notice-grid" data-ad-stats-grid>
-        <!-- 로딩 placeholder — 홈팝업/대시보드배너/매물목록/커뮤니티배너/사내대화배너. 실제 슬롯은 JS 가 채움 -->
+        <!-- 로딩 placeholder — 배너(대시보드/커뮤니티/사내메신저)/네이티브/홈팝업. 실제 슬롯은 JS 가 채움 -->
+        <div class="adq__stat adq__stat--loading"><span>배너 (대시보드)</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>배너 (커뮤니티)</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>배너 (사내메신저)</span><em>불러오는 중…</em></div>
+        <div class="adq__stat adq__stat--loading"><span>네이티브 (매물메뉴+매물지도)</span><em>불러오는 중…</em></div>
         <div class="adq__stat adq__stat--loading"><span>홈 팝업</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>대시보드 배너</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>매물 목록</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>커뮤니티 배너</span><em>불러오는 중…</em></div>
-        <div class="adq__stat adq__stat--loading"><span>사내대화 배너</span><em>불러오는 중…</em></div>
       </div>
 
       <p class="adq__notice-foot" data-ad-stats-updated>—</p>
     </section>
 
-    <!-- 2026-05-22 [사용자 명시] 슬롯별 단가 + 결제 정책 복귀 -->
+    <!-- 2026-05-22 [사용자 명시] 결제 정책 박스 (단가 카드·광고 결제 섹션은 제거) -->
     <section class="adq__pricing">
-      <!-- 슬롯별 단가 카드 (JS 가 /landing/ad-pricing 응답으로 동적 렌더) -->
-      <div class="adq__sidebar-prices" data-ad-pricing-prices>
-        <div class="adq__sidebar-price adq__sidebar-price--loading">불러오는 중…</div>
-      </div>
-
-      <!-- 결제 정책 박스 -->
       <div class="adq__sidebar-policy">
         <h4 class="adq__sidebar-policy-title">📋 결제 정책</h4>
         <ul class="adq__sidebar-policy-list">
@@ -190,30 +185,6 @@
           다음 갱신: <span data-ad-pricing-next>—</span>
         </p>
       </div>
-    </section>
-
-    <!-- 2026-05-22 [사용자 명시] 광고 결제 섹션 복귀 (토스페이먼츠 링크 추후 도입) -->
-    <section class="adq__checkout" data-ad-checkout>
-      <header class="adq__checkout-head">
-        <span class="adq__checkout-badge">🧾 광고 결제</span>
-        <h2 class="adq__checkout-title">결제할 광고를 선택하세요</h2>
-        <p class="adq__checkout-sub">원하시는 광고 슬롯을 선택하시면 합계 금액이 표시됩니다. 슬롯은 <strong>여러 개 동시 선택</strong>할 수 있습니다.</p>
-      </header>
-
-      <div class="adq__checkout-grid" data-ad-checkout-grid>
-        <div class="adq__checkout-loading">불러오는 중…</div>
-      </div>
-
-      <div class="adq__checkout-summary" data-ad-checkout-summary hidden>
-        <span class="adq__checkout-summary-label">선택한 광고 <strong data-ad-checkout-count>0</strong>개</span>
-        <span class="adq__checkout-summary-total" data-ad-checkout-total>—</span>
-      </div>
-
-      <div class="adq__checkout-actions">
-        <button type="button" class="adq__checkout-btn" data-ad-checkout-pay disabled>결제하기</button>
-      </div>
-
-      <p class="adq__checkout-notice" data-ad-checkout-notice hidden></p>
     </section>
 
   </main>
