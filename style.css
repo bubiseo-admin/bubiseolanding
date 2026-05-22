@@ -5577,3 +5577,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__banner-ad-title { font-size: 24px; }
   .adq__banner-ad-desc { font-size: 14px; }
 }
+
+/* 2026-05-22 [사용자 명시] 단가/결제 복귀 — 단일 칼럼 가운데 정렬 */
+.adq__pricing {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* 네이티브 광고 — 이미지 2장 가로 */
+.adq__banner-ad-imgs--two {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 760px;
+}
+@media (max-width: 720px) {
+  .adq__banner-ad-imgs--two { grid-template-columns: 1fr; }
+}
