@@ -6,6 +6,10 @@
   <title>분양대행사 직접 등록 — 부비서</title>
   <meta name="description" content="부비서 분양 파트너 — 분양대행사 직접 등록 페이지 (비공개)" />
   <meta name="robots" content="noindex, nofollow" />
+  <!-- 2026-05-25 [사용자 명시] 옛날 JS 캐시로 사진 4/15 만 업로드되던 사고 — 캐시 무효화. -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
@@ -244,14 +248,16 @@
       <!-- ─── 첨부 ─── -->
       <section class="card">
         <div class="field">
-          <label class="label">대표 이미지 (최대 15장, JPG/PNG)</label>
+          <label class="label">대표 이미지 (최대 15장)</label>
           <div class="files">
             <div class="file-list" id="imageList"></div>
             <label class="file-pick" id="imagePick">+ 사진 추가
-              <input type="file" accept="image/jpeg,image/png" multiple />
+              <!-- 2026-05-25 [사용자 명시] iPhone HEIC 도 통과시키기 위해 image/* 전체 허용. -->
+              <input type="file" accept="image/*" multiple />
             </label>
           </div>
           <p class="hint" id="imageHint">0 / 15</p>
+          <div id="imageErrBox" style="display:none; margin-top:8px; padding:10px 12px; background:#FEF1EE; border:1px solid #F8C4B8; border-radius:8px; color:#A8341B; font-size:12px; line-height:1.6;"></div>
         </div>
 
         <div class="field">
@@ -544,6 +550,32 @@
         upmodal.classList.remove('show');
       }
 
+      // 2026-05-25 [사용자 명시] 사진 4/15 만 업로드되던 사고 — 1회 자동 재시도 + 실패 영구 표시.
+      async function uploadWithRetry(f, kind, onProgress) {
+        try {
+          return await uploadXhr(f, kind, onProgress);
+        } catch (err1) {
+          // 1회 자동 재시도 (일시 네트워크/jitter)
+          await new Promise((r) => setTimeout(r, 600));
+          try {
+            return await uploadXhr(f, kind, onProgress);
+          } catch (err2) {
+            throw new Error(`${err1.message || '실패'} → 재시도 ${err2.message || '실패'}`);
+          }
+        }
+      }
+
+      function showImageErrors(kind, failures) {
+        if (kind !== 'image') return; // 다른 kind 는 toast 만
+        const box = document.getElementById('imageErrBox');
+        if (!box) return;
+        if (failures.length === 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        box.style.display = 'block';
+        box.innerHTML =
+          `<b>${failures.length}장 업로드 실패</b><br/>` +
+          failures.map((f) => `• ${escapeHtml(f)}`).join('<br/>');
+      }
+
       Object.keys(files).forEach((kind) => {
         const pick = document.getElementById(pickIds[kind]).querySelector('input');
         pick.addEventListener('change', async (e) => {
@@ -555,24 +587,25 @@
           }
           const toUpload = picked.slice(0, remain);
           if (toUpload.length === 0) return;
-          // 2026-05-25 [사용자 명시] 한 장 실패해도 나머지 전부 계속 업로드 — break → continue.
+          showImageErrors(kind, []); // 이전 에러 클리어
           const failures = [];
           for (let i = 0; i < toUpload.length; i += 1) {
             const f = toUpload[i];
             openUpModal(`업로드 중 (${i + 1}/${toUpload.length})`, f.name);
             try {
-              const data = await uploadXhr(f, uploadKinds[kind], setProgress);
+              const data = await uploadWithRetry(f, uploadKinds[kind], setProgress);
               setProgress(100);
               files[kind].push({ url: data.url, name: f.name, type: f.type });
             } catch (err) {
-              failures.push(`${f.name}: ${err.message || '업로드 실패'}`);
+              failures.push(`${f.name} — ${err.message || '업로드 실패'}`);
+              console.warn('[ad2-inquiry] 업로드 실패:', f.name, err);
             }
           }
           closeUpModal();
           renderFiles(kind);
           if (failures.length > 0) {
-            toast(`${failures.length}개 파일 업로드 실패 — 잠시 후 다시 시도해주세요`);
-            console.warn('[ad2-inquiry] 업로드 실패 목록:', failures);
+            toast(`${failures.length}개 파일 업로드 실패 — 사유 확인 후 재시도해주세요`);
+            showImageErrors(kind, failures);
           }
         });
       });
