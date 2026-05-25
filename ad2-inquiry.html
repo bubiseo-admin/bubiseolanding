@@ -1100,20 +1100,22 @@
         overlay.style.cssText =
           'position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:5000; padding:20px;';
         overlay.innerHTML = `
-          <div style="width:100%; max-width:380px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25);">
+          <div style="width:100%; max-width:380px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); box-sizing:border-box;">
             <div style="font-size:34px; text-align:center; margin-bottom:8px;">⭐</div>
-            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28;">프리미엄 노출 자리가 꽉 찼어요</p>
-            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 16px;">
+            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28; word-break:keep-all;">프리미엄 노출 자리가 꽉 찼어요</p>
+            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 16px; word-break:keep-all;">
               현재 프리미엄 노출은 <b>최대 5개</b>까지만 운영됩니다.<br/>
-              대기 순번을 등록하시면 가장 빠른 자리가 비는 다음 날부터 자동 시작됩니다.
+              대기 순번을 등록하시면<br/>
+              가장 빠른 자리가 비는 다음 날부터 자동 시작됩니다.
             </p>
             <div style="background:#F2F4F6; border-radius:10px; padding:14px 16px; margin-bottom:14px; text-align:center;">
               <div style="font-size:11px; color:#8B95A1; font-weight:700; letter-spacing:0.3px;">시작 가능 날짜</div>
               <div style="font-size:18px; font-weight:800; color:#6155F5; margin-top:4px;">${pretty} 부터</div>
             </div>
-            <p style="font-size:12px; color:var(--tertiary); text-align:center; line-height:1.6; margin:0 0 16px;">
+            <p style="font-size:12px; color:var(--tertiary); text-align:center; line-height:1.6; margin:0 0 16px; word-break:keep-all;">
               위 날짜부터 프리미엄 노출이 시작됩니다.<br/>
-              예약하시면 입금완료 버튼이 활성화되고, 광고 시작일이 자동 변경돼요.
+              예약하시면 입금완료 버튼이 활성화되고,<br/>
+              광고 시작일이 자동 변경돼요.
             </p>
             <div style="display:flex; gap:8px;">
               <button type="button" id="premWaitCancel" style="flex:1; height:44px; border:none; border-radius:10px; background:#F2F4F6; color:#4E5968; font-weight:700; cursor:pointer;">취소</button>
@@ -1160,20 +1162,21 @@
         overlay.style.cssText =
           'position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:5000; padding:20px;';
         overlay.innerHTML = `
-          <div style="width:100%; max-width:400px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25);">
+          <div style="width:100%; max-width:400px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); box-sizing:border-box;">
             <div style="font-size:34px; text-align:center; margin-bottom:8px;">⭐</div>
-            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28;">프리미엄 노출 예약</p>
-            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 18px;">
-              시작일은 자동으로 잡혔어요. 종료일을 선택해주세요.
+            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28; word-break:keep-all;">프리미엄 노출 예약</p>
+            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 18px; word-break:keep-all;">
+              시작일은 자동으로 잡혔어요.<br/>
+              종료일을 선택해주세요.
             </p>
 
             <label style="display:block; font-size:12px; font-weight:700; color:var(--sub); margin-bottom:6px;">광고 시작일 (자동)</label>
-            <div style="background:#F2F4F6; color:#4E5968; padding:12px 14px; border-radius:10px; font-size:15px; font-weight:800; margin-bottom:14px; text-align:center;">
+            <div style="background:#F2F4F6; color:#4E5968; padding:12px 14px; border-radius:10px; font-size:15px; font-weight:800; margin-bottom:14px; text-align:center; box-sizing:border-box;">
               ${fixedStartPretty}
             </div>
 
             <label for="premReserveEnd" style="display:block; font-size:12px; font-weight:700; color:var(--sub); margin-bottom:6px;">광고 종료일</label>
-            <input type="date" id="premReserveEnd" value="${defaultEndYmd}" min="${minEndYmd}" style="width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:16px; outline:none; margin-bottom:14px;" />
+            <input type="date" id="premReserveEnd" value="${defaultEndYmd}" min="${minEndYmd}" style="width:100%; max-width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:16px; outline:none; margin-bottom:14px; box-sizing:border-box; -webkit-appearance:none; appearance:none;" />
 
             <div style="background:rgba(97,85,245,0.06); border:1px solid rgba(97,85,245,0.18); border-radius:10px; padding:12px 14px; margin-bottom:18px;">
               <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
