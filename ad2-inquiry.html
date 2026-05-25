@@ -57,6 +57,46 @@
     .brand span { font-weight: 800; }
     h1 { margin: 18px 0 8px; font-size: 22px; letter-spacing: -0.5px; }
     .lead { margin: 0; font-size: 14px; color: var(--sub); line-height: 1.6; }
+    /* 2026-05-25 [사용자 명시] 분양광고 안내 섹션 (분양광고 제목·안내·미리보기 + 본 등록 폼 구분). */
+    .ad-title {
+      font-family: 'Pretendard-Black', Pretendard, sans-serif;
+      font-weight: 900; font-size: 28px; letter-spacing: -1px;
+      margin: 22px 0 6px;
+      background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .ad-notes {
+      margin: 14px 0 18px;
+      padding: 14px 16px 14px 32px;
+      background: rgba(97,85,245,0.04);
+      border: 1px solid rgba(97,85,245,0.12);
+      border-radius: 10px;
+      font-size: 13px; color: var(--sub); line-height: 1.7;
+    }
+    .ad-notes li { margin: 4px 0; }
+    .ad-notes b { color: var(--pri); }
+    .ad-notes__sub { display: block; color: var(--tertiary); font-size: 12px; margin-top: 2px; }
+    .ad-preview-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      margin: 0 0 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; }
+    .ad-preview--phone { width: 160px; height: auto; aspect-ratio: 9/19; object-fit: cover; }
+    .ad-preview--desktop { width: 360px; height: auto; aspect-ratio: 16/10; object-fit: cover; }
+    @media (max-width: 480px) {
+      .ad-preview--phone { width: 130px; }
+      .ad-preview--desktop { width: 240px; }
+    }
+    .section-h2 {
+      margin: 28px 0 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 18px; font-weight: 800; letter-spacing: -0.4px;
+    }
 
     main {
       max-width: 720px; margin: 0 auto; padding: 12px 20px 60px;
@@ -163,6 +203,21 @@
     .pay-premium__text { font-size: 13px; color: #8E5A00; font-weight: 700; flex: 1; }
     .pay-premium__price { font-size: 13px; font-weight: 800; color: #F5A623; }
 
+    /* 2026-05-25 [사용자 명시] 기본 노출 체크 — 프리미엄과 별도. */
+    .pay-basic {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px;
+      background: rgba(97,85,245,0.06);
+      border: 1px solid rgba(97,85,245,0.2);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pay-basic input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--pri); cursor: pointer; }
+    .pay-basic__text { font-size: 13px; color: var(--text); font-weight: 700; flex: 1; }
+    .pay-basic__price { font-size: 13px; font-weight: 800; color: var(--pri); }
+
     .pay-account {
       display: flex; flex-direction: column; align-items: center; gap: 10px;
       padding: 12px;
@@ -222,9 +277,29 @@
       <img src="assets/logo.png" alt="" />
       <span>부비서 분양 파트너</span>
     </div>
-    <h1>분양현장 직접 등록</h1>
+    <!-- 2026-05-25 [사용자 명시] 분양광고 안내 섹션 + 3종 안내글 + 모바일/데스크톱 스크린샷. -->
+    <h1 class="ad-title">분양 광고</h1>
     <p class="lead">
-      아래 정보를 모두 입력하고, 결제금액 입금하신 후 <b>업로드</b> 버튼을 누르시면, 10분 이내로 부비서팀이 확인 후 분양파트너 페이지에 노출됩니다.
+      분양파트너 페이지에 노출되며, 모바일 + 데스크톱 동시 송출됩니다.
+    </p>
+
+    <ul class="ad-notes">
+      <li><b>프리미엄 노출</b>은 항상 최상단에 유지되며, 최대 3개의 현장만 등록 가능합니다.</li>
+      <li><b>프리미엄 노출</b>은 대기 순번이 있어 광고 연장이 불가능합니다.
+        <span class="ad-notes__sub">대기 순번이 없으면 연장 가능 · 대기 순번 있으면 연장 불가 (대기 순번 등록은 가능)</span></li>
+    </ul>
+
+    <div class="ad-preview-row">
+      <img class="ad-preview ad-preview--phone" src="assets/IMG_3556.jpg" alt="분양파트너 모바일 1" loading="lazy" />
+      <img class="ad-preview ad-preview--phone" src="assets/IMG_3557.jpg" alt="분양파트너 모바일 2" loading="lazy" />
+      <img class="ad-preview ad-preview--desktop" src="assets/screen-desktop.png" alt="분양파트너 데스크톱" loading="lazy" />
+    </div>
+
+    <h2 class="section-h2">분양현장 직접 등록</h2>
+    <p class="lead">
+      아래 정보를 모두 입력하고, 결제 금액을 입금 후 <b>"입금완료"</b> 버튼을 눌러주세요.
+      <br/>
+      부비서팀이 확인 후 즉시 광고 노출이 진행됩니다. (보통 10분 이내)
       <br/><br/>
       <span style="color:var(--tertiary); font-size:13px;">※ 분양파트너 페이지는 전국 부동산의 모든 공인중개사·중개보조원 및 기타 직원들에게 동시 노출됩니다.</span>
     </p>
@@ -427,22 +502,32 @@
         <div class="field" style="margin-bottom:0">
           <label class="label" style="font-size:14px;">💳 결제 안내</label>
 
-          <!-- 프리미엄 노출 체크 -->
+          <!-- 2026-05-25 [사용자 명시] 노출 상품 — 프리미엄/일반 각각 체크 + 각각 계산. -->
           <label class="pay-premium">
             <input type="checkbox" id="payPremium" />
-            <span class="pay-premium__text">⭐ 프리미엄 노출 (별표 강조 + 광선 효과 + 최상위 노출)</span>
+            <span class="pay-premium__text">⭐ 프리미엄 노출 (별표 강조 + 광선 + 최상위)</span>
             <span class="pay-premium__price">월 3만원</span>
           </label>
+          <label class="pay-basic">
+            <input type="checkbox" id="payBasic" checked />
+            <span class="pay-basic__text">기본 노출</span>
+            <span class="pay-basic__price">월 1만원</span>
+          </label>
 
-          <!-- 자동 계산 요약 -->
+          <!-- 자동 계산 요약 — 프리미엄/기본 각각 + 합계 -->
           <div class="pay-summary">
             <div class="pay-summary__row">
               <span class="pay-summary__label">광고 기간</span>
               <span class="pay-summary__value" id="payMonthsText">광고 시작/종료일을 선택해주세요</span>
             </div>
-            <div class="pay-summary__row">
-              <span class="pay-summary__label">월 단가</span>
-              <span class="pay-summary__value" id="payUnitText">월 10,000원</span>
+            <div class="pay-summary__divider"></div>
+            <div class="pay-summary__row" id="payPremiumRow" style="display:none">
+              <span class="pay-summary__label">⭐ 프리미엄 (월 30,000원)</span>
+              <span class="pay-summary__value" id="payPremiumAmount">0원</span>
+            </div>
+            <div class="pay-summary__row" id="payBasicRow">
+              <span class="pay-summary__label">기본 (월 10,000원)</span>
+              <span class="pay-summary__value" id="payBasicAmount">0원</span>
             </div>
             <div class="pay-summary__divider"></div>
             <div class="pay-summary__row pay-summary__total">
@@ -453,7 +538,7 @@
 
           <!-- 입금 계좌 (hana.png) -->
           <div class="pay-account">
-            <img class="pay-account__img" id="payHanaImg" src="/assets/hana.png" alt="입금 계좌 안내" />
+            <img class="pay-account__img" id="payHanaImg" src="assets/hana.png" alt="입금 계좌 안내" />
             <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
           </div>
 
@@ -481,7 +566,7 @@
   <!-- 2026-05-25 [사용자 명시] 입금 계좌 이미지 lightbox -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="입금 계좌 크게 보기">
     <button type="button" class="lightbox__close" id="lightboxClose" aria-label="닫기">✕</button>
-    <img id="lightboxImg" src="/assets/hana.png" alt="입금 계좌 안내" />
+    <img id="lightboxImg" src="assets/hana.png" alt="입금 계좌 안내" />
   </div>
 
   <!-- 2026-05-25 [사용자 명시] 업로드 진행률 팝업 -->
@@ -910,17 +995,22 @@
         if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addBadgeBtn').click(); }
       });
 
-      // ─── 2026-05-25 [사용자 명시] 결제 안내 자동 계산 + 프리미엄 + 입금완료 게이트 + lightbox ───
-      // 단가: 일반 월 10,000원 / 프리미엄 월 30,000원. 개월수 = 일수/30 반올림 (최소 1).
+      // ─── 2026-05-25 [사용자 명시] 결제 안내 — 프리미엄/기본 각각 체크 + 각각 계산 ───
+      // 단가: 기본 월 10,000원 / 프리미엄 월 30,000원. 둘 다 체크 시 합산.
       const PRICE_NORMAL = 10000;
       const PRICE_PREMIUM = 30000;
       let isPremium = false;
-      let paymentConfirmedClient = false; // 광고주가 "입금완료" 눌렀는지 (실제 노출은 admin 확정 후)
+      let isBasic = true; // 기본 노출 — 기본 체크
+      let paymentConfirmedClient = false;
 
       const payMonthsText = document.getElementById('payMonthsText');
-      const payUnitText = document.getElementById('payUnitText');
       const payTotalText = document.getElementById('payTotalText');
       const payPremium = document.getElementById('payPremium');
+      const payBasic = document.getElementById('payBasic');
+      const payPremiumRow = document.getElementById('payPremiumRow');
+      const payBasicRow = document.getElementById('payBasicRow');
+      const payPremiumAmount = document.getElementById('payPremiumAmount');
+      const payBasicAmount = document.getElementById('payBasicAmount');
       const payConfirmBtn = document.getElementById('payConfirmBtn');
       const submitBtn = document.getElementById('submitBtn');
       const startInput = document.querySelector('input[name="startDate"]');
@@ -934,16 +1024,25 @@
       }
       function recomputePay() {
         const months = calcMonths(startInput.value, endInput.value);
-        const unit = isPremium ? PRICE_PREMIUM : PRICE_NORMAL;
-        const total = months * unit;
+        const premiumAmt = isPremium ? months * PRICE_PREMIUM : 0;
+        const basicAmt = isBasic ? months * PRICE_NORMAL : 0;
+        const total = premiumAmt + basicAmt;
         payMonthsText.textContent = months > 0 ? `${months}개월` : '광고 시작/종료일을 선택해주세요';
-        payUnitText.textContent = `월 ${unit.toLocaleString('ko-KR')}원${isPremium ? ' (프리미엄)' : ''}`;
+        payPremiumRow.style.display = isPremium ? '' : 'none';
+        payBasicRow.style.display = isBasic ? '' : 'none';
+        payPremiumAmount.textContent = `${premiumAmt.toLocaleString('ko-KR')}원`;
+        payBasicAmount.textContent = `${basicAmt.toLocaleString('ko-KR')}원`;
         payTotalText.textContent = `${total.toLocaleString('ko-KR')}원`;
       }
       startInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
       endInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
       payPremium.addEventListener('change', (e) => {
         isPremium = !!e.target.checked;
+        recomputePay();
+        resetPaymentGate();
+      });
+      payBasic.addEventListener('change', (e) => {
+        isBasic = !!e.target.checked;
         recomputePay();
         resetPaymentGate();
       });
@@ -992,7 +1091,9 @@
         const endDate = form.endDate.value;
         if (!startDate || !endDate) { toast('광고 기간을 입력해주세요.'); btn.disabled = false; return; }
         if (new Date(endDate) < new Date(startDate)) { toast('종료일이 시작일보다 빠릅니다.'); btn.disabled = false; return; }
-        // 2026-05-25 [사용자 명시] 입금완료 게이트 — 클라이언트 측에서 한 번 더 확인.
+        // 2026-05-25 [사용자 명시] 노출 옵션 — 프리미엄/기본 중 최소 1개 체크 필수.
+        if (!isPremium && !isBasic) { toast('프리미엄 또는 기본 노출 중 하나는 선택해주세요.'); btn.disabled = false; return; }
+        // 입금완료 게이트 — 클라이언트 측에서 한 번 더 확인.
         if (!paymentConfirmedClient) { toast('결제 안내의 [입금완료] 버튼을 먼저 눌러주세요.'); btn.disabled = false; return; }
         const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
         if (phonesClean.length === 0) { toast('담당자 연락처를 입력해주세요.'); btn.disabled = false; return; }
@@ -1027,9 +1128,11 @@
           priceMax: toIntOrNull(form.priceMax.value) ?? 0,
           // 2026-05-25 [사용자 명시] MGM 입력값 → 모바일 분양현장등록 '수수료'(mgmFee) 칸과 자동 매칭.
           mgmFee: toIntOrNull(form.mgmFee.value) ?? 0,
-          // 2026-05-25 [사용자 명시] 프리미엄 체크 + 청구액 (개월수 × 단가) — Slack #결제 / admin 노출용.
+          // 2026-05-25 [사용자 명시] 프리미엄/기본 각각 체크 → 합산 청구액 (개월수 × (프리미엄 ? 30000 : 0) + (기본 ? 10000 : 0)).
           isPremium,
-          chargedAmount: calcMonths(startDate, endDate) * (isPremium ? PRICE_PREMIUM : PRICE_NORMAL),
+          chargedAmount:
+            calcMonths(startDate, endDate) *
+            ((isPremium ? PRICE_PREMIUM : 0) + (isBasic ? PRICE_NORMAL : 0)),
           imageUrls: files.image.map((f) => f.url),
           // 2026-05-25 [사용자 명시] 속지 (pdf/jpg/png, 최대 3).
           innerPageUrls: files.innerPage.map((f) => f.url),
