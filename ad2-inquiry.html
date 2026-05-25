@@ -241,8 +241,8 @@
         </div>
         <div class="field">
           <label class="label">MGM (R, 수수료)</label>
-          <!-- 2026-05-25 [사용자 명시] 모바일>분양현장등록 '수수료' 칸(mgmFee) 과 자동 매칭. -->
-          <input class="input" type="number" inputmode="numeric" min="0" name="mgmFee" placeholder="예: 500000" />
+          <!-- 2026-05-25 [사용자 명시] 모바일>분양현장등록 '수수료' 칸(mgmFee) 과 자동 매칭 + ',' 천 단위 콤마 자동. -->
+          <input class="input" type="text" inputmode="numeric" name="mgmFee" placeholder="예: 500,000" autocomplete="off" />
         </div>
       </section>
 
@@ -348,6 +348,27 @@
     const HEATING_TYPES = ['도시가스', 'LPG', '지역난방', '심야전기', '기타'];
     const OPTION_LIST = ['에어컨', '인덕션', '가스레인지', '전기오븐', '냉장고', '김치냉장고', '세탁기', '건조기', '스타일러'];
 
+    // 2026-05-25 [사용자 명시] 연락처 입력 시 '-' 자동 표시 (모바일 utils/formatPhone.ts 와 동일 규칙).
+    function formatPhoneKR(input) {
+      const d = String(input || '').replace(/\D/g, '').slice(0, 11);
+      if (d.length <= 3) return d;
+      if (d.length === 8 && /^1[5-8]/.test(d)) return d.slice(0, 4) + '-' + d.slice(4);
+      if (d.startsWith('02')) {
+        if (d.length <= 5) return d.slice(0, 2) + '-' + d.slice(2);
+        if (d.length <= 9) return d.slice(0, 2) + '-' + d.slice(2, 5) + '-' + d.slice(5);
+        return d.slice(0, 2) + '-' + d.slice(2, 6) + '-' + d.slice(6, 10);
+      }
+      if (d.length <= 7) return d.slice(0, 3) + '-' + d.slice(3);
+      if (d.length <= 10) return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
+      return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7, 11);
+    }
+    // 천 단위 콤마 (수수료/금액)
+    function formatWonComma(input) {
+      const d = String(input || '').replace(/\D/g, '');
+      if (!d) return '';
+      return parseInt(d, 10).toLocaleString('ko-KR');
+    }
+
     // ─── 게이트 ───
     const gate = document.getElementById('gate');
     const gateForm = document.getElementById('gateForm');
@@ -433,6 +454,14 @@
         optionChips.appendChild(el);
       });
 
+      // 2026-05-25 [사용자 명시] MGM 수수료 입력 시 천 단위 콤마 자동 표시.
+      const mgmInput = document.querySelector('input[name="mgmFee"]');
+      if (mgmInput) {
+        mgmInput.addEventListener('input', (e) => {
+          e.target.value = formatWonComma(e.target.value);
+        });
+      }
+
       // 시/도 + 구/군 (랜딩 같은 도메인의 regions.json — bubiseo.com/regions.json)
       const regionSel = document.getElementById('regionSel');
       const sigunguSel = document.getElementById('sigunguSel');
@@ -477,11 +506,16 @@
           const row = document.createElement('div');
           row.className = 'phone-row';
           row.innerHTML = `
-            <input class="input" type="tel" inputmode="tel" placeholder="010-1234-5678" value="${escapeHtml(p)}" />
+            <input class="input" type="tel" inputmode="tel" placeholder="010-1234-5678" maxlength="20" value="${escapeHtml(formatPhoneKR(p))}" />
             ${i > 0 ? '<button type="button" class="btn-icon" aria-label="삭제">✕</button>' : ''}
           `;
           const input = row.querySelector('input');
-          input.addEventListener('input', (e) => { phones[i] = e.target.value; });
+          // 2026-05-25 [사용자 명시] 입력하는 동안 '-' 자동 표시.
+          input.addEventListener('input', (e) => {
+            const formatted = formatPhoneKR(e.target.value);
+            e.target.value = formatted;
+            phones[i] = formatted;
+          });
           const x = row.querySelector('button');
           if (x) x.addEventListener('click', () => { phones.splice(i, 1); renderPhones(); });
           phonesEl.appendChild(row);
@@ -721,9 +755,12 @@
         const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
         if (phonesClean.length === 0) { toast('담당자 연락처를 입력해주세요.'); btn.disabled = false; return; }
         // 2026-05-25 [사용자 명시] 모바일 분양현장등록 입력칸 전체 포함 — 빈값은 null/0 으로 정규화.
+        //   2026-05-25 [수수료 콤마 표시] 입력값에 콤마/공백 포함 가능 → 숫자만 추출 후 변환.
         const toIntOrNull = (v) => {
-          const n = Number(v);
-          return v !== '' && v != null && Number.isFinite(n) ? Math.trunc(n) : null;
+          const cleaned = String(v ?? '').replace(/[^\d-]/g, '');
+          if (cleaned === '' || cleaned === '-') return null;
+          const n = Number(cleaned);
+          return Number.isFinite(n) ? Math.trunc(n) : null;
         };
         const payload = {
           agencyName: form.agencyName.value.trim(),
