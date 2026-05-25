@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>분양대행사 직접 등록 — 부비서</title>
+  <meta name="description" content="부비서 분양 파트너 — 분양대행사 직접 등록 페이지 (비공개)" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <style>
+    :root {
+      --pri: #6155F5;
+      --pri2: #39AFFD;
+      --bg: #F9FAFB;
+      --card: #FFFFFF;
+      --line: #E5E8EB;
+      --text: #191F28;
+      --sub: #4E5968;
+      --tertiary: #8B95A1;
+      --error: #E0533D;
+      --success: #00C896;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); }
+    a { color: var(--pri); text-decoration: none; }
+
+    /* ─── 게이트 ─── */
+    .gate { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .gate__box { width: 100%; max-width: 380px; background: #fff; border-radius: 16px; padding: 28px 24px; box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+    .gate__title { font-size: 18px; font-weight: 800; margin: 0 0 6px; }
+    .gate__sub { font-size: 13px; color: var(--sub); margin: 0 0 18px; }
+    .gate__form { display: flex; gap: 8px; }
+    .gate__input { flex: 1; height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; font-size: 15px; outline: none; }
+    .gate__input:focus { border-color: var(--pri); }
+    .gate__submit { height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; font-weight: 700; cursor: pointer; }
+    .gate__err { color: var(--error); font-size: 13px; margin: 10px 0 0; }
+    .gate__legal { color: var(--tertiary); font-size: 12px; margin: 14px 0 0; }
+
+    /* ─── 본문 ─── */
+    header { padding: 28px 20px 18px; max-width: 720px; margin: 0 auto; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 28px; height: 28px; }
+    .brand span { font-weight: 800; }
+    h1 { margin: 18px 0 8px; font-size: 22px; letter-spacing: -0.5px; }
+    .lead { margin: 0; font-size: 14px; color: var(--sub); line-height: 1.6; }
+
+    main { max-width: 720px; margin: 0 auto; padding: 12px 20px 60px; }
+    .card { background: var(--card); border-radius: 14px; padding: 20px 18px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .field { margin-bottom: 14px; }
+    .label { display: block; font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 6px; }
+    .input, .select, .textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+      font-size: 14px; font-family: inherit; background: #fff; outline: none;
+    }
+    .input:focus, .select:focus, .textarea:focus { border-color: var(--pri); }
+    .textarea { resize: vertical; min-height: 80px; }
+    .row { display: flex; gap: 10px; }
+    .row > * { flex: 1; min-width: 0; }
+    .hint { color: var(--tertiary); font-size: 12px; margin-top: 6px; }
+    .phones { display: flex; flex-direction: column; gap: 8px; }
+    .phone-row { display: flex; gap: 8px; }
+    .phone-row .input { flex: 1; }
+    .btn-icon { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; cursor: pointer; color: var(--sub); }
+    .btn-icon:hover { color: var(--error); border-color: var(--error); }
+    .btn-add { display: inline-block; padding: 8px 14px; border: 1px dashed var(--pri); border-radius: 10px; color: var(--pri); font-size: 13px; cursor: pointer; background: #fff; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { padding: 6px 12px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--sub); cursor: pointer; font-size: 13px; }
+    .chip.active { background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; border-color: transparent; }
+    .files { display: flex; flex-direction: column; gap: 8px; }
+    .file-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .file-item { position: relative; width: 96px; height: 96px; border-radius: 10px; overflow: hidden; background: #F2F4F6; display: flex; align-items: center; justify-content: center; }
+    .file-item img { width: 100%; height: 100%; object-fit: cover; }
+    .file-item .doc { font-size: 12px; color: var(--sub); padding: 0 8px; text-align: center; word-break: break-all; }
+    .file-item .x { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; line-height: 22px; padding: 0; }
+    .file-pick { display: inline-block; padding: 10px 16px; background: #F2F4F6; color: var(--sub); border-radius: 10px; cursor: pointer; font-size: 13px; border: 1px solid var(--line); }
+    .file-pick input { display: none; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .badge { padding: 6px 10px; background: rgba(97,85,245,0.10); color: var(--pri); border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .badge .x { background: none; border: none; color: var(--pri); cursor: pointer; padding: 0; font-size: 14px; }
+
+    .submit-bar { position: sticky; bottom: 0; background: #FFFFFFee; backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding: 14px 20px; margin: 0 -20px -60px; text-align: center; }
+    .submit { width: 100%; max-width: 360px; height: 52px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(97,85,245,0.35); }
+    .submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: #191F28; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13px; z-index: 2000; display: none; }
+    .toast.show { display: block; }
+
+    .success-box { padding: 40px 20px; text-align: center; }
+    .success-box .check { font-size: 60px; color: var(--success); }
+    .success-box h2 { font-size: 22px; margin: 12px 0 6px; }
+    .success-box p { color: var(--sub); margin: 0; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <!-- ─── 게이트 ─── -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true">
+    <div class="gate__box">
+      <h1 class="gate__title">분양대행사 등록 페이지</h1>
+      <p class="gate__sub">전달받은 비밀번호를 입력해 주세요.</p>
+      <form class="gate__form" id="gateForm" autocomplete="off">
+        <input type="password" id="gateInput" class="gate__input" placeholder="비밀번호" autocomplete="new-password" autofocus />
+        <button type="submit" class="gate__submit">입장</button>
+      </form>
+      <p class="gate__err" id="gateErr" hidden>비밀번호가 일치하지 않습니다.</p>
+      <p class="gate__legal">부비서 운영팀에서 전달받은 비밀번호로만 접근 가능합니다.</p>
+    </div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서 분양 파트너</span>
+    </div>
+    <h1>분양현장 직접 등록</h1>
+    <p class="lead">
+      아래 정보를 모두 입력하고 <b>업로드</b> 버튼을 누르면 최대 10분 안에 부비서 앱의 분양파트너 페이지에 노출됩니다.
+    </p>
+  </header>
+
+  <main>
+    <form id="ad2Form" autocomplete="off">
+      <!-- ─── 분양대행사 정보 ─── -->
+      <section class="card">
+        <div class="field">
+          <label class="label">분양대행사 상호명 <span style="color:var(--error)">*</span></label>
+          <input class="input" name="agencyName" maxlength="80" required />
+        </div>
+        <div class="field">
+          <label class="label">담당자 이름 <span style="color:var(--error)">*</span></label>
+          <input class="input" name="managerName" maxlength="40" required />
+        </div>
+        <div class="field">
+          <label class="label">담당자 연락처 <span style="color:var(--error)">*</span></label>
+          <div class="phones" id="phones"></div>
+          <button type="button" class="btn-add" id="addPhoneBtn" style="margin-top:8px">+ 연락처 추가</button>
+        </div>
+      </section>
+
+      <!-- ─── 광고 기간 ─── -->
+      <section class="card">
+        <div class="row">
+          <div class="field">
+            <label class="label">광고 시작일 <span style="color:var(--error)">*</span></label>
+            <input class="input" type="date" name="startDate" required />
+          </div>
+          <div class="field">
+            <label class="label">광고 종료일 <span style="color:var(--error)">*</span></label>
+            <input class="input" type="date" name="endDate" required />
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 지역·분류 ─── -->
+      <section class="card">
+        <div class="row">
+          <div class="field">
+            <label class="label">시/도 <span style="color:var(--error)">*</span></label>
+            <select class="select" id="regionSel" name="region" required>
+              <option value="">선택</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">구/군 <span style="color:var(--error)">*</span></label>
+            <select class="select" id="sigunguSel" name="sigungu" required disabled>
+              <option value="">시/도 먼저</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">분류 <span style="color:var(--error)">*</span></label>
+          <div class="chips" id="categoryChips"></div>
+        </div>
+      </section>
+
+      <!-- ─── 현장 ─── -->
+      <section class="card">
+        <div class="field">
+          <label class="label">현장 이름 <span style="color:var(--error)">*</span></label>
+          <input class="input" name="title" maxlength="120" required placeholder="예: 힐스테이트 강남 분양" />
+        </div>
+        <div class="field">
+          <label class="label">현장 주소 <span style="color:var(--error)">*</span></label>
+          <input class="input" name="address" maxlength="200" required placeholder="예: 서울특별시 강남구 역삼동 …" />
+        </div>
+      </section>
+
+      <!-- ─── 첨부 ─── -->
+      <section class="card">
+        <div class="field">
+          <label class="label">대표 이미지 (최대 15장, JPG/PNG)</label>
+          <div class="files">
+            <div class="file-list" id="imageList"></div>
+            <label class="file-pick" id="imagePick">+ 사진 추가
+              <input type="file" accept="image/jpeg,image/png" multiple />
+            </label>
+          </div>
+          <p class="hint" id="imageHint">0 / 15</p>
+        </div>
+
+        <div class="field">
+          <label class="label">영상 (최대 2개)</label>
+          <div class="files">
+            <div class="file-list" id="videoList"></div>
+            <label class="file-pick" id="videoPick">+ 영상 추가
+              <input type="file" accept="video/*" multiple />
+            </label>
+          </div>
+          <p class="hint" id="videoHint">0 / 2</p>
+        </div>
+
+        <div class="field">
+          <label class="label">브리핑 자료 (PDF/JPG/PNG, 최대 5개)</label>
+          <div class="files">
+            <div class="file-list" id="briefingList"></div>
+            <label class="file-pick" id="briefingPick">+ 자료 추가
+              <input type="file" accept="application/pdf,image/jpeg,image/png" multiple />
+            </label>
+          </div>
+          <p class="hint" id="briefingHint">0 / 5</p>
+        </div>
+
+        <div class="field">
+          <label class="label">손님 공유용 자료 (PDF/JPG/PNG, 최대 5개)</label>
+          <div class="files">
+            <div class="file-list" id="customerList"></div>
+            <label class="file-pick" id="customerPick">+ 자료 추가
+              <input type="file" accept="application/pdf,image/jpeg,image/png" multiple />
+            </label>
+          </div>
+          <p class="hint" id="customerHint">0 / 5</p>
+        </div>
+      </section>
+
+      <!-- ─── 뱃지 ─── -->
+      <section class="card">
+        <div class="field">
+          <label class="label">뱃지 (선택 — 예: 초역세권, 마감임박)</label>
+          <div class="row">
+            <input class="input" id="badgeInput" maxlength="20" placeholder="뱃지 입력 후 추가" />
+            <button type="button" class="btn-add" id="addBadgeBtn">+ 추가</button>
+          </div>
+          <div class="badges" id="badgeList" style="margin-top:8px"></div>
+        </div>
+      </section>
+
+      <div class="submit-bar">
+        <button type="submit" class="submit" id="submitBtn">업로드</button>
+      </div>
+    </form>
+
+    <div id="successView" hidden></div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  (function () {
+    'use strict';
+    const API_BASE = 'https://api.bubiseo.com';
+    const GATE_KEY = 'ad2GateToken.v1';
+    const TOKEN = () => sessionStorage.getItem(GATE_KEY);
+
+    const CATEGORIES = [
+      { key: 'APARTMENT', label: '아파트' },
+      { key: 'OFFICETEL', label: '오피스텔' },
+      { key: 'KNOWLEDGE_INDUSTRY_CENTER', label: '지식산업센터' },
+      { key: 'COMMERCIAL', label: '상가' },
+      { key: 'VILLA', label: '빌라' },
+      { key: 'DETACHED_HOUSE', label: '단독주택' },
+      { key: 'TOWNHOUSE', label: '타운하우스' },
+    ];
+
+    // ─── 게이트 ───
+    const gate = document.getElementById('gate');
+    const gateForm = document.getElementById('gateForm');
+    const gateInput = document.getElementById('gateInput');
+    const gateErr = document.getElementById('gateErr');
+
+    if (TOKEN()) gate.remove();
+
+    gateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      gateErr.hidden = true;
+      const pw = gateInput.value;
+      try {
+        const r = await fetch(API_BASE + '/public/presale-inquiry/gate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw }),
+        });
+        if (r.status !== 200) { gateErr.hidden = false; return; }
+        const data = await r.json();
+        sessionStorage.setItem(GATE_KEY, data.token);
+        gate.remove();
+        initForm();
+      } catch (_) {
+        gateErr.hidden = false;
+      }
+    });
+    if (TOKEN()) { initForm(); }
+
+    // ─── 폼 초기화 ───
+    function initForm() {
+      // 분류 chip
+      const catChips = document.getElementById('categoryChips');
+      let selectedCategory = 'APARTMENT';
+      CATEGORIES.forEach((c) => {
+        const el = document.createElement('div');
+        el.className = 'chip' + (c.key === selectedCategory ? ' active' : '');
+        el.textContent = c.label;
+        el.addEventListener('click', () => {
+          selectedCategory = c.key;
+          catChips.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
+          el.classList.add('active');
+        });
+        catChips.appendChild(el);
+      });
+
+      // 시/도 + 구/군 (랜딩 같은 도메인의 regions.json — bubiseo.com/regions.json)
+      const regionSel = document.getElementById('regionSel');
+      const sigunguSel = document.getElementById('sigunguSel');
+      let REGIONS = {};
+      fetch('/regions.json')
+        .then((r) => r.ok ? r.json() : Promise.reject())
+        .then((data) => {
+          REGIONS = data;
+          Object.keys(REGIONS).forEach((sido) => {
+            const opt = document.createElement('option');
+            opt.value = sido;
+            opt.textContent = sido;
+            regionSel.appendChild(opt);
+          });
+        })
+        .catch(() => {
+          // fetch 실패 시 시/도 17개 fallback (구/군 미노출)
+          ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'].forEach((sido) => {
+            const opt = document.createElement('option');
+            opt.value = sido;
+            opt.textContent = sido;
+            regionSel.appendChild(opt);
+          });
+        });
+      regionSel.addEventListener('change', () => {
+        sigunguSel.innerHTML = '<option value="">구/군 선택</option>';
+        sigunguSel.disabled = !regionSel.value;
+        const list = REGIONS[regionSel.value] ? Object.keys(REGIONS[regionSel.value]) : [];
+        list.forEach((g) => {
+          const opt = document.createElement('option');
+          opt.value = g; opt.textContent = g;
+          sigunguSel.appendChild(opt);
+        });
+      });
+
+      // 담당자 연락처 동적 추가
+      const phonesEl = document.getElementById('phones');
+      const phones = [''];
+      function renderPhones() {
+        phonesEl.innerHTML = '';
+        phones.forEach((p, i) => {
+          const row = document.createElement('div');
+          row.className = 'phone-row';
+          row.innerHTML = `
+            <input class="input" type="tel" inputmode="tel" placeholder="010-1234-5678" value="${escapeHtml(p)}" />
+            ${i > 0 ? '<button type="button" class="btn-icon" aria-label="삭제">✕</button>' : ''}
+          `;
+          const input = row.querySelector('input');
+          input.addEventListener('input', (e) => { phones[i] = e.target.value; });
+          const x = row.querySelector('button');
+          if (x) x.addEventListener('click', () => { phones.splice(i, 1); renderPhones(); });
+          phonesEl.appendChild(row);
+        });
+      }
+      renderPhones();
+      document.getElementById('addPhoneBtn').addEventListener('click', () => {
+        if (phones.length >= 5) { toast('연락처는 최대 5개까지에요.'); return; }
+        phones.push(''); renderPhones();
+      });
+
+      // 파일 업로드 — 4 종류
+      const files = { image: [], video: [], briefing: [], customer: [] };
+      const limits = { image: 15, video: 2, briefing: 5, customer: 5 };
+      const uploadKinds = { image: 'image', video: 'video', briefing: 'pdf', customer: 'pdf' };
+      const listIds = { image: 'imageList', video: 'videoList', briefing: 'briefingList', customer: 'customerList' };
+      const hintIds = { image: 'imageHint', video: 'videoHint', briefing: 'briefingHint', customer: 'customerHint' };
+      const pickIds = { image: 'imagePick', video: 'videoPick', briefing: 'briefingPick', customer: 'customerPick' };
+
+      Object.keys(files).forEach((kind) => {
+        const pick = document.getElementById(pickIds[kind]).querySelector('input');
+        pick.addEventListener('change', async (e) => {
+          const picked = Array.from(e.target.files || []);
+          e.target.value = '';
+          const remain = limits[kind] - files[kind].length;
+          if (picked.length > remain) {
+            toast(`최대 ${limits[kind]}개까지에요.`);
+          }
+          for (const f of picked.slice(0, remain)) {
+            try {
+              const fd = new FormData();
+              fd.append('file', f);
+              fd.append('kind', uploadKinds[kind]);
+              const r = await fetch(API_BASE + '/public/presale-inquiry/upload', {
+                method: 'POST',
+                headers: { Authorization: 'Bearer ' + TOKEN() },
+                body: fd,
+              });
+              if (!r.ok) {
+                const err = await r.json().catch(() => ({}));
+                throw new Error(err?.message || '업로드 실패');
+              }
+              const data = await r.json();
+              files[kind].push({ url: data.url, name: f.name, type: f.type });
+            } catch (err) {
+              toast(err.message || '업로드 실패');
+            }
+          }
+          renderFiles(kind);
+        });
+      });
+
+      function renderFiles(kind) {
+        const list = document.getElementById(listIds[kind]);
+        list.innerHTML = '';
+        files[kind].forEach((f, i) => {
+          const el = document.createElement('div');
+          el.className = 'file-item';
+          if (kind === 'image' || (kind === 'briefing' || kind === 'customer') && /^image/.test(f.type)) {
+            el.innerHTML = `<img src="${f.url}" alt="" />`;
+          } else if (kind === 'video') {
+            el.innerHTML = `<span class="doc">🎬 ${escapeHtml(f.name)}</span>`;
+          } else {
+            el.innerHTML = `<span class="doc">📄 ${escapeHtml(f.name)}</span>`;
+          }
+          const x = document.createElement('button');
+          x.className = 'x'; x.textContent = '✕';
+          x.addEventListener('click', () => { files[kind].splice(i, 1); renderFiles(kind); });
+          el.appendChild(x);
+          list.appendChild(el);
+        });
+        document.getElementById(hintIds[kind]).textContent = `${files[kind].length} / ${limits[kind]}`;
+      }
+
+      // 뱃지
+      const badges = [];
+      const badgeInput = document.getElementById('badgeInput');
+      const badgeList = document.getElementById('badgeList');
+      function renderBadges() {
+        badgeList.innerHTML = '';
+        badges.forEach((b, i) => {
+          const el = document.createElement('span');
+          el.className = 'badge';
+          el.innerHTML = `${escapeHtml(b)} <button type="button" class="x">✕</button>`;
+          el.querySelector('button').addEventListener('click', () => { badges.splice(i, 1); renderBadges(); });
+          badgeList.appendChild(el);
+        });
+      }
+      document.getElementById('addBadgeBtn').addEventListener('click', () => {
+        const v = badgeInput.value.trim();
+        if (!v) return;
+        if (badges.length >= 10) { toast('뱃지는 최대 10개까지에요.'); return; }
+        if (badges.includes(v)) { toast('이미 추가된 뱃지에요.'); return; }
+        badges.push(v); badgeInput.value = ''; renderBadges();
+      });
+      badgeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addBadgeBtn').click(); }
+      });
+
+      // submit
+      document.getElementById('ad2Form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        const form = e.target;
+        const startDate = form.startDate.value;
+        const endDate = form.endDate.value;
+        if (!startDate || !endDate) { toast('광고 기간을 입력해주세요.'); btn.disabled = false; return; }
+        if (new Date(endDate) < new Date(startDate)) { toast('종료일이 시작일보다 빠릅니다.'); btn.disabled = false; return; }
+        const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
+        if (phonesClean.length === 0) { toast('담당자 연락처를 입력해주세요.'); btn.disabled = false; return; }
+        const payload = {
+          agencyName: form.agencyName.value.trim(),
+          managerName: form.managerName.value.trim(),
+          managerPhones: phonesClean,
+          startDate: new Date(startDate + 'T00:00:00+09:00').toISOString(),
+          endDate: new Date(endDate + 'T23:59:59+09:00').toISOString(),
+          region: regionSel.value || null,
+          sigungu: sigunguSel.value || null,
+          category: selectedCategory,
+          title: form.title.value.trim(),
+          address: form.address.value.trim(),
+          imageUrls: files.image.map((f) => f.url),
+          videoUrls: files.video.map((f) => f.url),
+          briefingPdfUrls: files.briefing.map((f) => f.url),
+          customerShareFileUrls: files.customer.map((f) => f.url),
+          badges,
+        };
+        try {
+          const r = await fetch(API_BASE + '/public/presale-inquiry/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + TOKEN(),
+            },
+            body: JSON.stringify(payload),
+          });
+          if (!r.ok) {
+            const err = await r.json().catch(() => ({}));
+            throw new Error(err?.message || '등록 실패');
+          }
+          showSuccess();
+        } catch (err) {
+          toast(err.message || '등록 실패');
+          btn.disabled = false;
+        }
+      });
+
+      function showSuccess() {
+        document.getElementById('ad2Form').hidden = true;
+        const v = document.getElementById('successView');
+        v.hidden = false;
+        v.innerHTML = `
+          <div class="card success-box">
+            <div class="check">✅</div>
+            <h2>등록이 접수됐어요</h2>
+            <p>최대 10분 안에 부비서 앱의 분양파트너 페이지에 노출됩니다.<br/>운영팀에서 내용을 검토한 뒤 안내드려요.</p>
+          </div>
+        `;
+      }
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+  })();
+  </script>
+</body>
+</html>
