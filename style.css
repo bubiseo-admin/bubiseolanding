@@ -5559,19 +5559,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin: 0 0 28px;
   line-height: 1.5;
 }
-/* 2026-05-25 [사용자 명시] ad2-inquiry 와 동일 비율 — 폰 스크린샷 고정 폭 + 9:19 비율 유지. */
+/* 2026-05-25 [사용자 명시] 광고 예시 이미지 — 폭만 고정, 원본 비율 그대로 (잘림 방지). */
 .adq__banner-ad-imgs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
   gap: 12px;
 }
 .adq__banner-ad-imgs img {
   flex-shrink: 0;
   width: 180px;
   height: auto;
-  aspect-ratio: 9 / 19;
-  object-fit: cover;
   display: block;
   border-radius: 18px;
   border: 1px solid #ECEEF1;

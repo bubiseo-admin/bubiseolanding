@@ -97,12 +97,13 @@
       padding: 4px 0;
       text-shadow: 0 2px 8px rgba(97,85,245,0.25);
     }
-    .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; }
-    .ad-preview--phone { width: 160px; height: auto; aspect-ratio: 9/19; object-fit: cover; }
-    .ad-preview--desktop { width: 420px; max-width: 100%; height: auto; aspect-ratio: 16/10; object-fit: cover; }
+    /* 2026-05-25 [사용자 명시 fix] 강제 aspect-ratio 제거 — 원본 비율 그대로 (잘림 방지, ad-inquiry 와 통일). */
+    .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; height: auto; }
+    .ad-preview--phone { width: 180px; }
+    .ad-preview--desktop { width: 560px; max-width: 100%; }
     @media (max-width: 480px) {
-      .ad-preview--phone { width: 130px; }
-      .ad-preview--desktop { width: 280px; }
+      .ad-preview--phone { width: 140px; }
+      .ad-preview--desktop { width: 100%; }
     }
     .section-h2 {
       margin: 28px 0 8px;
