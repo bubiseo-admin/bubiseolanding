@@ -1133,23 +1133,105 @@
           close();
         });
         overlay.querySelector('#premWaitReserve').addEventListener('click', () => {
-          premiumReservedFrom = ymd;
-          // 광고 시작일 자동 변경 + 종료일도 시작일 이전이면 시작일 + 30일로 보정
-          startInput.value = ymd;
-          if (!endInput.value || new Date(endInput.value) < new Date(ymd)) {
-            const e = new Date(ymd);
-            e.setDate(e.getDate() + 30);
-            endInput.value =
-              `${e.getFullYear()}-${String(e.getMonth() + 1).padStart(2, '0')}-${String(e.getDate()).padStart(2, '0')}`;
-          }
-          recomputePay();
-          resetPaymentGate(); // 입금완료 버튼 다시 활성화 가능 상태로 (사용자가 누르면 활성화)
-          toast(`광고 시작일이 ${pretty} 로 예약됐어요. 입금완료를 눌러주세요.`);
           close();
+          openPremiumReserveModal(ymd, pretty);
         });
         // 배경 클릭 = 취소
         overlay.addEventListener('click', (e) => {
           if (e.target === overlay) overlay.querySelector('#premWaitCancel').click();
+        });
+      }
+
+      // 2026-05-25 [사용자 명시] 두 번째 모달 — 시작일(픽스) + 종료일(직접 선택) + 결제 미리보기 + 확인.
+      function openPremiumReserveModal(fixedStartYmd, fixedStartPretty) {
+        // 종료일 기본 = 시작일 + 30일
+        const startD = new Date(fixedStartYmd);
+        const defaultEnd = new Date(startD);
+        defaultEnd.setDate(defaultEnd.getDate() + 30);
+        const defaultEndYmd =
+          `${defaultEnd.getFullYear()}-${String(defaultEnd.getMonth() + 1).padStart(2, '0')}-${String(defaultEnd.getDate()).padStart(2, '0')}`;
+        // 종료일 최소 = 시작일 + 1일
+        const minEnd = new Date(startD);
+        minEnd.setDate(minEnd.getDate() + 1);
+        const minEndYmd =
+          `${minEnd.getFullYear()}-${String(minEnd.getMonth() + 1).padStart(2, '0')}-${String(minEnd.getDate()).padStart(2, '0')}`;
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText =
+          'position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:5000; padding:20px;';
+        overlay.innerHTML = `
+          <div style="width:100%; max-width:400px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25);">
+            <div style="font-size:34px; text-align:center; margin-bottom:8px;">⭐</div>
+            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28;">프리미엄 노출 예약</p>
+            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 18px;">
+              시작일은 자동으로 잡혔어요. 종료일을 선택해주세요.
+            </p>
+
+            <label style="display:block; font-size:12px; font-weight:700; color:var(--sub); margin-bottom:6px;">광고 시작일 (자동)</label>
+            <div style="background:#F2F4F6; color:#4E5968; padding:12px 14px; border-radius:10px; font-size:15px; font-weight:800; margin-bottom:14px; text-align:center;">
+              ${fixedStartPretty}
+            </div>
+
+            <label for="premReserveEnd" style="display:block; font-size:12px; font-weight:700; color:var(--sub); margin-bottom:6px;">광고 종료일</label>
+            <input type="date" id="premReserveEnd" value="${defaultEndYmd}" min="${minEndYmd}" style="width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:16px; outline:none; margin-bottom:14px;" />
+
+            <div style="background:rgba(97,85,245,0.06); border:1px solid rgba(97,85,245,0.18); border-radius:10px; padding:12px 14px; margin-bottom:18px;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+                <span style="font-size:12px; color:var(--sub); font-weight:600;">광고 기간</span>
+                <span id="premReserveMonths" style="font-size:14px; font-weight:800; color:var(--text);">—</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                <span style="font-size:12px; color:var(--sub); font-weight:600;">총 결제 금액 (월 30,000원)</span>
+                <span id="premReserveTotal" style="font-size:18px; font-weight:800; color:var(--pri);">—</span>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button type="button" id="premReserveCancel" style="flex:1; height:44px; border:none; border-radius:10px; background:#F2F4F6; color:#4E5968; font-weight:700; cursor:pointer;">취소</button>
+              <button type="button" id="premReserveOk" style="flex:2; height:44px; border:none; border-radius:10px; background:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%); color:#fff; font-weight:800; cursor:pointer;">확인</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        const endEl = overlay.querySelector('#premReserveEnd');
+        const monthsEl = overlay.querySelector('#premReserveMonths');
+        const totalEl = overlay.querySelector('#premReserveTotal');
+        function updatePreview() {
+          const m = calcMonths(fixedStartYmd, endEl.value);
+          monthsEl.textContent = m > 0 ? `${m}개월` : '종료일을 선택해주세요';
+          totalEl.textContent = m > 0 ? `${(m * PRICE_PREMIUM).toLocaleString('ko-KR')}원` : '—';
+        }
+        endEl.addEventListener('input', updatePreview);
+        endEl.addEventListener('change', updatePreview);
+        updatePreview();
+
+        overlay.querySelector('#premReserveCancel').addEventListener('click', () => {
+          // 취소 → 기본 노출로 되돌림
+          payBasic.checked = true;
+          payTier = 'basic';
+          premiumReservedFrom = null;
+          recomputePay();
+          resetPaymentGate();
+          close();
+        });
+        overlay.querySelector('#premReserveOk').addEventListener('click', () => {
+          if (!endEl.value) { alert('종료일을 선택해주세요.'); return; }
+          if (new Date(endEl.value) <= new Date(fixedStartYmd)) {
+            alert('종료일은 시작일 이후여야 합니다.');
+            return;
+          }
+          // 본 폼의 시작일/종료일 즉시 갱신
+          premiumReservedFrom = fixedStartYmd;
+          startInput.value = fixedStartYmd;
+          endInput.value = endEl.value;
+          recomputePay();
+          resetPaymentGate(); // 입금완료 활성화 가능 상태로
+          toast(`예약됐어요. ${fixedStartPretty}부터 ${endEl.value}까지. 입금완료를 눌러주세요.`);
+          close();
+        });
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) overlay.querySelector('#premReserveCancel').click();
         });
       }
 
