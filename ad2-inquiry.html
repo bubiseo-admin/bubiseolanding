@@ -235,15 +235,9 @@
           <label class="label">옵션 (복수 선택)</label>
           <div class="chips" id="optionChips"></div>
         </div>
-        <div class="row">
-          <div class="field">
-            <label class="label">관리비 (월, 원)</label>
-            <input class="input" type="number" inputmode="numeric" min="0" name="mgmFee" placeholder="예: 150000" />
-          </div>
-          <div class="field">
-            <label class="label">MGM (R, 수수료)</label>
-            <input class="input" type="number" inputmode="numeric" min="0" name="adAmount" placeholder="예: 500000" />
-          </div>
+        <div class="field">
+          <label class="label">MGM (R, 수수료)</label>
+          <input class="input" type="number" inputmode="numeric" min="0" name="adAmount" placeholder="예: 500000" />
         </div>
       </section>
 
@@ -715,7 +709,6 @@
           parkingCount: toIntOrNull(form.parkingCount.value),
           heatingType: selectedHeating || null,
           options: Array.from(selectedOptions),
-          mgmFee: toIntOrNull(form.mgmFee.value) ?? 0,
           adAmount: toIntOrNull(form.adAmount.value) ?? 0,
           imageUrls: files.image.map((f) => f.url),
           videoUrls: files.video.map((f) => f.url),
