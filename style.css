@@ -5559,23 +5559,33 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   margin: 0 0 28px;
   line-height: 1.5;
 }
+/* 2026-05-25 [사용자 명시] ad2-inquiry 와 동일 비율 — 폰 스크린샷 고정 폭 + 9:19 비율 유지. */
 .adq__banner-ad-imgs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 .adq__banner-ad-imgs img {
-  width: 100%;
+  flex-shrink: 0;
+  width: 180px;
   height: auto;
+  aspect-ratio: 9 / 19;
+  object-fit: cover;
   display: block;
   border-radius: 18px;
   border: 1px solid #ECEEF1;
   background: #F8F9FB;
+  box-shadow: 0 6px 18px rgba(15,20,30,0.10);
 }
 @media (max-width: 720px) {
-  .adq__banner-ad-imgs { grid-template-columns: 1fr; gap: 14px; }
+  .adq__banner-ad-imgs { gap: 10px; }
+  .adq__banner-ad-imgs img { width: 140px; }
   .adq__banner-ad-title { font-size: 24px; }
   .adq__banner-ad-desc { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .adq__banner-ad-imgs img { width: 120px; }
 }
 
 /* 2026-05-22 [사용자 명시] 단가/결제 복귀 — 단일 칼럼 가운데 정렬 */
