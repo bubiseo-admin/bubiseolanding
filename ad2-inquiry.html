@@ -522,16 +522,16 @@
         <div class="field" style="margin-bottom:0">
           <label class="label" style="font-size:14px;">💳 결제 안내</label>
 
-          <!-- 2026-05-25 [사용자 명시] 노출 상품 — 프리미엄/일반 각각 체크 + 각각 계산. -->
-          <label class="pay-premium">
-            <input type="checkbox" id="payPremium" />
-            <span class="pay-premium__text">⭐ 프리미엄 노출 (별표 강조 + 광선 + 최상위)</span>
-            <span class="pay-premium__price">월 3만원</span>
-          </label>
+          <!-- 2026-05-25 [사용자 명시] 노출 상품 — 라디오 (둘 중 하나만 선택). 기본 default. -->
           <label class="pay-basic">
-            <input type="checkbox" id="payBasic" checked />
+            <input type="radio" name="payTier" id="payBasic" value="basic" checked />
             <span class="pay-basic__text">기본 노출</span>
             <span class="pay-basic__price">월 1만원</span>
+          </label>
+          <label class="pay-premium">
+            <input type="radio" name="payTier" id="payPremium" value="premium" />
+            <span class="pay-premium__text">⭐ 프리미엄 노출 (별표 강조 + 광선 + 최상위, 최대 5개)</span>
+            <span class="pay-premium__price">월 3만원</span>
           </label>
 
           <!-- 자동 계산 요약 — 프리미엄/기본 각각 + 합계 -->
@@ -1015,13 +1015,14 @@
         if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addBadgeBtn').click(); }
       });
 
-      // ─── 2026-05-25 [사용자 명시] 결제 안내 — 프리미엄/기본 각각 체크 + 각각 계산 ───
-      // 단가: 기본 월 10,000원 / 프리미엄 월 30,000원. 둘 다 체크 시 합산.
+      // ─── 2026-05-25 [사용자 명시] 결제 안내 — 라디오 (둘 중 하나) + 프리미엄 슬롯 검증 ───
+      // 단가: 기본 월 10,000원 / 프리미엄 월 30,000원.
+      // 프리미엄 선택 시 즉시 백엔드에서 활성 슬롯(최대 5) 체크 → full 이면 대기 예약 모달.
       const PRICE_NORMAL = 10000;
       const PRICE_PREMIUM = 30000;
-      let isPremium = false;
-      let isBasic = true; // 기본 노출 — 기본 체크
+      let payTier = 'basic'; // 'basic' | 'premium'
       let paymentConfirmedClient = false;
+      let premiumReservedFrom = null; // 대기 예약된 시작일 (YYYY-MM-DD), 있으면 startDate 자동 변경
 
       const payMonthsText = document.getElementById('payMonthsText');
       const payTotalText = document.getElementById('payTotalText');
@@ -1044,6 +1045,8 @@
       }
       function recomputePay() {
         const months = calcMonths(startInput.value, endInput.value);
+        const isPremium = payTier === 'premium';
+        const isBasic = payTier === 'basic';
         const premiumAmt = isPremium ? months * PRICE_PREMIUM : 0;
         const basicAmt = isBasic ? months * PRICE_NORMAL : 0;
         const total = premiumAmt + basicAmt;
@@ -1056,17 +1059,99 @@
       }
       startInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
       endInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
-      payPremium.addEventListener('change', (e) => {
-        isPremium = !!e.target.checked;
+
+      payBasic.addEventListener('change', (e) => {
+        if (!e.target.checked) return;
+        payTier = 'basic';
+        premiumReservedFrom = null;
         recomputePay();
         resetPaymentGate();
       });
-      payBasic.addEventListener('change', (e) => {
-        isBasic = !!e.target.checked;
+
+      payPremium.addEventListener('change', async (e) => {
+        if (!e.target.checked) return;
+        payTier = 'premium';
+        premiumReservedFrom = null;
         recomputePay();
         resetPaymentGate();
+        // 즉시 프리미엄 슬롯 가용 체크
+        try {
+          const r = await fetch(API_BASE + '/presale-partnerships/premium-availability');
+          if (!r.ok) throw new Error('availability fetch failed');
+          const a = await r.json();
+          if (a.isFull && a.nextAvailableFrom) {
+            openPremiumWaitModal(a.nextAvailableFrom);
+          }
+        } catch {
+          // 네트워크 실패 시 게이트 막지 않음 (백엔드에서 최종 검증).
+          console.warn('[ad2-inquiry] premium-availability check failed');
+        }
       });
       recomputePay();
+
+      // ─── 2026-05-25 [사용자 명시] 프리미엄 슬롯 5개 full → 대기 예약 모달 ───
+      function openPremiumWaitModal(nextIsoDate) {
+        const dt = new Date(nextIsoDate);
+        const ymd =
+          `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+        const pretty =
+          `${dt.getFullYear()}년 ${dt.getMonth() + 1}월 ${dt.getDate()}일`;
+        const overlay = document.createElement('div');
+        overlay.style.cssText =
+          'position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:5000; padding:20px;';
+        overlay.innerHTML = `
+          <div style="width:100%; max-width:380px; background:#fff; border-radius:16px; padding:24px 22px; box-shadow:0 18px 40px rgba(0,0,0,0.25);">
+            <div style="font-size:34px; text-align:center; margin-bottom:8px;">⭐</div>
+            <p style="font-size:17px; font-weight:800; text-align:center; margin:0 0 6px; color:#191F28;">프리미엄 노출 자리가 꽉 찼어요</p>
+            <p style="font-size:13px; color:#4E5968; text-align:center; line-height:1.6; margin:0 0 16px;">
+              현재 프리미엄 노출은 <b>최대 5개</b>까지만 운영됩니다.<br/>
+              대기 순번을 등록하시면 가장 빠른 자리가 비는 다음 날부터 자동 시작됩니다.
+            </p>
+            <div style="background:#F2F4F6; border-radius:10px; padding:14px 16px; margin-bottom:14px; text-align:center;">
+              <div style="font-size:11px; color:#8B95A1; font-weight:700; letter-spacing:0.3px;">시작 가능 날짜</div>
+              <div style="font-size:18px; font-weight:800; color:#6155F5; margin-top:4px;">${pretty} 부터</div>
+            </div>
+            <p style="font-size:12px; color:var(--tertiary); text-align:center; line-height:1.6; margin:0 0 16px;">
+              위 날짜부터 프리미엄 노출이 시작됩니다.<br/>
+              예약하시면 입금완료 버튼이 활성화되고, 광고 시작일이 자동 변경돼요.
+            </p>
+            <div style="display:flex; gap:8px;">
+              <button type="button" id="premWaitCancel" style="flex:1; height:44px; border:none; border-radius:10px; background:#F2F4F6; color:#4E5968; font-weight:700; cursor:pointer;">취소</button>
+              <button type="button" id="premWaitReserve" style="flex:2; height:44px; border:none; border-radius:10px; background:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%); color:#fff; font-weight:800; cursor:pointer;">예약하기</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.querySelector('#premWaitCancel').addEventListener('click', () => {
+          // 취소 → 기본으로 되돌림
+          payBasic.checked = true;
+          payTier = 'basic';
+          premiumReservedFrom = null;
+          recomputePay();
+          resetPaymentGate();
+          close();
+        });
+        overlay.querySelector('#premWaitReserve').addEventListener('click', () => {
+          premiumReservedFrom = ymd;
+          // 광고 시작일 자동 변경 + 종료일도 시작일 이전이면 시작일 + 30일로 보정
+          startInput.value = ymd;
+          if (!endInput.value || new Date(endInput.value) < new Date(ymd)) {
+            const e = new Date(ymd);
+            e.setDate(e.getDate() + 30);
+            endInput.value =
+              `${e.getFullYear()}-${String(e.getMonth() + 1).padStart(2, '0')}-${String(e.getDate()).padStart(2, '0')}`;
+          }
+          recomputePay();
+          resetPaymentGate(); // 입금완료 버튼 다시 활성화 가능 상태로 (사용자가 누르면 활성화)
+          toast(`광고 시작일이 ${pretty} 로 예약됐어요. 입금완료를 눌러주세요.`);
+          close();
+        });
+        // 배경 클릭 = 취소
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) overlay.querySelector('#premWaitCancel').click();
+        });
+      }
 
       function resetPaymentGate() {
         paymentConfirmedClient = false;
@@ -1111,8 +1196,8 @@
         const endDate = form.endDate.value;
         if (!startDate || !endDate) { toast('광고 기간을 입력해주세요.'); btn.disabled = false; return; }
         if (new Date(endDate) < new Date(startDate)) { toast('종료일이 시작일보다 빠릅니다.'); btn.disabled = false; return; }
-        // 2026-05-25 [사용자 명시] 노출 옵션 — 프리미엄/기본 중 최소 1개 체크 필수.
-        if (!isPremium && !isBasic) { toast('프리미엄 또는 기본 노출 중 하나는 선택해주세요.'); btn.disabled = false; return; }
+        // 2026-05-25 [사용자 명시] 라디오 — 항상 둘 중 하나 선택. 안전 가드만.
+        if (payTier !== 'basic' && payTier !== 'premium') { toast('프리미엄 또는 기본 노출 중 하나는 선택해주세요.'); btn.disabled = false; return; }
         // 입금완료 게이트 — 클라이언트 측에서 한 번 더 확인.
         if (!paymentConfirmedClient) { toast('결제 안내의 [입금완료] 버튼을 먼저 눌러주세요.'); btn.disabled = false; return; }
         const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
@@ -1148,11 +1233,11 @@
           priceMax: toIntOrNull(form.priceMax.value) ?? 0,
           // 2026-05-25 [사용자 명시] MGM 입력값 → 모바일 분양현장등록 '수수료'(mgmFee) 칸과 자동 매칭.
           mgmFee: toIntOrNull(form.mgmFee.value) ?? 0,
-          // 2026-05-25 [사용자 명시] 프리미엄/기본 각각 체크 → 합산 청구액 (개월수 × (프리미엄 ? 30000 : 0) + (기본 ? 10000 : 0)).
-          isPremium,
+          // 2026-05-25 [사용자 명시] 라디오 — 둘 중 하나만. payTier 로 청구액 결정.
+          isPremium: payTier === 'premium',
           chargedAmount:
             calcMonths(startDate, endDate) *
-            ((isPremium ? PRICE_PREMIUM : 0) + (isBasic ? PRICE_NORMAL : 0)),
+            (payTier === 'premium' ? PRICE_PREMIUM : PRICE_NORMAL),
           imageUrls: files.image.map((f) => f.url),
           // 2026-05-25 [사용자 명시] 속지 (pdf/jpg/png, 최대 3).
           innerPageUrls: files.innerPage.map((f) => f.url),
