@@ -77,19 +77,32 @@
     .ad-notes li { margin: 4px 0; }
     .ad-notes b { color: var(--pri); }
     .ad-notes__sub { display: block; color: var(--tertiary); font-size: 12px; margin-top: 2px; }
-    .ad-preview-row {
-      display: flex; gap: 10px; align-items: flex-start;
+    /* 2026-05-25 [사용자 명시] 모바일 2장 + "+" + 데스크톱 1장 세로 배치. */
+    .ad-preview-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
       margin: 0 0 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: thin;
+    }
+    .ad-preview-row {
+      display: flex; gap: 10px; align-items: flex-start; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .ad-preview-plus {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--pri);
+      line-height: 1;
+      padding: 4px 0;
+      text-shadow: 0 2px 8px rgba(97,85,245,0.25);
     }
     .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; }
     .ad-preview--phone { width: 160px; height: auto; aspect-ratio: 9/19; object-fit: cover; }
-    .ad-preview--desktop { width: 360px; height: auto; aspect-ratio: 16/10; object-fit: cover; }
+    .ad-preview--desktop { width: 420px; max-width: 100%; height: auto; aspect-ratio: 16/10; object-fit: cover; }
     @media (max-width: 480px) {
       .ad-preview--phone { width: 130px; }
-      .ad-preview--desktop { width: 240px; }
+      .ad-preview--desktop { width: 280px; }
     }
     .section-h2 {
       margin: 28px 0 8px;
@@ -289,10 +302,16 @@
         <span class="ad-notes__sub">대기 순번이 없으면 연장 가능 · 대기 순번 있으면 연장 불가 (대기 순번 등록은 가능)</span></li>
     </ul>
 
-    <div class="ad-preview-row">
-      <img class="ad-preview ad-preview--phone" src="assets/IMG_3556.jpg" alt="분양파트너 모바일 1" loading="lazy" />
-      <img class="ad-preview ad-preview--phone" src="assets/IMG_3557.jpg" alt="분양파트너 모바일 2" loading="lazy" />
-      <img class="ad-preview ad-preview--desktop" src="assets/screen-desktop.png" alt="분양파트너 데스크톱" loading="lazy" />
+    <!-- 2026-05-25 [사용자 명시] 모바일 2장 가로 + ＋ + 데스크톱 1장 세로 배치. -->
+    <div class="ad-preview-stack">
+      <div class="ad-preview-row">
+        <img class="ad-preview ad-preview--phone" src="assets/IMG_3556.jpg" alt="분양파트너 모바일 1" loading="lazy" />
+        <img class="ad-preview ad-preview--phone" src="assets/IMG_3557.jpg" alt="분양파트너 모바일 2" loading="lazy" />
+      </div>
+      <div class="ad-preview-plus" aria-hidden="true">+</div>
+      <div class="ad-preview-row">
+        <img class="ad-preview ad-preview--desktop" src="assets/screen-desktop.png" alt="분양파트너 데스크톱" loading="lazy" />
+      </div>
     </div>
 
     <h2 class="section-h2">분양현장 직접 등록</h2>
