@@ -239,6 +239,17 @@
           <label class="label">옵션 (복수 선택)</label>
           <div class="chips" id="optionChips"></div>
         </div>
+        <!-- 2026-05-25 [사용자 명시] 현장가격 최소~최대 (원) — ',' 자동 표시. -->
+        <div class="row">
+          <div class="field">
+            <label class="label">현장가격 최소 (원)</label>
+            <input class="input" type="text" inputmode="numeric" name="priceMin" placeholder="예: 30,000,000" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label class="label">현장가격 최대 (원)</label>
+            <input class="input" type="text" inputmode="numeric" name="priceMax" placeholder="예: 50,000,000" autocomplete="off" />
+          </div>
+        </div>
         <div class="field">
           <label class="label">MGM (R, 수수료)</label>
           <!-- 2026-05-25 [사용자 명시] 모바일>분양현장등록 '수수료' 칸(mgmFee) 과 자동 매칭 + ',' 천 단위 콤마 자동. -->
@@ -259,6 +270,18 @@
           </div>
           <p class="hint" id="imageHint">0 / 15</p>
           <div id="imageErrBox" style="display:none; margin-top:8px; padding:10px 12px; background:#FEF1EE; border:1px solid #F8C4B8; border-radius:8px; color:#A8341B; font-size:12px; line-height:1.6;"></div>
+        </div>
+
+        <!-- 2026-05-25 [사용자 명시] 속지 — 분양 안내 책자 속 페이지 (PDF/JPG/PNG, 최대 3장). -->
+        <div class="field">
+          <label class="label">속지 (최대 3장, PDF/JPG/PNG)</label>
+          <div class="files">
+            <div class="file-list" id="innerPageList"></div>
+            <label class="file-pick" id="innerPagePick">+ 속지 추가
+              <input type="file" accept="application/pdf,image/jpeg,image/png" multiple />
+            </label>
+          </div>
+          <p class="hint" id="innerPageHint">0 / 3</p>
         </div>
 
         <div class="field">
@@ -454,13 +477,14 @@
         optionChips.appendChild(el);
       });
 
-      // 2026-05-25 [사용자 명시] MGM 수수료 입력 시 천 단위 콤마 자동 표시.
-      const mgmInput = document.querySelector('input[name="mgmFee"]');
-      if (mgmInput) {
-        mgmInput.addEventListener('input', (e) => {
+      // 2026-05-25 [사용자 명시] MGM·현장가격 입력 시 천 단위 콤마 자동 표시.
+      ['mgmFee', 'priceMin', 'priceMax'].forEach((name) => {
+        const el = document.querySelector(`input[name="${name}"]`);
+        if (!el) return;
+        el.addEventListener('input', (e) => {
           e.target.value = formatWonComma(e.target.value);
         });
-      }
+      });
 
       // 시/도 + 구/군 (랜딩 같은 도메인의 regions.json — bubiseo.com/regions.json)
       const regionSel = document.getElementById('regionSel');
@@ -527,13 +551,13 @@
         phones.push(''); renderPhones();
       });
 
-      // 파일 업로드 — 4 종류
-      const files = { image: [], video: [], briefing: [], customer: [] };
-      const limits = { image: 15, video: 2, briefing: 5, customer: 5 };
-      const uploadKinds = { image: 'image', video: 'video', briefing: 'pdf', customer: 'pdf' };
-      const listIds = { image: 'imageList', video: 'videoList', briefing: 'briefingList', customer: 'customerList' };
-      const hintIds = { image: 'imageHint', video: 'videoHint', briefing: 'briefingHint', customer: 'customerHint' };
-      const pickIds = { image: 'imagePick', video: 'videoPick', briefing: 'briefingPick', customer: 'customerPick' };
+      // 파일 업로드 — 5 종류 (2026-05-25 [사용자 명시] 속지 추가)
+      const files = { image: [], innerPage: [], video: [], briefing: [], customer: [] };
+      const limits = { image: 15, innerPage: 3, video: 2, briefing: 5, customer: 5 };
+      const uploadKinds = { image: 'image', innerPage: 'pdf', video: 'video', briefing: 'pdf', customer: 'pdf' };
+      const listIds = { image: 'imageList', innerPage: 'innerPageList', video: 'videoList', briefing: 'briefingList', customer: 'customerList' };
+      const hintIds = { image: 'imageHint', innerPage: 'innerPageHint', video: 'videoHint', briefing: 'briefingHint', customer: 'customerHint' };
+      const pickIds = { image: 'imagePick', innerPage: 'innerPagePick', video: 'videoPick', briefing: 'briefingPick', customer: 'customerPick' };
 
       // 2026-05-25 [사용자 명시] 업로드 시 0~100% 진행률 팝업 — XHR 기반 (fetch 는 progress 미지원).
       function uploadXhr(file, uploadKind, onProgress) {
@@ -780,9 +804,14 @@
           parkingCount: toIntOrNull(form.parkingCount.value),
           heatingType: selectedHeating || null,
           options: Array.from(selectedOptions),
+          // 2026-05-25 [사용자 명시] 현장가격 최소~최대 (원).
+          priceMin: toIntOrNull(form.priceMin.value) ?? 0,
+          priceMax: toIntOrNull(form.priceMax.value) ?? 0,
           // 2026-05-25 [사용자 명시] MGM 입력값 → 모바일 분양현장등록 '수수료'(mgmFee) 칸과 자동 매칭.
           mgmFee: toIntOrNull(form.mgmFee.value) ?? 0,
           imageUrls: files.image.map((f) => f.url),
+          // 2026-05-25 [사용자 명시] 속지 (pdf/jpg/png, 최대 3).
+          innerPageUrls: files.innerPage.map((f) => f.url),
           videoUrls: files.video.map((f) => f.url),
           briefingPdfUrls: files.briefing.map((f) => f.url),
           customerShareFileUrls: files.customer.map((f) => f.url),
