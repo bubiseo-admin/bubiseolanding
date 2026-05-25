@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 2026-05-25 [사용자 명시] viewport-fit=cover + maximum-scale 1 — 노치/iOS 좌우 잘림 방지 + 입력 시 확대 방지. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>분양대행사 직접 등록 — 부비서</title>
   <meta name="description" content="부비서 분양 파트너 — 분양대행사 직접 등록 페이지 (비공개)" />
   <meta name="robots" content="noindex, nofollow" />
@@ -26,8 +27,16 @@
       --success: #00C896;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text); background: var(--bg);
+      /* 2026-05-25 [사용자 명시] 모바일 가로 잘림 방지 — 전체 overflow 제어 + 안전영역 좌우 패딩. */
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
     a { color: var(--pri); text-decoration: none; }
+    img, video { max-width: 100%; height: auto; }
 
     /* ─── 게이트 ─── */
     .gate { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
@@ -42,25 +51,37 @@
     .gate__legal { color: var(--tertiary); font-size: 12px; margin: 14px 0 0; }
 
     /* ─── 본문 ─── */
-    header { padding: 28px 20px 18px; max-width: 720px; margin: 0 auto; }
+    header { padding: 28px 20px 18px; max-width: 720px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
     .brand { display: flex; align-items: center; gap: 10px; }
     .brand img { width: 28px; height: 28px; }
     .brand span { font-weight: 800; }
     h1 { margin: 18px 0 8px; font-size: 22px; letter-spacing: -0.5px; }
     .lead { margin: 0; font-size: 14px; color: var(--sub); line-height: 1.6; }
 
-    main { max-width: 720px; margin: 0 auto; padding: 12px 20px 60px; }
+    main {
+      max-width: 720px; margin: 0 auto; padding: 12px 20px 60px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+    }
     .card { background: var(--card); border-radius: 14px; padding: 20px 18px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     .field { margin-bottom: 14px; }
     .label { display: block; font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 6px; }
     .input, .select, .textarea {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
-      font-size: 14px; font-family: inherit; background: #fff; outline: none;
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px;
+      /* 2026-05-25 [사용자 명시] iOS 자동 확대 방지 — 입력 폰트 16px 고정 + appearance 정리. */
+      font-size: 16px; font-family: inherit; background: #fff; outline: none;
+      -webkit-appearance: none; appearance: none;
+      min-height: 44px;
     }
     .input:focus, .select:focus, .textarea:focus { border-color: var(--pri); }
     .textarea { resize: vertical; min-height: 80px; }
     .row { display: flex; gap: 10px; }
     .row > * { flex: 1; min-width: 0; }
+    /* 2026-05-25 [사용자 명시] 좁은 모바일 화면에선 한 줄에 두 칸이 잘리지 않도록 세로로 쌓기. */
+    @media (max-width: 480px) {
+      .row { flex-direction: column; gap: 0; }
+      .row > * { width: 100%; }
+    }
     .hint { color: var(--tertiary); font-size: 12px; margin-top: 6px; }
     .phones { display: flex; flex-direction: column; gap: 8px; }
     .phone-row { display: flex; gap: 8px; }
@@ -89,7 +110,16 @@
     .badge { padding: 6px 10px; background: rgba(97,85,245,0.10); color: var(--pri); border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
     .badge .x { background: none; border: none; color: var(--pri); cursor: pointer; padding: 0; font-size: 14px; }
 
-    .submit-bar { position: sticky; bottom: 0; background: #FFFFFFee; backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding: 14px 20px; margin: 0 -20px -60px; text-align: center; }
+    .submit-bar {
+      position: sticky; bottom: 0; background: #FFFFFFee; backdrop-filter: blur(8px);
+      border-top: 1px solid var(--line);
+      padding: 14px 20px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      margin: 0 -20px -60px;
+      text-align: center;
+    }
     .submit { width: 100%; max-width: 360px; height: 52px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(97,85,245,0.35); }
     .submit:disabled { opacity: 0.5; cursor: not-allowed; }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: #191F28; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13px; z-index: 2000; display: none; }
