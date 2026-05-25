@@ -241,7 +241,8 @@
         </div>
         <div class="field">
           <label class="label">MGM (R, 수수료)</label>
-          <input class="input" type="number" inputmode="numeric" min="0" name="adAmount" placeholder="예: 500000" />
+          <!-- 2026-05-25 [사용자 명시] 모바일>분양현장등록 '수수료' 칸(mgmFee) 과 자동 매칭. -->
+          <input class="input" type="number" inputmode="numeric" min="0" name="mgmFee" placeholder="예: 500000" />
         </div>
       </section>
 
@@ -742,7 +743,8 @@
           parkingCount: toIntOrNull(form.parkingCount.value),
           heatingType: selectedHeating || null,
           options: Array.from(selectedOptions),
-          adAmount: toIntOrNull(form.adAmount.value) ?? 0,
+          // 2026-05-25 [사용자 명시] MGM 입력값 → 모바일 분양현장등록 '수수료'(mgmFee) 칸과 자동 매칭.
+          mgmFee: toIntOrNull(form.mgmFee.value) ?? 0,
           imageUrls: files.image.map((f) => f.url),
           videoUrls: files.video.map((f) => f.url),
           briefingPdfUrls: files.briefing.map((f) => f.url),
