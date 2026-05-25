@@ -326,58 +326,155 @@
     </div>
   </section>
 
-  <!-- ============================== BETA TESTIMONIALS (76명 슬라이더) ============================== -->
-  <section class="beta" id="beta">
-    <div class="beta__inner">
-      <div class="beta__head" data-reveal>
-        <span class="eyebrow">현재 베타 테스트 중</span>
-        <h2 class="section__title section__title--center">
-          전국 <span class="gradient-text">76개 사무소</span>가<br/>
-          먼저 써보고 있어요.
-        </h2>
-        <p class="beta__sub">
-          이름·이메일은 일부만 노출했어요. 모두 실제 사용 중인 사무소의 실사용 후기입니다.
-        </p>
-      </div>
-
-      <!-- 슬라이더: 데이터는 testimonials.js 에서 자동 렌더 -->
-      <div class="beta-slider" data-beta-slider>
-        <div class="beta-slider__track" data-beta-track>
-          <!-- testimonials.js 가 카드를 렌더해서 여기에 채움 -->
-        </div>
-      </div>
-
-      <div class="beta__counter" data-reveal>
-        <span class="beta__counter-dot"></span>
-        <span><strong data-beta-count>76</strong>개 사무소가 사전 베타에 참여 중</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================== CTA (홈 화면 최하단 — 출시 알림 신청) ============================== -->
-  <section class="cta" id="cta">
-    <div class="cta__inner" data-reveal>
-      <h2 class="cta__title">
-        <span class="line">손이 많이 가던 사무소,</span>
-        <span class="line gradient-text">한결 가벼워진 사무소.</span>
+  <!-- ============================== CUSTOMER SUPPORT (products.html 01/02/03 폼 배치) ============================== -->
+  <!-- 2026-05-26 [사용자 명시] BETA(76개 사무소) + CTA(손이 많이 가던…) 섹션 제거, 고객지원 폼 3개로 교체 -->
+  <section class="prd" id="support">
+    <header class="prd__head" data-reveal>
+      <span class="prd__eyebrow">제품 · 고객 지원</span>
+      <h2 class="prd__title">
+        어떤 의견이든 <span class="gradient-text">환영합니다.</span>
       </h2>
-      <p class="cta__sub">App Store · Google Play 정식 출시. 지금 바로 다운로드하세요.</p>
-      <div class="cta__actions">
-        <a class="btn btn--primary btn--lg" href="https://apps.apple.com/kr/app/%EB%B6%80%EB%B9%84%EC%84%9C/id6765894424" target="_blank" rel="noopener">iOS 앱 받기</a>
-        <a class="btn btn--ghost btn--lg" href="https://play.google.com/store/apps/details?id=com.bubiseo.app" target="_blank" rel="noopener">Android 앱 받기</a>
-      </div>
+      <p class="prd__sub">
+        <span class="prd__sub-line">필요한 기능 요청·일반 문의 모두 여기서 받습니다.</span>
+        <span class="prd__sub-line">제출 즉시 부비서 팀에 전달되며, 영업일 1~3일 내 회신드립니다.</span>
+      </p>
+    </header>
 
-      <form class="cta__form" data-notify-form data-source="cta">
-        <label class="cta__form-label">내 사무소도 출시 알림 받기</label>
-        <div class="cta__form-fields">
-          <input name="businessName" type="text" placeholder="사무소명" required aria-label="사무소명" autocomplete="organization" maxlength="100" />
-          <input name="ownerName" type="text" placeholder="대표자명" required aria-label="대표자명" autocomplete="name" maxlength="50" />
-          <input name="email" type="email" placeholder="you@example.com" required aria-label="이메일" autocomplete="email" maxlength="200" />
-          <button type="submit" class="btn btn--primary">신청</button>
+    <!-- ═══ Section 1 — 필요한 기능이 있으신가요? ═══ -->
+    <section class="prd__section">
+      <header class="prd__section-head">
+        <span class="prd__num">01</span>
+        <div>
+          <h3 class="prd__section-title">필요한 기능이 있으신가요?</h3>
+          <p class="prd__section-sub">현장에서 부족한 기능·개선할 점을 직접 알려주세요. 대표님 의견 한 줄 한 줄이 우선순위 결정에 반영됩니다.</p>
         </div>
-        <p class="cta__form-note">스팸은 보내드리지 않습니다. 출시일에 딱 한 번만 알려드릴게요.</p>
+      </header>
+
+      <form class="prd__form" data-feature-request-form novalidate>
+        <div class="prd__row">
+          <label class="prd__field">
+            <span class="prd__label">부동산 상호명 <span class="prd__req">*</span></span>
+            <input name="businessName" type="text" required maxlength="100" autocomplete="organization"
+                   placeholder="예: 부비서공인중개사사무소" />
+          </label>
+          <label class="prd__field">
+            <span class="prd__label">전화번호 또는 이메일 <span class="prd__req">*</span></span>
+            <input name="contact" type="text" required maxlength="200"
+                   placeholder="010-0000-0000 또는 you@example.com" />
+          </label>
+        </div>
+
+        <label class="prd__field">
+          <span class="prd__label">요청 제목 <span class="prd__req">*</span> <span class="prd__hint">(어느 메뉴 / 화면의 어떤 기능)</span></span>
+          <input name="title" type="text" required maxlength="200"
+                 placeholder="예: 매물 일괄 등록 — 사진 파일 컬럼 매핑 추가" />
+        </label>
+
+        <label class="prd__field">
+          <span class="prd__label">요청 내용 <span class="prd__req">*</span> <span class="prd__hint">(10~2000자)</span></span>
+          <textarea name="body" required minlength="10" maxlength="2000" rows="6"
+                    placeholder="현재 어떤 점이 불편한지, 어떻게 바뀌면 좋겠는지 자세히 적어주세요. 사진·도면 첨부는 회신 메일로 보내주시면 됩니다."></textarea>
+        </label>
+
+        <div class="prd__actions">
+          <button type="submit" class="prd__submit">요청하기 →</button>
+        </div>
       </form>
-    </div>
+    </section>
+
+    <!-- ═══ Section 2 — 문의하기 ═══ -->
+    <section class="prd__section">
+      <header class="prd__section-head">
+        <span class="prd__num">02</span>
+        <div>
+          <h3 class="prd__section-title">문의하기</h3>
+          <p class="prd__section-sub">계정·기능·기타 일반 문의는 여기로 남겨주세요. 부비서 팀이 직접 회신드립니다.</p>
+        </div>
+      </header>
+
+      <form class="prd__form" data-contact-form novalidate>
+        <div class="prd__row">
+          <label class="prd__field">
+            <span class="prd__label">이름 또는 사무소명 <span class="prd__req">*</span></span>
+            <input name="businessName" type="text" required maxlength="100" autocomplete="name"
+                   placeholder="예: 한철호 또는 부비서공인중개사사무소" />
+          </label>
+          <label class="prd__field">
+            <span class="prd__label">전화번호 또는 이메일 <span class="prd__req">*</span></span>
+            <input name="contact" type="text" required maxlength="200"
+                   placeholder="010-0000-0000 또는 you@example.com" />
+          </label>
+        </div>
+
+        <label class="prd__field">
+          <span class="prd__label">문의 제목 <span class="prd__req">*</span></span>
+          <input name="title" type="text" required maxlength="200"
+                 placeholder="예: 계정 정보 변경 문의 / 직원 권한 관련 / 신규 제휴 제안" />
+        </label>
+
+        <label class="prd__field">
+          <span class="prd__label">문의 내용 <span class="prd__req">*</span> <span class="prd__hint">(10~2000자)</span></span>
+          <textarea name="body" required minlength="10" maxlength="2000" rows="6"
+                    placeholder="문의 사항을 구체적으로 적어주세요. 화면 캡쳐 첨부는 회신 메일로 보내주시면 됩니다."></textarea>
+        </label>
+
+        <div class="prd__actions">
+          <button type="submit" class="prd__submit">문의하기 →</button>
+        </div>
+
+        <p class="prd__legal">
+          제출하신 정보는 회신 목적으로만 사용되며,
+          <a href="privacy.html">개인정보처리방침</a> 에 따라 안전하게 보관됩니다.
+        </p>
+      </form>
+    </section>
+
+    <!-- ═══ Section 3 — 광고 문의 ═══ -->
+    <section class="prd__section">
+      <header class="prd__section-head">
+        <span class="prd__num">03</span>
+        <div>
+          <h3 class="prd__section-title">광고 문의</h3>
+          <p class="prd__section-sub">부비서 앱에 광고를 진행하고 싶으신가요? 광고주 정보를 남겨주시면 담당자가 영업일 1~2일 내 입력하신 연락처로 회신드립니다.</p>
+        </div>
+      </header>
+
+      <form class="prd__form" data-ad-inquiry-form novalidate>
+        <div class="prd__row">
+          <label class="prd__field">
+            <span class="prd__label">회사명·광고주 <span class="prd__req">*</span></span>
+            <input name="companyName" type="text" required maxlength="100" autocomplete="organization"
+                   placeholder="예: 메리츠부동산" />
+          </label>
+          <label class="prd__field">
+            <span class="prd__label">담당자명 <span class="prd__req">*</span></span>
+            <input name="contactPerson" type="text" required maxlength="50" autocomplete="name"
+                   placeholder="예: 김광고" />
+          </label>
+        </div>
+
+        <label class="prd__field">
+          <span class="prd__label">연락처 <span class="prd__req">*</span></span>
+          <input name="contact" type="text" required maxlength="200"
+                 placeholder="전화번호 또는 이메일 (예: 010-1234-5678 또는 contact@company.com)" />
+        </label>
+
+        <label class="prd__field">
+          <span class="prd__label">광고 문의 내용 <span class="prd__req">*</span> <span class="prd__hint">(30~3000자)</span></span>
+          <textarea name="body" required minlength="30" maxlength="3000" rows="7"
+                    placeholder="광고 진행 시기·기간·예산·원하는 광고 슬롯(홈 팝업 / 대시보드 배너 / 매물 목록 / 커뮤니티 배너)·디자인 보유 여부 등을 자유롭게 적어주세요."></textarea>
+        </label>
+
+        <div class="prd__actions">
+          <button type="submit" class="prd__submit">광고 문의하기 →</button>
+        </div>
+
+        <p class="prd__legal">
+          제출하신 정보는 광고 문의 회신 목적으로만 사용되며,
+          <a href="privacy.html">개인정보처리방침</a> 에 따라 안전하게 보관됩니다.
+        </p>
+      </form>
+    </section>
   </section>
 
   <!-- ============================== MAIN FOOTER ============================== -->
