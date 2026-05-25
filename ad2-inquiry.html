@@ -603,8 +603,28 @@
   (function () {
     'use strict';
     const API_BASE = 'https://api.bubiseo.com';
-    const GATE_KEY = 'ad2GateToken.v1';
-    const TOKEN = () => sessionStorage.getItem(GATE_KEY);
+    // 2026-05-25 [사용자 명시] 게이트 토큰 — localStorage + 30분 expiresAt. 30분 후 게이트 재노출.
+    const GATE_KEY = 'ad2GateToken.v2';
+    const GATE_TTL_MS = 30 * 60 * 1000;
+    function readGateToken() {
+      try {
+        const raw = localStorage.getItem(GATE_KEY);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj || typeof obj.token !== 'string' || !obj.token) return null;
+        if (typeof obj.exp !== 'number' || Date.now() > obj.exp) {
+          localStorage.removeItem(GATE_KEY);
+          return null;
+        }
+        return obj.token;
+      } catch (_) { return null; }
+    }
+    function writeGateToken(token) {
+      try {
+        localStorage.setItem(GATE_KEY, JSON.stringify({ token, exp: Date.now() + GATE_TTL_MS }));
+      } catch (_) {}
+    }
+    const TOKEN = () => readGateToken();
 
     const CATEGORIES = [
       { key: 'APARTMENT', label: '아파트' },
@@ -661,7 +681,7 @@
         });
         if (r.status !== 200) { gateErr.hidden = false; return; }
         const data = await r.json();
-        sessionStorage.setItem(GATE_KEY, data.token);
+        writeGateToken(data.token);
         gate.remove();
         initForm();
       } catch (_) {

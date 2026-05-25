@@ -6,27 +6,43 @@
   'use strict';
 
   // ----- 0. /ad-inquiry 비밀번호 게이트 (광고주 전용 페이지) -----
-  // 2026-05-19 강화 — 백엔드 검증 방식.
-  //   · 평문 비번 입력 → POST /landing/ad-inquiry/unlock → 토큰 발급(서버 메모리 24h).
-  //   · 토큰 sessionStorage 저장 → /landing/ad-stats fetch 시 Authorization: Bearer <token>.
-  //   · view-source 우회 차단 — 통계 숫자는 백엔드가 토큰 없으면 안 줌.
-  //   · 같은 탭 새로고침: 토큰 유지. 탭 닫으면 초기화. 백엔드 만료(24h) 시 자동 재로그인.
-  //   · "비번 바꿔" 운영: 어시스턴트가 SSH + curl 한 줄로 POST /admin/rotate (어드민 키 헤더).
-  const ADQ_GATE_TOKEN_KEY = 'adqGateToken.v2';
+  // 2026-05-25 [사용자 명시] — localStorage + 30분 expiresAt. 30분 지나면 게이트 재노출.
+  //   클라이언트 클럭 기준으로 만료 처리. 저장 포맷: {token, exp:epochMs}.
+  //   탭 닫혀도 30분 이내면 토큰 유지 (편의성). 30분 후 자동 무효.
+  const ADQ_GATE_TOKEN_KEY = 'adqGateToken.v3';
   const ADQ_GATE_RELOAD_COUNT_KEY = 'adqGateReloadCount.v2';
+  const ADQ_GATE_TTL_MS = 30 * 60 * 1000; // 30분
   const ADQ_GATE_UNLOCK_URL = 'https://api.bubiseo.com/landing/ad-inquiry/unlock';
+
+  function adqReadGateToken() {
+    try {
+      const raw = localStorage.getItem(ADQ_GATE_TOKEN_KEY);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || typeof obj.token !== 'string' || !/^[A-Fa-f0-9]{64}$/.test(obj.token)) return null;
+      if (typeof obj.exp !== 'number' || Date.now() > obj.exp) {
+        localStorage.removeItem(ADQ_GATE_TOKEN_KEY);
+        return null;
+      }
+      return obj.token;
+    } catch (_) { return null; }
+  }
+  function adqWriteGateToken(token) {
+    try {
+      localStorage.setItem(
+        ADQ_GATE_TOKEN_KEY,
+        JSON.stringify({ token, exp: Date.now() + ADQ_GATE_TTL_MS }),
+      );
+    } catch (_) { /* ignore */ }
+  }
+
   const adqGate = document.getElementById('adqGate');
   if (adqGate) {
     const tryUnlock = () => {
       adqGate.remove();
       document.body.classList.remove('adq-locked');
     };
-    const hasToken = (() => {
-      try {
-        const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
-        return Boolean(t && /^[A-Fa-f0-9]{64}$/.test(t));
-      } catch (_) { return false; }
-    })();
+    const hasToken = !!adqReadGateToken();
     if (hasToken) {
       tryUnlock();
     } else {
@@ -71,10 +87,8 @@
             submitBtn.textContent = '입장';
           }
           if (ok) {
-            try {
-              sessionStorage.setItem(ADQ_GATE_TOKEN_KEY, token);
-              sessionStorage.removeItem(ADQ_GATE_RELOAD_COUNT_KEY);
-            } catch (_) { /* ignore */ }
+            adqWriteGateToken(token);
+            try { sessionStorage.removeItem(ADQ_GATE_RELOAD_COUNT_KEY); } catch (_) {}
             tryUnlock();
             // 게이트 통과 직후 통계/단가 fetch 트리거 (reload 없이 즉시).
             if (typeof window.adqLoadProtected === 'function') {
@@ -95,34 +109,26 @@
 
   // 통계 fetch 시 사용할 게이트 토큰 헤더 생성 헬퍼.
   function adqGateAuthHeader() {
-    try {
-      const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
-      if (t && /^[A-Fa-f0-9]{64}$/.test(t)) return { Authorization: 'Bearer ' + t };
-    } catch (_) { /* ignore */ }
-    return {};
+    const t = adqReadGateToken();
+    return t ? { Authorization: 'Bearer ' + t } : {};
   }
   function adqHasGateToken() {
-    try {
-      const t = sessionStorage.getItem(ADQ_GATE_TOKEN_KEY);
-      return Boolean(t && /^[A-Fa-f0-9]{64}$/.test(t));
-    } catch (_) { return false; }
+    return !!adqReadGateToken();
   }
   // 401 시 무한 reload 방지 — 2회 초과 시 reload 안 함, 게이트만 표시.
   function adqGateHandle401() {
     let n = 0;
     try { n = parseInt(sessionStorage.getItem(ADQ_GATE_RELOAD_COUNT_KEY) || '0', 10) || 0; } catch (_) {}
     if (n >= 2) {
-      // 무한 루프 방지 — 토큰만 비우고 게이트 표시 (reload X).
       try {
-        sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY);
+        localStorage.removeItem(ADQ_GATE_TOKEN_KEY);
         sessionStorage.removeItem(ADQ_GATE_RELOAD_COUNT_KEY);
       } catch (_) {}
-      // 게이트가 이미 사라진 상태라면 다시 보여주기 위해 DOM 재구성보다 단순 메시지 표시.
       console.warn('[adq-gate] 인증 반복 실패 — reload 중단, 비번 재입력 필요');
       return;
     }
     try {
-      sessionStorage.removeItem(ADQ_GATE_TOKEN_KEY);
+      localStorage.removeItem(ADQ_GATE_TOKEN_KEY);
       sessionStorage.setItem(ADQ_GATE_RELOAD_COUNT_KEY, String(n + 1));
     } catch (_) { /* ignore */ }
     window.location.reload();
