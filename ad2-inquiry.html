@@ -258,6 +258,31 @@
       background: #00C896; box-shadow: 0 4px 12px rgba(0,200,150,0.25);
     }
 
+    /* 2026-05-25 [사용자 명시] 동의 박스 — 작은 폰트 간단형. */
+    .consent-card { padding: 14px 16px; }
+    .consent-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .consent-row input[type="checkbox"] {
+      width: 16px; height: 16px; margin-top: 2px;
+      accent-color: var(--pri); cursor: pointer; flex-shrink: 0;
+    }
+    .consent-text { font-size: 12px; color: var(--sub); line-height: 1.55; word-break: keep-all; }
+    .consent-text b { color: var(--text); font-weight: 800; margin-right: 2px; }
+    .consent-toggle {
+      background: none; border: none; padding: 0 0 0 4px;
+      color: var(--pri); font-size: 11px; font-weight: 700; cursor: pointer;
+      text-decoration: underline;
+    }
+    .consent-detail {
+      display: block; margin-top: 6px; padding: 8px 10px;
+      background: #F8F9FA; border-radius: 6px;
+      font-size: 11px; color: var(--tertiary); line-height: 1.65;
+    }
+    .consent-sub { display: block; color: var(--tertiary); font-size: 11px; margin-top: 2px; }
+
     /* hana 이미지 lightbox */
     .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; cursor: zoom-out; }
     .lightbox.show { display: flex; }
@@ -571,6 +596,30 @@
           <!-- 입금완료 버튼 -->
           <button type="button" class="pay-confirm-btn" id="payConfirmBtn">입금완료</button>
         </div>
+      </section>
+
+      <!-- 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) + 마케팅 수신 (선택). -->
+      <section class="card consent-card">
+        <label class="consent-row">
+          <input type="checkbox" id="consentAgreed" />
+          <span class="consent-text">
+            <b>[필수]</b> 개인정보 수집·이용에 동의합니다.
+            <button type="button" class="consent-toggle" id="consentToggleBtn" aria-expanded="false">자세히 ▾</button>
+            <span class="consent-detail" id="consentDetail" hidden>
+              · 수집 항목: 분양대행사 상호명, 담당자 이름, 연락처<br/>
+              · 수집 목적: 분양 현장 등록·노출, 운영팀 입금 확인 안내<br/>
+              · 보유 기간: 광고 종료일로부터 1년<br/>
+              · 거부 권리: 동의 거부 가능. 단 거부 시 본 페이지 등록 불가
+            </span>
+          </span>
+        </label>
+        <label class="consent-row">
+          <input type="checkbox" id="consentMarketing" />
+          <span class="consent-text">
+            <b>[선택]</b> 마케팅·이벤트 수신에 동의합니다.
+            <span class="consent-sub">신규 광고 상품·할인 안내 등 (미체크 시 등록·노출에 영향 없음)</span>
+          </span>
+        </label>
       </section>
 
       <div class="submit-bar">
@@ -1258,25 +1307,40 @@
         });
       }
 
+      // 2026-05-25 [사용자 명시] 동의 (필수) + 입금완료 — 두 게이트 모두 통과해야 업로드 활성.
+      const consentAgreed = document.getElementById('consentAgreed');
+      const consentMarketing = document.getElementById('consentMarketing');
+      const consentToggleBtn = document.getElementById('consentToggleBtn');
+      const consentDetail = document.getElementById('consentDetail');
+      consentToggleBtn.addEventListener('click', () => {
+        const open = !consentDetail.hidden;
+        consentDetail.hidden = open;
+        consentToggleBtn.textContent = open ? '자세히 ▾' : '자세히 ▴';
+        consentToggleBtn.setAttribute('aria-expanded', String(!open));
+      });
+      function recomputeSubmitGate() {
+        submitBtn.disabled = !(paymentConfirmedClient && consentAgreed.checked);
+      }
+      consentAgreed.addEventListener('change', recomputeSubmitGate);
+
       function resetPaymentGate() {
         paymentConfirmedClient = false;
         payConfirmBtn.textContent = '입금완료';
         payConfirmBtn.classList.remove('done');
-        submitBtn.disabled = true;
+        recomputeSubmitGate();
       }
       payConfirmBtn.addEventListener('click', () => {
         const months = calcMonths(startInput.value, endInput.value);
         if (months <= 0) { toast('광고 기간을 먼저 선택해주세요.'); return; }
         paymentConfirmedClient = !paymentConfirmedClient;
         if (paymentConfirmedClient) {
-          payConfirmBtn.textContent = '✓ 입금완료됨 (업로드 가능)';
+          payConfirmBtn.textContent = '✓ 입금완료됨';
           payConfirmBtn.classList.add('done');
-          submitBtn.disabled = false;
         } else {
           payConfirmBtn.textContent = '입금완료';
           payConfirmBtn.classList.remove('done');
-          submitBtn.disabled = true;
         }
+        recomputeSubmitGate();
       });
 
       // hana 이미지 lightbox
@@ -1305,6 +1369,8 @@
         if (payTier !== 'basic' && payTier !== 'premium') { toast('프리미엄 또는 기본 노출 중 하나는 선택해주세요.'); btn.disabled = false; return; }
         // 입금완료 게이트 — 클라이언트 측에서 한 번 더 확인.
         if (!paymentConfirmedClient) { toast('결제 안내의 [입금완료] 버튼을 먼저 눌러주세요.'); btn.disabled = false; return; }
+        // 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) 게이트.
+        if (!consentAgreed.checked) { toast('개인정보 수집·이용에 동의해주세요.'); btn.disabled = false; return; }
         const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
         if (phonesClean.length === 0) { toast('담당자 연락처를 입력해주세요.'); btn.disabled = false; return; }
         // 2026-05-25 [사용자 명시] 모바일 분양현장등록 입력칸 전체 포함 — 빈값은 null/0 으로 정규화.
@@ -1343,6 +1409,9 @@
           chargedAmount:
             calcMonths(startDate, endDate) *
             (payTier === 'premium' ? PRICE_PREMIUM : PRICE_NORMAL),
+          // 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) + 마케팅 (선택). IP 는 서버에서 자동 캡처.
+          consentAgreed: consentAgreed.checked === true,
+          consentMarketing: consentMarketing.checked === true,
           imageUrls: files.image.map((f) => f.url),
           // 2026-05-25 [사용자 명시] 속지 (pdf/jpg/png, 최대 3).
           innerPageUrls: files.innerPage.map((f) => f.url),
