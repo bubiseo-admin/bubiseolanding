@@ -1697,6 +1697,30 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: var(--white);
 }
 
+/* 2026-05-26 [사용자 명시] iOS 카드 영상 변형 — icon/platform/sub/status 제거, 영상이 메인 */
+.download-card--video {
+  padding: 16px 16px 18px;
+  justify-content: space-between;
+  gap: 16px;
+}
+.download-card__video {
+  width: 100%;
+  max-height: 320px;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border-radius: 18px;
+  background: var(--gray-50);
+  display: block;
+}
+@media (max-width: 720px) {
+  .download-card--video { padding: 12px 10px 14px; gap: 12px; }
+  .download-card__video { max-height: 240px; border-radius: 14px; }
+}
+@media (max-width: 480px) {
+  .download-card--video { padding: 10px 8px 12px; gap: 10px; }
+  .download-card__video { max-height: 200px; border-radius: 12px; }
+}
+
 .download-note {
   margin-top: 40px;
   font-size: 14px;
