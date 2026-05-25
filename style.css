@@ -5577,14 +5577,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   background: #F8F9FB;
   box-shadow: 0 6px 18px rgba(15,20,30,0.10);
 }
+/* 2026-05-25 [사용자 명시] 모바일은 nowrap 가로 한 줄 + 작은 폭 — 너무 크지 않게. */
 @media (max-width: 720px) {
-  .adq__banner-ad-imgs { gap: 10px; }
-  .adq__banner-ad-imgs img { width: 140px; }
+  .adq__banner-ad-imgs {
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .adq__banner-ad-imgs img { width: 30%; max-width: 120px; min-width: 0; }
   .adq__banner-ad-title { font-size: 24px; }
   .adq__banner-ad-desc { font-size: 14px; }
 }
 @media (max-width: 480px) {
-  .adq__banner-ad-imgs img { width: 120px; }
+  .adq__banner-ad-imgs { gap: 6px; }
+  .adq__banner-ad-imgs img { max-width: 100px; }
 }
 
 /* 2026-05-22 [사용자 명시] 단가/결제 복귀 — 단일 칼럼 가운데 정렬 */
