@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>분양 현장 안내 — 부비서</title>
+  <meta name="description" content="공인중개사가 추천한 분양 현장" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    :root {
+      --pri: #6155F5;
+      --pri2: #39AFFD;
+      --bg: #F9FAFB;
+      --card: #FFFFFF;
+      --line: #E5E8EB;
+      --text: #191F28;
+      --sub: #4E5968;
+      --tertiary: #8B95A1;
+      --error: #E0533D;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); }
+    .brand-bar { padding: 18px 20px; display: flex; align-items: center; gap: 10px; background: #fff; border-bottom: 1px solid var(--line); }
+    .brand-bar img { width: 26px; height: 26px; }
+    .brand-bar span { font-weight: 800; font-size: 15px; }
+    main { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .title { font-size: 22px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.5px; line-height: 1.3; }
+    .address { font-size: 13px; color: var(--sub); margin: 0 0 12px; }
+    .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .meta-chip { padding: 4px 10px; border-radius: 999px; background: #F2F4F6; font-size: 12px; font-weight: 600; color: var(--sub); }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin-bottom: 16px; }
+    .gallery img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 10px; background: #F2F4F6; }
+    .gallery video { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; background: #000; }
+    .info-row { display: flex; align-items: flex-start; padding: 6px 0; }
+    .info-label { width: 92px; flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--tertiary); }
+    .info-value { flex: 1; font-size: 14px; font-weight: 700; color: var(--text); }
+    .chip-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip-list .chip { padding: 4px 10px; border-radius: 999px; background: rgba(97,85,245,0.10); border: 1px solid rgba(97,85,245,0.25); font-size: 12px; font-weight: 700; color: var(--pri); }
+    .file-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: rgba(97,85,245,0.06); border: 1px solid rgba(97,85,245,0.2); border-radius: 10px; color: var(--pri); font-size: 14px; font-weight: 700; text-decoration: none; margin-bottom: 8px; }
+    .file-btn::after { content: '›'; margin-left: auto; font-size: 18px; }
+    .section-label { font-size: 13px; font-weight: 700; color: var(--sub); margin: 18px 0 8px; padding-left: 4px; }
+    .expire-note { color: var(--tertiary); font-size: 12px; text-align: center; padding: 18px 0 32px; }
+    .err { text-align: center; padding: 60px 20px; }
+    .err h2 { font-size: 18px; margin: 12px 0 6px; }
+    .err p { color: var(--sub); font-size: 14px; margin: 0; line-height: 1.6; }
+    .err .icon { font-size: 48px; }
+    .loading { text-align: center; padding: 80px 20px; color: var(--sub); }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .badge { padding: 5px 11px; background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="brand-bar">
+    <img src="/assets/logo.png" alt="" />
+    <span>부비서 분양 현장 안내</span>
+  </div>
+  <main id="root">
+    <div class="loading">정보를 불러오는 중…</div>
+  </main>
+  <script>
+  (function () {
+    'use strict';
+    const API_BASE = 'https://api.bubiseo.com';
+    const CATEGORIES = {
+      APARTMENT: '아파트',
+      OFFICETEL: '오피스텔',
+      KNOWLEDGE_INDUSTRY_CENTER: '지식산업센터',
+      COMMERCIAL: '상가',
+      VILLA: '빌라',
+      DETACHED_HOUSE: '단독주택',
+      TOWNHOUSE: '타운하우스',
+    };
+
+    const root = document.getElementById('root');
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('t') || '';
+    if (!token) {
+      renderError('잘못된 공유 링크입니다.');
+      return;
+    }
+
+    fetch(`${API_BASE}/presale-partnerships/share/${encodeURIComponent(token)}`)
+      .then(async (r) => {
+        if (!r.ok) {
+          const j = await r.json().catch(() => ({}));
+          throw new Error(j?.message || '공유 링크가 만료됐거나 잘못된 링크입니다.');
+        }
+        return r.json();
+      })
+      .then(render)
+      .catch((e) => renderError(e.message || '공유 링크가 만료됐거나 잘못된 링크입니다.'));
+
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+    function formatPrice(won) {
+      const n = Number(won);
+      if (!Number.isFinite(n) || n <= 0) return '';
+      const eok = Math.floor(n / 100000000);
+      const remainMan = Math.floor((n % 100000000) / 10000);
+      if (eok > 0 && remainMan === 0) return `${eok}억`;
+      if (eok > 0) return `${eok}억 ${remainMan.toLocaleString('ko-KR')}만원`;
+      return `${(n / 10000).toLocaleString('ko-KR')}만원`;
+    }
+    function formatPriceRange(min, max) {
+      const a = formatPrice(min), b = formatPrice(max);
+      if (a && b) return min === max ? a : `${a} ~ ${b}`;
+      if (a) return `${a} ~`;
+      if (b) return `~ ${b}`;
+      return '';
+    }
+    function formatFloor(min, max) {
+      if (min != null && max != null) return `${min}F ~ ${max}F`;
+      if (min != null) return `${min}F ~`;
+      if (max != null) return `~ ${max}F`;
+      return '';
+    }
+
+    function render(d) {
+      // ❌ MGM / 광고주 / 담당자 / 광고금액 / mgmFee / adAmount 절대 노출 금지 (고객 공유 화면).
+      const imgs = Array.isArray(d.imageUrls) ? d.imageUrls : [];
+      const vids = Array.isArray(d.videoUrls) ? d.videoUrls : [];
+      const innerPages = Array.isArray(d.innerPageUrls) ? d.innerPageUrls : [];
+      const customerFiles = Array.isArray(d.customerShareFileUrls) ? d.customerShareFileUrls : [];
+      const badges = Array.isArray(d.badges) ? d.badges : [];
+      const options = Array.isArray(d.options) ? d.options : [];
+
+      const html = [];
+      html.push('<div class="card">');
+      if (badges.length > 0) {
+        html.push('<div class="badge-row">');
+        badges.forEach((b) => html.push(`<span class="badge">${esc(b)}</span>`));
+        html.push('</div>');
+      }
+      html.push(`<div class="meta-row"><span class="meta-chip">${esc(CATEGORIES[d.category] || '분양 현장')}</span>${d.region ? `<span class="meta-chip">${esc(d.region)}${d.sigungu ? ' · ' + esc(d.sigungu) : ''}</span>` : ''}</div>`);
+      html.push(`<h1 class="title">${esc(d.title || '분양 현장')}</h1>`);
+      if (d.address) html.push(`<p class="address">📍 ${esc(d.address)}</p>`);
+      html.push('</div>');
+
+      if (imgs.length > 0) {
+        html.push('<div class="gallery">');
+        imgs.forEach((u) => html.push(`<img src="${esc(u)}" alt="" loading="lazy" />`));
+        html.push('</div>');
+      }
+
+      // 현장 정보
+      const specRows = [];
+      const priceText = formatPriceRange(Number(d.priceMin) || 0, Number(d.priceMax) || 0);
+      if (priceText) specRows.push(['현장가격', priceText]);
+      if (d.rooms != null || d.bathrooms != null) {
+        const parts = [];
+        if (d.rooms != null) parts.push(`방 ${d.rooms}개`);
+        if (d.bathrooms != null) parts.push(`욕실 ${d.bathrooms}개`);
+        specRows.push(['방/욕실', parts.join(' · ')]);
+      }
+      const floorText = formatFloor(d.floorMin, d.floorMax);
+      if (floorText) specRows.push(['최저층/최고층', floorText]);
+      if (d.parkingCount != null) specRows.push(['주차', `${d.parkingCount}대`]);
+      if (d.heatingType) specRows.push(['난방', String(d.heatingType)]);
+      if (specRows.length > 0 || options.length > 0) {
+        html.push('<div class="section-label">현장 정보</div><div class="card">');
+        specRows.forEach(([l, v]) => html.push(`<div class="info-row"><span class="info-label">${esc(l)}</span><span class="info-value">${esc(v)}</span></div>`));
+        if (options.length > 0) {
+          html.push('<div class="info-row" style="align-items:flex-start"><span class="info-label" style="padding-top:4px">옵션</span><div class="chip-list">');
+          options.forEach((o) => html.push(`<span class="chip">${esc(o)}</span>`));
+          html.push('</div></div>');
+        }
+        html.push('</div>');
+      }
+
+      // 영상
+      if (vids.length > 0) {
+        html.push('<div class="section-label">현장 영상</div><div class="gallery">');
+        vids.forEach((u) => html.push(`<video src="${esc(u)}" controls preload="metadata"></video>`));
+        html.push('</div>');
+      }
+
+      // 속지
+      if (innerPages.length > 0) {
+        html.push('<div class="section-label">속지</div>');
+        innerPages.forEach((u, i) => html.push(`<a class="file-btn" href="${esc(u)}" target="_blank" rel="noopener">📄 속지 ${i + 1} 보기</a>`));
+      }
+
+      // 손님 공유용 자료
+      if (customerFiles.length > 0) {
+        html.push('<div class="section-label">자료</div>');
+        customerFiles.forEach((u, i) => html.push(`<a class="file-btn" href="${esc(u)}" target="_blank" rel="noopener">📎 자료 ${i + 1} 보기</a>`));
+      }
+
+      html.push('<p class="expire-note">공유받은 링크는 발급 시점 기준 24시간 후 만료됩니다.</p>');
+
+      root.innerHTML = html.join('');
+    }
+
+    function renderError(msg) {
+      root.innerHTML = `
+        <div class="err">
+          <div class="icon">⏰</div>
+          <h2>${esc(msg)}</h2>
+          <p>다시 공유받으시거나, 공유해주신 분께 문의해주세요.</p>
+        </div>
+      `;
+    }
+  })();
+  </script>
+</body>
+</html>
