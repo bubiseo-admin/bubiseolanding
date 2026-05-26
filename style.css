@@ -1727,7 +1727,55 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: var(--gray-500);
   text-align: center;
 }
-/* 2026-05-18 — Windows SmartScreen 안내 페이지 진입 힌트 (다운로드 그리드 직후). */
+/* 2026-05-26 [사용자 명시] Windows 카드 안 SmartScreen 보안 경고 안내 — 눈에 확 띄게.
+   기존 그리드 아래 .hero-install-hint(작은 회색) 대신 윈도우 카드 안에 노랑 강조 박스. */
+.windows-security-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #FFF4D6 0%, #FFE4A8 100%);
+  border: 1.5px solid #FFC23D;
+  border-radius: 12px;
+  color: #6B4F00;
+  font-size: 12px;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 8px rgba(255, 194, 61, 0.25);
+}
+.windows-security-notice:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255, 194, 61, 0.42);
+}
+.windows-security-notice__icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.windows-security-notice__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.windows-security-notice__text strong {
+  font-weight: 800;
+  font-size: 13px;
+  color: #5A3F00;
+  letter-spacing: -0.2px;
+}
+.windows-security-notice__link {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+/* 2026-05-18 — Windows SmartScreen 안내 페이지 진입 힌트 (구 그리드 직후 hint).
+   2026-05-26 [사용자 명시] 메인 index.html 에서는 .windows-security-notice 사용.
+   이 스타일은 ad-inquiry.html / windows-install-guide.html 등 다른 페이지에서 재사용 가능. */
 .hero-install-hint {
   margin: 22px auto 0;
   text-align: center;

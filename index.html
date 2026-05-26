@@ -71,12 +71,15 @@
 
       <div class="download-grid main-hero__download" data-reveal data-reveal-delay="380">
 
-        <!-- 2026-05-26 — iOS 카드: SVG 아이콘/텍스트 제거, 7초 루프 영상으로 교체. 다운로드 버튼만 유지. -->
-        <article class="download-card download-card--video">
-          <video class="download-card__video" autoplay loop muted playsinline preload="metadata"
-                 aria-label="부비서 iOS 앱 미리보기">
-            <source src="assets/bubiseo-iOS%20app.MP4" type="video/mp4">
-          </video>
+        <!-- 2026-05-26 — iOS 카드: 동영상 제거, 애플 로고 + 텍스트 카드로 복귀.
+             (이전 영상 자산 assets/bubiseo-iOS%20app.MP4 는 미사용 — 파일 유지 가능). -->
+        <article class="download-card">
+          <div class="download-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          </div>
+          <div class="download-card__platform">iOS</div>
+          <div class="download-card__sub">iPhone · iPad</div>
+          <div class="download-card__status download-card__status--live">App Store 출시</div>
           <a class="download-card__btn download-card__btn--live"
              href="https://apps.apple.com/kr/app/%EB%B6%80%EB%B9%84%EC%84%9C/id6765894424"
              target="_blank" rel="noopener"
@@ -133,15 +136,18 @@
              aria-label="Windows 부비서 데스크톱 v1.0.7 다운로드">
             Windows 다운로드 (v1.0.7)
           </a>
+          <!-- 2026-05-26 [사용자 명시] SmartScreen 경고 안내를 윈도우 카드 안에 강조 박스로 표시
+               (이전엔 그리드 아래 작은 회색 hint 였으나 잘 안 보임) -->
+          <a href="windows-install-guide.html" class="windows-security-notice">
+            <span class="windows-security-notice__icon" aria-hidden="true">⚠️</span>
+            <span class="windows-security-notice__text">
+              <strong>첫 설치 시 파란 보안 경고가 나오나요?</strong>
+              <span class="windows-security-notice__link">3초 안전 설치 가이드 →</span>
+            </span>
+          </a>
         </article>
 
       </div>
-
-      <!-- 2026-05-18 — Windows 첫 설치 시 SmartScreen 경고 통과 안내. EV 인증서 도입 전 임시 가이드. -->
-      <p class="hero-install-hint" data-reveal data-reveal-delay="460">
-        💡 Windows 첫 설치 시 파란 보안 경고가 나오나요?
-        <a href="windows-install-guide.html" class="hero-install-hint__link">3초 안전 설치 가이드 →</a>
-      </p>
     </div>
   </section>
 
