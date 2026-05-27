@@ -1745,6 +1745,27 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 2px 8px rgba(255, 194, 61, 0.25);
 }
+/* 2026-05-27 [사용자 명시] 그리드 외부 분리형 — Windows 카드(4번째) 컬럼 너비에 맞춰
+   우측 정렬. 다른 카드 세로 늘어남 영향 0. 모바일에서는 100% 너비. */
+.windows-security-notice--detached {
+  margin: 14px 0 0 auto;
+  width: calc((100% - 60px) / 4); /* grid 4컬럼, gap 20 × 3 = 60 */
+  max-width: 285px;
+  align-items: flex-start;
+}
+@media (max-width: 980px) {
+  .windows-security-notice--detached {
+    width: calc((100% - 16px) / 2); /* 2컬럼, gap 16 */
+    max-width: none;
+    margin-left: auto;
+  }
+}
+@media (max-width: 560px) {
+  .windows-security-notice--detached {
+    width: 100%;
+    margin-left: 0;
+  }
+}
 .windows-security-notice:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(255, 194, 61, 0.42);
