@@ -119,6 +119,28 @@
       display: flex; gap: 10px; align-items: flex-start; justify-content: center;
       flex-wrap: wrap;
     }
+    /* 2026-05-28 [사용자 명시] 모바일 4장 한 줄 일자 배치 */
+    .ad-preview-row--phones-4 {
+      flex-wrap: nowrap;
+      gap: 8px;
+      width: 100%;
+    }
+    .ad-preview-row--phones-4 .ad-preview--phone {
+      width: calc((100% - 24px) / 4);
+      min-width: 0;
+      max-width: 160px;
+    }
+    /* 2026-05-28 [사용자 명시] 데스크톱 4장 2x2 그리드 배치 */
+    .ad-preview-grid--desktops-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .ad-preview-grid--desktops-2x2 .ad-preview--desktop-half {
+      width: 100%;
+    }
     .ad-preview-plus {
       font-size: 36px;
       font-weight: 800;
@@ -131,12 +153,9 @@
     .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; height: auto; }
     .ad-preview--phone { width: 180px; }
     .ad-preview--desktop { width: 560px; max-width: 100%; }
-    /* 2026-05-28 [사용자 명시] 지도광고 데스크톱 4장 — 2x2 grid 로 가로 폭 절반씩 */
     .ad-preview--desktop-half { width: 360px; max-width: 100%; }
     @media (max-width: 480px) {
-      .ad-preview--phone { width: 140px; }
       .ad-preview--desktop { width: 100%; }
-      .ad-preview--desktop-half { width: 100%; }
     }
     /* 2026-05-28 [사용자 명시] 분양파트너 — 배너광고/지도광고 섹션 제목 */
     .ad-section-title {
@@ -398,14 +417,14 @@
     <!-- 2026-05-28 [사용자 명시] 분양파트너 — 지도광고 미리보기 (모바일 4장 + 데스크톱 4장) -->
     <h2 class="ad-section-title">분양파트너 — 지도광고</h2>
     <div class="ad-preview-stack">
-      <div class="ad-preview-row">
+      <div class="ad-preview-row ad-preview-row--phones-4">
         <img class="ad-preview ad-preview--phone" src="assets/mobile1.jpg?v=20260528" alt="분양파트너 지도광고 모바일 1" loading="lazy" />
         <img class="ad-preview ad-preview--phone" src="assets/mobile2.jpg?v=20260528" alt="분양파트너 지도광고 모바일 2" loading="lazy" />
         <img class="ad-preview ad-preview--phone" src="assets/mobile3.jpg?v=20260528" alt="분양파트너 지도광고 모바일 3" loading="lazy" />
         <img class="ad-preview ad-preview--phone" src="assets/mobile4.jpg?v=20260528" alt="분양파트너 지도광고 모바일 4" loading="lazy" />
       </div>
       <div class="ad-preview-plus" aria-hidden="true">+</div>
-      <div class="ad-preview-row">
+      <div class="ad-preview-grid--desktops-2x2">
         <img class="ad-preview ad-preview--desktop-half" src="assets/desktop0.png?v=20260528" alt="분양파트너 지도광고 데스크톱 1" loading="lazy" />
         <img class="ad-preview ad-preview--desktop-half" src="assets/desktop1.png?v=20260528" alt="분양파트너 지도광고 데스크톱 2" loading="lazy" />
         <img class="ad-preview ad-preview--desktop-half" src="assets/desktop2.png?v=20260528" alt="분양파트너 지도광고 데스크톱 3" loading="lazy" />
