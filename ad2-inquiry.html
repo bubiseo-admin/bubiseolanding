@@ -131,10 +131,32 @@
       width: 100%;
       max-width: 1000px;
     }
-    .ad-preview-row--phones-4 .ad-preview--phone {
+    /* 2026-05-28 [사용자 명시] 사진 밑에 광고 이름 캡션 — figure/figcaption 셀 */
+    .ad-preview-cell {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
       width: calc((100% - 30px) / 4);
       min-width: 0;
       max-width: 240px;
+    }
+    .ad-preview-cell .ad-preview--phone {
+      width: 100%;
+      max-width: none;
+    }
+    .ad-preview-cap {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      text-align: center;
+      line-height: 1.35;
+    }
+    .ad-preview-cap--banner { color: var(--pri); }
+    @media (max-width: 480px) {
+      .ad-preview-cap { font-size: 11px; }
     }
     /* 2026-05-28 [사용자 명시] 데스크톱 4장 2x2 그리드 배치 (사이즈 업) */
     .ad-preview-grid--desktops-2x2 {
@@ -455,10 +477,22 @@
     <h2 class="ad-section-title">분양파트너 — 지도광고</h2>
     <div class="ad-preview-stack">
       <div class="ad-preview-row ad-preview-row--phones-4">
-        <img class="ad-preview ad-preview--phone" src="assets/mobile1.jpg?v=20260528" alt="분양파트너 지도광고 모바일 1" loading="lazy" />
-        <img class="ad-preview ad-preview--phone" src="assets/mobile2.jpg?v=20260528" alt="분양파트너 지도광고 모바일 2" loading="lazy" />
-        <img class="ad-preview ad-preview--phone" src="assets/mobile3.jpg?v=20260528" alt="분양파트너 지도광고 모바일 3" loading="lazy" />
-        <img class="ad-preview ad-preview--phone" src="assets/mobile4.jpg?v=20260528" alt="분양파트너 지도광고 모바일 4" loading="lazy" />
+        <figure class="ad-preview-cell">
+          <img class="ad-preview ad-preview--phone" src="assets/mobile1.jpg?v=20260528" alt="분양 배너광고 모바일 예시" loading="lazy" />
+          <figcaption class="ad-preview-cap ad-preview-cap--banner">분양-배너광고</figcaption>
+        </figure>
+        <figure class="ad-preview-cell">
+          <img class="ad-preview ad-preview--phone" src="assets/mobile2.jpg?v=20260528" alt="분양 지도광고 모바일 예시 1" loading="lazy" />
+          <figcaption class="ad-preview-cap">분양-지도광고</figcaption>
+        </figure>
+        <figure class="ad-preview-cell">
+          <img class="ad-preview ad-preview--phone" src="assets/mobile3.jpg?v=20260528" alt="분양 지도광고 모바일 예시 2" loading="lazy" />
+          <figcaption class="ad-preview-cap">분양-지도광고</figcaption>
+        </figure>
+        <figure class="ad-preview-cell">
+          <img class="ad-preview ad-preview--phone" src="assets/mobile4.jpg?v=20260528" alt="분양 지도광고 모바일 예시 3" loading="lazy" />
+          <figcaption class="ad-preview-cap">분양-지도광고</figcaption>
+        </figure>
       </div>
       <div class="ad-preview-plus" aria-hidden="true">+</div>
       <div class="ad-preview-grid--desktops-2x2">
