@@ -579,7 +579,7 @@
     };
 
     loadAdPricing = function (refresh) {
-      if (!adqHasGateToken()) return;
+      // 2026-05-28 [사용자 명시] 게이트 해제 — 토큰 가드 제거 (비인증 fetch 허용).
       const url = 'https://api.bubiseo.com/landing/ad-pricing' + (refresh ? '?refresh=1' : '');
       return fetch(url, {
         credentials: 'omit',
