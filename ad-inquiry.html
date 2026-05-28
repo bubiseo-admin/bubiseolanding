@@ -37,7 +37,7 @@
     <nav class="main-nav__menu" aria-label="주요 메뉴">
       <a href="index.html#top">홈</a>
       <a href="app.html">기능</a>
-      <a href="index.html#pricing">가격</a>
+      <a href="index.html#pricing">무료</a>
       <a href="ad-inquiry.html" class="is-active" aria-current="page">일반광고</a>
       <a href="ad2-inquiry.html">분양광고</a>
     </nav>
@@ -179,7 +179,34 @@
         </p>
       </div>
 
-      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 결제하기 버튼 -->
+      <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯 + 광고 기간 선택 + 합계 -->
+      <div class="adq__pay-picker">
+        <div class="adq__pay-picker-group">
+          <span class="adq__pay-picker-label">광고 슬롯</span>
+          <div class="adq__pay-picker-chips" role="radiogroup" aria-label="광고 슬롯 선택">
+            <button type="button" class="adq__pay-chip is-active" data-slot="banner" data-slot-label="배너 광고" role="radio" aria-checked="true">배너 광고</button>
+            <button type="button" class="adq__pay-chip" data-slot="native" data-slot-label="네이티브 광고" role="radio" aria-checked="false">네이티브 광고</button>
+            <button type="button" class="adq__pay-chip" data-slot="home" data-slot-label="홈 광고" role="radio" aria-checked="false">홈 광고</button>
+          </div>
+        </div>
+
+        <div class="adq__pay-picker-group">
+          <span class="adq__pay-picker-label">광고 기간 (최장 3개월)</span>
+          <div class="adq__pay-picker-chips" role="radiogroup" aria-label="광고 기간 선택">
+            <button type="button" class="adq__pay-chip is-active" data-months="1" role="radio" aria-checked="true">1개월</button>
+            <button type="button" class="adq__pay-chip" data-months="2" role="radio" aria-checked="false">2개월</button>
+            <button type="button" class="adq__pay-chip" data-months="3" role="radio" aria-checked="false">3개월</button>
+          </div>
+        </div>
+
+        <div class="adq__pay-picker-summary">
+          <span class="adq__pay-picker-summary-label">총 결제 금액</span>
+          <span class="adq__pay-picker-summary-amount"><b id="adqPayTotal">—</b>원</span>
+          <span class="adq__pay-picker-summary-sub" id="adqPayBreakdown">광고 시작 전 정보를 모두 선택해주세요</span>
+        </div>
+      </div>
+
+      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 결제하기 버튼 (위 선택 반영해 amount 동적) -->
       <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
         💳 결제하기
       </button>
@@ -229,33 +256,91 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260528d"></script>
+  <script src="script.js?v=20260528e"></script>
 
-  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 — 단가 = 가입계정수 × 1,000원 동적 계산 -->
+  <!-- 2026-05-28 [사용자 명시] 슬롯+개월 선택 → 합계 자동 계산 → 결제하기 버튼 amount 동적 -->
   <script>
     (function () {
       var btn = document.getElementById('adqPayCta');
       if (!btn) return;
       var UNIT_PRICE_PER_ACCOUNT = 1000;
+      var totalEl = document.getElementById('adqPayTotal');
+      var breakdownEl = document.getElementById('adqPayBreakdown');
+      var slotChips = document.querySelectorAll('.adq__pay-chip[data-slot]');
+      var monthChips = document.querySelectorAll('.adq__pay-chip[data-months]');
 
       function readAccountCount() {
-        // script.js 의 loadAdPricing 이 [data-ad-pricing-accounts] 에 fmtKrw 로 숫자 입력 (쉼표 포함).
         var el = document.querySelector('[data-ad-pricing-accounts]');
         var txt = (el && el.textContent || '').replace(/[^0-9]/g, '');
         return parseInt(txt, 10) || 0;
       }
+      function activeSlot() {
+        var el = document.querySelector('.adq__pay-chip[data-slot].is-active');
+        return el ? { key: el.getAttribute('data-slot'), label: el.getAttribute('data-slot-label') } : null;
+      }
+      function activeMonths() {
+        var el = document.querySelector('.adq__pay-chip[data-months].is-active');
+        return el ? parseInt(el.getAttribute('data-months'), 10) : 0;
+      }
+      function fmtKrw(n) { return (Number(n) || 0).toLocaleString('ko-KR'); }
+
+      function recalc() {
+        var accountCount = readAccountCount();
+        var months = activeMonths();
+        if (!accountCount || !months) {
+          totalEl.textContent = '—';
+          breakdownEl.textContent = '현재 가입 정보를 불러오는 중입니다…';
+          return;
+        }
+        var monthly = accountCount * UNIT_PRICE_PER_ACCOUNT;
+        var total = monthly * months;
+        totalEl.textContent = fmtKrw(total);
+        breakdownEl.textContent = '가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 (월 ' + fmtKrw(monthly) + '원)';
+      }
+
+      function bindChips(list) {
+        list.forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            list.forEach(function (c) {
+              c.classList.remove('is-active');
+              c.setAttribute('aria-checked', 'false');
+            });
+            chip.classList.add('is-active');
+            chip.setAttribute('aria-checked', 'true');
+            recalc();
+          });
+        });
+      }
+      bindChips(slotChips);
+      bindChips(monthChips);
+
+      // 가입계정수 fetch 완료 시점 (loadAdPricing 응답 후) 합계 갱신 — script.js 가 다 채운 직후 recalc.
+      // MutationObserver 로 data-ad-pricing-accounts 텍스트 변경 감지.
+      var accountsEl = document.querySelector('[data-ad-pricing-accounts]');
+      if (accountsEl) {
+        var observer = new MutationObserver(recalc);
+        observer.observe(accountsEl, { childList: true, characterData: true, subtree: true });
+      }
+      recalc();
 
       btn.addEventListener('click', function () {
         var accountCount = readAccountCount();
+        var slot = activeSlot();
+        var months = activeMonths();
         if (!accountCount) {
           alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
           return;
         }
-        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT;
+        if (!slot || !months) {
+          alert('광고 슬롯과 광고 기간을 선택해주세요.');
+          return;
+        }
+        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT * months;
+        var orderName = '부비서 ' + slot.label + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
         var params = new URLSearchParams({
-          plan: 'banner',
+          plan: slot.key,
           amount: String(amount),
-          orderName: '부비서 배너 광고 (월 ' + amount.toLocaleString('ko-KR') + '원 · 가입 ' + accountCount + '명 × 1,000원)',
+          orderName: orderName,
         });
         window.location.href = '/pay-widget.html?' + params.toString();
       });

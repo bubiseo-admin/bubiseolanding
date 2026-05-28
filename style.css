@@ -5759,6 +5759,67 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-weight: 800;
 }
 
+/* 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯 + 광고 기간 선택 picker */
+.adq__pay-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 18px 16px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid rgba(97,85,245,0.14);
+}
+.adq__pay-picker-group { display: flex; flex-direction: column; gap: 8px; }
+.adq__pay-picker-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #4E5968;
+  letter-spacing: -0.01em;
+}
+.adq__pay-picker-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.adq__pay-chip {
+  flex: 1 1 auto;
+  min-width: 80px;
+  padding: 10px 14px;
+  border: 1px solid #E5E8EB;
+  background: #FFFFFF;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4E5968;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.adq__pay-chip:hover { border-color: rgba(97,85,245,0.4); color: #6155F5; }
+.adq__pay-chip.is-active {
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(97,85,245,0.22);
+}
+.adq__pay-picker-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(97,85,245,0.06), rgba(57,175,253,0.06));
+  border-radius: 10px;
+}
+.adq__pay-picker-summary-label { font-size: 12px; font-weight: 700; color: #6E7680; letter-spacing: -0.01em; }
+.adq__pay-picker-summary-amount { font-size: 14px; font-weight: 700; color: #4E5968; }
+.adq__pay-picker-summary-amount b {
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-right: 2px;
+}
+.adq__pay-picker-summary-sub { font-size: 12px; color: #8B95A1; font-weight: 600; }
+
 /* 결제 정책 박스 하단 — 결제하기 버튼 (시그니처 그라데이션 풀 폭) */
 .adq__pay-cta {
   display: flex;
