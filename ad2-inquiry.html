@@ -157,7 +157,25 @@
       text-shadow: 0 2px 8px rgba(97,85,245,0.25);
     }
     /* 2026-05-25 [사용자 명시 fix] 강제 aspect-ratio 제거 — 원본 비율 그대로 (잘림 방지, ad-inquiry 와 통일). */
-    .ad-preview { flex-shrink: 0; border-radius: 14px; box-shadow: 0 6px 18px rgba(15,20,30,0.10); display: block; height: auto; }
+    /* 2026-05-28 [사용자 명시] 마우스오버 시 살짝 확대 (1.06) */
+    .ad-preview {
+      flex-shrink: 0;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(15,20,30,0.10);
+      display: block;
+      height: auto;
+      transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
+      transform-origin: center center;
+      will-change: transform;
+    }
+    @media (hover: hover) {
+      .ad-preview:hover {
+        transform: scale(1.06);
+        box-shadow: 0 12px 28px rgba(15,20,30,0.18);
+        position: relative;
+        z-index: 2;
+      }
+    }
     .ad-preview--phone { width: 180px; }
     .ad-preview--desktop { width: 560px; max-width: 100%; }
     .ad-preview--desktop-half { width: 360px; max-width: 100%; }

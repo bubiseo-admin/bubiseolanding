@@ -5705,15 +5705,27 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   align-items: flex-start;
   gap: 12px;
 }
+/* 2026-05-28 [사용자 명시] 이미지 크기 업 + 마우스오버 확대 (1.06) */
 .adq__banner-ad-imgs img {
   flex-shrink: 0;
-  width: 180px;
+  width: 240px;
   height: auto;
   display: block;
   border-radius: 18px;
   border: 1px solid #ECEEF1;
   background: #F8F9FB;
   box-shadow: 0 6px 18px rgba(15,20,30,0.10);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
+  transform-origin: center center;
+  will-change: transform;
+}
+@media (hover: hover) {
+  .adq__banner-ad-imgs img:hover {
+    transform: scale(1.06);
+    box-shadow: 0 12px 28px rgba(15,20,30,0.18);
+    z-index: 2;
+    position: relative;
+  }
 }
 /* 2026-05-25 [사용자 명시] 모바일은 nowrap 가로 한 줄 + 작은 폭 — 너무 크지 않게. */
 @media (max-width: 720px) {
@@ -5722,13 +5734,13 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     flex-wrap: nowrap;
     justify-content: center;
   }
-  .adq__banner-ad-imgs img { width: 30%; max-width: 120px; min-width: 0; }
+  .adq__banner-ad-imgs img { width: 30%; max-width: 160px; min-width: 0; }
   .adq__banner-ad-title { font-size: 24px; }
   .adq__banner-ad-desc { font-size: 14px; }
 }
 @media (max-width: 480px) {
   .adq__banner-ad-imgs { gap: 6px; }
-  .adq__banner-ad-imgs img { max-width: 100px; }
+  .adq__banner-ad-imgs img { max-width: 130px; }
 }
 
 /* 2026-05-22 [사용자 명시] 단가/결제 복귀 — 단일 칼럼 가운데 정렬 */
