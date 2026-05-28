@@ -600,6 +600,16 @@
           if (monthEl) monthEl.textContent = data.pricingMonth || '—';
           if (nextEl) nextEl.textContent = fmtRenewal(data.nextRenewalAt);
 
+          // 2026-05-28 [사용자 명시] 단가 = 가입계정수 × 1,000원 — 광고 카드 + 결제 정책 박스에 일괄 표시.
+          const UNIT_PRICE_PER_ACCOUNT = 1000;
+          const currentPrice = (data.accountCount || 0) * UNIT_PRICE_PER_ACCOUNT;
+          document.querySelectorAll('[data-ad-current-price]').forEach((el) => {
+            el.textContent = fmtKrw(currentPrice);
+          });
+          document.querySelectorAll('[data-ad-current-accounts]').forEach((el) => {
+            el.textContent = fmtKrw(data.accountCount);
+          });
+
           // 베타 promo 배너
           const mode = data.displayMode || 'A';
           if (promoEl) {

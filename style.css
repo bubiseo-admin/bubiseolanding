@@ -5728,6 +5728,36 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-size: 13px;
   font-weight: 600;
 }
+/* 2026-05-28 [사용자 명시] 단가 = 가입계정수 × 1,000원 — 현재 단가 동적 표시 */
+.adq__banner-ad-price-current {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(97,85,245,0.12);
+  color: #6155F5 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+.adq__banner-ad-price-current b {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.adq__sidebar-policy-sub {
+  display: block;
+  margin-top: 4px;
+  color: #6E7680;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.adq__sidebar-policy-sub b {
+  color: #6155F5;
+  font-weight: 800;
+}
 
 /* 결제 정책 박스 하단 — 결제하기 버튼 (시그니처 그라데이션 풀 폭) */
 .adq__pay-cta {

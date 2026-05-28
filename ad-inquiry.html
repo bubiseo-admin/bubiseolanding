@@ -114,8 +114,12 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">배너 광고</h2>
       <p class="adq__banner-ad-desc">앱 내 대시보드, 사내메신저, 커뮤니티에 배너로 노출됩니다.</p>
-      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
-      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월 (VAT 포함)</span></p>
+      <!-- 2026-05-28 [사용자 명시] 단가 = 가입계정수 × 1,000원 / 월 (VAT 포함) -->
+      <p class="adq__banner-ad-price">
+        <strong>가입계정수 × 1,000원</strong>
+        <span>/ 월 (VAT 포함)</span>
+        <span class="adq__banner-ad-price-current">현재 단가 <b data-ad-current-price>—</b>원</span>
+      </p>
       <div class="adq__banner-ad-imgs">
         <img src="ad-images/IMG_3235.jpg" alt="부비서 앱 배너 광고 노출 예시 — 대시보드" loading="lazy" />
         <img src="ad-images/IMG_3238.jpg" alt="부비서 앱 배너 광고 노출 예시 — 사내메신저" loading="lazy" />
@@ -127,8 +131,12 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">네이티브 광고</h2>
       <p class="adq__banner-ad-desc">앱 내 매물메뉴 + 매물지도 &gt; 목록 리스트에 매물처럼 등장합니다.</p>
-      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
-      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월 (VAT 포함)</span></p>
+      <!-- 2026-05-28 [사용자 명시] 단가 = 가입계정수 × 1,000원 / 월 (VAT 포함) -->
+      <p class="adq__banner-ad-price">
+        <strong>가입계정수 × 1,000원</strong>
+        <span>/ 월 (VAT 포함)</span>
+        <span class="adq__banner-ad-price-current">현재 단가 <b data-ad-current-price>—</b>원</span>
+      </p>
       <div class="adq__banner-ad-imgs adq__banner-ad-imgs--two">
         <img src="ad-images/IMG_3237.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 메뉴" loading="lazy" />
         <img src="ad-images/IMG_3240.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 지도 목록" loading="lazy" />
@@ -139,8 +147,12 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">홈 광고</h2>
       <p class="adq__banner-ad-desc">앱 시작 시 누구보다 먼저 등장합니다.</p>
-      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
-      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월 (VAT 포함)</span></p>
+      <!-- 2026-05-28 [사용자 명시] 단가 = 가입계정수 × 1,000원 / 월 (VAT 포함) -->
+      <p class="adq__banner-ad-price">
+        <strong>가입계정수 × 1,000원</strong>
+        <span>/ 월 (VAT 포함)</span>
+        <span class="adq__banner-ad-price-current">현재 단가 <b data-ad-current-price>—</b>원</span>
+      </p>
       <div class="adq__banner-ad-imgs">
         <img src="assets/IMG_3566.jpg" alt="부비서 앱 홈 광고 노출 예시" loading="lazy" />
       </div>
@@ -172,6 +184,9 @@
       <div class="adq__sidebar-policy">
         <h4 class="adq__sidebar-policy-title">📋 결제 정책</h4>
         <ul class="adq__sidebar-policy-list">
+          <li>단가 산정: <strong>총 가입계정수 × 1,000원 / 월</strong>
+            <span class="adq__sidebar-policy-sub">현재 단가 = <b data-ad-current-price>—</b>원 / 월 (가입 <b data-ad-current-accounts>—</b>명 × 1,000원)</span>
+          </li>
           <li>매월 <strong>1일 자동 재결제</strong> · 이번 달 단가 적용</li>
           <li>1회 계약 <strong>최장 3개월</strong></li>
           <li>3개월 만료 후 재계약 시 <strong>그 시점 활성 회원수 기준 재산정</strong></li>
@@ -232,19 +247,33 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260528b"></script>
+  <script src="script.js?v=20260528c"></script>
 
-  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 → 토스페이먼츠 v2 결제위젯 페이지로 이동 -->
+  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 — 단가 = 가입계정수 × 1,000원 동적 계산 -->
   <script>
     (function () {
       var btn = document.getElementById('adqPayCta');
       if (!btn) return;
+      var UNIT_PRICE_PER_ACCOUNT = 1000;
+
+      function readAccountCount() {
+        // script.js 의 loadAdPricing 이 [data-ad-pricing-accounts] 에 fmtKrw 로 숫자 입력 (쉼표 포함).
+        var el = document.querySelector('[data-ad-pricing-accounts]');
+        var txt = (el && el.textContent || '').replace(/[^0-9]/g, '');
+        return parseInt(txt, 10) || 0;
+      }
+
       btn.addEventListener('click', function () {
-        // 광고별 단가 1,000원 — 광고 슬롯 분류는 추후 선택 UI 추가 (현재는 배너 기본).
+        var accountCount = readAccountCount();
+        if (!accountCount) {
+          alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+          return;
+        }
+        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT;
         var params = new URLSearchParams({
           plan: 'banner',
-          amount: '1000',
-          orderName: '부비서 배너 광고 (월 1,000원)',
+          amount: String(amount),
+          orderName: '부비서 배너 광고 (월 ' + amount.toLocaleString('ko-KR') + '원 · 가입 ' + accountCount + '명 × 1,000원)',
         });
         window.location.href = '/pay-widget.html?' + params.toString();
       });
