@@ -647,20 +647,23 @@
             </div>
           </div>
 
-          <!-- 입금 계좌 (hana.png) -->
-          <div class="pay-account">
-            <img class="pay-account__img" id="payHanaImg" src="assets/hana.png" alt="입금 계좌 안내" />
-            <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
-          </div>
+          <!-- 2026-05-28 [사용자 명시] 입금 안내(계좌 이미지 + 안내 + 입금완료 버튼) — 처음 hidden. [업로드] 클릭 시 노출 -->
+          <div id="payDepositSection" hidden>
+            <!-- 입금 계좌 (hana.png) -->
+            <div class="pay-account">
+              <img class="pay-account__img" id="payHanaImg" src="assets/hana.png" alt="입금 계좌 안내" />
+              <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
+            </div>
 
-          <!-- 안내 문구 -->
-          <div class="pay-notice">
-            위 계좌로 결제 금액을 입금하신 후 <b>입금완료</b> 버튼을 눌러주세요.<br/>
-            입금 확인 후 즉시(보통 10분 이내) 부비서 앱에 노출되며, <strong class="pay-notice__highlight">이후 담당자 연락처로 정상 노출 확인 링크를 보내드립니다.</strong>
-          </div>
+            <!-- 안내 문구 -->
+            <div class="pay-notice">
+              위 계좌로 결제 금액을 입금하신 후 <b>입금완료</b> 버튼을 눌러주세요.<br/>
+              입금 확인 후 즉시(보통 10분 이내) 부비서 앱에 노출되며, <strong class="pay-notice__highlight">이후 담당자 연락처로 정상 노출 확인 링크를 보내드립니다.</strong>
+            </div>
 
-          <!-- 입금완료 버튼 -->
-          <button type="button" class="pay-confirm-btn" id="payConfirmBtn">입금완료</button>
+            <!-- 입금완료 버튼 — 클릭 시 자동으로 form submit 트리거 -->
+            <button type="button" class="pay-confirm-btn" id="payConfirmBtn">입금완료</button>
+          </div>
         </div>
       </section>
 
@@ -1424,8 +1427,10 @@
         consentToggleBtn.textContent = open ? '자세히 ▾' : '자세히 ▴';
         consentToggleBtn.setAttribute('aria-expanded', String(!open));
       });
+      // 2026-05-28 [사용자 명시] 흐름 변경 — [업로드] 활성 게이트는 '동의' 만.
+      //   입금 안내(계좌 이미지 + 입금완료 버튼) 노출은 [업로드] 클릭 직후 → 송금 → [입금완료] → 자동 submit.
       function recomputeSubmitGate() {
-        submitBtn.disabled = !(paymentConfirmedClient && consentAgreed.checked);
+        submitBtn.disabled = !consentAgreed.checked;
       }
       consentAgreed.addEventListener('change', recomputeSubmitGate);
 
@@ -1447,6 +1452,10 @@
           payConfirmBtn.classList.remove('done');
         }
         recomputeSubmitGate();
+        // 2026-05-28 [사용자 명시] 입금완료 클릭 = 백엔드 등록 트리거 (동의 OK 일 때).
+        if (paymentConfirmedClient && consentAgreed.checked) {
+          document.getElementById('ad2Form').requestSubmit();
+        }
       });
 
       // hana 이미지 lightbox
@@ -1464,6 +1473,17 @@
       // submit
       document.getElementById('ad2Form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        // 2026-05-28 [사용자 명시] [업로드] 1차 클릭 — 입금 안내 노출 후 return.
+        //   사용자 송금 → [입금완료] 클릭 시 paymentConfirmedClient=true + 자동 form submit 재호출 → 이 분기 통과.
+        if (!paymentConfirmedClient) {
+          const sec = document.getElementById('payDepositSection');
+          if (sec) {
+            sec.hidden = false;
+            sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          toast('입금 후 입금완료 버튼을 눌러주세요.');
+          return;
+        }
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         const form = e.target;
