@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260528g" />
+  <link rel="stylesheet" href="style.css?v=20260528h" />
 </head>
 <body class="body--main body--ad-inquiry">
 
@@ -181,14 +181,14 @@
         </p>
       </div>
 
-      <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯 + 광고 기간 선택 + 합계 -->
+      <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯(중복 선택) + 광고 기간(단일) + 합계 -->
       <div class="adq__pay-picker">
         <div class="adq__pay-picker-group">
-          <span class="adq__pay-picker-label">광고 슬롯</span>
-          <div class="adq__pay-picker-chips" role="radiogroup" aria-label="광고 슬롯 선택">
-            <button type="button" class="adq__pay-chip is-active" data-slot="banner" data-slot-label="배너 광고" role="radio" aria-checked="true">배너 광고</button>
-            <button type="button" class="adq__pay-chip" data-slot="native" data-slot-label="네이티브 광고" role="radio" aria-checked="false">네이티브 광고</button>
-            <button type="button" class="adq__pay-chip" data-slot="home" data-slot-label="홈 광고" role="radio" aria-checked="false">홈 광고</button>
+          <span class="adq__pay-picker-label">광고 슬롯 <span class="adq__pay-picker-label-sub">(중복 선택 가능)</span></span>
+          <div class="adq__pay-picker-chips" role="group" aria-label="광고 슬롯 선택 (다중)">
+            <button type="button" class="adq__pay-chip is-active" data-slot="banner" data-slot-label="배너 광고" role="checkbox" aria-checked="true">배너 광고</button>
+            <button type="button" class="adq__pay-chip" data-slot="native" data-slot-label="네이티브 광고" role="checkbox" aria-checked="false">네이티브 광고</button>
+            <button type="button" class="adq__pay-chip" data-slot="home" data-slot-label="홈 광고" role="checkbox" aria-checked="false">홈 광고</button>
           </div>
         </div>
 
@@ -258,7 +258,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260528e"></script>
+  <script src="script.js?v=20260528f"></script>
 
   <!-- 2026-05-28 [사용자 명시] 슬롯+개월 선택 → 합계 자동 계산 → 결제하기 버튼 amount 동적 -->
   <script>
@@ -276,9 +276,11 @@
         var txt = (el && el.textContent || '').replace(/[^0-9]/g, '');
         return parseInt(txt, 10) || 0;
       }
-      function activeSlot() {
-        var el = document.querySelector('.adq__pay-chip[data-slot].is-active');
-        return el ? { key: el.getAttribute('data-slot'), label: el.getAttribute('data-slot-label') } : null;
+      function activeSlots() {
+        return Array.prototype.slice.call(document.querySelectorAll('.adq__pay-chip[data-slot].is-active'))
+          .map(function (el) {
+            return { key: el.getAttribute('data-slot'), label: el.getAttribute('data-slot-label') };
+          });
       }
       function activeMonths() {
         var el = document.querySelector('.adq__pay-chip[data-months].is-active');
@@ -289,18 +291,42 @@
       function recalc() {
         var accountCount = readAccountCount();
         var months = activeMonths();
-        if (!accountCount || !months) {
+        var slots = activeSlots();
+        if (!accountCount || !months || slots.length === 0) {
           totalEl.textContent = '—';
-          breakdownEl.textContent = '현재 가입 정보를 불러오는 중입니다…';
+          breakdownEl.textContent = slots.length === 0
+            ? '광고 슬롯을 1개 이상 선택해주세요'
+            : '현재 가입 정보를 불러오는 중입니다…';
           return;
         }
-        var monthly = accountCount * UNIT_PRICE_PER_ACCOUNT;
-        var total = monthly * months;
+        var monthlyPerSlot = accountCount * UNIT_PRICE_PER_ACCOUNT;
+        var total = monthlyPerSlot * slots.length * months;
         totalEl.textContent = fmtKrw(total);
-        breakdownEl.textContent = '가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 (월 ' + fmtKrw(monthly) + '원)';
+        breakdownEl.textContent =
+          '가입 ' + accountCount + '명 × 1,000원 × ' + slots.length + '슬롯 × ' + months + '개월 (월 ' + fmtKrw(monthlyPerSlot * slots.length) + '원)';
       }
 
-      function bindChips(list) {
+      // 2026-05-28 [사용자 명시] 슬롯은 중복(다중) 선택 — 자기 칩만 토글. 최소 1개 강제(완전 비활성 금지).
+      function bindMulti(list) {
+        list.forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            var nowActive = chip.classList.contains('is-active');
+            // 마지막 1개를 끌 수 없게 — 활성 1개일 때 그 칩 끄기 시도면 무시.
+            if (nowActive) {
+              var stillActive = Array.prototype.filter.call(list, function (c) { return c.classList.contains('is-active'); });
+              if (stillActive.length <= 1) return;
+              chip.classList.remove('is-active');
+              chip.setAttribute('aria-checked', 'false');
+            } else {
+              chip.classList.add('is-active');
+              chip.setAttribute('aria-checked', 'true');
+            }
+            recalc();
+          });
+        });
+      }
+      // 기간은 단일 선택(라디오) 유지.
+      function bindRadio(list) {
         list.forEach(function (chip) {
           chip.addEventListener('click', function () {
             list.forEach(function (c) {
@@ -313,8 +339,8 @@
           });
         });
       }
-      bindChips(slotChips);
-      bindChips(monthChips);
+      bindMulti(slotChips);
+      bindRadio(monthChips);
 
       // 가입계정수 fetch 완료 시점 (loadAdPricing 응답 후) 합계 갱신 — script.js 가 다 채운 직후 recalc.
       // MutationObserver 로 data-ad-pricing-accounts 텍스트 변경 감지.
@@ -327,20 +353,22 @@
 
       btn.addEventListener('click', function () {
         var accountCount = readAccountCount();
-        var slot = activeSlot();
+        var slots = activeSlots();
         var months = activeMonths();
         if (!accountCount) {
           alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
           return;
         }
-        if (!slot || !months) {
-          alert('광고 슬롯과 광고 기간을 선택해주세요.');
+        if (slots.length === 0 || !months) {
+          alert('광고 슬롯(1개 이상)과 광고 기간을 선택해주세요.');
           return;
         }
-        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT * months;
-        var orderName = '부비서 ' + slot.label + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
+        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT * slots.length * months;
+        var slotLabels = slots.map(function (s) { return s.label; }).join(' + ');
+        var slotKeys = slots.map(function (s) { return s.key; }).join('+');
+        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + slots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
         var params = new URLSearchParams({
-          plan: slot.key,
+          plan: slotKeys,
           amount: String(amount),
           orderName: orderName,
         });
