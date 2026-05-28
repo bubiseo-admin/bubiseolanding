@@ -298,6 +298,26 @@
     .success-box h2 { font-size: 22px; margin: 12px 0 6px; }
     .success-box p { color: var(--sub); margin: 0; line-height: 1.6; }
     .success-box .back-btn { display: inline-block; margin-top: 22px; padding: 12px 28px; border-radius: 10px; background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%); color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(97,85,245,0.25); }
+
+    /* 2026-05-28 [토스 가맹 심사 기준] 상품별 서비스 제공기간 + 환불정책 라인 */
+    .pay-terms-line { font-size: 12px; color: var(--tertiary); margin-top: 6px; line-height: 1.55; }
+    .pay-terms-line a { color: var(--pri); text-decoration: underline; }
+
+    /* 2026-05-28 [토스 가맹 심사 기준] 페이지 하단 사업자정보 푸터 */
+    .ad2-foot {
+      margin-top: 48px; padding: 28px 20px 40px;
+      background: #F7F9FC; border-top: 1px solid #E5E8EB;
+      font-size: 12px; color: #6E7680; line-height: 1.75;
+    }
+    .ad2-foot__inner { max-width: 720px; margin: 0 auto; }
+    .ad2-foot__brand { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .ad2-foot__brand img { width: 22px; height: 22px; border-radius: 6px; }
+    .ad2-foot__brand strong { font-size: 14px; color: var(--text); font-weight: 800; }
+    .ad2-foot__links { margin-bottom: 10px; }
+    .ad2-foot__links a { color: var(--pri); text-decoration: underline; margin-right: 12px; font-weight: 600; }
+    .ad2-foot__biz p { margin: 0 0 4px; }
+    .ad2-foot__biz a { color: inherit; text-decoration: none; }
+    .ad2-foot__copy { margin-top: 14px; padding-top: 12px; border-top: 1px solid #E5E8EB; color: #9DA5AE; }
   </style>
 </head>
 <body>
@@ -560,6 +580,12 @@
             <span class="pay-premium__price">월 3만원</span>
           </label>
 
+          <!-- 2026-05-28 [토스 가맹 심사 기준] 서비스 제공기간 + 환불정책 명시 -->
+          <p class="pay-terms-line">
+            📅 서비스 제공기간 : 결제일 익일부터 광고 종료일까지 (월 단위 결제, 최장 12개월)<br/>
+            ↩ 환불 : <a href="refund.html" target="_blank" rel="noopener">환불 정책 보기</a> · 노출 시작 전 100% 환불, 시작 후 일할 환불
+          </p>
+
           <!-- 자동 계산 요약 — 프리미엄/기본 각각 + 합계 -->
           <div class="pay-summary">
             <div class="pay-summary__row">
@@ -630,6 +656,30 @@
 
     <div id="successView" hidden></div>
   </main>
+
+  <!-- 2026-05-28 [토스 가맹 심사 기준] 사업자정보 + 약관 링크 푸터 신설 -->
+  <footer class="ad2-foot">
+    <div class="ad2-foot__inner">
+      <div class="ad2-foot__brand">
+        <img src="assets/logo.png" alt="" />
+        <strong>부비서</strong>
+      </div>
+      <div class="ad2-foot__links">
+        <a href="terms.html" target="_blank" rel="noopener">이용약관</a>
+        <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>
+        <a href="refund.html" target="_blank" rel="noopener">환불 정책</a>
+        <a href="location.html" target="_blank" rel="noopener">위치기반서비스 이용약관</a>
+      </div>
+      <div class="ad2-foot__biz">
+        <p>상호 : 부비서 · 대표자 : 이현우 · 사업자등록번호 : 574-06-03306</p>
+        <p>사업장 주소 : 경기도 양주시 옥정동 891-1, 라피아노스위첸3단지</p>
+        <p>연락처 : <a href="tel:+821095655505">010-9565-5505</a> · 이메일 : <a href="mailto:admin@bubiseo.com">admin@bubiseo.com</a></p>
+        <p>통신판매업 신고번호 : 신고 진행 중 (발급 후 즉시 게재)</p>
+        <p>결제대행 : 토스페이먼츠(주)</p>
+      </div>
+      <p class="ad2-foot__copy">© 2026 부비서. All rights reserved.</p>
+    </div>
+  </footer>
 
   <div class="toast" id="toast"></div>
 
