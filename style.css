@@ -5685,9 +5685,74 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   vertical-align: middle;
   box-shadow: 0 2px 6px rgba(247,147,30,0.25);
 }
+/* 2026-05-28 [사용자 명시] 선착순! 강조 배지 — 무료이벤트중 옆 */
+.adq__first-come-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FF3B30 0%, #C30B22 100%);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  vertical-align: middle;
+  box-shadow: 0 2px 6px rgba(195,11,34,0.30);
+  animation: adqPulse 1600ms ease-in-out infinite;
+}
+@keyframes adqPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
 @media (max-width: 720px) {
   .adq__banner-ad-note { display: block; font-size: 13px; margin-left: 0; margin-top: 4px; }
-  .adq__free-badge { font-size: 12px; padding: 2px 8px; }
+  .adq__free-badge, .adq__first-come-badge { font-size: 12px; padding: 2px 8px; }
+}
+
+/* 2026-05-28 [사용자 명시] 광고 슬롯 중복 선택 시 항목별 금액 표시 (브레이크다운 라인) */
+.adq__pay-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0;
+  border-top: 1px dashed #E5E8EB;
+}
+.adq__pay-line:first-child { border-top: none; padding-top: 0; }
+.adq__pay-line-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #191F28;
+  letter-spacing: -0.3px;
+}
+.adq__pay-line-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4E5968;
+  letter-spacing: -0.2px;
+  line-height: 1.5;
+}
+.adq__pay-line-value b {
+  font-weight: 800;
+  color: #191F28;
+}
+.adq__pay-strike {
+  color: #8B95A1;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.2px;
+  font-weight: 600;
+}
+.adq__pay-event {
+  display: inline-block;
+  padding: 1px 6px;
+  margin: 0 2px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: -0.2px;
+  vertical-align: middle;
 }
 .adq__banner-ad-desc {
   font-size: 16px;

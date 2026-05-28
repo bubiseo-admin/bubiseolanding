@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260528m" />
+  <link rel="stylesheet" href="style.css?v=20260528n" />
 </head>
 <body class="body--main body--ad-inquiry">
 
@@ -139,7 +139,7 @@
     <!-- 2026-05-28 [사용자 명시] 홈 광고 단가 표기 — 월 100만원 (취소선) + 무료이벤트중 배지 -->
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">홈 광고
-        <span class="adq__banner-ad-note"><s class="adq__price-strike">월 100만원</s> <span class="adq__free-badge">현재 무료이벤트중</span></span>
+        <span class="adq__banner-ad-note"><s class="adq__price-strike">월 100만원</s> <span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
       </h2>
       <p class="adq__banner-ad-desc">앱 시작 시 누구보다 먼저 등장합니다.</p>
       <div class="adq__banner-ad-imgs">
@@ -295,22 +295,50 @@
       }
       function fmtKrw(n) { return (Number(n) || 0).toLocaleString('ko-KR'); }
 
+      // 2026-05-28 [사용자 명시] 홈 광고는 월 100만원 — 현재 선착순 무료이벤트중 (0원)
+      var HOME_MONTHLY_REGULAR = 1000000;
+      var HOME_FREE_EVENT = true;
+
       function recalc() {
         var accountCount = readAccountCount();
         var months = activeMonths();
         var slots = activeSlots();
-        if (!accountCount || !months || slots.length === 0) {
+        if (!months || slots.length === 0) {
           totalEl.textContent = '—';
-          breakdownEl.textContent = slots.length === 0
+          breakdownEl.innerHTML = slots.length === 0
             ? '광고 슬롯을 1개 이상 선택해주세요'
-            : '현재 가입 정보를 불러오는 중입니다…';
+            : '광고 기간을 선택해주세요';
           return;
         }
-        var monthlyPerSlot = accountCount * UNIT_PRICE_PER_ACCOUNT;
-        var total = monthlyPerSlot * slots.length * months;
+        // 배너/네이티브는 가입계정수 필요. 홈만 선택했을 땐 계정수 없어도 0원 표시 가능.
+        var hasChargeable = slots.some(function (s) { return s.key !== 'home'; });
+        if (hasChargeable && !accountCount) {
+          totalEl.textContent = '—';
+          breakdownEl.innerHTML = '현재 가입 정보를 불러오는 중입니다…';
+          return;
+        }
+        var perAccount = accountCount * UNIT_PRICE_PER_ACCOUNT;
+        var total = 0;
+        var lines = slots.map(function (s) {
+          if (s.key === 'home') {
+            var homeRegular = HOME_MONTHLY_REGULAR * months;
+            var homeCharge = HOME_FREE_EVENT ? 0 : homeRegular;
+            total += homeCharge;
+            return '<span class="adq__pay-line">' +
+              '<span class="adq__pay-line-label">' + s.label + '</span>' +
+              '<span class="adq__pay-line-value">' +
+              '<s class="adq__pay-strike">' + fmtKrw(HOME_MONTHLY_REGULAR) + '원</s> × ' + months + '개월 — <em class="adq__pay-event">현재 선착순 무료이벤트중</em> = <b>' + fmtKrw(homeCharge) + '원</b>' +
+              '</span></span>';
+          }
+          var amount = perAccount * months;
+          total += amount;
+          return '<span class="adq__pay-line">' +
+            '<span class="adq__pay-line-label">' + s.label + '</span>' +
+            '<span class="adq__pay-line-value">가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(amount) + '원</b></span>' +
+            '</span>';
+        });
         totalEl.textContent = fmtKrw(total);
-        breakdownEl.textContent =
-          '가입 ' + accountCount + '명 × 1,000원 × ' + slots.length + '슬롯 × ' + months + '개월 (월 ' + fmtKrw(monthlyPerSlot * slots.length) + '원)';
+        breakdownEl.innerHTML = lines.join('');
       }
 
       // 2026-05-28 [사용자 명시] 슬롯은 중복(다중) 선택 — 자기 칩만 토글. 최소 1개 강제(완전 비활성 금지).
@@ -362,18 +390,28 @@
         var accountCount = readAccountCount();
         var slots = activeSlots();
         var months = activeMonths();
-        if (!accountCount) {
-          alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-          return;
-        }
         if (slots.length === 0 || !months) {
           alert('광고 슬롯(1개 이상)과 광고 기간을 선택해주세요.');
           return;
         }
-        var amount = accountCount * UNIT_PRICE_PER_ACCOUNT * slots.length * months;
-        var slotLabels = slots.map(function (s) { return s.label; }).join(' + ');
+        // 2026-05-28 [사용자 명시] 홈광고는 무료이벤트 — 결제 amount 에서 제외.
+        var chargeableSlots = slots.filter(function (s) { return s.key !== 'home'; });
+        if (chargeableSlots.length > 0 && !accountCount) {
+          alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+          return;
+        }
+        var amount = chargeableSlots.length > 0
+          ? (accountCount * UNIT_PRICE_PER_ACCOUNT * chargeableSlots.length * months)
+          : 0;
+        if (amount === 0) {
+          alert('홈 광고는 현재 선착순 무료이벤트 진행 중입니다. 별도 문의를 부탁드립니다.');
+          return;
+        }
+        var slotLabels = slots.map(function (s) {
+          return s.key === 'home' ? (s.label + '(무료이벤트)') : s.label;
+        }).join(' + ');
         var slotKeys = slots.map(function (s) { return s.key; }).join('+');
-        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + slots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
+        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + chargeableSlots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
         var params = new URLSearchParams({
           plan: slotKeys,
           amount: String(amount),
