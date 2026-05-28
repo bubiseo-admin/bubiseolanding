@@ -5657,6 +5657,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: -1px;
   margin: 0 0 10px;
 }
+.adq__banner-ad-note {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6B7684;
+  letter-spacing: -0.3px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+@media (max-width: 720px) {
+  .adq__banner-ad-note { display: block; font-size: 13px; margin-left: 0; margin-top: 4px; }
+}
 .adq__banner-ad-desc {
   font-size: 16px;
   font-weight: 600;
