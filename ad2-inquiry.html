@@ -108,38 +108,45 @@
     .ad-notes b { color: var(--pri); }
     .ad-notes__sub { display: block; color: var(--tertiary); font-size: 12px; margin-top: 2px; }
     /* 2026-05-25 [사용자 명시] 모바일 2장 + "+" + 데스크톱 1장 세로 배치. */
+    /* 2026-05-28 [사용자 명시] 사진 키우기 — 본문 폭(720px) 넘어 뷰포트 기준으로 확장 */
     .ad-preview-stack {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       margin: 0 0 8px;
+      width: min(1080px, 100vw - 40px);
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
     }
     .ad-preview-row {
       display: flex; gap: 10px; align-items: flex-start; justify-content: center;
       flex-wrap: wrap;
     }
-    /* 2026-05-28 [사용자 명시] 모바일 4장 한 줄 일자 배치 */
+    /* 2026-05-28 [사용자 명시] 모바일 4장 한 줄 일자 배치 (사이즈 업) */
     .ad-preview-row--phones-4 {
       flex-wrap: nowrap;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
+      max-width: 1000px;
     }
     .ad-preview-row--phones-4 .ad-preview--phone {
-      width: calc((100% - 24px) / 4);
+      width: calc((100% - 30px) / 4);
       min-width: 0;
-      max-width: 160px;
+      max-width: 240px;
     }
-    /* 2026-05-28 [사용자 명시] 데스크톱 4장 2x2 그리드 배치 */
+    /* 2026-05-28 [사용자 명시] 데스크톱 4장 2x2 그리드 배치 (사이즈 업) */
     .ad-preview-grid--desktops-2x2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 14px;
       width: 100%;
-      max-width: 600px;
+      max-width: 1000px;
     }
     .ad-preview-grid--desktops-2x2 .ad-preview--desktop-half {
       width: 100%;
+      max-width: none;
     }
     .ad-preview-plus {
       font-size: 36px;
