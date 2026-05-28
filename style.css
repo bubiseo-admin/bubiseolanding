@@ -4727,6 +4727,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    ================================================================= */
 
 /* 2026-05-28 [사용자 명시] ad-inquiry 메뉴 강제 숨김 정책 폐지 — 홈/기능/무료/일반광고/분양광고 전부 노출 */
+/* 2026-05-28 [사용자 명시] ad-inquiry 헤더 메뉴 — 화면 정중앙 absolute 정렬 (brand/support 크기 무관) */
+.body--ad-inquiry .main-nav { position: fixed; }
+@media (min-width: 769px) {
+  .body--ad-inquiry .main-nav__menu {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
 
 /* 잠금 상태: main / header / footer 모두 숨김 (게이트 통과 전) */
 .adq-locked .main-nav,
