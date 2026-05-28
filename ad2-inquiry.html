@@ -50,6 +50,36 @@
     .gate__err { color: var(--error); font-size: 13px; margin: 10px 0 0; }
     .gate__legal { color: var(--tertiary); font-size: 12px; margin: 14px 0 0; }
 
+    /* 2026-05-28 [사용자 명시] 상단 nav — 홈/기능/가격/일반광고/분양광고 */
+    .ad2-nav {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 720px; margin: 0 auto;
+      padding: 12px 20px;
+      background: rgba(249,250,251,0.92);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .ad2-nav__brand { display: flex; align-items: center; gap: 8px; }
+    .ad2-nav__brand img { width: 22px; height: 22px; border-radius: 6px; }
+    .ad2-nav__brand strong { font-size: 14px; font-weight: 800; color: var(--text); }
+    .ad2-nav__menu { display: flex; gap: 4px; flex-wrap: wrap; }
+    .ad2-nav__menu a {
+      padding: 6px 10px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; color: var(--sub);
+      transition: background 0.15s, color 0.15s;
+    }
+    .ad2-nav__menu a:hover { background: rgba(97,85,245,0.06); color: var(--pri); }
+    .ad2-nav__menu a.is-active {
+      background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%);
+      color: #fff;
+    }
+    @media (max-width: 480px) {
+      .ad2-nav__menu a { padding: 5px 7px; font-size: 12px; }
+      .ad2-nav__brand strong { display: none; }
+    }
+
     /* ─── 본문 ─── */
     header { padding: 28px 20px 18px; max-width: 720px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
     .brand { display: flex; align-items: center; gap: 10px; }
@@ -324,6 +354,21 @@
   <!-- 2026-05-28 [사용자 명시] 비밀번호 게이트 해제 — 누구나 페이지 진입 가능 -->
   <!-- (백엔드 /public/presale-inquiry/gate 토큰 검증은 그대로 살아 있어 폼 제출은 별도 백엔드 정책 변경 필요) -->
 
+  <!-- 2026-05-28 [사용자 명시] 상단 nav — 홈/기능/가격/일반광고/분양광고 -->
+  <nav class="ad2-nav" aria-label="주요 메뉴">
+    <a class="ad2-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <strong>부비서</strong>
+    </a>
+    <div class="ad2-nav__menu">
+      <a href="index.html#top">홈</a>
+      <a href="app.html">기능</a>
+      <a href="index.html#pricing">가격</a>
+      <a href="ad-inquiry.html">일반광고</a>
+      <a href="ad2-inquiry.html" class="is-active" aria-current="page">분양광고</a>
+    </div>
+  </nav>
+
   <header>
     <div class="brand">
       <img src="assets/logo.png" alt="" />
@@ -579,12 +624,6 @@
             <span class="pay-premium__text">⭐ 프리미엄 노출 (별표 강조 + 광선 + 최상위, 최대 5개)</span>
             <span class="pay-premium__price">월 3만원</span>
           </label>
-
-          <!-- 2026-05-28 [토스 가맹 심사 기준] 서비스 제공기간 + 환불정책 명시 -->
-          <p class="pay-terms-line">
-            📅 서비스 제공기간 : 결제일 익일부터 광고 종료일까지 (월 단위 결제, 최장 12개월)<br/>
-            ↩ 환불 : <a href="refund.html" target="_blank" rel="noopener">환불 정책 보기</a> · 노출 시작 전 100% 환불, 시작 후 일할 환불
-          </p>
 
           <!-- 자동 계산 요약 — 프리미엄/기본 각각 + 합계 -->
           <div class="pay-summary">

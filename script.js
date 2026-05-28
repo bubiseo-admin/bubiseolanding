@@ -480,7 +480,7 @@
     };
 
     loadAdStats = function (refresh) {
-      if (!adqHasGateToken()) return; // 토큰 없으면 fetch 안 함 (무한 reload 방지)
+      // 2026-05-28 [사용자 명시] 게이트 해제 — 토큰 가드 제거 (비인증 fetch 허용).
       const url = 'https://api.bubiseo.com/landing/ad-stats' + (refresh ? '?refresh=1' : '');
       return fetch(url, {
         credentials: 'omit',
@@ -508,8 +508,8 @@
           }
         });
     };
-    // 페이지 로드 시 첫 호출 (토큰 있는 경우만).
-    if (adqHasGateToken()) loadAdStats(false);
+    // 2026-05-28 [사용자 명시] 게이트 해제 — 페이지 로드 시 무조건 첫 호출.
+    loadAdStats(false);
   }
 
   // === 광고 단가 사이드바 로더 (A/B/C 모드별 렌더) ===
@@ -636,7 +636,8 @@
           }
         });
     };
-    if (adqHasGateToken()) loadAdPricing(false);
+    // 2026-05-28 [사용자 명시] 게이트 해제 — 페이지 로드 시 무조건 첫 호출.
+    loadAdPricing(false);
   }
 
   // 게이트 통과 직후 한 번에 두 로더 트리거 (reload 없이).
@@ -651,7 +652,6 @@
   if (refreshBtn) {
     refreshBtn.addEventListener('click', async () => {
       if (isRefreshing) return;
-      if (!adqHasGateToken()) return;
       isRefreshing = true;
       refreshBtn.classList.add('is-spinning');
       refreshBtn.disabled = true;
