@@ -5758,6 +5758,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #6155F5;
   font-weight: 800;
 }
+/* 2026-05-28 [사용자 명시] 결제 정책 상단 강조 문구 — 굵은 블랙 */
+.adq__sidebar-policy-highlight {
+  margin: 4px 0 14px;
+  font-family: 'Pretendard-Black', Pretendard, sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: #191F28;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+}
 
 /* 2026-05-28 [사용자 명시] 토스 스타일 — 광고 슬롯 + 광고 기간 선택 picker */
 .adq__pay-picker {
