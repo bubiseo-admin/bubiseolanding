@@ -23,29 +23,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="style.css?v=20260520h" />
 </head>
-<body class="body--main body--ad-inquiry adq-locked">
+<body class="body--main body--ad-inquiry">
 
-  <!-- ============================== 비밀번호 게이트 ============================== -->
-  <!--
-    2026-05-19 — /ad-inquiry 페이지 잠금. 매일 비밀번호 변경 운영.
-    · sessionStorage 통과 표식 — 같은 탭에서 새로고침 시 재입력 없음 (탭 닫으면 초기화).
-    · SHA-256 해시 비교 — 평문 비번은 코드에 없음.
-    · 캐주얼 차단 수준 (작정한 사용자는 view-source 로 컨텐츠 일부 확인 가능 — 추후 백엔드 검증으로 강화 가능).
-  -->
-  <div class="adq-gate" id="adqGate" role="dialog" aria-modal="true" aria-labelledby="adqGateTitle">
-    <div class="adq-gate__box">
-      <h1 id="adqGateTitle" class="adq-gate__title">광고주 전용 페이지</h1>
-      <p class="adq-gate__sub">오늘의 비밀번호를 입력해 주세요.</p>
-      <form class="adq-gate__form" id="adqGateForm" autocomplete="off">
-        <input type="password" id="adqGateInput" class="adq-gate__input"
-               autocomplete="new-password" inputmode="text" autofocus
-               aria-label="비밀번호" />
-        <button type="submit" class="adq-gate__submit">입장</button>
-      </form>
-      <p class="adq-gate__err" id="adqGateErr" hidden>비밀번호가 일치하지 않습니다.</p>
-      <p class="adq-gate__legal">담당자에게 오늘의 비밀번호를 안내받으세요. 매일 갱신됩니다.</p>
-    </div>
-  </div>
+  <!-- 2026-05-28 [사용자 명시] 비밀번호 게이트 해제 — 누구나 페이지 진입 가능 -->
+  <!-- (백엔드 게이트는 별도. 통계 fetch 는 토큰 없으면 호출되지 않으므로 비표시 유지) -->
 
   <!-- ============================== MAIN NAV ============================== -->
   <header class="main-nav" id="mainNav">
@@ -133,6 +114,8 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">배너 광고</h2>
       <p class="adq__banner-ad-desc">앱 내 대시보드, 사내메신저, 커뮤니티에 배너로 노출됩니다.</p>
+      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
+      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월</span></p>
       <div class="adq__banner-ad-imgs">
         <img src="ad-images/IMG_3235.jpg" alt="부비서 앱 배너 광고 노출 예시 — 대시보드" loading="lazy" />
         <img src="ad-images/IMG_3238.jpg" alt="부비서 앱 배너 광고 노출 예시 — 사내메신저" loading="lazy" />
@@ -144,6 +127,8 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">네이티브 광고</h2>
       <p class="adq__banner-ad-desc">앱 내 매물메뉴 + 매물지도 &gt; 목록 리스트에 매물처럼 등장합니다.</p>
+      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
+      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월</span></p>
       <div class="adq__banner-ad-imgs adq__banner-ad-imgs--two">
         <img src="ad-images/IMG_3237.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 메뉴" loading="lazy" />
         <img src="ad-images/IMG_3240.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 지도 목록" loading="lazy" />
@@ -154,13 +139,15 @@
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">홈 광고</h2>
       <p class="adq__banner-ad-desc">앱 시작 시 누구보다 먼저 등장합니다.</p>
+      <!-- 2026-05-28 [사용자 명시] 광고별 단가 표시 -->
+      <p class="adq__banner-ad-price"><strong>1,000원</strong> <span>/ 월</span></p>
       <div class="adq__banner-ad-imgs">
         <img src="assets/IMG_3566.jpg" alt="부비서 앱 홈 광고 노출 예시" loading="lazy" />
       </div>
     </section>
 
-    <!-- ═══ 공지사항 — 광고 효과 통계 (24h 갱신, 출시 이후 누적) ═══ -->
-    <section class="adq__notice" data-ad-stats aria-live="polite">
+    <!-- 2026-05-28 [사용자 명시] 노출/클릭 CTA 섹션 숨김 — DOM 은 유지(데이터바인딩 살아 있음), 시각만 차단 -->
+    <section class="adq__notice" data-ad-stats aria-live="polite" hidden style="display:none">
       <header class="adq__notice-head">
         <div class="adq__notice-head-row">
           <span class="adq__notice-badge">📊 광고 효과 통계</span>
@@ -194,6 +181,11 @@
           다음 갱신: <span data-ad-pricing-next>—</span>
         </p>
       </div>
+
+      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 결제하기 버튼 -->
+      <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
+        💳 결제하기
+      </button>
     </section>
 
   </main>
@@ -240,5 +232,16 @@
   </footer>
 
   <script src="script.js?v=20260521a"></script>
+
+  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 핸들러 — 토스페이먼츠 SDK 통합 전 임시 안내 -->
+  <script>
+    (function () {
+      var btn = document.getElementById('adqPayCta');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        alert('결제 시스템 준비 중입니다.\n토스페이먼츠 가맹 심사 완료 후 정상 동작합니다.');
+      });
+    })();
+  </script>
 </body>
 </html>
