@@ -6010,7 +6010,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   justify-content: center;
   gap: 6px;
   width: 100%;
-  margin-top: 14px;
+  margin-top: 0;
   padding: 16px 20px;
   border: none;
   border-radius: 14px;
@@ -6025,3 +6025,38 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 .adq__pay-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(97,85,245,0.34); }
 .adq__pay-cta:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(97,85,245,0.24); }
+
+/* 2026-05-28 [사용자 명시] 결제 버튼 좌측 — 무료광고이벤트 버튼 (주황 그라데, 동일 사이즈) */
+.adq__pay-cta-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  width: 100%;
+}
+.adq__pay-cta-group .adq__pay-cta { margin-top: 0; }
+.adq__free-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(247,147,30,0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.adq__free-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(247,147,30,0.34); color: #FFFFFF; }
+.adq__free-cta:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(247,147,30,0.24); }
+@media (max-width: 480px) {
+  .adq__pay-cta-group { flex-direction: column; gap: 8px; }
+  .adq__free-cta, .adq__pay-cta-group .adq__pay-cta { font-size: 15px; padding: 14px 16px; }
+}

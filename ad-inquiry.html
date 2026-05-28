@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260528n" />
+  <link rel="stylesheet" href="style.css?v=20260528o" />
 </head>
 <body class="body--main body--ad-inquiry">
 
@@ -116,7 +116,9 @@
 
     <!-- 2026-05-22 [사용자 명시] 배너 광고 소개 — 노출 예시 이미지 3장 가로 -->
     <section class="adq__banner-ad">
-      <h2 class="adq__banner-ad-title">배너 광고 <span class="adq__banner-ad-note">(대시보드, 커뮤니티, 사내메신저 중복선택가능)</span></h2>
+      <h2 class="adq__banner-ad-title">배너 광고
+        <span class="adq__banner-ad-note">(대시보드, 커뮤니티, 사내메신저 중복선택가능) <span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
+      </h2>
       <p class="adq__banner-ad-desc">앱 내 대시보드, 사내메신저, 커뮤니티에 배너로 노출됩니다.</p>
       <div class="adq__banner-ad-imgs">
         <img src="ad-images/IMG_3235.jpg" alt="부비서 앱 배너 광고 노출 예시 — 대시보드" loading="lazy" />
@@ -127,7 +129,9 @@
 
     <!-- 2026-05-22 [사용자 명시] 네이티브 광고 소개 — 노출 예시 이미지 2장 가로 -->
     <section class="adq__banner-ad">
-      <h2 class="adq__banner-ad-title">네이티브 광고</h2>
+      <h2 class="adq__banner-ad-title">네이티브 광고
+        <span class="adq__banner-ad-note"><span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
+      </h2>
       <p class="adq__banner-ad-desc">앱 내 매물메뉴 + 매물지도 &gt; 목록 리스트에 매물처럼 등장합니다.</p>
       <div class="adq__banner-ad-imgs adq__banner-ad-imgs--two">
         <img src="ad-images/IMG_3237.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 메뉴" loading="lazy" />
@@ -215,10 +219,15 @@
         </div>
       </div>
 
-      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 결제하기 버튼 (위 선택 반영해 amount 동적) -->
-      <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
-        💳 결제하기
-      </button>
+      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 무료광고이벤트 버튼(왼) + 결제하기 버튼(오) -->
+      <div class="adq__pay-cta-group">
+        <a class="adq__free-cta" href="products.html#ad-inquiry-section" aria-label="무료광고이벤트 신청 — 고객지원 03번 광고문의로 이동">
+          🎁 무료광고이벤트
+        </a>
+        <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
+          💳 결제하기
+        </button>
+      </div>
     </section>
 
   </main>
@@ -296,8 +305,9 @@
       function fmtKrw(n) { return (Number(n) || 0).toLocaleString('ko-KR'); }
 
       // 2026-05-28 [사용자 명시] 홈 광고는 월 100만원 — 현재 선착순 무료이벤트중 (0원)
+      // 2026-05-28 [사용자 명시] 배너/네이티브도 선착순 무료이벤트 적용 — 정가 그대로 표시하되 결제 0원
       var HOME_MONTHLY_REGULAR = 1000000;
-      var HOME_FREE_EVENT = true;
+      var FREE_EVENT_ALL = true; // 배너+네이티브+홈 모두 무료이벤트
 
       function recalc() {
         var accountCount = readAccountCount();
@@ -310,7 +320,6 @@
             : '광고 기간을 선택해주세요';
           return;
         }
-        // 배너/네이티브는 가입계정수 필요. 홈만 선택했을 땐 계정수 없어도 0원 표시 가능.
         var hasChargeable = slots.some(function (s) { return s.key !== 'home'; });
         if (hasChargeable && !accountCount) {
           totalEl.textContent = '—';
@@ -321,8 +330,7 @@
         var total = 0;
         var lines = slots.map(function (s) {
           if (s.key === 'home') {
-            var homeRegular = HOME_MONTHLY_REGULAR * months;
-            var homeCharge = HOME_FREE_EVENT ? 0 : homeRegular;
+            var homeCharge = FREE_EVENT_ALL ? 0 : (HOME_MONTHLY_REGULAR * months);
             total += homeCharge;
             return '<span class="adq__pay-line">' +
               '<span class="adq__pay-line-label">' + s.label + '</span>' +
@@ -330,12 +338,14 @@
               '<s class="adq__pay-strike">' + fmtKrw(HOME_MONTHLY_REGULAR) + '원</s> × ' + months + '개월 — <em class="adq__pay-event">현재 선착순 무료이벤트중</em> = <b>' + fmtKrw(homeCharge) + '원</b>' +
               '</span></span>';
           }
-          var amount = perAccount * months;
-          total += amount;
+          var regular = perAccount * months;
+          var charge = FREE_EVENT_ALL ? 0 : regular;
+          total += charge;
           return '<span class="adq__pay-line">' +
             '<span class="adq__pay-line-label">' + s.label + '</span>' +
-            '<span class="adq__pay-line-value">가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(amount) + '원</b></span>' +
-            '</span>';
+            '<span class="adq__pay-line-value">' +
+            '<s class="adq__pay-strike">가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = ' + fmtKrw(regular) + '원</s> — <em class="adq__pay-event">현재 선착순 무료이벤트중</em> = <b>' + fmtKrw(charge) + '원</b>' +
+            '</span></span>';
         });
         totalEl.textContent = fmtKrw(total);
         breakdownEl.innerHTML = lines.join('');
@@ -387,14 +397,21 @@
       recalc();
 
       btn.addEventListener('click', function () {
-        var accountCount = readAccountCount();
         var slots = activeSlots();
         var months = activeMonths();
         if (slots.length === 0 || !months) {
           alert('광고 슬롯(1개 이상)과 광고 기간을 선택해주세요.');
           return;
         }
-        // 2026-05-28 [사용자 명시] 홈광고는 무료이벤트 — 결제 amount 에서 제외.
+        // 2026-05-28 [사용자 명시] 모든 광고 슬롯이 선착순 무료이벤트중 — 결제 진행 불가, 무료광고이벤트 페이지로 안내
+        if (FREE_EVENT_ALL) {
+          var goInquiry = confirm('현재 모든 광고 슬롯이 선착순 무료이벤트 진행 중입니다.\n무료광고이벤트 신청 페이지(고객지원 03번 광고문의)로 이동하시겠습니까?');
+          if (goInquiry) {
+            window.location.href = 'products.html#ad-inquiry-section';
+          }
+          return;
+        }
+        var accountCount = readAccountCount();
         var chargeableSlots = slots.filter(function (s) { return s.key !== 'home'; });
         if (chargeableSlots.length > 0 && !accountCount) {
           alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
@@ -404,7 +421,7 @@
           ? (accountCount * UNIT_PRICE_PER_ACCOUNT * chargeableSlots.length * months)
           : 0;
         if (amount === 0) {
-          alert('홈 광고는 현재 선착순 무료이벤트 진행 중입니다. 별도 문의를 부탁드립니다.');
+          alert('선택하신 슬롯은 현재 선착순 무료이벤트 진행 중입니다. 무료광고이벤트 버튼을 이용해주세요.');
           return;
         }
         var slotLabels = slots.map(function (s) {
