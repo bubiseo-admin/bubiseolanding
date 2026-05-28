@@ -4726,8 +4726,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
    2026-05-19 — 광고주 전용 페이지로 잠금. 매일 비밀번호 변경 운영.
    ================================================================= */
 
-/* 상단 메뉴 4개 (홈/기능/요금제/광고문의) 숨김 — 우측 "고객 지원" 만 유지 */
-.body--ad-inquiry .main-nav__menu { display: none !important; }
+/* 2026-05-28 [사용자 명시] ad-inquiry 메뉴 강제 숨김 정책 폐지 — 홈/기능/무료/일반광고/분양광고 전부 노출 */
 
 /* 잠금 상태: main / header / footer 모두 숨김 (게이트 통과 전) */
 .adq-locked .main-nav,
