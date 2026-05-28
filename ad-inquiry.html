@@ -327,27 +327,27 @@
           return;
         }
         var perAccount = accountCount * UNIT_PRICE_PER_ACCOUNT;
-        var total = 0;
+        // 2026-05-28 [사용자 명시] 합계금액은 '원래 가격' 기준으로 표시 (무료이벤트는 안내 배지로만)
+        var totalRegular = 0;
         var lines = slots.map(function (s) {
           if (s.key === 'home') {
-            var homeCharge = FREE_EVENT_ALL ? 0 : (HOME_MONTHLY_REGULAR * months);
-            total += homeCharge;
+            var homeRegular = HOME_MONTHLY_REGULAR * months;
+            totalRegular += homeRegular;
             return '<span class="adq__pay-line">' +
               '<span class="adq__pay-line-label">' + s.label + '</span>' +
               '<span class="adq__pay-line-value">' +
-              '<s class="adq__pay-strike">' + fmtKrw(HOME_MONTHLY_REGULAR) + '원</s> × ' + months + '개월 — <em class="adq__pay-event">현재 선착순 무료이벤트중</em> = <b>' + fmtKrw(homeCharge) + '원</b>' +
+              fmtKrw(HOME_MONTHLY_REGULAR) + '원 × ' + months + '개월 = <b>' + fmtKrw(homeRegular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
               '</span></span>';
           }
           var regular = perAccount * months;
-          var charge = FREE_EVENT_ALL ? 0 : regular;
-          total += charge;
+          totalRegular += regular;
           return '<span class="adq__pay-line">' +
             '<span class="adq__pay-line-label">' + s.label + '</span>' +
             '<span class="adq__pay-line-value">' +
-            '<s class="adq__pay-strike">가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = ' + fmtKrw(regular) + '원</s> — <em class="adq__pay-event">현재 선착순 무료이벤트중</em> = <b>' + fmtKrw(charge) + '원</b>' +
+            '가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
             '</span></span>';
         });
-        totalEl.textContent = fmtKrw(total);
+        totalEl.textContent = fmtKrw(totalRegular);
         breakdownEl.innerHTML = lines.join('');
       }
 
