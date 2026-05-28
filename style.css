@@ -5126,6 +5126,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   grid-template-columns: repeat(3, 1fr);
   overflow: hidden;
 }
+/* 2026-05-28 [사용자 명시] 1x2 모드 — 부동산사무소 + 이용중인 중개사 두 칸 강조 */
+.adq__sidebar-stats--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+.adq__sidebar-stats--2col .adq__sidebar-stat { padding: 24px 12px; gap: 4px; }
+.adq__sidebar-stats--2col .adq__sidebar-stat-label { font-size: 13px; font-weight: 600; color: #4E5968; }
+.adq__sidebar-stats--2col .adq__sidebar-stat-value { font-size: 32px; margin-top: 6px; }
+.adq__sidebar-stats--2col .adq__sidebar-stat-unit { font-size: 12px; margin-top: 4px; }
 .adq__sidebar-stat {
   padding: 16px 8px;
   text-align: center;
@@ -5155,6 +5163,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #8B95A1;
   font-weight: 500;
   margin-top: 2px;
+}
+@media (max-width: 480px) {
+  .adq__sidebar-stats--2col .adq__sidebar-stat-value { font-size: 26px; }
+  .adq__sidebar-stats--2col .adq__sidebar-stat-label { font-size: 12px; }
 }
 
 /* A/B/C 모드별 가격 표시 — strikethrough (C 무료), 보장가 라벨 (B), 정가 (A) */

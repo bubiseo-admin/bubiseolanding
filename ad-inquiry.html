@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260528o" />
+  <link rel="stylesheet" href="style.css?v=20260528p" />
 </head>
 <body class="body--main body--ad-inquiry">
 
@@ -81,34 +81,21 @@
     </section>
 
     <!-- 2026-05-22 [사용자 명시] 베타 광고주 모집 + 가입 계정수 — 페이지 최상단 -->
+    <!-- 2026-05-28 [사용자 명시] 대표계정 / 직원계정 제거 + 큰 가입 계정 카드 제거 — 부동산사무소 / 이용중인 중개사 2칸 1x2 로 단순화 -->
     <section class="adq__top">
       <!-- 모드 배너 (베타 무료 / 런칭 보장가) -->
       <div class="adq__sidebar-promo" data-ad-pricing-promo hidden></div>
 
-      <!-- 가입 계정수 카드 (메인 강조) -->
-      <div class="adq__sidebar-card adq__sidebar-card--users">
-        <span class="adq__sidebar-label">현재 부비서 가입 계정</span>
-        <span class="adq__sidebar-users" data-ad-pricing-accounts>—</span>
-        <span class="adq__sidebar-unit">명</span>
-        <span class="adq__sidebar-sub">대표계정 + 직원계정 전체 · 100% 실데이터</span>
-        <span class="adq__sidebar-meta">새로고침 시 그 시점 계정수로 즉시 갱신</span>
-      </div>
-
-      <!-- 통계 카드 — 부동산 사무소 / 대표 / 직원 (실데이터) -->
-      <div class="adq__sidebar-stats">
+      <!-- 통계 카드 — 부동산 사무소 / 현재 부비서 이용중인 중개사 (실데이터) -->
+      <div class="adq__sidebar-stats adq__sidebar-stats--2col">
         <div class="adq__sidebar-stat">
           <span class="adq__sidebar-stat-label">부동산 사무소</span>
           <span class="adq__sidebar-stat-value" data-ad-pricing-re>—</span>
           <span class="adq__sidebar-stat-unit">곳</span>
         </div>
         <div class="adq__sidebar-stat">
-          <span class="adq__sidebar-stat-label">대표계정</span>
-          <span class="adq__sidebar-stat-value" data-ad-pricing-owners>—</span>
-          <span class="adq__sidebar-stat-unit">명</span>
-        </div>
-        <div class="adq__sidebar-stat">
-          <span class="adq__sidebar-stat-label">직원계정</span>
-          <span class="adq__sidebar-stat-value" data-ad-pricing-employees>—</span>
+          <span class="adq__sidebar-stat-label">현재 부비서 이용중인 중개사</span>
+          <span class="adq__sidebar-stat-value" data-ad-pricing-accounts>—</span>
           <span class="adq__sidebar-stat-unit">명</span>
         </div>
       </div>
@@ -179,8 +166,8 @@
         <!-- 2026-05-28 [사용자 명시] 강조 문구 — 굵은 블랙. -->
         <p class="adq__sidebar-policy-highlight">가입자수가 많아질수록 광고단가는 내려갑니다.</p>
         <ul class="adq__sidebar-policy-list">
-          <li>단가 산정: <strong>총 가입계정수 × 1,000원 / 월</strong>
-            <span class="adq__sidebar-policy-sub">현재 단가 = <b data-ad-current-price>—</b>원 / 월 (가입 <b data-ad-current-accounts>—</b>명 × 1,000원)</span>
+          <li>단가 산정: <strong>이용중인 중개사(명) × 1,000원 / 월</strong>
+            <span class="adq__sidebar-policy-sub">현재 단가 = <b data-ad-current-price>—</b>원 / 월 (이용중인 중개사 <b data-ad-current-accounts>—</b>명 × 1,000원)</span>
           </li>
           <li>매월 <strong>1일 자동 재결제</strong> · 이번 달 단가 적용</li>
           <li>1회 계약 <strong>최장 3개월</strong></li>
@@ -323,7 +310,7 @@
         var hasChargeable = slots.some(function (s) { return s.key !== 'home'; });
         if (hasChargeable && !accountCount) {
           totalEl.textContent = '—';
-          breakdownEl.innerHTML = '현재 가입 정보를 불러오는 중입니다…';
+          breakdownEl.innerHTML = '이용중인 중개사 정보를 불러오는 중입니다…';
           return;
         }
         var perAccount = accountCount * UNIT_PRICE_PER_ACCOUNT;
@@ -344,7 +331,7 @@
           return '<span class="adq__pay-line">' +
             '<span class="adq__pay-line-label">' + s.label + '</span>' +
             '<span class="adq__pay-line-value">' +
-            '가입 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
+            '이용중인 중개사 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
             '</span></span>';
         });
         totalEl.textContent = fmtKrw(totalRegular);
@@ -414,7 +401,7 @@
         var accountCount = readAccountCount();
         var chargeableSlots = slots.filter(function (s) { return s.key !== 'home'; });
         if (chargeableSlots.length > 0 && !accountCount) {
-          alert('현재 가입 계정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+          alert('이용중인 중개사 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
           return;
         }
         var amount = chargeableSlots.length > 0
@@ -428,7 +415,7 @@
           return s.key === 'home' ? (s.label + '(무료이벤트)') : s.label;
         }).join(' + ');
         var slotKeys = slots.map(function (s) { return s.key; }).join('+');
-        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (가입 ' + accountCount + '명 × 1,000원 × ' + chargeableSlots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
+        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (이용중인 중개사 ' + accountCount + '명 × 1,000원 × ' + chargeableSlots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
         var params = new URLSearchParams({
           plan: slotKeys,
           amount: String(amount),
