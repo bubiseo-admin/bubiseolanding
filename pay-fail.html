@@ -135,7 +135,7 @@
       </ul>
     </div>
 
-    <a class="result__cta" href="pay.html">다시 결제하기</a>
+    <a class="result__cta" href="javascript:history.back()">다시 시도하기</a>
     <a class="result__cta result__cta--ghost" href="index.html">홈으로</a>
   </main>
 
@@ -158,11 +158,20 @@
   </footer>
 
   <script>
+    // 2026-05-28 [사용자 명시] 토스페이먼츠 v2 failUrl 표준 쿼리 — ?code=&message=&orderId=
+    //   기존 PortOne/KG 호환 키(reason·resultMsg·msg) 도 fallback 으로 유지.
     (function () {
       const params = new URLSearchParams(location.search);
-      const reason = params.get('reason') || params.get('resultMsg') || params.get('msg') || '';
-      if (reason) {
-        document.getElementById('reasonText').textContent = reason;
+      const reason =
+        params.get('message') ||
+        params.get('reason') ||
+        params.get('resultMsg') ||
+        params.get('msg') ||
+        '';
+      const code = params.get('code') || '';
+      const display = code && reason ? `[${code}] ${reason}` : (reason || code);
+      if (display) {
+        document.getElementById('reasonText').textContent = display;
         document.getElementById('reasonBox').style.display = 'block';
       }
     })();

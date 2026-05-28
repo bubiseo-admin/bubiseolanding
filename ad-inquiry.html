@@ -249,13 +249,19 @@
 
   <script src="script.js?v=20260521a"></script>
 
-  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 핸들러 — 토스페이먼츠 SDK 통합 전 임시 안내 -->
+  <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 → 토스페이먼츠 v2 결제위젯 페이지로 이동 -->
   <script>
     (function () {
       var btn = document.getElementById('adqPayCta');
       if (!btn) return;
       btn.addEventListener('click', function () {
-        alert('결제 시스템 준비 중입니다.\n토스페이먼츠 가맹 심사 완료 후 정상 동작합니다.');
+        // 광고별 단가 1,000원 — 광고 슬롯 분류는 추후 선택 UI 추가 (현재는 배너 기본).
+        var params = new URLSearchParams({
+          plan: 'banner',
+          amount: '1000',
+          orderName: '부비서 배너 광고 (월 1,000원)',
+        });
+        window.location.href = '/pay-widget.html?' + params.toString();
       });
     })();
   </script>

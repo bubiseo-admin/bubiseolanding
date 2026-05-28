@@ -1,93 +1,57 @@
 <!doctype html>
+<!--
+  부비서 — 광고 결제 완료 페이지 (토스페이먼츠 v2)
+  ─────────────────────────────────────────────────────────────
+  /pay-widget.html 에서 결제창 통과 시 successUrl 로 리다이렉트됨.
+  쿼리: ?paymentType={NORMAL|BRANDPAY}&orderId=...&paymentKey=...&amount=...
+  서버 /landing/payments/toss/confirm POST → 토스 confirm API 호출 → 결과 표시.
+  ─────────────────────────────────────────────────────────────
+-->
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>결제 완료 — 부비서 데스크톱 PRO</title>
-  <meta name="description" content="결제가 완료되었습니다. 데스크톱에서 자동으로 PRO 가 활성화됩니다." />
-  <meta name="theme-color" content="#000000" />
+  <title>결제 완료 — 부비서</title>
+  <meta name="description" content="부비서 광고 결제가 완료되었습니다." />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="legal.css" />
   <style>
-    body { background: linear-gradient(180deg, #fbfbfd 0%, #f3f5fb 100%); min-height: 100vh; }
-    .result { max-width: 640px; margin: 0 auto; padding: 80px 20px; text-align: center; }
+    body { background: linear-gradient(180deg, #fbfbfd 0%, #f3f5fb 100%); min-height: 100vh; font-family: 'Pretendard', sans-serif; }
+    .result { max-width: 640px; margin: 0 auto; padding: 64px 20px 80px; text-align: center; }
     .result__icon {
-      width: 96px;
-      height: 96px;
-      margin: 0 auto 28px;
+      width: 88px; height: 88px; margin: 0 auto 24px;
       border-radius: 50%;
       background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 16px 48px rgba(91,127,255,0.32);
     }
-    .result__icon svg { width: 48px; height: 48px; stroke: #fff; stroke-width: 3; fill: none; }
-    .result__title {
-      font-size: clamp(28px, 4vw, 36px);
-      font-weight: 800;
-      color: #1d1d1f;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-    }
-    .result__sub {
-      font-size: 16px;
-      color: #4e5968;
-      line-height: 1.65;
-      margin-bottom: 32px;
-    }
-    .result__card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 24px 28px;
-      box-shadow: 0 12px 36px rgba(15,20,30,0.06);
-      border: 1px solid rgba(0,0,0,0.04);
-      text-align: left;
-      margin-bottom: 28px;
-    }
-    .result__row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      font-size: 14px;
-    }
+    .result__icon svg { width: 44px; height: 44px; stroke: #fff; stroke-width: 3; fill: none; }
+    .result__title { font-size: clamp(24px, 4vw, 30px); font-weight: 800; color: #1d1d1f; letter-spacing: -0.02em; margin: 0 0 12px; }
+    .result__sub { font-size: 15px; color: #4e5968; line-height: 1.65; margin: 0 0 28px; }
+    .result__card { background: #ffffff; border-radius: 18px; padding: 20px 24px; box-shadow: 0 12px 36px rgba(15,20,30,0.06); border: 1px solid rgba(0,0,0,0.04); text-align: left; margin-bottom: 24px; }
+    .result__row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 14px; gap: 12px; }
     .result__row:last-child { border-bottom: none; }
-    .result__row-label { color: #86868b; }
-    .result__row-value { color: #1d1d1f; font-weight: 600; }
-    .result__steps {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 28px 28px;
-      text-align: left;
-      box-shadow: 0 12px 36px rgba(15,20,30,0.04);
-      margin-bottom: 24px;
-    }
-    .result__steps h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #1d1d1f;
-      margin-bottom: 14px;
-    }
-    .result__steps ol { padding-left: 22px; color: #4e5968; font-size: 14px; line-height: 1.75; }
+    .result__row-label { color: #86868b; flex-shrink: 0; }
+    .result__row-value { color: #1d1d1f; font-weight: 600; word-break: break-all; text-align: right; }
     .result__cta {
       display: inline-block;
       padding: 14px 32px;
       background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-      color: #ffffff !important;
+      color: #ffffff;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 15px;
-      letter-spacing: 0.01em;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(97,85,245,0.28);
     }
-    .result__cta:hover { text-decoration: none; opacity: 0.92; }
     .result__cta--ghost {
       background: transparent;
-      color: #5b7fff !important;
+      color: #6155F5;
+      box-shadow: none;
       margin-left: 8px;
-      padding: 14px 20px;
     }
+    .result__loading { text-align: center; padding: 60px 20px; color: #86868b; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -96,65 +60,44 @@
       <img src="assets/logo.png" alt="" />
       <span>부비서</span>
     </a>
-    <a class="legal-nav__back" href="index.html">← 홈으로</a>
   </header>
 
   <main class="result">
-    <div class="result__icon">
-      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="4 13 9 18 20 7" />
-      </svg>
-    </div>
-    <h1 class="result__title">30일 무료체험이 시작됐어요</h1>
-    <p class="result__sub">
-      카드 인증이 완료되어 데스크톱 PRO 가 활성화되었습니다 (오늘 결제 0원).<br />
-      <strong>30일 후 첫 결제</strong>가 자동으로 진행되며,
-      무료체험 종료 24시간 전까지 모바일 앱에서 해지하시면 결제되지 않습니다.
-    </p>
-
-    <div class="result__card" id="orderCard">
-      <div class="result__row">
-        <span class="result__row-label">주문번호</span>
-        <span class="result__row-value" id="orderId">—</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">플랜</span>
-        <span class="result__row-value" id="planLabel">—</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">오늘 결제 금액</span>
-        <span class="result__row-value" id="amountLabel">0원 (카드 인증)</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">결제수단</span>
-        <span class="result__row-value" id="methodLabel">—</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">무료체험 종료일</span>
-        <span class="result__row-value" id="trialEndLabel">—</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">첫 결제 예정일</span>
-        <span class="result__row-value" id="nextLabel">—</span>
-      </div>
-      <div class="result__row">
-        <span class="result__row-label">첫 결제 예정 금액</span>
-        <span class="result__row-value" id="afterTrialLabel">—</span>
-      </div>
+    <div id="loadingView">
+      <div class="result__loading">결제를 승인하는 중…</div>
     </div>
 
-    <div class="result__steps">
-      <h3>다음 단계</h3>
-      <ol>
-        <li>부비서 데스크톱 앱으로 돌아가세요. 자동으로 PRO 가 적용되고 QR 페어링이 다시 진행됩니다.</li>
-        <li>모바일 앱에서 데스크톱 QR 을 한 번 더 스캔하면 로그인이 완료됩니다.</li>
-        <li>30일 후 첫 결제가 진행됩니다. 무료체험 종료 24시간 전까지 모바일 → 설정 → "데스크톱 구독 관리" → "무료체험 해지" 를 누르시면 결제되지 않습니다.</li>
-        <li>결제 후에도 7일 이내 100% 환불, 8일 이후 잔여 일수 일할 환불이 가능합니다.</li>
-      </ol>
-    </div>
+    <div id="successView" hidden>
+      <div class="result__icon">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 13 9 18 20 7" />
+        </svg>
+      </div>
+      <h1 class="result__title">결제가 완료됐어요</h1>
+      <p class="result__sub">광고 노출 준비가 시작됩니다. 결제 영수증은 입력하신 이메일로 발송됩니다.</p>
 
-    <a class="result__cta" href="index.html">홈으로 돌아가기</a>
-    <a class="result__cta result__cta--ghost" href="refund.html">환불 정책 보기</a>
+      <div class="result__card">
+        <div class="result__row">
+          <span class="result__row-label">주문번호</span>
+          <span class="result__row-value" id="orderIdLabel">—</span>
+        </div>
+        <div class="result__row">
+          <span class="result__row-label">결제 금액</span>
+          <span class="result__row-value" id="amountLabel">—</span>
+        </div>
+        <div class="result__row">
+          <span class="result__row-label">결제수단</span>
+          <span class="result__row-value" id="methodLabel">—</span>
+        </div>
+        <div class="result__row">
+          <span class="result__row-label">승인 시각</span>
+          <span class="result__row-value" id="approvedLabel">—</span>
+        </div>
+      </div>
+
+      <a class="result__cta" href="index.html">홈으로</a>
+      <a class="result__cta result__cta--ghost" href="refund.html">환불 정책</a>
+    </div>
   </main>
 
   <footer class="legal-foot">
@@ -176,49 +119,65 @@
   </footer>
 
   <script>
-    (function () {
-      const params = new URLSearchParams(location.search);
-      const orderId = params.get('orderId') || params.get('MOID') || '';
-      const plan = params.get('plan') || '';
-      const amount = params.get('amount') || '';
-      const method = params.get('method') || params.get('payMethod') || '카드 (빌링키 등록)';
-      const nextBilling = params.get('nextBilling') || '';
-      const trialEndsAt = params.get('trialEndsAt') || '';
+  (function () {
+    'use strict';
+    const API_BASE = 'https://api.bubiseo.com';
+    const params = new URLSearchParams(location.search);
+    const paymentKey = params.get('paymentKey') || '';
+    const orderId = params.get('orderId') || '';
+    const amount = parseInt(params.get('amount') || '0', 10);
 
-      function setText(id, value) {
-        const el = document.getElementById(id);
-        if (el && value) el.textContent = value;
+    const elLoading = document.getElementById('loadingView');
+    const elSuccess = document.getElementById('successView');
+
+    if (!paymentKey || !orderId || !amount) {
+      window.location.href = '/pay-fail.html?message=' + encodeURIComponent('결제 정보가 누락되었습니다') + '&code=MISSING_PARAMS';
+      return;
+    }
+
+    function fmtKrw(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
+    function fmtTime(iso) {
+      try {
+        const d = new Date(iso);
+        const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+        return kst.toISOString().slice(0, 19).replace('T', ' ') + ' KST';
+      } catch { return iso; }
+    }
+    const METHOD_LABEL = {
+      카드: '신용·체크카드',
+      가상계좌: '가상계좌',
+      간편결제: '간편결제',
+      계좌이체: '계좌이체',
+      휴대폰: '휴대폰 결제',
+      상품권: '문화상품권',
+    };
+
+    async function confirm() {
+      try {
+        const r = await fetch(API_BASE + '/landing/payments/toss/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'omit',
+          body: JSON.stringify({ paymentKey, orderId, amount }),
+        });
+        const j = await r.json();
+        if (!r.ok) {
+          throw new Error(j.error || j.message || '결제 승인 실패');
+        }
+        document.getElementById('orderIdLabel').textContent = j.orderId || orderId;
+        document.getElementById('amountLabel').textContent = fmtKrw(j.amount || amount);
+        document.getElementById('approvedLabel').textContent = j.approvedAt ? fmtTime(j.approvedAt) : '—';
+        // method 는 confirm 응답에 없으므로 일단 placeholder. 차후 토스 응답 확장 시 표시.
+        document.getElementById('methodLabel').textContent = '카드';
+        elLoading.hidden = true;
+        elSuccess.hidden = false;
+      } catch (err) {
+        const msg = (err && err.message) || '결제 승인 중 오류가 발생했어요';
+        window.location.href = '/pay-fail.html?message=' + encodeURIComponent(msg) + '&code=CONFIRM_FAILED&orderId=' + encodeURIComponent(orderId);
       }
-      // 2026-05-26 [사용자 명시] KST 기준 yyyy-mm-dd.
-      function fmtDate(iso) {
-        try {
-          const d = new Date(iso);
-          const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
-          return kst.toISOString().slice(0, 10);
-        } catch { return iso; }
-      }
-      function fmtKrw(num) {
-        return Number(num).toLocaleString('ko-KR') + '원';
-      }
-
-      const planMap = { monthly: '월간 플랜 (19,900원/월)', yearly: '연간 플랜 (199,000원/년)' };
-      setText('orderId', orderId);
-      setText('planLabel', planMap[plan] || plan);
-      setText('methodLabel', method);
-
-      // 30일 후 첫 결제 예정 — 빌링 흐름 기준 (KST)
-      const trialEnd = trialEndsAt ? fmtDate(trialEndsAt) : (() => {
-        const d = new Date();
-        d.setDate(d.getDate() + 30);
-        return fmtDate(d.toISOString());
-      })();
-      setText('trialEndLabel', trialEnd);
-      setText('nextLabel', nextBilling || trialEnd);
-
-      // 첫 결제 예정 금액 — amount param 또는 plan 별 기본값
-      const planAmount = plan === 'yearly' ? 199000 : 19900;
-      setText('afterTrialLabel', amount ? fmtKrw(amount) : fmtKrw(planAmount));
-    })();
+    }
+    confirm();
+  })();
   </script>
 </body>
 </html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<!--
+  부비서 — 광고 결제 위젯 (토스페이먼츠 v2)
+  ─────────────────────────────────────────────────────────────
+  진입: /ad-inquiry.html · /ad2-inquiry.html 의 "결제하기" 버튼에서
+        ?plan=banner&amount=1000&orderName=배너%20광고 같은 쿼리로 라우팅됨.
+  흐름:
+    1) 서버 /landing/payments/toss/client-key 호출 → 클라이언트 키 fetch
+    2) 서버 /landing/payments/toss/order 호출 (orderId·amount 저장)
+    3) 토스 결제위젯 렌더링 + setAmount + renderPaymentMethods + renderAgreement
+    4) '결제하기' 클릭 → requestPayment({ successUrl, failUrl, ... })
+    5) successUrl(/pay-success.html) 또는 failUrl(/pay-fail.html) 로 리다이렉트
+  ─────────────────────────────────────────────────────────────
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>광고 결제 — 부비서</title>
+  <meta name="description" content="부비서 광고 결제 — 토스페이먼츠 안전결제" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+  <style>
+    body { background: linear-gradient(180deg, #fbfbfd 0%, #f3f5fb 100%); min-height: 100vh; font-family: 'Pretendard', sans-serif; color: #1d1d1f; }
+    .pay { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
+    .pay__hero { text-align: center; margin-bottom: 28px; }
+    .pay__title { font-size: clamp(22px, 4vw, 28px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; }
+    .pay__sub { font-size: 14px; color: #4e5968; margin: 0; }
+    .pay__card { background: #ffffff; border-radius: 20px; padding: 24px 20px; box-shadow: 0 12px 36px rgba(15,20,30,0.06); border: 1px solid rgba(0,0,0,0.04); }
+    .pay__order { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 4px 20px; border-bottom: 1px solid rgba(0,0,0,0.06); margin-bottom: 16px; }
+    .pay__order-name { font-size: 15px; font-weight: 700; }
+    .pay__order-amount { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: #6155F5; }
+    .pay__order-amount small { font-size: 13px; color: #86868b; font-weight: 500; margin-left: 4px; }
+    #payment-method, #agreement { margin: 0 -4px; }
+    .pay__button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: -0.01em;
+      box-shadow: 0 8px 24px rgba(97,85,245,0.28);
+    }
+    .pay__button:disabled { background: #c5c8ce; cursor: not-allowed; box-shadow: none; }
+    .pay__error { display: none; margin-top: 14px; padding: 12px 14px; background: #fff5f5; color: #d72e2e; border-radius: 10px; font-size: 13px; }
+    .pay__error.show { display: block; }
+    .pay__notice { margin-top: 18px; padding: 12px 14px; background: rgba(97,85,245,0.06); border-radius: 10px; font-size: 12px; color: #4e5968; line-height: 1.6; }
+    .pay__loading { text-align: center; padding: 80px 20px; color: #86868b; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="javascript:history.back()">← 돌아가기</a>
+  </header>
+
+  <main class="pay">
+    <div class="pay__hero">
+      <h1 class="pay__title">광고 결제</h1>
+      <p class="pay__sub">결제는 <strong>토스페이먼츠</strong> 를 통해 안전하게 처리됩니다.</p>
+    </div>
+
+    <div class="pay__card" id="payCard">
+      <div class="pay__loading" id="payLoading">결제 정보를 불러오는 중…</div>
+
+      <div id="payContent" hidden>
+        <div class="pay__order">
+          <span class="pay__order-name" id="orderName">—</span>
+          <span class="pay__order-amount"><span id="amountText">0</span><small>원</small></span>
+        </div>
+
+        <div id="payError" class="pay__error"></div>
+
+        <div id="payment-method"></div>
+        <div id="agreement"></div>
+
+        <button id="payButton" class="pay__button" type="button" disabled>결제하기</button>
+
+        <div class="pay__notice">
+          <strong>안전 결제</strong> — 결제는 토스페이먼츠 결제창에서 직접 진행되며, 부비서는 카드번호 등 결제 정보를 보관하지 않습니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="legal-foot">
+    <div style="max-width:720px;margin:0 auto;text-align:left;line-height:1.7;">
+      <strong style="color:#1d1d1f;font-size:13px;">사업자 정보</strong><br />
+      상호 : 부비서 · 대표자 : 이현우<br />
+      사업자등록번호 : 574-06-03306<br />
+      사업장 주소 : 경기도 양주시 옥정동 891-1, 라피아노스위첸3단지<br />
+      연락처 : <a href="tel:+821095655505" style="color:#5b7fff;">010-9565-5505</a> ·
+      이메일 : <a href="mailto:admin@bubiseo.com" style="color:#5b7fff;">admin@bubiseo.com</a><br />
+      결제대행 : 토스페이먼츠(주)
+    </div>
+    <div style="margin-top:18px;">
+      © 2026 부비서 · <a href="terms.html" style="color:#5b7fff;">이용약관</a> · <a href="privacy.html" style="color:#5b7fff;">개인정보처리방침</a> · <a href="refund.html" style="color:#5b7fff;">환불 정책</a>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+    const API_BASE = 'https://api.bubiseo.com';
+
+    // 진입 쿼리 파라미터 ─ /pay-widget.html?plan=banner&amount=1000&orderName=...
+    const url = new URL(window.location.href);
+    const planType = (url.searchParams.get('plan') || 'banner').slice(0, 40);
+    const amount = Math.max(100, parseInt(url.searchParams.get('amount') || '1000', 10) || 1000);
+    const orderName = (url.searchParams.get('orderName') || '부비서 광고').slice(0, 100);
+
+    const elLoading = document.getElementById('payLoading');
+    const elContent = document.getElementById('payContent');
+    const elOrderName = document.getElementById('orderName');
+    const elAmountText = document.getElementById('amountText');
+    const elError = document.getElementById('payError');
+    const elButton = document.getElementById('payButton');
+
+    elOrderName.textContent = orderName;
+    elAmountText.textContent = amount.toLocaleString('ko-KR');
+
+    function showError(msg) {
+      elError.textContent = msg;
+      elError.classList.add('show');
+    }
+
+    // 랜덤 orderId 생성 (영문+숫자, 토스 권장 6~64자).
+    function generateOrderId() {
+      const rand = Math.random().toString(36).slice(2, 10);
+      return `ad_${Date.now().toString(36)}_${rand}`;
+    }
+    // customerKey 도 랜덤 (광고주는 회원 아님, 익명). 토스는 길이 2~50자.
+    function generateCustomerKey() {
+      const rand = Math.random().toString(36).slice(2, 18);
+      return `adcust_${rand}`;
+    }
+
+    async function main() {
+      // 1) 클라이언트 키 fetch.
+      let clientKey;
+      try {
+        const r = await fetch(API_BASE + '/landing/payments/toss/client-key', { credentials: 'omit' });
+        const j = await r.json();
+        if (!r.ok || !j.clientKey) throw new Error('CLIENT_KEY 발급 실패');
+        clientKey = j.clientKey;
+      } catch (err) {
+        elLoading.textContent = '결제 시스템 준비 중입니다. 잠시 후 다시 시도해주세요.';
+        return;
+      }
+
+      // 2) 서버에 주문 등록 (PENDING 저장 + 금액 위·변조 방지용).
+      const orderId = generateOrderId();
+      const customerKey = generateCustomerKey();
+      try {
+        const r = await fetch(API_BASE + '/landing/payments/toss/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'omit',
+          body: JSON.stringify({ orderId, orderName, amount, planType, customerKey }),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || '주문 등록 실패');
+      } catch (err) {
+        elLoading.textContent = '주문 등록에 실패했어요. 새로고침 후 다시 시도해주세요.';
+        return;
+      }
+
+      // 3) 토스 SDK 초기화 + 위젯 렌더링.
+      try {
+        const tossPayments = TossPayments(clientKey);
+        const widgets = tossPayments.widgets({ customerKey });
+        await widgets.setAmount({ currency: 'KRW', value: amount });
+        await Promise.all([
+          widgets.renderPaymentMethods({ selector: '#payment-method', variantKey: 'DEFAULT' }),
+          widgets.renderAgreement({ selector: '#agreement', variantKey: 'AGREEMENT' }),
+        ]);
+        elLoading.hidden = true;
+        elContent.hidden = false;
+        elButton.disabled = false;
+
+        elButton.addEventListener('click', async () => {
+          elButton.disabled = true;
+          elButton.textContent = '결제창을 여는 중…';
+          try {
+            await widgets.requestPayment({
+              orderId,
+              orderName,
+              successUrl: window.location.origin + '/pay-success.html',
+              failUrl: window.location.origin + '/pay-fail.html',
+            });
+          } catch (err) {
+            showError(err?.message || '결제 요청 중 오류가 발생했어요.');
+            elButton.disabled = false;
+            elButton.textContent = '결제하기';
+          }
+        });
+      } catch (err) {
+        elLoading.textContent = '결제 위젯 초기화에 실패했어요. 새로고침해 주세요.';
+      }
+    }
+
+    main();
+  })();
+  </script>
+</body>
+</html>
