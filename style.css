@@ -5759,66 +5759,110 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-weight: 800;
 }
 
-/* 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯 + 광고 기간 선택 picker */
+/* 2026-05-28 [사용자 명시] 토스 스타일 — 광고 슬롯 + 광고 기간 선택 picker */
 .adq__pay-picker {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 16px;
-  padding: 18px 16px;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 24px 20px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #F2F4F6;
+  box-shadow: 0 4px 16px rgba(15,20,30,0.04);
+}
+.adq__pay-picker-group { display: flex; flex-direction: column; gap: 12px; }
+.adq__pay-picker-label {
+  font-size: 15px;
+  font-weight: 800;
+  color: #191F28;
+  letter-spacing: -0.02em;
+}
+.adq__pay-picker-chips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.adq__pay-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  border: 1.5px solid #E5E8EB;
   background: #FFFFFF;
   border-radius: 14px;
-  border: 1px solid rgba(97,85,245,0.14);
-}
-.adq__pay-picker-group { display: flex; flex-direction: column; gap: 8px; }
-.adq__pay-picker-label {
-  font-size: 13px;
-  font-weight: 800;
-  color: #4E5968;
-  letter-spacing: -0.01em;
-}
-.adq__pay-picker-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.adq__pay-chip {
-  flex: 1 1 auto;
-  min-width: 80px;
-  padding: 10px 14px;
-  border: 1px solid #E5E8EB;
-  background: #FFFFFF;
-  border-radius: 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #4E5968;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+  letter-spacing: -0.02em;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  min-height: 52px;
+  text-align: center;
 }
-.adq__pay-chip:hover { border-color: rgba(97,85,245,0.4); color: #6155F5; }
+.adq__pay-chip:hover { border-color: #C5CDD2; color: #191F28; }
+.adq__pay-chip:active { transform: scale(0.97); }
 .adq__pay-chip.is-active {
   background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
   color: #FFFFFF;
   border-color: transparent;
-  box-shadow: 0 6px 16px rgba(97,85,245,0.22);
+  box-shadow: 0 8px 20px rgba(97,85,245,0.28);
+  font-weight: 800;
 }
+
+/* 합계 박스 — 토스 표준: 큰 가격, 라벨 위/금액 아래 정렬 */
 .adq__pay-picker-summary {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 4px;
-  padding: 12px 14px;
-  background: linear-gradient(135deg, rgba(97,85,245,0.06), rgba(57,175,253,0.06));
-  border-radius: 10px;
+  padding: 20px 22px;
+  background: linear-gradient(135deg, rgba(97,85,245,0.04) 0%, rgba(57,175,253,0.04) 100%);
+  border: 1px solid rgba(97,85,245,0.08);
+  border-radius: 16px;
 }
-.adq__pay-picker-summary-label { font-size: 12px; font-weight: 700; color: #6E7680; letter-spacing: -0.01em; }
-.adq__pay-picker-summary-amount { font-size: 14px; font-weight: 700; color: #4E5968; }
+.adq__pay-picker-summary-label {
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6E7680;
+  letter-spacing: -0.02em;
+}
+.adq__pay-picker-summary-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: #8B95A1;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
 .adq__pay-picker-summary-amount b {
   background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 26px;
+  font-size: 34px;
   font-weight: 900;
-  letter-spacing: -0.02em;
-  margin-right: 2px;
+  letter-spacing: -0.03em;
+  margin-right: 3px;
+  line-height: 1.1;
 }
-.adq__pay-picker-summary-sub { font-size: 12px; color: #8B95A1; font-weight: 600; }
+.adq__pay-picker-summary-sub {
+  align-self: flex-start;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #8B95A1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 480px) {
+  .adq__pay-picker { padding: 20px 16px; gap: 18px; }
+  .adq__pay-chip { padding: 14px 8px; font-size: 13px; min-height: 48px; }
+  .adq__pay-picker-summary { padding: 18px 18px; }
+  .adq__pay-picker-summary-amount b { font-size: 28px; }
+}
 
 /* 결제 정책 박스 하단 — 결제하기 버튼 (시그니처 그라데이션 풀 폭) */
 .adq__pay-cta {
