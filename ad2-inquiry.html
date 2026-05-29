@@ -753,7 +753,10 @@
       <!-- ─── 첨부 ─── -->
       <section class="card">
         <div class="field">
-          <label class="label">대표 이미지 (최대 20장)</label>
+          <label class="label">
+            대표 이미지 (최대 20장)
+            <span style="font-size:11px;font-weight:500;color:#8B95A1;margin-left:6px;">사진을 길게 눌러 드래그하면 순서를 바꿀 수 있어요</span>
+          </label>
           <div class="files">
             <div class="file-list" id="imageList"></div>
             <label class="file-pick" id="imagePick">+ 사진 추가
@@ -1269,7 +1272,16 @@
       });
 
       // 2026-05-25 [사용자 명시] 현장가격 입력 시 천 단위 콤마 자동 표시.
-      // 2026-05-29 [사용자 명시] mgmFee 는 %·자유 텍스트 허용 — 콤마 자동 처리 제외.
+      // 2026-05-29 [사용자 명시] mgmFee — 순수 숫자만 입력 시 콤마 자동, %·문자 포함 시 그대로 유지.
+      const mgmInput = document.querySelector('[name="mgmFee"]');
+      if (mgmInput) {
+        mgmInput.addEventListener('input', (e) => {
+          const raw = String(e.target.value || '');
+          // 숫자·콤마 외 문자 (%·한글 등) 있으면 그대로 둔다 (사용자 의도: "3%" 같은 값 유지)
+          if (/[^\d,]/.test(raw)) return;
+          e.target.value = formatWonComma(raw);
+        });
+      }
       ['priceMin', 'priceMax'].forEach((name) => {
         const el = document.querySelector(`input[name="${name}"]`);
         if (!el) return;
@@ -1428,7 +1440,7 @@
       function renderFiles(kind) {
         const list = document.getElementById(listIds[kind]);
         list.innerHTML = '';
-        const draggable = (kind === 'image'); // 2026-05-25 [사용자 명시] 사진만 드래그 정렬.
+        const draggable = true; // 2026-05-29 [사용자 명시] 대표이미지/속지/영상/브리핑/손님공유 전부 드래그 정렬 허용.
         files[kind].forEach((f, i) => {
           const el = document.createElement('div');
           el.className = 'file-item' + (draggable ? ' draggable' : '');
@@ -1963,40 +1975,29 @@
       });
 
       function showSuccess() {
+        // 2026-05-29 [사용자 명시] 입금완료 클릭 → 화면 상단 점프 방지.
+        //   원인: ad2Form hidden=true 직후 페이지 길이가 짧아져 브라우저가 scrollY 자동 clamp.
+        //   해결: scrollY 저장 + successView 표시 후 같은 위치로 복원 (clamp 되면 자연스럽게 최대치).
+        const prevScroll = window.scrollY;
         document.getElementById('ad2Form').hidden = true;
         const v = document.getElementById('successView');
         v.hidden = false;
-        // 2026-05-26 [사용자 명시] 등록 완료 후 데스크톱 미리보기 이미지(screen-desktop2.png) 노출.
-        //   hana.png 와 동일한 이미지 카드 + lightbox 패턴 사용.
+        // 2026-05-29 [사용자 명시] 등록 접수 화면 — 미리보기 이미지 제거, 메시지 섹션만.
         v.innerHTML = `
           <div class="card success-box">
             <div class="check">✅</div>
             <h2>등록이 접수됐어요</h2>
             <p>최대 10분 안에 부비서 앱의 분양파트너 페이지에 노출됩니다.<br/>운영팀에서 내용을 검토한 뒤 안내드려요.</p>
-            <div class="pay-account" style="margin-top:18px">
-              <img class="pay-account__img" id="successDesktopImg" src="assets/screen-desktop2.png" alt="부비서 데스크톱 분양파트너 미리보기" />
-              <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
-            </div>
             <button type="button" class="back-btn" id="backToFormBtn" style="margin-top:18px">돌아가기</button>
           </div>
         `;
-        // 미리보기 이미지 클릭 → lightbox 확대.
-        const desktopImg = document.getElementById('successDesktopImg');
-        if (desktopImg) desktopImg.addEventListener('click', () => {
-          const lightboxImg = document.getElementById('lightboxImg');
-          const lightbox = document.getElementById('lightbox');
-          if (lightboxImg && lightbox) {
-            lightboxImg.src = 'assets/screen-desktop2.png';
-            lightboxImg.alt = '부비서 데스크톱 분양파트너 미리보기';
-            lightbox.classList.add('show');
-          }
-        });
+        // 다음 frame 에 scroll 복원 (DOM 변경 반영 후).
+        requestAnimationFrame(() => { window.scrollTo(0, prevScroll); });
         // 2026-05-29 [사용자 명시] 비밀번호 게이트 해제 후 — 돌아가기는 페이지 재진입만.
         const back = document.getElementById('backToFormBtn');
         if (back) back.addEventListener('click', () => {
           window.location.href = '/ad2-inquiry';
         });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
