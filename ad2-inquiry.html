@@ -891,28 +891,9 @@
   (function () {
     'use strict';
     const API_BASE = 'https://api.bubiseo.com';
-    // 2026-05-25 [사용자 명시] 게이트 토큰 — localStorage + 30분 expiresAt. 30분 후 게이트 재노출.
-    const GATE_KEY = 'ad2GateToken.v2';
-    const GATE_TTL_MS = 30 * 60 * 1000;
-    function readGateToken() {
-      try {
-        const raw = localStorage.getItem(GATE_KEY);
-        if (!raw) return null;
-        const obj = JSON.parse(raw);
-        if (!obj || typeof obj.token !== 'string' || !obj.token) return null;
-        if (typeof obj.exp !== 'number' || Date.now() > obj.exp) {
-          localStorage.removeItem(GATE_KEY);
-          return null;
-        }
-        return obj.token;
-      } catch (_) { return null; }
-    }
-    function writeGateToken(token) {
-      try {
-        localStorage.setItem(GATE_KEY, JSON.stringify({ token, exp: Date.now() + GATE_TTL_MS }));
-      } catch (_) {}
-    }
-    const TOKEN = () => readGateToken();
+    // 2026-05-29 [사용자 명시] 비밀번호 게이트 완전 해제 — localStorage 토큰 + Authorization 헤더 더 이상 미사용.
+    //   레거시 토큰 잔존 시 정리.
+    try { localStorage.removeItem('ad2GateToken.v2'); } catch (_) {}
 
     const CATEGORIES = [
       { key: 'APARTMENT', label: '아파트' },
@@ -949,9 +930,7 @@
       return parseInt(d, 10).toLocaleString('ko-KR');
     }
 
-    // 2026-05-28 [사용자 명시] 게이트 해제 — 비밀번호 입력 없이 즉시 폼 초기화.
-    //   주의: 백엔드 /public/presale-inquiry/{gate,upload,submit} 가 여전히 Bearer 토큰 요구.
-    //         실제 폼 제출 동작은 백엔드 게이트 정책 변경 후 정상화됨.
+    // 2026-05-29 [사용자 명시] 게이트 완전 해제 — 프론트·백엔드 양쪽 비밀번호/토큰 요구 모두 제거.
     initForm();
 
     // ─── 폼 초기화 ───
@@ -1063,7 +1042,6 @@
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', API_BASE + '/public/presale-inquiry/upload');
-          xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN());
           xhr.upload.onprogress = (e) => {
             if (e.lengthComputable) {
               onProgress(Math.min(100, Math.round((e.loaded / e.total) * 100)));
@@ -1671,10 +1649,7 @@
         try {
           const r = await fetch(API_BASE + '/public/presale-inquiry/submit', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + TOKEN(),
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
           if (!r.ok) {
@@ -1717,10 +1692,9 @@
             lightbox.classList.add('show');
           }
         });
-        // 2026-05-26 [사용자 명시] 돌아가기 → 게이트 토큰 제거해서 비밀번호 재입력.
+        // 2026-05-29 [사용자 명시] 비밀번호 게이트 해제 후 — 돌아가기는 페이지 재진입만.
         const back = document.getElementById('backToFormBtn');
         if (back) back.addEventListener('click', () => {
-          try { localStorage.removeItem(GATE_KEY); } catch { /* ignore */ }
           window.location.href = '/ad2-inquiry';
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
