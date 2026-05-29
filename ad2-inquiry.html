@@ -605,8 +605,39 @@
       </section>
 
       <!-- ─── 분양 현장 상세 (선택, 모바일 분양현장등록과 동일 항목) ─── -->
+      <!-- 2026-05-29 [사용자 명시] 카테고리별 분양 상세 spec — 분류 선택에 따라 표시 필드 자동 전환.
+           아파트/오피스텔/빌라/타운하우스: 세대수·입주예정일·평형타입·방·욕실·층·주차·난방(5종)·옵션·가격·MGM
+           지식산업/상가: 호실수·입주예정일·층·난방(개별/중앙)·가격·MGM
+           단독주택: 대지/건축/연면적·입주예정일·평형타입·방·욕실·층·주차·난방(5종)·옵션·가격·MGM
+           data-cat-field 와 JS applyCategoryFields() 가 모든 토글을 자동 제어. -->
       <section class="card">
-        <div class="row">
+        <div class="field" data-cat-field="totalUnits">
+          <label class="label" id="totalUnitsLabel">전체 세대수</label>
+          <input class="input" type="number" inputmode="numeric" min="0" max="100000" name="totalUnits" placeholder="예: 1,250" />
+        </div>
+        <div class="field" data-cat-field="scheduledMoveInDate">
+          <label class="label">입주예정일</label>
+          <input class="input" type="date" name="scheduledMoveInDate" />
+        </div>
+        <div class="field" data-cat-field="unitType">
+          <label class="label">평형 타입</label>
+          <input class="input" type="text" name="unitType" maxlength="40" placeholder="예: 59A타입 / 84B타입 / 전 세대 84㎡" />
+        </div>
+        <div class="row" data-cat-field="landBuildingArea">
+          <div class="field">
+            <label class="label">대지면적 (㎡)</label>
+            <input class="input" type="number" inputmode="decimal" min="0" step="0.01" name="landArea" placeholder="예: 250.5" />
+          </div>
+          <div class="field">
+            <label class="label">건축면적 (㎡)</label>
+            <input class="input" type="number" inputmode="decimal" min="0" step="0.01" name="buildingArea" placeholder="예: 120" />
+          </div>
+        </div>
+        <div class="field" data-cat-field="totalFloorArea">
+          <label class="label">연면적 (㎡)</label>
+          <input class="input" type="number" inputmode="decimal" min="0" step="0.01" name="totalFloorArea" placeholder="예: 320.8" />
+        </div>
+        <div class="row" data-cat-field="roomsBathrooms">
           <div class="field">
             <label class="label">방 개수</label>
             <input class="input" type="number" inputmode="numeric" min="0" max="99" name="rooms" placeholder="예: 3" />
@@ -616,7 +647,7 @@
             <input class="input" type="number" inputmode="numeric" min="0" max="99" name="bathrooms" placeholder="예: 2" />
           </div>
         </div>
-        <div class="row">
+        <div class="row" data-cat-field="floor">
           <div class="field">
             <label class="label">최저층</label>
             <input class="input" type="number" inputmode="numeric" name="floorMin" placeholder="예: 1" />
@@ -626,15 +657,15 @@
             <input class="input" type="number" inputmode="numeric" name="floorMax" placeholder="예: 25" />
           </div>
         </div>
-        <div class="field">
+        <div class="field" data-cat-field="parkingCount">
           <label class="label">주차대수 (세대당)</label>
-          <input class="input" type="number" inputmode="numeric" min="0" max="99" name="parkingCount" placeholder="예: 1" />
+          <input class="input" type="number" inputmode="decimal" min="0" step="0.1" name="parkingCount" placeholder="예: 1.2" />
         </div>
-        <div class="field">
+        <div class="field" data-cat-field="heatingType">
           <label class="label">난방방식</label>
           <div class="chips" id="heatingChips"></div>
         </div>
-        <div class="field">
+        <div class="field" data-cat-field="options">
           <label class="label">옵션 (복수 선택)</label>
           <div class="chips" id="optionChips"></div>
         </div>
@@ -907,7 +938,28 @@
 
     // 2026-05-25 [사용자 명시] 모바일 분양현장등록과 동일 카탈로그 (services/presalePartnership.ts).
     const HEATING_TYPES = ['도시가스', 'LPG', '지역난방', '심야전기', '기타'];
+    // 2026-05-29 [사용자 명시] 지식산업/상가 전용 난방 — 개별/중앙 냉난방 2종.
+    const HEATING_TYPES_COMMERCIAL = ['개별냉난방', '중앙냉난방'];
     const OPTION_LIST = ['에어컨', '인덕션', '가스레인지', '전기오븐', '냉장고', '김치냉장고', '세탁기', '건조기', '스타일러'];
+
+    // 2026-05-29 [사용자 명시] 카테고리별 노출 필드 매트릭스 — 모바일 presaleFieldVisibility() 와 동일.
+    function visibilityFor(category) {
+      const isCommercial = category === 'KNOWLEDGE_INDUSTRY_CENTER' || category === 'COMMERCIAL';
+      const isDetached = category === 'DETACHED_HOUSE';
+      return {
+        totalUnits: !isDetached,
+        totalUnitsLabel: isCommercial ? '전체 호실수' : '전체 세대수',
+        scheduledMoveInDate: true,
+        unitType: !isCommercial,
+        landBuildingArea: isDetached,
+        totalFloorArea: isDetached,
+        roomsBathrooms: !isCommercial,
+        floor: true,
+        parkingCount: !isCommercial,
+        heatingType: true,
+        options: !isCommercial,
+      };
+    }
 
     // 2026-05-25 [사용자 명시] 연락처 입력 시 '-' 자동 표시 (모바일 utils/formatPhone.ts 와 동일 규칙).
     function formatPhoneKR(input) {
@@ -946,6 +998,8 @@
           selectedCategory = c.key;
           catChips.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
           el.classList.add('active');
+          // 2026-05-29 [사용자 명시] 카테고리 변경 → 필드 노출 매트릭스 + 난방 카탈로그 자동 재적용.
+          applyCategoryFields(selectedCategory);
         });
         catChips.appendChild(el);
       });
@@ -953,22 +1007,53 @@
       // 난방방식 (단일 선택, 빈값 허용)
       const heatingChips = document.getElementById('heatingChips');
       let selectedHeating = '';
-      HEATING_TYPES.forEach((h) => {
-        const el = document.createElement('div');
-        el.className = 'chip';
-        el.textContent = h;
-        el.addEventListener('click', () => {
-          if (selectedHeating === h) {
-            selectedHeating = '';
-            el.classList.remove('active');
-          } else {
-            selectedHeating = h;
-            heatingChips.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
-            el.classList.add('active');
+      // 2026-05-29 [사용자 명시] 카테고리에 맞는 카탈로그로 chip 재구축.
+      function rebuildHeatingChips(category) {
+        const catalog = (category === 'KNOWLEDGE_INDUSTRY_CENTER' || category === 'COMMERCIAL')
+          ? HEATING_TYPES_COMMERCIAL
+          : HEATING_TYPES;
+        // 카탈로그 변경 시 기존 선택이 더 이상 없는 옵션이면 리셋
+        if (selectedHeating && !catalog.includes(selectedHeating)) selectedHeating = '';
+        heatingChips.innerHTML = '';
+        catalog.forEach((h) => {
+          const el = document.createElement('div');
+          el.className = 'chip' + (h === selectedHeating ? ' active' : '');
+          el.textContent = h;
+          el.addEventListener('click', () => {
+            if (selectedHeating === h) {
+              selectedHeating = '';
+              el.classList.remove('active');
+            } else {
+              selectedHeating = h;
+              heatingChips.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
+              el.classList.add('active');
+            }
+          });
+          heatingChips.appendChild(el);
+        });
+      }
+      rebuildHeatingChips(selectedCategory);
+
+      // 2026-05-29 [사용자 명시] 카테고리별 필드 노출 + 라벨 + 난방 카탈로그 일괄 적용.
+      function applyCategoryFields(category) {
+        const v = visibilityFor(category);
+        document.querySelectorAll('[data-cat-field]').forEach((el) => {
+          const key = el.getAttribute('data-cat-field');
+          const show = !!v[key];
+          el.style.display = show ? '' : 'none';
+          // 숨긴 섹션 안의 input 은 값 비우기 (submit 누락 보장)
+          if (!show) {
+            el.querySelectorAll('input').forEach((inp) => { inp.value = ''; });
           }
         });
-        heatingChips.appendChild(el);
-      });
+        // 호실수/세대수 라벨 토글
+        const lbl = document.getElementById('totalUnitsLabel');
+        if (lbl) lbl.textContent = v.totalUnitsLabel;
+        // 난방 카탈로그 재구축 (지식산업/상가는 개별·중앙냉난방, 그 외 기존 5종)
+        rebuildHeatingChips(category);
+      }
+      // 초기 1회 (APARTMENT)
+      applyCategoryFields(selectedCategory);
 
       // 옵션 (복수 선택)
       const optionChips = document.getElementById('optionChips');
@@ -1606,6 +1691,13 @@
           const n = Number(cleaned);
           return Number.isFinite(n) ? Math.trunc(n) : null;
         };
+        // 2026-05-29 [사용자 명시] 면적 (㎡) — 소수점 허용.
+        const toFloatOrNull = (v) => {
+          const cleaned = String(v ?? '').replace(/[^\d.\-]/g, '');
+          if (cleaned === '' || cleaned === '-' || cleaned === '.') return null;
+          const n = Number(cleaned);
+          return Number.isFinite(n) ? n : null;
+        };
         const payload = {
           agencyName: form.agencyName.value.trim(),
           managerName: form.managerName.value.trim(),
@@ -1645,6 +1737,17 @@
           briefingPdfUrls: files.briefing.map((f) => f.url),
           customerShareFileUrls: files.customer.map((f) => f.url),
           badges,
+          // 2026-05-29 [사용자 명시] 카테고리별 분양 상세 spec (광고주 직접 입력).
+          //   숨김 처리된 input 은 applyCategoryFields() 가 미리 비워둠 → 자연스럽게 null.
+          //   scheduledMoveInDate: <input type="date"> 가 'YYYY-MM-DD' 형식 → KST ISO 로 변환.
+          totalUnits: toIntOrNull(form.totalUnits?.value ?? ''),
+          scheduledMoveInDate: form.scheduledMoveInDate?.value
+            ? new Date(form.scheduledMoveInDate.value + 'T00:00:00+09:00').toISOString()
+            : null,
+          unitType: (form.unitType?.value || '').trim() || null,
+          landArea: toFloatOrNull(form.landArea?.value ?? ''),
+          buildingArea: toFloatOrNull(form.buildingArea?.value ?? ''),
+          totalFloorArea: toFloatOrNull(form.totalFloorArea?.value ?? ''),
         };
         try {
           const r = await fetch(API_BASE + '/public/presale-inquiry/submit', {
