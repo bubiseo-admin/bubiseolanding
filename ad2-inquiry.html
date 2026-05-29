@@ -250,6 +250,50 @@
     .input::-webkit-input-placeholder, .textarea::-webkit-input-placeholder { color: #D1D6DB; }
     .input::-moz-placeholder, .textarea::-moz-placeholder { color: #D1D6DB; opacity: 1; }
     .textarea { resize: vertical; min-height: 80px; }
+    /* 2026-05-29 [사용자 명시] 위저드 — "광고직접등록" 시작 + 각 step "다음"으로 차례대로 열림. */
+    .wizard-step { display: none; }
+    .wizard-step.is-active { display: block; animation: wizardFadeIn .25s ease-out; }
+    @keyframes wizardFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .wizard-start-card {
+      margin: 24px 0;
+      padding: 32px 24px;
+      background: linear-gradient(135deg, rgba(97,85,245,0.08) 0%, rgba(57,175,253,0.08) 100%);
+      border: 1px dashed rgba(97,85,245,0.35);
+      border-radius: 16px;
+      text-align: center;
+    }
+    .wizard-start-card h3 { font-size: 18px; font-weight: 800; color: var(--text); margin: 0 0 8px; }
+    .wizard-start-card p { font-size: 13px; color: var(--sub); margin: 0 0 20px; line-height: 1.6; }
+    .wizard-start-btn {
+      display: inline-block;
+      padding: 14px 36px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(97,85,245,0.3);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .wizard-start-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(97,85,245,0.4); }
+    .wizard-next-btn {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 13px 24px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--pri) 0%, var(--pri2) 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(97,85,245,0.25);
+    }
+    .wizard-next-btn:hover { opacity: 0.92; }
+    .wizard-next-btn:disabled { background: #D1D6DB; cursor: not-allowed; box-shadow: none; }
     .row { display: flex; gap: 10px; }
     .row > * { flex: 1; min-width: 0; }
     /* 2026-05-25 [사용자 명시] 좁은 모바일 화면에선 한 줄에 두 칸이 잘리지 않도록 세로로 쌓기. */
@@ -583,8 +627,15 @@
 
   <main>
     <form id="ad2Form" autocomplete="off">
+      <!-- 2026-05-29 [사용자 명시] 위저드 시작 — "광고직접등록" 버튼 클릭 시 step 1 부터 차례대로 노출. -->
+      <div class="wizard-start-card" id="wizardStartCard">
+        <h3>광고를 직접 등록하시려면 아래 버튼을 눌러주세요</h3>
+        <p>분양대행사 정보부터 단계별로 입력하실 수 있어요.<br/>모든 단계가 끝나면 결제 안내가 표시됩니다.</p>
+        <button type="button" class="wizard-start-btn" id="wizardStartBtn">광고 직접 등록</button>
+      </div>
+
       <!-- ─── 분양대행사 정보 ─── -->
-      <section class="card">
+      <section class="card wizard-step" data-step="1">
         <div class="field">
           <label class="label">분양대행사 상호명 <span style="color:var(--error)">*</span></label>
           <input class="input" name="agencyName" maxlength="80" required />
@@ -598,10 +649,11 @@
           <div class="phones" id="phones"></div>
           <button type="button" class="btn-add" id="addPhoneBtn" style="margin-top:8px">+ 연락처 추가</button>
         </div>
+        <button type="button" class="wizard-next-btn" data-next="2">다음</button>
       </section>
 
       <!-- ─── 광고 기간 ─── -->
-      <section class="card">
+      <section class="card wizard-step" data-step="2">
         <div class="row">
           <div class="field">
             <label class="label">광고 시작일 <span style="color:var(--error)">*</span></label>
@@ -612,10 +664,11 @@
             <input class="input" type="date" name="endDate" required />
           </div>
         </div>
+        <button type="button" class="wizard-next-btn" data-next="3">다음</button>
       </section>
 
       <!-- ─── 현장 ─── -->
-      <section class="card">
+      <section class="card wizard-step" data-step="3">
         <!-- 2026-05-26 [사용자 명시] 현장 한마디 — 프리미엄 매물 지도 핀의 보라 박스에 표시.
              현장 이름 위에 배치, 광고주가 짧은 강조 문구 작성. -->
         <div class="field">
@@ -658,6 +711,7 @@
           <label class="label">분류 <span style="color:var(--error)">*</span></label>
           <div class="chips" id="categoryChips"></div>
         </div>
+        <button type="button" class="wizard-next-btn" data-next="4">다음</button>
       </section>
 
       <!-- ─── 분양 현장 상세 (선택, 모바일 분양현장등록과 동일 항목) ─── -->
@@ -666,7 +720,7 @@
            지식산업/상가: 호실수·입주예정일·층·난방(개별/중앙)·가격·MGM
            단독주택: 대지/건축/연면적·입주예정일·평형타입·방·욕실·층·주차·난방(5종)·옵션·가격·MGM
            data-cat-field 와 JS applyCategoryFields() 가 모든 토글을 자동 제어. -->
-      <section class="card">
+      <section class="card wizard-step" data-step="4">
         <div class="field" data-cat-field="totalUnits">
           <label class="label" id="totalUnitsLabel">전체 세대수</label>
           <input class="input" type="number" inputmode="numeric" min="0" max="100000" name="totalUnits" placeholder="예: 1,250" />
@@ -748,10 +802,11 @@
           <!-- 2026-05-29 [사용자 명시] %·문자 자유 입력. keyboard 전체. 저장 시 숫자만 추출. -->
           <input class="input" type="text" name="mgmFee" placeholder="예: 500,000 또는 3%" autocomplete="off" />
         </div>
+        <button type="button" class="wizard-next-btn" data-next="5">다음</button>
       </section>
 
       <!-- ─── 첨부 ─── -->
-      <section class="card">
+      <section class="card wizard-step" data-step="5">
         <div class="field">
           <label class="label">
             대표 이미지 (최대 20장)
@@ -814,8 +869,8 @@
         </div>
       </section>
 
-      <!-- ─── 뱃지 ─── -->
-      <section class="card">
+      <!-- ─── 뱃지 — 첨부와 함께 step 5 ─── -->
+      <section class="card wizard-step" data-step="5">
         <div class="field">
           <!-- 2026-05-25 [사용자 명시] 라벨/안내 문구는 결제 노출(기본/프리미엄)에 따라 동적 갱신. -->
           <label class="label" id="badgeLabel">뱃지 (선택 — 최대 3개, 예: 초역세권, 마감임박)</label>
@@ -826,10 +881,11 @@
           <div class="badges" id="badgeList" style="margin-top:8px"></div>
           <p class="hint" id="badgeHint">기본 노출: 최대 3개 (선택)</p>
         </div>
+        <button type="button" class="wizard-next-btn" data-next="6">다음</button>
       </section>
 
       <!-- ─── 결제 안내 (2026-05-25 [사용자 명시]) ─── -->
-      <section class="card">
+      <section class="card wizard-step" data-step="6">
         <div class="field" style="margin-bottom:0">
           <label class="label" style="font-size:14px;">💳 결제 안내</label>
 
@@ -887,8 +943,8 @@
         </div>
       </section>
 
-      <!-- 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) + 마케팅 수신 (선택). -->
-      <section class="card consent-card">
+      <!-- 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) + 마케팅 수신 (선택). 결제와 함께 step 6. -->
+      <section class="card consent-card wizard-step" data-step="6">
         <label class="consent-row">
           <input type="checkbox" id="consentAgreed" />
           <span class="consent-text">
@@ -1185,6 +1241,42 @@
 
     // ─── 폼 초기화 ───
     function initForm() {
+      // 2026-05-29 [사용자 명시] 위저드 — "광고직접등록" 버튼 클릭 시 step 1 노출.
+      //   각 step "다음" 버튼 클릭 → 동일 data-step="N+1" 모든 섹션(.wizard-step) 노출.
+      //   결제 안내 step(6) 도달 전까지 하단 sticky 업로드바도 숨김 → 빈 막대 표시 방지.
+      const wizardStartCard = document.getElementById('wizardStartCard');
+      const wizardStartBtn = document.getElementById('wizardStartBtn');
+      const submitBar = document.querySelector('.submit-bar');
+      if (submitBar) submitBar.style.display = 'none';
+
+      function activateStep(step) {
+        const sections = document.querySelectorAll('.wizard-step[data-step="' + step + '"]');
+        sections.forEach((sec) => sec.classList.add('is-active'));
+        const first = sections[0];
+        if (first) {
+          requestAnimationFrame(() => {
+            first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
+        if (step === 6 && submitBar) submitBar.style.display = '';
+      }
+
+      if (wizardStartBtn && wizardStartCard) {
+        wizardStartBtn.addEventListener('click', () => {
+          wizardStartCard.style.display = 'none';
+          activateStep(1);
+        });
+      }
+
+      document.querySelectorAll('.wizard-next-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const next = parseInt(btn.getAttribute('data-next') || '0', 10);
+          if (!next) return;
+          btn.style.display = 'none';
+          activateStep(next);
+        });
+      });
+
       // 2026-05-29 [사용자 명시] "즉시입주가능" 토글 — 분류 전체 적용.
       //   ON 이면 date input 비활성 + 비움 + hidden immediateMoveIn=true.
       const moveinDate = document.getElementById('ad2-movein-date');
