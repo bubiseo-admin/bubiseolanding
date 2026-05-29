@@ -670,7 +670,8 @@
         <div class="field">
           <label class="label">MGM (R, 수수료)</label>
           <!-- 2026-05-25 [사용자 명시] 모바일>분양현장등록 '수수료' 칸(mgmFee) 과 자동 매칭 + ',' 천 단위 콤마 자동. -->
-          <input class="input" type="text" inputmode="numeric" name="mgmFee" placeholder="예: 500,000" autocomplete="off" />
+          <!-- 2026-05-29 [사용자 명시] %·문자 자유 입력. keyboard 전체. 저장 시 숫자만 추출. -->
+          <input class="input" type="text" name="mgmFee" placeholder="예: 500,000 또는 3%" autocomplete="off" />
         </div>
       </section>
 
@@ -1050,8 +1051,9 @@
         optionChips.appendChild(el);
       });
 
-      // 2026-05-25 [사용자 명시] MGM·현장가격 입력 시 천 단위 콤마 자동 표시.
-      ['mgmFee', 'priceMin', 'priceMax'].forEach((name) => {
+      // 2026-05-25 [사용자 명시] 현장가격 입력 시 천 단위 콤마 자동 표시.
+      // 2026-05-29 [사용자 명시] mgmFee 는 %·자유 텍스트 허용 — 콤마 자동 처리 제외.
+      ['priceMin', 'priceMax'].forEach((name) => {
         const el = document.querySelector(`input[name="${name}"]`);
         if (!el) return;
         el.addEventListener('input', (e) => {
