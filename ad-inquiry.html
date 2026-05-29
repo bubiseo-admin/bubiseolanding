@@ -163,18 +163,19 @@
     <!-- 2026-05-22 [사용자 명시] 결제 정책 박스 (단가 카드·광고 결제 섹션은 제거) -->
     <section class="adq__pricing">
       <div class="adq__sidebar-policy">
-        <h4 class="adq__sidebar-policy-title">📋 결제 정책</h4>
+        <h4 class="adq__sidebar-policy-title">📋 결제 정책 (예시)</h4>
         <!-- 2026-05-28 [사용자 명시] 강조 문구 — 굵은 블랙. -->
+        <!-- 2026-05-29 [사용자 명시] 명수 노출 차단 + 예시 라벨. -->
         <p class="adq__sidebar-policy-highlight">가입자수가 많아질수록 광고단가는 내려갑니다.</p>
         <ul class="adq__sidebar-policy-list">
           <li>단가 산정: <strong>이용중인 중개사(명) × 1,000원 / 월</strong>
-            <span class="adq__sidebar-policy-sub">현재 단가 = <b data-ad-current-price>—</b>원 / 월 (이용중인 중개사 <b data-ad-current-accounts>—</b>명 × 1,000원)</span>
+            <span class="adq__sidebar-policy-sub">예시) 100명 × 1,000원 = 100,000원 / 월</span>
           </li>
           <li>매월 <strong>1일 자동 재결제</strong> · 이번 달 단가 적용</li>
           <li>1회 계약 <strong>최장 3개월</strong></li>
           <li>3개월 만료 후 재계약 시 <strong>그 시점 활성 회원수 기준 재산정</strong></li>
         </ul>
-        <p class="adq__sidebar-policy-foot">
+        <p class="adq__sidebar-policy-foot" style="display:none">
           <span data-ad-pricing-month>—</span> 단가 기준 ·
           다음 갱신: <span data-ad-pricing-next>—</span>
         </p>
@@ -329,10 +330,11 @@
           }
           var regular = perAccount * months;
           totalRegular += regular;
+          // 2026-05-29 [사용자 명시] 명수 노출 차단 — 슬롯 × 개월 + 합계만 표시.
           return '<span class="adq__pay-line">' +
             '<span class="adq__pay-line-label">' + s.label + '</span>' +
             '<span class="adq__pay-line-value">' +
-            '이용중인 중개사 ' + accountCount + '명 × 1,000원 × ' + months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
+            months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
             '</span></span>';
         });
         totalEl.textContent = fmtKrw(totalRegular);
@@ -416,7 +418,8 @@
           return s.key === 'home' ? (s.label + '(무료이벤트)') : s.label;
         }).join(' + ');
         var slotKeys = slots.map(function (s) { return s.key; }).join('+');
-        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (이용중인 중개사 ' + accountCount + '명 × 1,000원 × ' + chargeableSlots.length + '슬롯 × ' + months + '개월 = ' + fmtKrw(amount) + '원)';
+        // 2026-05-29 [사용자 명시] orderName 에서도 명수 노출 차단 — 슬롯 + 기간 + 합계만.
+        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (' + fmtKrw(amount) + '원)';
         var params = new URLSearchParams({
           plan: slotKeys,
           amount: String(amount),
