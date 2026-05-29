@@ -437,8 +437,26 @@
     .ad2-foot__copy { margin-top: 14px; padding-top: 12px; border-top: 1px solid #E5E8EB; color: #9DA5AE; }
     /* 2026-05-29 [사용자 명시] 주소 검색 버튼 + 안내 — Daum/카카오 우편번호 위젯 */
     .addr-row { display: flex; gap: 8px; align-items: stretch; }
-    .addr-row .input { flex: 1; cursor: pointer; background: #F8FAFB; }
+    .addr-row .input { flex: 1; background: #F8FAFB; }
     .addr-row .input:focus { background: #FFFFFF; }
+    /* 2026-05-29 [사용자 명시] 위치 미리보기 — 모바일 admin 과 동일 200px 미니맵. */
+    .map-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6B7280;
+      line-height: 1.5;
+    }
+    .map-status.ok { color: #16A34A; font-weight: 600; }
+    .map-status.fail { color: #DC2626; font-weight: 600; }
+    .map-preview {
+      margin-top: 8px;
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #E5E8EB;
+      background: #F2F4F6;
+    }
     .addr-search-btn {
       flex-shrink: 0;
       padding: 0 16px;
@@ -456,6 +474,13 @@
   </style>
   <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 (무료·인증 불필요) -->
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
+  <!-- 2026-05-29 [사용자 명시] 카카오 JavaScript SDK — 주소 → 좌표 + 미니맵 표시.
+       appkey 자리: 모바일 .env 의 EXPO_PUBLIC_KAKAO_MAP_API_KEY 값 그대로 (도메인 제한 client key).
+       카카오 콘솔에 bubiseo.com 도메인 등록 필수 (1회). -->
+  <script
+    type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=KAKAO_JS_KEY_HERE&libraries=services&autoload=false"
+  ></script>
 </head>
 <body>
   <!-- 2026-05-28 [사용자 명시] 비밀번호 게이트 해제 — 누구나 페이지 진입 가능 -->
@@ -576,7 +601,9 @@
         </div>
         <div class="field">
           <label class="label">현장 주소 <span style="color:var(--error)">*</span></label>
-          <!-- 2026-05-29 [사용자 명시] Daum 우편번호 검색 팝업 — 주소 검색 버튼/입력칸 클릭 시 열림. 직접 입력 차단(readonly). -->
+          <!-- 2026-05-29 [사용자 명시] Daum 우편번호 검색 팝업 + 직접 입력 허용.
+               Daum DB 에 없는 작은 지번(예: "박달동 617-12") 도 광고주가 카카오맵에서 본 주소 그대로 복붙 가능.
+               백엔드 geocodeWithRegion 의 카카오 키워드검색 fallback 이 region/sigungu/좌표 자동 산출. -->
           <div class="addr-row">
             <input
               class="input"
@@ -584,9 +611,7 @@
               id="ad2-address"
               maxlength="200"
               required
-              readonly
-              placeholder="주소 검색 버튼을 눌러주세요"
-              onclick="openAd2Postcode()"
+              placeholder="주소 검색 버튼 또는 직접 입력 (예: 경기 안양시 만안구 박달동 617-12)"
             />
             <button type="button" class="addr-search-btn" onclick="openAd2Postcode()">주소 검색</button>
           </div>
@@ -597,6 +622,10 @@
             maxlength="100"
             placeholder="상세 주소 (동·호·층 등 선택)"
           />
+          <!-- 2026-05-29 [사용자 명시] 위치 미리보기 — 모바일 admin 분양현장등록 화면과 동일 (200px 카카오 미니맵).
+               주소 입력 → 500ms debounce → 카카오 주소검색 → 실패 시 키워드검색 fallback → 좌표 받으면 표시. -->
+          <div id="ad2-map-status" class="map-status">주소를 5자 이상 입력하면 지도에 표시됩니다.</div>
+          <div id="ad2-map-preview" class="map-preview" style="display:none;"></div>
         </div>
         <div class="field">
           <label class="label">분류 <span style="color:var(--error)">*</span></label>
@@ -908,7 +937,11 @@
           var detailInput = document.getElementById('ad2-address-detail');
           // 우선순위: 도로명 → 지번 → 기본
           var fullAddr = data.roadAddress || data.jibunAddress || data.address || '';
-          if (addrInput) addrInput.value = fullAddr;
+          if (addrInput) {
+            addrInput.value = fullAddr;
+            // 2026-05-29 [사용자 명시] Daum 팝업 선택 후 즉시 미니맵 갱신.
+            if (typeof updateAd2MapPreview === 'function') updateAd2MapPreview(fullAddr);
+          }
           if (detailInput) {
             detailInput.value = '';
             detailInput.focus();
@@ -917,6 +950,114 @@
         theme: { searchBgColor: '#FFFFFF', queryTextColor: '#191F28', outlineColor: '#E5E8EB' },
       }).open();
     }
+
+    // 2026-05-29 [사용자 명시] 위치 미리보기 — 모바일 admin 분양현장등록과 동일.
+    //   카카오 JS SDK 의 services.Geocoder.addressSearch → 실패 시 Places.keywordSearch fallback.
+    //   500ms debounce, 좌표 받으면 200px 미니맵 표시. 못 찾으면 안내 텍스트.
+    (function () {
+      var debounceTimer = null;
+      var mapInstance = null;
+      var markerInstance = null;
+      var sdkReadyPromise = null;
+
+      function ensureKakaoReady() {
+        if (sdkReadyPromise) return sdkReadyPromise;
+        sdkReadyPromise = new Promise(function (resolve, reject) {
+          if (typeof kakao === 'undefined' || !kakao.maps) {
+            reject(new Error('Kakao SDK 미로드'));
+            return;
+          }
+          if (kakao.maps.services && kakao.maps.LatLng) {
+            resolve();
+            return;
+          }
+          kakao.maps.load(function () { resolve(); });
+        });
+        return sdkReadyPromise;
+      }
+
+      function setStatus(text, cls) {
+        var el = document.getElementById('ad2-map-status');
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'map-status' + (cls ? ' ' + cls : '');
+      }
+
+      function renderMap(lat, lng) {
+        var box = document.getElementById('ad2-map-preview');
+        if (!box) return;
+        box.style.display = 'block';
+        var center = new kakao.maps.LatLng(lat, lng);
+        if (!mapInstance) {
+          mapInstance = new kakao.maps.Map(box, { center: center, level: 3 });
+          markerInstance = new kakao.maps.Marker({ position: center, map: mapInstance });
+        } else {
+          mapInstance.setCenter(center);
+          markerInstance.setPosition(center);
+          // box 크기가 0 → 보이는 시점에 relayout 필요
+          setTimeout(function () { mapInstance.relayout(); mapInstance.setCenter(center); }, 0);
+        }
+      }
+
+      function hideMap() {
+        var box = document.getElementById('ad2-map-preview');
+        if (box) box.style.display = 'none';
+      }
+
+      function lookup(addr) {
+        ensureKakaoReady().then(function () {
+          var geocoder = new kakao.maps.services.Geocoder();
+          // 1차: 정식 주소 검색
+          geocoder.addressSearch(addr, function (result, status) {
+            if (status === kakao.maps.services.Status.OK && result[0]) {
+              var lng = parseFloat(result[0].x);
+              var lat = parseFloat(result[0].y);
+              setStatus('✓ 지도 표시 가능 (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')', 'ok');
+              renderMap(lat, lng);
+              return;
+            }
+            // 2차: 키워드 검색 fallback ("박달동 617-12" 같은 작은 지번)
+            var places = new kakao.maps.services.Places();
+            places.keywordSearch(addr, function (kwResult, kwStatus) {
+              if (kwStatus === kakao.maps.services.Status.OK && kwResult[0]) {
+                var lng2 = parseFloat(kwResult[0].x);
+                var lat2 = parseFloat(kwResult[0].y);
+                setStatus('✓ 지도 표시 가능 (' + lat2.toFixed(4) + ', ' + lng2.toFixed(4) + ')', 'ok');
+                renderMap(lat2, lng2);
+              } else {
+                setStatus('⚠️ 주소를 카카오에서 찾을 수 없어요. 도로명 또는 지번으로 다시 입력해주세요.', 'fail');
+                hideMap();
+              }
+            });
+          });
+        }).catch(function () {
+          setStatus('지도 SDK 를 불러오지 못했어요.', 'fail');
+          hideMap();
+        });
+      }
+
+      window.updateAd2MapPreview = function (addr) {
+        clearTimeout(debounceTimer);
+        var clean = (addr || '').trim();
+        if (clean.length < 5) {
+          setStatus('주소를 5자 이상 입력하면 지도에 표시됩니다.');
+          hideMap();
+          return;
+        }
+        setStatus('지도 위치 확인 중…');
+        debounceTimer = setTimeout(function () { lookup(clean); }, 500);
+      };
+
+      // 직접 타이핑도 감지
+      document.addEventListener('DOMContentLoaded', function () {
+        var input = document.getElementById('ad2-address');
+        if (input) {
+          input.addEventListener('input', function (e) {
+            window.updateAd2MapPreview(e.target.value);
+          });
+        }
+      });
+    })();
   </script>
   <script>
   (function () {
