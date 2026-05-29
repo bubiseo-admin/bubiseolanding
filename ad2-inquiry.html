@@ -501,13 +501,9 @@
   </style>
   <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 (무료·인증 불필요) -->
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
-  <!-- 2026-05-29 [사용자 명시] 카카오 JavaScript SDK — 주소 → 좌표 + 미니맵 표시.
-       appkey 자리: 모바일 .env 의 EXPO_PUBLIC_KAKAO_MAP_API_KEY 값 그대로 (도메인 제한 client key).
-       카카오 콘솔에 bubiseo.com 도메인 등록 필수 (1회). -->
-  <script
-    type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=KAKAO_JS_KEY_HERE&libraries=services&autoload=false"
-  ></script>
+  <!-- 2026-05-29 [사용자 명시] 카카오 JavaScript SDK — 동적 로드 (백엔드에서 키 fetch).
+       키는 백엔드 .env 한 곳 보관 → public 레포 노출 0.
+       fetch 실패 시 미니맵만 동작 안 함 (폼 등록 자체엔 영향 없음). -->
 </head>
 <body>
   <!-- 2026-05-28 [사용자 명시] 비밀번호 게이트 해제 — 누구나 페이지 진입 가능 -->
@@ -996,18 +992,39 @@
       var markerInstance = null;
       var sdkReadyPromise = null;
 
+      // 2026-05-29 [사용자 명시] 카카오 JS SDK 동적 로드 — 백엔드에서 키 fetch → script 삽입 → kakao.maps.load.
+      //   API_BASE 는 아래 IIFE 안에 있어서 직접 참조 불가 — 명시 baseUrl 사용.
       function ensureKakaoReady() {
         if (sdkReadyPromise) return sdkReadyPromise;
         sdkReadyPromise = new Promise(function (resolve, reject) {
-          if (typeof kakao === 'undefined' || !kakao.maps) {
-            reject(new Error('Kakao SDK 미로드'));
+          // 이미 로드돼 있으면 즉시
+          if (typeof kakao !== 'undefined' && kakao.maps) {
+            if (kakao.maps.services && kakao.maps.LatLng) { resolve(); return; }
+            kakao.maps.load(function () { resolve(); });
             return;
           }
-          if (kakao.maps.services && kakao.maps.LatLng) {
-            resolve();
-            return;
-          }
-          kakao.maps.load(function () { resolve(); });
+          // 백엔드에서 키 fetch
+          fetch('https://api.bubiseo.com/public/presale-inquiry/kakao-js-key')
+            .then(function (r) {
+              if (!r.ok) throw new Error('키 fetch 실패 (HTTP ' + r.status + ')');
+              return r.json();
+            })
+            .then(function (j) {
+              var key = j && j.kakaoJsKey;
+              if (!key) throw new Error('키 응답 없음');
+              var s = document.createElement('script');
+              s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + encodeURIComponent(key) + '&libraries=services&autoload=false';
+              s.onload = function () {
+                if (typeof kakao === 'undefined' || !kakao.maps) {
+                  reject(new Error('SDK 로드됐는데 kakao.maps 없음'));
+                  return;
+                }
+                kakao.maps.load(function () { resolve(); });
+              };
+              s.onerror = function () { reject(new Error('SDK 스크립트 로드 실패')); };
+              document.head.appendChild(s);
+            })
+            .catch(reject);
         });
         return sdkReadyPromise;
       }
