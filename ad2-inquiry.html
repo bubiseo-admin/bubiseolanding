@@ -562,28 +562,6 @@
         </div>
       </section>
 
-      <!-- ─── 지역·분류 ─── -->
-      <section class="card">
-        <div class="row">
-          <div class="field">
-            <label class="label">시/도 <span style="color:var(--error)">*</span></label>
-            <select class="select" id="regionSel" name="region" required>
-              <option value="">선택</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="label">구/군 <span style="color:var(--error)">*</span></label>
-            <select class="select" id="sigunguSel" name="sigungu" required disabled>
-              <option value="">시/도 먼저</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">분류 <span style="color:var(--error)">*</span></label>
-          <div class="chips" id="categoryChips"></div>
-        </div>
-      </section>
-
       <!-- ─── 현장 ─── -->
       <section class="card">
         <!-- 2026-05-26 [사용자 명시] 현장 한마디 — 프리미엄 매물 지도 핀의 보라 박스에 표시.
@@ -619,6 +597,10 @@
             maxlength="100"
             placeholder="상세 주소 (동·호·층 등 선택)"
           />
+        </div>
+        <div class="field">
+          <label class="label">분류 <span style="color:var(--error)">*</span></label>
+          <div class="chips" id="categoryChips"></div>
         </div>
       </section>
 
@@ -896,29 +878,6 @@
           // 우선순위: 도로명 → 지번 → 기본
           var fullAddr = data.roadAddress || data.jibunAddress || data.address || '';
           if (addrInput) addrInput.value = fullAddr;
-          // 시/도·구/군 select 자동 set (옵션 매칭 시도)
-          var regionSel = document.getElementById('regionSel');
-          var sigunguSel = document.getElementById('sigunguSel');
-          if (regionSel && data.sido) {
-            // PRESALE_REGIONS 짧은 형식("경기") 또는 풀 형식("경기도") 모두 대응
-            var sidoShort = data.sido.replace(/(특별시|광역시|특별자치시|특별자치도|도)$/, '');
-            var match = Array.prototype.find.call(regionSel.options, function (o) {
-              return o.value === data.sido || o.value === sidoShort;
-            });
-            if (match) {
-              regionSel.value = match.value;
-              regionSel.dispatchEvent(new Event('change', { bubbles: true }));
-              // sigungu cascade 갱신 후 한 tick 뒤에 sigungu set
-              setTimeout(function () {
-                if (sigunguSel && data.sigungu) {
-                  var sigMatch = Array.prototype.find.call(sigunguSel.options, function (o) {
-                    return o.value === data.sigungu;
-                  });
-                  if (sigMatch) sigunguSel.value = sigMatch.value;
-                }
-              }, 80);
-            }
-          }
           if (detailInput) {
             detailInput.value = '';
             detailInput.focus();
@@ -1058,41 +1017,6 @@
         if (!el) return;
         el.addEventListener('input', (e) => {
           e.target.value = formatWonComma(e.target.value);
-        });
-      });
-
-      // 시/도 + 구/군 (랜딩 같은 도메인의 regions.json — bubiseo.com/regions.json)
-      const regionSel = document.getElementById('regionSel');
-      const sigunguSel = document.getElementById('sigunguSel');
-      let REGIONS = {};
-      fetch('/regions.json')
-        .then((r) => r.ok ? r.json() : Promise.reject())
-        .then((data) => {
-          REGIONS = data;
-          Object.keys(REGIONS).forEach((sido) => {
-            const opt = document.createElement('option');
-            opt.value = sido;
-            opt.textContent = sido;
-            regionSel.appendChild(opt);
-          });
-        })
-        .catch(() => {
-          // fetch 실패 시 시/도 17개 fallback (구/군 미노출)
-          ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'].forEach((sido) => {
-            const opt = document.createElement('option');
-            opt.value = sido;
-            opt.textContent = sido;
-            regionSel.appendChild(opt);
-          });
-        });
-      regionSel.addEventListener('change', () => {
-        sigunguSel.innerHTML = '<option value="">구/군 선택</option>';
-        sigunguSel.disabled = !regionSel.value;
-        const list = REGIONS[regionSel.value] ? Object.keys(REGIONS[regionSel.value]) : [];
-        list.forEach((g) => {
-          const opt = document.createElement('option');
-          opt.value = g; opt.textContent = g;
-          sigunguSel.appendChild(opt);
         });
       });
 
@@ -1710,8 +1634,9 @@
           managerPhones: phonesClean,
           startDate: new Date(startDate + 'T00:00:00+09:00').toISOString(),
           endDate: new Date(endDate + 'T23:59:59+09:00').toISOString(),
-          region: regionSel.value || null,
-          sigungu: sigunguSel.value || null,
+          // 2026-05-29 [사용자 명시] 시/도+구/군 select 제거 — 백엔드 geocodeWithRegion 가 address 로부터 자동 산출.
+          region: null,
+          sigungu: null,
           category: selectedCategory,
           title: form.title.value.trim(),
           address: (form.address.value.trim() + ' ' + (form.addressDetail?.value?.trim() ?? '')).trim(),
