@@ -435,7 +435,27 @@
     .ad2-foot__biz p { margin: 0 0 4px; }
     .ad2-foot__biz a { color: inherit; text-decoration: none; }
     .ad2-foot__copy { margin-top: 14px; padding-top: 12px; border-top: 1px solid #E5E8EB; color: #9DA5AE; }
+    /* 2026-05-29 [사용자 명시] 주소 검색 버튼 + 안내 — Daum/카카오 우편번호 위젯 */
+    .addr-row { display: flex; gap: 8px; align-items: stretch; }
+    .addr-row .input { flex: 1; cursor: pointer; background: #F8FAFB; }
+    .addr-row .input:focus { background: #FFFFFF; }
+    .addr-search-btn {
+      flex-shrink: 0;
+      padding: 0 16px;
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .addr-search-btn:hover { opacity: 0.92; }
+    .addr-detail { margin-top: 8px; }
   </style>
+  <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 (무료·인증 불필요) -->
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
 </head>
 <body>
   <!-- 2026-05-28 [사용자 명시] 비밀번호 게이트 해제 — 누구나 페이지 진입 가능 -->
@@ -578,7 +598,27 @@
         </div>
         <div class="field">
           <label class="label">현장 주소 <span style="color:var(--error)">*</span></label>
-          <input class="input" name="address" maxlength="200" required placeholder="예: 서울특별시 강남구 역삼동 …" />
+          <!-- 2026-05-29 [사용자 명시] Daum 우편번호 검색 팝업 — 주소 검색 버튼/입력칸 클릭 시 열림. 직접 입력 차단(readonly). -->
+          <div class="addr-row">
+            <input
+              class="input"
+              name="address"
+              id="ad2-address"
+              maxlength="200"
+              required
+              readonly
+              placeholder="주소 검색 버튼을 눌러주세요"
+              onclick="openAd2Postcode()"
+            />
+            <button type="button" class="addr-search-btn" onclick="openAd2Postcode()">주소 검색</button>
+          </div>
+          <input
+            class="input addr-detail"
+            name="addressDetail"
+            id="ad2-address-detail"
+            maxlength="100"
+            placeholder="상세 주소 (동·호·층 등 선택)"
+          />
         </div>
       </section>
 
@@ -841,6 +881,52 @@
     </div>
   </div>
 
+  <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 핸들러. window 전역 (inline onclick 에서 호출). -->
+  <script>
+    function openAd2Postcode() {
+      if (typeof daum === 'undefined' || !daum.Postcode) {
+        alert('주소 검색 위젯을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      new daum.Postcode({
+        oncomplete: function (data) {
+          var addrInput = document.getElementById('ad2-address');
+          var detailInput = document.getElementById('ad2-address-detail');
+          // 우선순위: 도로명 → 지번 → 기본
+          var fullAddr = data.roadAddress || data.jibunAddress || data.address || '';
+          if (addrInput) addrInput.value = fullAddr;
+          // 시/도·구/군 select 자동 set (옵션 매칭 시도)
+          var regionSel = document.getElementById('regionSel');
+          var sigunguSel = document.getElementById('sigunguSel');
+          if (regionSel && data.sido) {
+            // PRESALE_REGIONS 짧은 형식("경기") 또는 풀 형식("경기도") 모두 대응
+            var sidoShort = data.sido.replace(/(특별시|광역시|특별자치시|특별자치도|도)$/, '');
+            var match = Array.prototype.find.call(regionSel.options, function (o) {
+              return o.value === data.sido || o.value === sidoShort;
+            });
+            if (match) {
+              regionSel.value = match.value;
+              regionSel.dispatchEvent(new Event('change', { bubbles: true }));
+              // sigungu cascade 갱신 후 한 tick 뒤에 sigungu set
+              setTimeout(function () {
+                if (sigunguSel && data.sigungu) {
+                  var sigMatch = Array.prototype.find.call(sigunguSel.options, function (o) {
+                    return o.value === data.sigungu;
+                  });
+                  if (sigMatch) sigunguSel.value = sigMatch.value;
+                }
+              }, 80);
+            }
+          }
+          if (detailInput) {
+            detailInput.value = '';
+            detailInput.focus();
+          }
+        },
+        theme: { searchBgColor: '#6155F5', queryTextColor: '#FFFFFF' },
+      }).open();
+    }
+  </script>
   <script>
   (function () {
     'use strict';
@@ -1626,7 +1712,7 @@
           sigungu: sigunguSel.value || null,
           category: selectedCategory,
           title: form.title.value.trim(),
-          address: form.address.value.trim(),
+          address: (form.address.value.trim() + ' ' + (form.addressDetail?.value?.trim() ?? '')).trim(),
           rooms: toIntOrNull(form.rooms.value),
           bathrooms: toIntOrNull(form.bathrooms.value),
           floorMin: toIntOrNull(form.floorMin.value),
