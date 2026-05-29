@@ -439,6 +439,33 @@
     .addr-row { display: flex; gap: 8px; align-items: stretch; }
     .addr-row .input { flex: 1; background: #F8FAFB; }
     .addr-row .input:focus { background: #FFFFFF; }
+    /* 2026-05-29 [사용자 명시] 입주예정일 절반 + "즉시입주가능" 토글 (분류 전체). */
+    .moveinDate-row { display: flex; gap: 8px; align-items: stretch; }
+    .moveinDate-row .input { flex: 1; min-width: 0; }
+    .movein-toggle {
+      flex: 1;
+      min-height: 44px;
+      border: 1px solid #E5E8EB;
+      background: #FFFFFF;
+      color: #4E5968;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .movein-toggle:hover { border-color: #6155F5; color: #6155F5; }
+    .movein-toggle.active {
+      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+      border-color: transparent;
+      color: #FFFFFF;
+    }
+    .moveinDate-row .input[disabled],
+    .moveinDate-row .input:disabled {
+      opacity: 0.4;
+      background: #F2F4F6;
+      cursor: not-allowed;
+    }
     /* 2026-05-29 [사용자 명시] 위치 미리보기 — 모바일 admin 과 동일 200px 미니맵. */
     .map-status {
       margin-top: 8px;
@@ -646,7 +673,13 @@
         </div>
         <div class="field" data-cat-field="scheduledMoveInDate">
           <label class="label">입주예정일</label>
-          <input class="input" type="date" name="scheduledMoveInDate" />
+          <!-- 2026-05-29 [사용자 명시] 입주예정일 입력칸 절반 + 옆에 "즉시입주가능" 토글 (분류 전체).
+               토글 ON 이면 날짜 input 비활성 + 텍스트 "즉시입주". -->
+          <div class="moveinDate-row">
+            <input class="input" type="date" name="scheduledMoveInDate" id="ad2-movein-date" />
+            <button type="button" class="chip movein-toggle" id="ad2-movein-toggle" aria-pressed="false">즉시입주가능</button>
+          </div>
+          <input type="hidden" name="immediateMoveIn" id="ad2-movein-immediate" value="false" />
         </div>
         <div class="field" data-cat-field="unitType">
           <label class="label">평형 타입</label>
@@ -1128,6 +1161,26 @@
 
     // ─── 폼 초기화 ───
     function initForm() {
+      // 2026-05-29 [사용자 명시] "즉시입주가능" 토글 — 분류 전체 적용.
+      //   ON 이면 date input 비활성 + 비움 + hidden immediateMoveIn=true.
+      const moveinDate = document.getElementById('ad2-movein-date');
+      const moveinToggle = document.getElementById('ad2-movein-toggle');
+      const moveinHidden = document.getElementById('ad2-movein-immediate');
+      if (moveinToggle && moveinDate && moveinHidden) {
+        moveinToggle.addEventListener('click', () => {
+          const next = moveinHidden.value !== 'true';
+          moveinHidden.value = next ? 'true' : 'false';
+          moveinToggle.classList.toggle('active', next);
+          moveinToggle.setAttribute('aria-pressed', next ? 'true' : 'false');
+          if (next) {
+            moveinDate.value = '';
+            moveinDate.disabled = true;
+          } else {
+            moveinDate.disabled = false;
+          }
+        });
+      }
+
       // 분류 chip
       const catChips = document.getElementById('categoryChips');
       let selectedCategory = 'APARTMENT';
@@ -1889,6 +1942,8 @@
           landArea: toFloatOrNull(form.landArea?.value ?? ''),
           buildingArea: toFloatOrNull(form.buildingArea?.value ?? ''),
           totalFloorArea: toFloatOrNull(form.totalFloorArea?.value ?? ''),
+          // 2026-05-29 [사용자 명시] 즉시입주가능 토글 — 분류 전체 적용.
+          immediateMoveIn: form.immediateMoveIn?.value === 'true',
         };
         try {
           const r = await fetch(API_BASE + '/public/presale-inquiry/submit', {
