@@ -245,6 +245,10 @@
       min-height: 44px;
     }
     .input:focus, .select:focus, .textarea:focus { border-color: var(--pri); }
+    /* 2026-05-29 [사용자 명시] 모든 입력칸 placeholder 더 연한 색. */
+    .input::placeholder, .textarea::placeholder { color: #D1D6DB; opacity: 1; }
+    .input::-webkit-input-placeholder, .textarea::-webkit-input-placeholder { color: #D1D6DB; }
+    .input::-moz-placeholder, .textarea::-moz-placeholder { color: #D1D6DB; opacity: 1; }
     .textarea { resize: vertical; min-height: 80px; }
     .row { display: flex; gap: 10px; }
     .row > * { flex: 1; min-width: 0; }
