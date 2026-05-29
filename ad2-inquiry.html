@@ -1999,17 +1999,32 @@
         document.getElementById('ad2Form').hidden = true;
         const v = document.getElementById('successView');
         v.hidden = false;
-        // 2026-05-29 [사용자 명시] 등록 접수 화면 — 미리보기 이미지 제거, 메시지 섹션만.
+        // 2026-05-29 [사용자 명시] 등록 접수 화면 — 데스크톱 로그인 안내 이미지 복구.
         v.innerHTML = `
           <div class="card success-box">
             <div class="check">✅</div>
             <h2>등록이 접수됐어요</h2>
             <p>최대 10분 안에 부비서 앱의 분양파트너 페이지에 노출됩니다.<br/>운영팀에서 내용을 검토한 뒤 안내드려요.</p>
+            <div class="pay-account" style="margin-top:18px">
+              <img class="pay-account__img" id="successDesktopImg" src="assets/screen-desktop2.png" alt="부비서 데스크톱 로그인 안내" />
+              <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
+            </div>
             <button type="button" class="back-btn" id="backToFormBtn" style="margin-top:18px">돌아가기</button>
           </div>
         `;
         // 다음 frame 에 scroll 복원 (DOM 변경 반영 후).
         requestAnimationFrame(() => { window.scrollTo(0, prevScroll); });
+        // 미리보기 이미지 클릭 → lightbox 확대.
+        const desktopImg = document.getElementById('successDesktopImg');
+        if (desktopImg) desktopImg.addEventListener('click', () => {
+          const lightboxImg = document.getElementById('lightboxImg');
+          const lightbox = document.getElementById('lightbox');
+          if (lightboxImg && lightbox) {
+            lightboxImg.src = 'assets/screen-desktop2.png';
+            lightboxImg.alt = '부비서 데스크톱 로그인 안내';
+            lightbox.classList.add('show');
+          }
+        });
         // 2026-05-29 [사용자 명시] 비밀번호 게이트 해제 후 — 돌아가기는 페이지 재진입만.
         const back = document.getElementById('backToFormBtn');
         if (back) back.addEventListener('click', () => {
