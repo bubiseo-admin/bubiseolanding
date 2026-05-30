@@ -483,10 +483,6 @@
     .ad2-foot__biz p { margin: 0 0 4px; }
     .ad2-foot__biz a { color: inherit; text-decoration: none; }
     .ad2-foot__copy { margin-top: 14px; padding-top: 12px; border-top: 1px solid #E5E8EB; color: #9DA5AE; }
-    /* 2026-05-29 [사용자 명시] 주소 검색 버튼 + 안내 — Daum/카카오 우편번호 위젯 */
-    .addr-row { display: flex; gap: 8px; align-items: stretch; }
-    .addr-row .input { flex: 1; background: #F8FAFB; }
-    .addr-row .input:focus { background: #FFFFFF; }
     /* 2026-05-29 [사용자 명시] 입주예정일 절반 + "즉시입주가능" 토글 (분류 전체). */
     .moveinDate-row { display: flex; gap: 8px; align-items: stretch; }
     .moveinDate-row .input { flex: 1; min-width: 0; }
@@ -532,23 +528,8 @@
       border: 1px solid #E5E8EB;
       background: #F2F4F6;
     }
-    .addr-search-btn {
-      flex-shrink: 0;
-      padding: 0 16px;
-      background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-      color: #FFFFFF;
-      font-size: 13px;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .addr-search-btn:hover { opacity: 0.92; }
     .addr-detail { margin-top: 8px; }
   </style>
-  <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 (무료·인증 불필요) -->
-  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
   <!-- 2026-05-29 [사용자 명시] 카카오 JavaScript SDK — 동적 로드 (백엔드에서 키 fetch).
        키는 백엔드 .env 한 곳 보관 → public 레포 노출 0.
        fetch 실패 시 미니맵만 동작 안 함 (폼 등록 자체엔 영향 없음). -->
@@ -681,20 +662,17 @@
         </div>
         <div class="field">
           <label class="label">현장 주소 <span style="color:var(--error)">*</span></label>
-          <!-- 2026-05-29 [사용자 명시] Daum 우편번호 검색 팝업 + 직접 입력 허용.
-               Daum DB 에 없는 작은 지번(예: "박달동 617-12") 도 광고주가 카카오맵에서 본 주소 그대로 복붙 가능.
-               백엔드 geocodeWithRegion 의 카카오 키워드검색 fallback 이 region/sigungu/좌표 자동 산출. -->
-          <div class="addr-row">
-            <input
-              class="input"
-              name="address"
-              id="ad2-address"
-              maxlength="200"
-              required
-              placeholder="주소검색 및 직접입력"
-            />
-            <button type="button" class="addr-search-btn" onclick="openAd2Postcode()">주소 검색</button>
-          </div>
+          <!-- 2026-05-30 [사용자 명시] 주소검색 버튼 제거 — 현장주소 직접 입력만.
+               지번("고림동 809-4")이든 도로명("포곡로326번길 30-42")이든 그대로 입력.
+               백엔드 geocodeWithRegion 가 카카오 주소검색→키워드 fallback 으로 시도/시군구/읍면동/좌표 자동 산출. -->
+          <input
+            class="input"
+            name="address"
+            id="ad2-address"
+            maxlength="200"
+            required
+            placeholder="현장 주소 직접 입력 (지번/도로명)"
+          />
           <input
             class="input addr-detail"
             name="addressDetail"
@@ -1016,33 +994,7 @@
     </div>
   </div>
 
-  <!-- 2026-05-29 [사용자 명시] Daum/카카오 우편번호 위젯 핸들러. window 전역 (inline onclick 에서 호출). -->
   <script>
-    function openAd2Postcode() {
-      if (typeof daum === 'undefined' || !daum.Postcode) {
-        alert('주소 검색 위젯을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-        return;
-      }
-      new daum.Postcode({
-        oncomplete: function (data) {
-          var addrInput = document.getElementById('ad2-address');
-          var detailInput = document.getElementById('ad2-address-detail');
-          // 우선순위: 도로명 → 지번 → 기본
-          var fullAddr = data.roadAddress || data.jibunAddress || data.address || '';
-          if (addrInput) {
-            addrInput.value = fullAddr;
-            // 2026-05-29 [사용자 명시] Daum 팝업 선택 후 즉시 미니맵 갱신.
-            if (typeof updateAd2MapPreview === 'function') updateAd2MapPreview(fullAddr);
-          }
-          if (detailInput) {
-            detailInput.value = '';
-            detailInput.focus();
-          }
-        },
-        theme: { searchBgColor: '#FFFFFF', queryTextColor: '#191F28', outlineColor: '#E5E8EB' },
-      }).open();
-    }
-
     // 2026-05-29 [사용자 명시] 위치 미리보기 — 모바일 admin 분양현장등록과 동일.
     //   카카오 JS SDK 의 services.Geocoder.addressSearch → 실패 시 Places.keywordSearch fallback.
     //   500ms debounce, 좌표 받으면 200px 미니맵 표시. 못 찾으면 안내 텍스트.
