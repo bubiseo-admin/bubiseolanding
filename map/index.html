@@ -83,15 +83,14 @@
     .sheet-meta { font-size: 13px; color: var(--sub); margin-top: 4px; line-height: 1.5; }
     .sheet-meta a { color: #3B82F6; text-decoration: none; font-weight: 700; }
     .badge { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; margin-top: 8px; color: #fff; }
-    .row-act { display: flex; gap: 8px; margin: 14px 0 6px; }
-    .btn-route { flex: 1; height: 46px; border: none; border-radius: 12px; background: #FEE500; color: #191600; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; }
-    .btn-call { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 18px; cursor: pointer; }
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; align-items: start; }
-    .status-grid button { border-radius: 12px; font-weight: 800; cursor: pointer; }
-    /* item4: 전부 흰 배경, 가입완료+전달완료만 파란 그라데이션(흰 글자) */
-    .sg-SIGNUP, .sg-DELIVERED { height: 50px; border: none; background: var(--blueGrad); color: #fff; font-size: 15px; }
-    /* item5: 재방문+실패 절반 크기 + 흰 배경 + 색 글자 */
-    .sg-REVISIT, .sg-FAIL { height: 26px; background: #fff; border: 1.5px solid var(--line); font-size: 12px; }
+    /* 1행: 가입완료·전달완료 (파란 그라데이션) */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 8px; }
+    .status-grid button { height: 50px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; border: none; background: var(--blueGrad); color: #fff; }
+    /* 2행: 길찾기(좌, 가입완료 크기) | 재방문·실패(우, 한 칸에 2개) */
+    .act-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 6px; }
+    .btn-route { height: 50px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; text-decoration: none; }
+    .sub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .sub2 button { height: 50px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; background: #fff; border: 1.5px solid var(--line); }
     .sg-REVISIT { color: var(--revisit); }
     .sg-FAIL { color: var(--fail); }
     .hist-title { font-size: 13px; font-weight: 800; color: var(--sub); margin: 14px 0 6px; }
@@ -373,7 +372,7 @@
             return !g || g === sigungu;
           });
           focusGu = sigungu; dongFilter = '';  // 새로 누른 구가 동 선택 대상
-          renderAll(); renderChips(); renderDongChips(); fitToRegion(loaded[sigungu]); updateHint();
+          renderAll(); renderChips(); renderDongChips(); centerOn(loaded[sigungu], 7); updateHint();
         })
         .catch(function(e){ delete loadingSet[sigungu]; renderChips(); if (String(e.message) !== '403') toast('지역 로드 실패'); });
     }
@@ -401,7 +400,7 @@
       renderDongChips(); renderAll();
       // 선택 동으로 줌
       var list = loaded[focusGu] ? loaded[focusGu].filter(function(o){ return !dong || getDong(o) === dong; }) : [];
-      fitToRegion(list); updateHint();
+      centerOn(list, dong ? 6 : 7); updateHint();  // 동=500m(6), 구 전체=1km(7)
     }
 
     function allLoadedOffices() {
@@ -455,11 +454,13 @@
       if (!showBoxes && markers.length) clusterer.addMarkers(markers);
     }
 
-    function fitToRegion(list) {
+    // 평균 좌표를 화면 중앙으로 + 지정 레벨 (구=7≈1km, 동=6≈500m).
+    function centerOn(list, level) {
       if (!list || !list.length) return;
-      var bounds = new kakao.maps.LatLngBounds();
-      list.forEach(function(o){ bounds.extend(new kakao.maps.LatLng(o.lat, o.lng)); });
-      map.setBounds(bounds);
+      var sLat = 0, sLng = 0;
+      list.forEach(function(o){ sLat += o.lat; sLng += o.lng; });
+      map.setLevel(level);
+      map.setCenter(new kakao.maps.LatLng(sLat / list.length, sLng / list.length));
     }
 
     function updateHint() {
@@ -501,15 +502,20 @@
         var darkText = (o.status === 'REVISIT'); // 노랑(재방문)만 어두운 글자
         html += '<span class="badge" style="background:' + STATUS_COLOR[o.status] + (darkText ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + (o.managerName ? ' · ' + esc(o.managerName) : '') + (o.statusAt ? ' · ' + fmtTime(o.statusAt) : '') + '</span>';
       }
-      html += '<div class="row-act">';
-      html += '<a class="btn-route" href="' + routeUrl + '" target="_blank" rel="noopener">🧭 길찾기</a>';
-      if (phoneDigits) html += '<a class="btn-call" href="tel:' + phoneDigits + '" style="display:flex;align-items:center;justify-content:center;text-decoration:none">📞</a>';
-      html += '</div>';
+      // 1행: 가입완료 · 전달완료
       html += '<div class="status-grid">';
-      ['SIGNUP','DELIVERED','REVISIT','FAIL'].forEach(function(s){
+      ['SIGNUP','DELIVERED'].forEach(function(s){
         html += '<button class="sg-' + s + '" data-status="' + s + '">' + STATUS_LABEL[s] + '</button>';
       });
       html += '</div>';
+      // 2행: 길찾기(좌) | 재방문·실패(우 한 칸에 2개)
+      html += '<div class="act-row2">';
+      html += '<a class="btn-route" href="' + routeUrl + '" target="_blank" rel="noopener">🧭 길찾기</a>';
+      html += '<div class="sub2">';
+      ['REVISIT','FAIL'].forEach(function(s){
+        html += '<button class="sg-' + s + '" data-status="' + s + '">' + STATUS_LABEL[s] + '</button>';
+      });
+      html += '</div></div>';
       html += '<div class="hist-title">방문 이력 (' + ((o.visits && o.visits.length) || 0) + ')</div>';
       if (o.visits && o.visits.length) {
         o.visits.forEach(function(v){
