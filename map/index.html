@@ -7,12 +7,15 @@
   <title>부동산 영업 지도</title>
   <style>
     :root {
-      --signup: #00C896; --delivered: #FFB020; --revisit: #3B82F6; --fail: #EF4444;
+      /* 박스 상태색 — 가입완료 초록 / 전달완료 파랑 / 재방문 노랑 / 실패 빨강 */
+      --signup: #00C896; --delivered: #3B82F6; --revisit: #FFB020; --fail: #EF4444;
+      --blueGrad: linear-gradient(135deg,#6155F5,#39AFFD);
       --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
-    #map { width: 100%; height: 100%; }
+    /* 세이프에리어 포함 화면 꽉차게 */
+    #map { position: fixed; inset: 0; width: 100%; height: 100%; }
     /* 비번 게이트 */
     #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#6155F5,#39AFFD); display: flex; align-items: center; justify-content: center; padding: 24px; }
     #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
@@ -26,7 +29,7 @@
     #hint { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
     /* 지역 버튼 바 (상단) */
     #regionbar { position: fixed; top: calc(env(safe-area-inset-top) + 8px); left: 8px; right: 8px; z-index: 600; }
-    #sidoTabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 6px; }
+    #sidoTabs { display: flex; gap: 6px; justify-content: flex-start; margin-bottom: 6px; }
     #sidoTabs button { border: none; border-radius: 999px; padding: 7px 18px; font-size: 13px; font-weight: 800; background: rgba(255,255,255,.96); color: var(--sub); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; }
     #sidoTabs button.on { background: #6155F5; color: #fff; }
     #guChips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
@@ -60,19 +63,28 @@
     #sheet.on { transform: translateY(0); }
     .sheet-grip { width: 40px; height: 4px; background: #D1D6DB; border-radius: 2px; margin: 10px auto 4px; }
     .sheet-pad { padding: 8px 18px 0; }
-    .sheet-name { font-size: 20px; font-weight: 800; }
+    .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .sheet-name { font-size: 20px; font-weight: 800; flex: 1; min-width: 0; }
+    .btn-memo { flex: 0 0 auto; border: 1.5px solid #C9CFFA; background: #EEF0FF; color: #4A40D0; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+    .memo-box { margin-top: 10px; background: #FFF8E1; border: 1px solid #FFE9A8; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #5A4A1A; line-height: 1.5; white-space: pre-wrap; }
+    .memo-edit { width: 100%; margin-top: 10px; min-height: 72px; border: 1.5px solid #C9CFFA; border-radius: 12px; padding: 10px 12px; font-size: 14px; color: var(--ink); line-height: 1.5; resize: vertical; outline: none; box-sizing: border-box; font-family: inherit; }
+    .memo-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .memo-cancel { flex: 1; height: 42px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--sub); font-size: 14px; font-weight: 700; cursor: pointer; }
+    .memo-save { flex: 1.6; height: 42px; border: none; border-radius: 12px; background: var(--blueGrad); color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
     .sheet-meta { font-size: 13px; color: var(--sub); margin-top: 4px; line-height: 1.5; }
     .sheet-meta a { color: #3B82F6; text-decoration: none; font-weight: 700; }
     .badge { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; margin-top: 8px; color: #fff; }
     .row-act { display: flex; gap: 8px; margin: 14px 0 6px; }
     .btn-route { flex: 1; height: 46px; border: none; border-radius: 12px; background: #FEE500; color: #191600; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; }
     .btn-call { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 18px; cursor: pointer; }
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
-    .status-grid button { height: 50px; border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
-    .sg-SIGNUP { background: var(--signup); }
-    .sg-DELIVERED { background: var(--delivered); color: #4A3A00 !important; }
-    .sg-REVISIT { background: var(--revisit); }
-    .sg-FAIL { background: var(--fail); }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; align-items: start; }
+    .status-grid button { border-radius: 12px; font-weight: 800; cursor: pointer; }
+    /* item4: 전부 흰 배경, 가입완료+전달완료만 파란 그라데이션(흰 글자) */
+    .sg-SIGNUP, .sg-DELIVERED { height: 50px; border: none; background: var(--blueGrad); color: #fff; font-size: 15px; }
+    /* item5: 재방문+실패 절반 크기 + 흰 배경 + 색 글자 */
+    .sg-REVISIT, .sg-FAIL { height: 26px; background: #fff; border: 1.5px solid var(--line); font-size: 12px; }
+    .sg-REVISIT { color: var(--revisit); }
+    .sg-FAIL { color: var(--fail); }
     .hist-title { font-size: 13px; font-weight: 800; color: var(--sub); margin: 14px 0 6px; }
     .hist-item { border-top: 1px solid #F0F2F5; padding: 10px 0; font-size: 13px; }
     .hist-item .hi-top { display: flex; justify-content: space-between; }
@@ -169,7 +181,7 @@
     var markers = [];        // 클러스터용 마커
     var overlays = [];       // 박스 CustomOverlay (가까이서만)
     var officeCache = {};    // id -> office (목록 응답)
-    var BOX_LEVEL = 4;       // 이 레벨 이하(가까움)면 박스 표시
+    var BOX_LEVEL = 3;       // 이 레벨 이하(가까움)면 박스 표시 (겹침 방지 위해 더 확대 필요)
     var renderTimer = null;
     // 지역 버튼 방식 — 기본 빈 지도, 버튼 누른 시군구만 로드.
     var REGIONS = [];        // [{sido, sigungu, count}]
@@ -366,14 +378,18 @@
       var phoneDigits = (o.phone || '').replace(/[^0-9]/g, '');
       var routeUrl = 'https://map.kakao.com/link/to/' + encodeURIComponent(o.name || '부동산') + ',' + o.lat + ',' + o.lng;
       var html = '';
-      html += '<div class="sheet-name">' + esc(o.name) + '</div>';
+      html += '<div class="sheet-head"><div class="sheet-name">' + esc(o.name) + '</div>' +
+        '<button class="btn-memo" id="memoBtn">📝 메모</button></div>';
       html += '<div class="sheet-meta">';
       if (o.ownerName) html += '대표 ' + esc(o.ownerName) + '<br>';
       if (o.phone) html += '<a href="tel:' + phoneDigits + '">' + esc(o.phone) + '</a><br>';
+      if (o.regNo) html += '등록번호 ' + esc(o.regNo) + '<br>';
       if (addr) html += esc(addr);
       html += '</div>';
+      html += '<div id="memoArea">' + (o.note ? '<div class="memo-box">' + esc(o.note) + '</div>' : '') + '</div>';
       if (o.status) {
-        html += '<span class="badge" style="background:' + STATUS_COLOR[o.status] + (o.status==='DELIVERED'?';color:#4A3A00':'') + '">' + STATUS_LABEL[o.status] + (o.managerName ? ' · ' + esc(o.managerName) : '') + (o.statusAt ? ' · ' + fmtTime(o.statusAt) : '') + '</span>';
+        var darkText = (o.status === 'REVISIT'); // 노랑(재방문)만 어두운 글자
+        html += '<span class="badge" style="background:' + STATUS_COLOR[o.status] + (darkText ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + (o.managerName ? ' · ' + esc(o.managerName) : '') + (o.statusAt ? ' · ' + fmtTime(o.statusAt) : '') + '</span>';
       }
       html += '<div class="row-act">';
       html += '<a class="btn-route" href="' + routeUrl + '" target="_blank" rel="noopener">🧭 길찾기</a>';
@@ -397,6 +413,25 @@
       Array.prototype.forEach.call($('sheetBody').querySelectorAll('[data-status]'), function(btn){
         btn.onclick = function(){ startAction(btn.getAttribute('data-status')); };
       });
+      var mb = document.getElementById('memoBtn');
+      if (mb) mb.onclick = function(){ editMemo(o); };
+    }
+
+    // ===== 메모 (바텀시트 우측상단 버튼) =====
+    function editMemo(o) {
+      var area = document.getElementById('memoArea');
+      if (!area) return;
+      area.innerHTML = '<textarea class="memo-edit" id="memoInput" placeholder="이 부동산 메모를 적어두세요">' + esc(o.note || '') + '</textarea>' +
+        '<div class="memo-actions"><button class="memo-cancel" id="memoCancel">취소</button><button class="memo-save" id="memoSave">메모 저장</button></div>';
+      var ta = document.getElementById('memoInput'); ta.focus();
+      document.getElementById('memoCancel').onclick = function(){ renderSheet(officeCache[o.id] || o); };
+      document.getElementById('memoSave').onclick = function(){ saveMemo(o, ta.value); };
+    }
+    function saveMemo(o, note) {
+      fetch(API + '/fieldmap/offices/' + o.id, { method: 'PATCH', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ note: note }) })
+        .then(function(r){ if (!r.ok) throw new Error('실패'); return r.json(); })
+        .then(function(updated){ officeCache[o.id] = Object.assign(officeCache[o.id] || {}, updated); renderSheet(officeCache[o.id]); toast('메모 저장됨'); })
+        .catch(function(){ toast('메모 저장 실패'); });
     }
 
     // ===== 액션 모달 (담당자 → 사진2 → 저장) =====
