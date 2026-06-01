@@ -211,15 +211,26 @@
     function authHeaders(extra) { var h = extra || {}; h.Authorization = 'Bearer ' + token; return h; }
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function fmtTime(iso) { var d = new Date(iso); if (isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
-    // 지번주소에서 동(법정동) 추출 — 번지(숫자) 직전 토큰. "서울특별시 강남구 역삼동 123-45" → "역삼동".
-    function getDong(o) {
+    // 지번주소 토큰 분해 — [시도, 시군구..., 동, 번지]. 번지(숫자) 직전이 동.
+    function jibunParts(o) {
       var jibun = (o.jibunAddress || '').trim();
-      if (!jibun) return '';
+      if (!jibun) return null;
       var t = jibun.split(/\s+/);
-      for (var i = 2; i < t.length; i++) {
-        if (/\d/.test(t[i])) return t[i - 1] || '';
-      }
-      return t[t.length - 1] || '';
+      var numIdx = -1;
+      for (var i = 2; i < t.length; i++) { if (/\d/.test(t[i])) { numIdx = i; break; } }
+      var dongIdx = numIdx > 1 ? numIdx - 1 : t.length - 1;
+      return { tokens: t, dongIdx: dongIdx };
+    }
+    // 지번주소에서 동 추출. "서울특별시 강남구 역삼동 123-45" → "역삼동".
+    function getDong(o) {
+      var p = jibunParts(o);
+      return p ? (p.tokens[p.dongIdx] || '') : '';
+    }
+    // 지번주소에서 시군구 추출(시도와 동 사이). "경기도 수원시 장안구 정자동" → "수원시 장안구".
+    function getGu(o) {
+      var p = jibunParts(o);
+      if (!p || p.dongIdx < 2) return '';
+      return p.tokens.slice(1, p.dongIdx).join(' ');
     }
 
     // ===== 비번 게이트 =====
@@ -356,7 +367,11 @@
         .then(function(r){ if (r.status === 403) { showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
         .then(function(j){
           delete loadingSet[sigungu];
-          loaded[sigungu] = (j.offices || []).filter(function(o){ return o.lat != null && o.lng != null; });
+          loaded[sigungu] = (j.offices || []).filter(function(o){
+            if (o.lat == null || o.lng == null) return false;
+            var g = getGu(o); // 지번주소 구와 선택 구가 명확히 다르면 제외(법인 등록지/실제위치 불일치)
+            return !g || g === sigungu;
+          });
           focusGu = sigungu; dongFilter = '';  // 새로 누른 구가 동 선택 대상
           renderAll(); renderChips(); renderDongChips(); fitToRegion(loaded[sigungu]); updateHint();
         })
