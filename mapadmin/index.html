@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>영업 지도 관리자</title>
+  <style>
+    :root {
+      --signup: #00C896; --delivered: #FFB020; --revisit: #3B82F6; --fail: #EF4444;
+      --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 16px 14px 60px; }
+    header.top { display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 14px; }
+    header.top h1 { font-size: 19px; margin: 0; }
+    header.top .reload { font-size: 13px; color: #6155F5; background: none; border: none; cursor: pointer; font-weight: 700; }
+    /* 게이트 */
+    #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#3D4452,#191F28); display: flex; align-items: center; justify-content: center; padding: 24px; }
+    #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+    #gate h1 { font-size: 19px; margin: 0 0 6px; }
+    #gate p { font-size: 13px; color: var(--sub); margin: 0 0 18px; }
+    #gate input { width: 100%; height: 52px; border: 1px solid var(--line); border-radius: 12px; font-size: 16px; text-align: center; outline: none; }
+    #gate input:focus { border-color: #6155F5; }
+    #gate button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: #191F28; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    #gateErr { color: var(--fail); font-size: 13px; min-height: 18px; margin-top: 8px; font-weight: 600; }
+    /* 탭 */
+    .tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+    .tab { background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; cursor: pointer; }
+    .tab .t-num { font-size: 20px; font-weight: 800; }
+    .tab .t-lbl { font-size: 12px; color: var(--sub); margin-top: 2px; }
+    .tab.active { border-width: 2px; }
+    .tab.SIGNUP.active { border-color: var(--signup); } .tab.SIGNUP .t-num { color: var(--signup); }
+    .tab.DELIVERED.active { border-color: var(--delivered); } .tab.DELIVERED .t-num { color: var(--delivered); }
+    .tab.REVISIT.active { border-color: var(--revisit); } .tab.REVISIT .t-num { color: var(--revisit); }
+    .tab.FAIL.active { border-color: var(--fail); } .tab.FAIL .t-num { color: var(--fail); }
+    /* 카드 */
+    .card-o { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 5px solid var(--line); }
+    .card-o.SIGNUP { border-left-color: var(--signup); }
+    .card-o.DELIVERED { border-left-color: var(--delivered); }
+    .card-o.REVISIT { border-left-color: var(--revisit); }
+    .card-o.FAIL { border-left-color: var(--fail); }
+    .co-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .co-name { font-size: 16px; font-weight: 800; }
+    .co-sub { font-size: 12px; color: var(--sub); margin-top: 3px; line-height: 1.5; }
+    .badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; color: #fff; white-space: nowrap; }
+    .b-SIGNUP { background: var(--signup); } .b-DELIVERED { background: var(--delivered); color: #4A3A00; }
+    .b-REVISIT { background: var(--revisit); } .b-FAIL { background: var(--fail); }
+    .co-toggle { margin-top: 10px; font-size: 13px; font-weight: 700; color: #6155F5; background: none; border: none; cursor: pointer; padding: 0; }
+    .hist { display: none; margin-top: 8px; border-top: 1px solid #F0F2F5; padding-top: 8px; }
+    .hist.on { display: block; }
+    .h-item { padding: 8px 0; border-bottom: 1px dashed #EEF0F3; }
+    .h-item:last-child { border-bottom: none; }
+    .h-row { display: flex; justify-content: space-between; align-items: center; }
+    .h-st { font-size: 13px; font-weight: 800; }
+    .h-time { font-size: 12px; color: var(--sub); }
+    .h-photos { display: flex; gap: 6px; margin-top: 6px; }
+    .h-photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); cursor: pointer; }
+    .empty { text-align: center; color: #B0B8C1; font-size: 14px; padding: 40px 0; }
+    #lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; padding: 20px; }
+    #lightbox.on { display: flex; }
+    #lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div id="gate">
+    <div class="card">
+      <h1>영업 지도 관리자</h1>
+      <p>관리자 비밀번호를 입력해 주세요</p>
+      <input id="gatePw" type="password" autocomplete="off" />
+      <div id="gateErr"></div>
+      <button id="gateBtn">들어가기</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="top">
+      <h1>영업 현황</h1>
+      <button class="reload" id="reloadBtn">새로고침</button>
+    </header>
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+  </div>
+
+  <div id="lightbox"><img id="lightboxImg" src="" alt="" /></div>
+
+  <script>
+    var API = 'https://api.bubiseo.com';
+    var token = sessionStorage.getItem('fieldmap_admin_token') || '';
+    var ALL = [];
+    var activeTab = 'SIGNUP';
+    var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
+    var ORDER = ['SIGNUP','DELIVERED','REVISIT','FAIL'];
+
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+    function fmtTime(iso){ var d=new Date(iso); if(isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+    function authHeaders(){ return { Authorization: 'Bearer ' + token }; }
+
+    // ===== 게이트 =====
+    function showGate(msg){ $('gate').style.display='flex'; if(msg) $('gateErr').textContent=msg; $('gatePw').value=''; $('gatePw').focus(); }
+    function hideGate(){ $('gate').style.display='none'; }
+    $('gateBtn').onclick = doAuth;
+    $('gatePw').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
+    function doAuth(){
+      var pw = $('gatePw').value.trim(); if(!pw) return; $('gateErr').textContent='';
+      fetch(API+'/fieldmap/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+        .then(function(r){ if(!r.ok) throw new Error('pw'); return r.json(); })
+        .then(function(j){
+          if(j.scope!=='admin'){ $('gateErr').textContent='관리자 비밀번호가 아니에요'; return; }
+          token=j.token; sessionStorage.setItem('fieldmap_admin_token',token); hideGate(); load();
+        })
+        .catch(function(){ $('gateErr').textContent='비밀번호가 올바르지 않아요'; $('gatePw').value=''; });
+    }
+
+    // ===== 로드 =====
+    $('reloadBtn').onclick = load;
+    function load(){
+      $('list').innerHTML = '<div class="empty">불러오는 중…</div>';
+      fetch(API+'/fieldmap/admin/offices', { headers: authHeaders() })
+        .then(function(r){ if(r.status===403){ showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
+        .then(function(j){ ALL = j.offices || []; renderTabs(); render(); })
+        .catch(function(e){ if(String(e.message)!=='403'){ $('list').innerHTML='<div class="empty">불러오기 실패</div>'; } });
+    }
+
+    function countBy(status){ return ALL.filter(function(o){ return o.status===status; }).length; }
+
+    function renderTabs(){
+      var html = '';
+      ORDER.forEach(function(s){
+        html += '<div class="tab ' + s + (s===activeTab?' active':'') + '" data-tab="' + s + '">' +
+          '<div class="t-num">' + countBy(s) + '</div><div class="t-lbl">' + STATUS_LABEL[s] + '</div></div>';
+      });
+      $('tabs').innerHTML = html;
+      Array.prototype.forEach.call($('tabs').querySelectorAll('[data-tab]'), function(t){
+        t.onclick = function(){ activeTab = t.getAttribute('data-tab'); renderTabs(); render(); };
+      });
+    }
+
+    function render(){
+      var rows = ALL.filter(function(o){ return o.status===activeTab; })
+        .sort(function(a,b){ return new Date(b.statusAt||0) - new Date(a.statusAt||0); });
+      if(!rows.length){ $('list').innerHTML = '<div class="empty">' + STATUS_LABEL[activeTab] + ' 부동산이 없어요.</div>'; return; }
+      var html = '';
+      rows.forEach(function(o){
+        var addr = o.roadAddress || o.jibunAddress || '';
+        html += '<div class="card-o ' + o.status + '">';
+        html += '<div class="co-top"><div><div class="co-name">' + esc(o.name) + '</div>' +
+          '<div class="co-sub">' + (o.ownerName?esc(o.ownerName)+' · ':'') + (o.phone?esc(o.phone):'') + (addr?'<br>'+esc(addr):'') + '</div></div>' +
+          '<span class="badge b-' + o.status + '">' + STATUS_LABEL[o.status] + '</span></div>';
+        html += '<div class="co-sub" style="margin-top:8px">담당자 <b>' + esc(o.managerName||'-') + '</b> · ' + (o.statusAt?fmtTime(o.statusAt):'') + '</div>';
+        var vc = (o.visits&&o.visits.length)||0;
+        html += '<button class="co-toggle" data-id="' + o.id + '">이력 ' + vc + '건 보기 ▾</button>';
+        html += '<div class="hist" id="hist-' + o.id + '">';
+        (o.visits||[]).forEach(function(v){
+          html += '<div class="h-item"><div class="h-row"><span class="h-st b-' + v.status + '" style="background:none;color:' +
+            ({SIGNUP:'var(--signup)',DELIVERED:'#B8860B',REVISIT:'var(--revisit)',FAIL:'var(--fail)'}[v.status]) + '">' +
+            STATUS_LABEL[v.status] + ' · ' + esc(v.managerName) + '</span><span class="h-time">' + fmtTime(v.createdAt) + '</span></div>';
+          html += '<div class="h-photos">' + (v.photo1Url?'<img src="'+esc(v.photo1Url)+'" data-full="'+esc(v.photo1Url)+'">':'') +
+            (v.photo2Url?'<img src="'+esc(v.photo2Url)+'" data-full="'+esc(v.photo2Url)+'">':'') + '</div></div>';
+        });
+        html += '</div></div>';
+      });
+      $('list').innerHTML = html;
+      Array.prototype.forEach.call($('list').querySelectorAll('.co-toggle'), function(b){
+        b.onclick = function(){ var h = $('hist-' + b.getAttribute('data-id')); h.classList.toggle('on'); b.textContent = (h.classList.contains('on')?'이력 접기 ▴':b.textContent.replace('접기 ▴','보기 ▾').replace('▴','▾')); };
+      });
+      Array.prototype.forEach.call($('list').querySelectorAll('.h-photos img'), function(im){
+        im.onclick = function(){ $('lightboxImg').src = im.getAttribute('data-full'); $('lightbox').classList.add('on'); };
+      });
+    }
+
+    $('lightbox').onclick = function(){ $('lightbox').classList.remove('on'); };
+
+    // ===== 시작 =====
+    if(token) { hideGate(); load(); } else { showGate(); }
+  </script>
+</body>
+</html>

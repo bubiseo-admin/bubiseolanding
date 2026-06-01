@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부동산 영업 지도</title>
+  <style>
+    :root {
+      --signup: #00C896; --delivered: #FFB020; --revisit: #3B82F6; --fail: #EF4444;
+      --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
+    #map { width: 100%; height: 100%; }
+    /* 비번 게이트 */
+    #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#6155F5,#39AFFD); display: flex; align-items: center; justify-content: center; padding: 24px; }
+    #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
+    #gate h1 { font-size: 19px; margin: 0 0 6px; }
+    #gate p { font-size: 13px; color: var(--sub); margin: 0 0 18px; }
+    #gate input { width: 100%; height: 52px; border: 1px solid var(--line); border-radius: 12px; font-size: 18px; text-align: center; letter-spacing: 4px; outline: none; }
+    #gate input:focus { border-color: #6155F5; }
+    #gate button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    #gateErr { color: var(--fail); font-size: 13px; min-height: 18px; margin-top: 8px; font-weight: 600; }
+    /* 상단 안내칩 */
+    #hint { position: fixed; top: calc(env(safe-area-inset-top) + 10px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
+    /* 부동산 박스 (CustomOverlay) */
+    .office-box { transform: translate(-50%, -100%); background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; min-width: 92px; box-shadow: 0 4px 12px rgba(0,0,0,.18); cursor: pointer; font-size: 11px; line-height: 1.35; }
+    .office-box::after { content: ""; position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #fff; }
+    .office-box b { font-size: 12px; display: block; color: var(--ink); }
+    .office-box .ob-sub { color: var(--sub); }
+    .office-box.s-SIGNUP { background: var(--signup); border-color: var(--signup); }
+    .office-box.s-DELIVERED { background: var(--delivered); border-color: var(--delivered); }
+    .office-box.s-REVISIT { background: var(--revisit); border-color: var(--revisit); }
+    .office-box.s-FAIL { background: var(--fail); border-color: var(--fail); }
+    .office-box.s-SIGNUP *, .office-box.s-REVISIT *, .office-box.s-FAIL * { color: #fff !important; }
+    .office-box.s-DELIVERED * { color: #4A3A00 !important; }
+    .office-box.s-SIGNUP::after { border-top-color: var(--signup); }
+    .office-box.s-DELIVERED::after { border-top-color: var(--delivered); }
+    .office-box.s-REVISIT::after { border-top-color: var(--revisit); }
+    .office-box.s-FAIL::after { border-top-color: var(--fail); }
+    /* 바텀시트 */
+    #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .2s; }
+    #scrim.on { opacity: 1; pointer-events: auto; }
+    #sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1001; background: #fff; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform .25s; max-height: 88vh; overflow-y: auto; padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
+    #sheet.on { transform: translateY(0); }
+    .sheet-grip { width: 40px; height: 4px; background: #D1D6DB; border-radius: 2px; margin: 10px auto 4px; }
+    .sheet-pad { padding: 8px 18px 0; }
+    .sheet-name { font-size: 20px; font-weight: 800; }
+    .sheet-meta { font-size: 13px; color: var(--sub); margin-top: 4px; line-height: 1.5; }
+    .sheet-meta a { color: #3B82F6; text-decoration: none; font-weight: 700; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; margin-top: 8px; color: #fff; }
+    .row-act { display: flex; gap: 8px; margin: 14px 0 6px; }
+    .btn-route { flex: 1; height: 46px; border: none; border-radius: 12px; background: #FEE500; color: #191600; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; }
+    .btn-call { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 18px; cursor: pointer; }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+    .status-grid button { height: 50px; border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
+    .sg-SIGNUP { background: var(--signup); }
+    .sg-DELIVERED { background: var(--delivered); color: #4A3A00 !important; }
+    .sg-REVISIT { background: var(--revisit); }
+    .sg-FAIL { background: var(--fail); }
+    .hist-title { font-size: 13px; font-weight: 800; color: var(--sub); margin: 14px 0 6px; }
+    .hist-item { border-top: 1px solid #F0F2F5; padding: 10px 0; font-size: 13px; }
+    .hist-item .hi-top { display: flex; justify-content: space-between; }
+    .hist-item .hi-st { font-weight: 800; }
+    .hist-item .hi-time { color: var(--sub); font-size: 12px; }
+    .hist-item .hi-photos { display: flex; gap: 6px; margin-top: 6px; }
+    .hist-item .hi-photos img { width: 54px; height: 54px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+    .empty-hist { font-size: 13px; color: #B0B8C1; padding: 8px 0; }
+    /* 액션 모달 (담당자/사진) */
+    #modal { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; padding: 22px; }
+    #modal.on { display: flex; }
+    #modal .m-card { width: 100%; max-width: 380px; background: #fff; border-radius: 20px; padding: 22px; }
+    #modal h3 { margin: 0 0 4px; font-size: 17px; }
+    #modal .m-sub { font-size: 13px; color: var(--sub); margin: 0 0 16px; }
+    #modal input[type=text] { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 14px; font-size: 16px; outline: none; }
+    #modal input[type=text]:focus { border-color: #6155F5; }
+    .photo-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+    .photo-slot { position: relative; aspect-ratio: 1; border: 1.5px dashed var(--line); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--sub); font-size: 12px; cursor: pointer; overflow: hidden; background: var(--bg); }
+    .photo-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .photo-slot .ps-ic { font-size: 24px; }
+    .photo-slot input { display: none; }
+    .photo-slot.filled { border-style: solid; border-color: #6155F5; }
+    .m-actions { display: flex; gap: 8px; margin-top: 18px; }
+    .m-actions .ghost { flex: 1; height: 48px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 15px; font-weight: 700; color: var(--sub); cursor: pointer; }
+    .m-actions .primary { flex: 1.4; height: 48px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
+    .m-actions .primary:disabled { opacity: .45; }
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 5000; background: rgba(25,31,40,.92); color: #fff; font-size: 13px; padding: 10px 18px; border-radius: 999px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+    #toast.on { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="hint">로그인 중…</div>
+
+  <!-- 비번 게이트 -->
+  <div id="gate">
+    <div class="card">
+      <h1>부동산 영업 지도</h1>
+      <p>비밀번호를 입력해 주세요</p>
+      <input id="gatePw" type="password" inputmode="numeric" autocomplete="off" />
+      <div id="gateErr"></div>
+      <button id="gateBtn">들어가기</button>
+    </div>
+  </div>
+
+  <!-- 바텀시트 -->
+  <div id="scrim"></div>
+  <div id="sheet"><div class="sheet-grip"></div><div id="sheetBody" class="sheet-pad"></div></div>
+
+  <!-- 액션 모달 (담당자 → 사진) -->
+  <div id="modal">
+    <div class="m-card">
+      <div id="mStep1">
+        <h3>담당자 이름</h3>
+        <p class="m-sub">버튼을 누른 본인 이름을 입력해 주세요.</p>
+        <input id="mName" type="text" placeholder="예: 이현우" />
+        <div class="m-actions">
+          <button class="ghost" data-mcancel>취소</button>
+          <button class="primary" id="mNameNext">다음</button>
+        </div>
+      </div>
+      <div id="mStep2" style="display:none">
+        <h3>사진 등록 (필수)</h3>
+        <p class="m-sub">명함과 부동산 외관 사진을 등록해 주세요.</p>
+        <div class="photo-slots">
+          <label class="photo-slot" id="slot1">
+            <span class="ps-ic">💳</span><span>명함</span>
+            <input type="file" accept="image/*" capture="environment" data-slot="1" />
+          </label>
+          <label class="photo-slot" id="slot2">
+            <span class="ps-ic">🏢</span><span>외관</span>
+            <input type="file" accept="image/*" capture="environment" data-slot="2" />
+          </label>
+        </div>
+        <div class="m-actions">
+          <button class="ghost" data-mcancel>취소</button>
+          <button class="primary" id="mSubmit" disabled>저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    var API = 'https://api.bubiseo.com';
+    var token = sessionStorage.getItem('fieldmap_token') || '';
+    var sdkReadyPromise = null;
+    var map = null, clusterer = null;
+    var markers = [];        // 클러스터용 마커
+    var overlays = [];       // 박스 CustomOverlay (가까이서만)
+    var officeCache = {};    // id -> office (목록 응답)
+    var BOX_LEVEL = 4;       // 이 레벨 이하(가까움)면 박스 표시
+    var fetchTimer = null;
+
+    var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
+    var STATUS_COLOR = { SIGNUP: 'var(--signup)', DELIVERED: 'var(--delivered)', REVISIT: 'var(--revisit)', FAIL: 'var(--fail)' };
+
+    function $(id) { return document.getElementById(id); }
+    function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); setTimeout(function(){ el.classList.remove('on'); }, 1800); }
+    function authHeaders(extra) { var h = extra || {}; h.Authorization = 'Bearer ' + token; return h; }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function fmtTime(iso) { var d = new Date(iso); if (isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+
+    // ===== 비번 게이트 =====
+    function showGate(msg) { $('gate').style.display = 'flex'; if (msg) $('gateErr').textContent = msg; $('gatePw').value=''; $('gatePw').focus(); }
+    function hideGate() { $('gate').style.display = 'none'; }
+    $('gateBtn').onclick = doAuth;
+    $('gatePw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doAuth(); });
+    function doAuth() {
+      var pw = $('gatePw').value.trim();
+      if (!pw) return;
+      $('gateErr').textContent = '';
+      fetch(API + '/fieldmap/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pw }) })
+        .then(function(r){ if (!r.ok) throw new Error('비밀번호가 올바르지 않아요'); return r.json(); })
+        .then(function(j){ token = j.token; sessionStorage.setItem('fieldmap_token', token); hideGate(); boot(); })
+        .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; });
+    }
+
+    // ===== Kakao SDK (clusterer 포함) =====
+    function ensureKakaoReady() {
+      if (sdkReadyPromise) return sdkReadyPromise;
+      sdkReadyPromise = new Promise(function (resolve, reject) {
+        if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.LatLng) { resolve(); return; }
+        fetch(API + '/public/presale-inquiry/kakao-js-key')
+          .then(function (r) { if (!r.ok) throw new Error('키 fetch 실패'); return r.json(); })
+          .then(function (j) {
+            var key = j && j.kakaoJsKey; if (!key) throw new Error('키 없음');
+            var s = document.createElement('script');
+            s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + encodeURIComponent(key) + '&libraries=services,clusterer&autoload=false';
+            s.onload = function () { if (typeof kakao === 'undefined' || !kakao.maps) { reject(new Error('kakao.maps 없음')); return; } kakao.maps.load(function () { resolve(); }); };
+            s.onerror = function () { reject(new Error('SDK 로드 실패')); };
+            document.head.appendChild(s);
+          })
+          .catch(reject);
+      });
+      return sdkReadyPromise;
+    }
+
+    // ===== 부팅 =====
+    function boot() {
+      $('hint').textContent = '지도 불러오는 중…';
+      ensureKakaoReady().then(initMap).catch(function(e){ $('hint').textContent = '지도 로드 실패'; console.error(e); });
+    }
+
+    function initMap() {
+      // 서울시청 중심 시작
+      map = new kakao.maps.Map($('map'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 5 });
+      clusterer = new kakao.maps.MarkerClusterer({ map: map, averageCenter: true, minLevel: BOX_LEVEL + 1, gridSize: 80 });
+      kakao.maps.event.addListener(map, 'idle', scheduleFetch);
+      $('hint').textContent = '지도를 움직여 영업할 동네를 확대하세요';
+      scheduleFetch();
+    }
+
+    function scheduleFetch() { if (fetchTimer) clearTimeout(fetchTimer); fetchTimer = setTimeout(fetchOffices, 250); }
+
+    function fetchOffices() {
+      var b = map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast();
+      var url = API + '/fieldmap/offices?swLat=' + sw.getLat() + '&swLng=' + sw.getLng() + '&neLat=' + ne.getLat() + '&neLng=' + ne.getLng() + '&limit=1500';
+      fetch(url, { headers: authHeaders() })
+        .then(function(r){ if (r.status === 403) { showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
+        .then(function(j){ renderOffices(j.offices || [], j.truncated); })
+        .catch(function(e){ if (String(e.message) !== '403') console.error(e); });
+    }
+
+    function clearLayers() {
+      clusterer.clear(); markers = [];
+      overlays.forEach(function(o){ o.setMap(null); }); overlays = [];
+    }
+
+    function renderOffices(list, truncated) {
+      clearLayers();
+      officeCache = {};
+      var level = map.getLevel();
+      var showBoxes = level <= BOX_LEVEL;
+      list.forEach(function(o){
+        if (o.lat == null || o.lng == null) return;
+        officeCache[o.id] = o;
+        var pos = new kakao.maps.LatLng(o.lat, o.lng);
+        if (showBoxes) {
+          var el = document.createElement('div');
+          el.className = 'office-box' + (o.status ? ' s-' + o.status : '');
+          el.innerHTML = '<b>' + esc(o.name) + '</b>' +
+            (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span><br>' : '') +
+            (o.phone ? '<span class="ob-sub">' + esc(o.phone) + '</span>' : '');
+          (function(id){ el.onclick = function(){ openSheet(id); }; })(o.id);
+          var ov = new kakao.maps.CustomOverlay({ position: pos, content: el, yAnchor: 1, clickable: true });
+          ov.setMap(map); overlays.push(ov);
+        } else {
+          var mk = new kakao.maps.Marker({ position: pos });
+          (function(id){ kakao.maps.event.addListener(mk, 'click', function(){ openSheet(id); }); })(o.id);
+          markers.push(mk);
+        }
+      });
+      if (!showBoxes && markers.length) clusterer.addMarkers(markers);
+      $('hint').textContent = showBoxes
+        ? (list.length + '곳 표시' + (truncated ? ' (더 확대 시 정밀)' : ''))
+        : '확대하면 상호·대표·전화 박스가 보여요 (' + list.length + '곳)';
+    }
+
+    // ===== 바텀시트 =====
+    var sheetOfficeId = null;
+    function openSheet(id) {
+      sheetOfficeId = id;
+      var o = officeCache[id];
+      $('sheetBody').innerHTML = '<div class="sheet-name">불러오는 중…</div>';
+      $('scrim').classList.add('on'); $('sheet').classList.add('on');
+      fetch(API + '/fieldmap/offices/' + id, { headers: authHeaders() })
+        .then(function(r){ return r.json(); })
+        .then(function(full){ officeCache[id] = Object.assign(o || {}, full); renderSheet(full); })
+        .catch(function(){ if (o) renderSheet(o); });
+    }
+    function closeSheet() { $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); sheetOfficeId = null; }
+    $('scrim').onclick = closeSheet;
+
+    function renderSheet(o) {
+      var addr = o.roadAddress || o.jibunAddress || '';
+      var phoneDigits = (o.phone || '').replace(/[^0-9]/g, '');
+      var routeUrl = 'https://map.kakao.com/link/to/' + encodeURIComponent(o.name || '부동산') + ',' + o.lat + ',' + o.lng;
+      var html = '';
+      html += '<div class="sheet-name">' + esc(o.name) + '</div>';
+      html += '<div class="sheet-meta">';
+      if (o.ownerName) html += '대표 ' + esc(o.ownerName) + '<br>';
+      if (o.phone) html += '<a href="tel:' + phoneDigits + '">' + esc(o.phone) + '</a><br>';
+      if (addr) html += esc(addr);
+      html += '</div>';
+      if (o.status) {
+        html += '<span class="badge" style="background:' + STATUS_COLOR[o.status] + (o.status==='DELIVERED'?';color:#4A3A00':'') + '">' + STATUS_LABEL[o.status] + (o.managerName ? ' · ' + esc(o.managerName) : '') + (o.statusAt ? ' · ' + fmtTime(o.statusAt) : '') + '</span>';
+      }
+      html += '<div class="row-act">';
+      html += '<a class="btn-route" href="' + routeUrl + '" target="_blank" rel="noopener">🧭 길찾기</a>';
+      if (phoneDigits) html += '<a class="btn-call" href="tel:' + phoneDigits + '" style="display:flex;align-items:center;justify-content:center;text-decoration:none">📞</a>';
+      html += '</div>';
+      html += '<div class="status-grid">';
+      ['SIGNUP','DELIVERED','REVISIT','FAIL'].forEach(function(s){
+        html += '<button class="sg-' + s + '" data-status="' + s + '">' + STATUS_LABEL[s] + '</button>';
+      });
+      html += '</div>';
+      html += '<div class="hist-title">방문 이력 (' + ((o.visits && o.visits.length) || 0) + ')</div>';
+      if (o.visits && o.visits.length) {
+        o.visits.forEach(function(v){
+          html += '<div class="hist-item"><div class="hi-top"><span class="hi-st" style="color:' + STATUS_COLOR[v.status] + '">' + STATUS_LABEL[v.status] + ' · ' + esc(v.managerName) + '</span><span class="hi-time">' + fmtTime(v.createdAt) + '</span></div>';
+          html += '<div class="hi-photos">' + (v.photo1Url ? '<img src="' + esc(v.photo1Url) + '">' : '') + (v.photo2Url ? '<img src="' + esc(v.photo2Url) + '">' : '') + '</div></div>';
+        });
+      } else {
+        html += '<div class="empty-hist">아직 방문 이력이 없어요.</div>';
+      }
+      $('sheetBody').innerHTML = html;
+      Array.prototype.forEach.call($('sheetBody').querySelectorAll('[data-status]'), function(btn){
+        btn.onclick = function(){ startAction(btn.getAttribute('data-status')); };
+      });
+    }
+
+    // ===== 액션 모달 (담당자 → 사진2 → 저장) =====
+    var pendingStatus = null, photo1Url = null, photo2Url = null;
+    function startAction(status) {
+      pendingStatus = status; photo1Url = null; photo2Url = null;
+      $('mStep1').style.display = ''; $('mStep2').style.display = 'none';
+      $('mName').value = localStorage.getItem('fieldmap_manager') || '';
+      resetSlot(1); resetSlot(2); $('mSubmit').disabled = true;
+      $('modal').classList.add('on'); setTimeout(function(){ $('mName').focus(); }, 50);
+    }
+    function closeModal() { $('modal').classList.remove('on'); }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-mcancel]'), function(b){ b.onclick = closeModal; });
+
+    $('mNameNext').onclick = function() {
+      var n = $('mName').value.trim();
+      if (!n) { $('mName').focus(); return; }
+      localStorage.setItem('fieldmap_manager', n);
+      $('mStep1').style.display = 'none'; $('mStep2').style.display = '';
+    };
+
+    function resetSlot(n) {
+      var slot = $('slot' + n);
+      slot.classList.remove('filled');
+      slot.querySelector('img') && slot.querySelector('img').remove();
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.photo-slot input'), function(inp){
+      inp.onchange = function() {
+        var file = inp.files && inp.files[0]; if (!file) return;
+        var n = inp.getAttribute('data-slot');
+        var slot = $('slot' + n);
+        var prev = URL.createObjectURL(file);
+        var img = slot.querySelector('img') || document.createElement('img');
+        img.src = prev; if (!img.parentNode) slot.appendChild(img);
+        slot.classList.add('filled');
+        // 업로드
+        uploadPhoto(file).then(function(url){
+          if (n === '1') photo1Url = url; else photo2Url = url;
+          $('mSubmit').disabled = !(photo1Url && photo2Url);
+        }).catch(function(){ toast('사진 업로드 실패'); slot.classList.remove('filled'); });
+      };
+    });
+
+    $('mSubmit').onclick = function() {
+      if (!photo1Url || !photo2Url || !pendingStatus || !sheetOfficeId) return;
+      var manager = ($('mName').value || localStorage.getItem('fieldmap_manager') || '').trim();
+      $('mSubmit').disabled = true;
+      fetch(API + '/fieldmap/offices/' + sheetOfficeId + '/visit', {
+        method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ status: pendingStatus, managerName: manager, photo1Url: photo1Url, photo2Url: photo2Url })
+      })
+        .then(function(r){ if (!r.ok) throw new Error('저장 실패'); return r.json(); })
+        .then(function(updated){
+          officeCache[sheetOfficeId] = updated;
+          closeModal(); renderSheet(updated);
+          toast(STATUS_LABEL[pendingStatus] + ' 저장됨');
+          fetchOffices(); // 박스 색 갱신
+        })
+        .catch(function(){ toast('저장 실패'); $('mSubmit').disabled = false; });
+    };
+
+    // 클라 측 압축 후 업로드
+    function uploadPhoto(file) {
+      return compressImage(file, 1280, 0.7).then(function(blob){
+        var fd = new FormData(); fd.append('photo', blob, 'photo.jpg');
+        return fetch(API + '/fieldmap/upload', { method: 'POST', headers: authHeaders(), body: fd })
+          .then(function(r){ if (!r.ok) throw new Error('upload'); return r.json(); })
+          .then(function(j){ return j.url; });
+      });
+    }
+    function compressImage(file, maxDim, quality) {
+      return new Promise(function(resolve, reject){
+        var img = new Image(); var url = URL.createObjectURL(file);
+        img.onload = function() {
+          URL.revokeObjectURL(url);
+          var w = img.width, h = img.height;
+          if (w > h) { if (w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; } }
+          else { if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; } }
+          var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(img, 0, 0, w, h);
+          cv.toBlob(function(b){ b ? resolve(b) : reject(new Error('blob')); }, 'image/jpeg', quality);
+        };
+        img.onerror = function(){ reject(new Error('img')); };
+        img.src = url;
+      });
+    }
+
+    // ===== 시작 =====
+    if (token) { hideGate(); boot(); } else { showGate(); }
+  </script>
+</body>
+</html>
