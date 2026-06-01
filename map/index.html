@@ -258,6 +258,13 @@
           REGIONS = j.regions || [];
           var sidos = [];
           REGIONS.forEach(function(rg){ if (sidos.indexOf(rg.sido) < 0) sidos.push(rg.sido); });
+          // 서울 → 경기 순서 고정 (가나다순 X).
+          var SIDO_ORDER = ['서울특별시', '경기도'];
+          sidos.sort(function(a, b){
+            var ia = SIDO_ORDER.indexOf(a); if (ia < 0) ia = 99;
+            var ib = SIDO_ORDER.indexOf(b); if (ib < 0) ib = 99;
+            return ia - ib || a.localeCompare(b, 'ko');
+          });
           activeSido = sidos[0] || '';
           buildRegionUI(sidos);
           $('regionbar').style.display = 'block';
