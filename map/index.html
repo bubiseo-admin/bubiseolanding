@@ -62,6 +62,18 @@
     .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .office-box .ob-sub { color: var(--sub); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 같은 좌표 N곳 묶음 박스 */
+    .office-box.cluster-box { background: #2A2F3A; border-color: #2A2F3A; }
+    .office-box.cluster-box b { color: #fff; }
+    .office-box.cluster-box .ob-sub { color: #C4CBFA; }
+    /* 묶음 목록 (바텀시트) */
+    .cluster-sub { font-size: 13px; color: var(--sub); margin: 4px 0 8px; }
+    .cluster-list { margin-top: 6px; max-height: 62vh; overflow-y: auto; }
+    .cl-row { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: none; border-bottom: 1px solid #F0F2F5; background: #fff; padding: 13px 4px; cursor: pointer; }
+    .cl-row:active { background: #F7F8FA; }
+    .cl-name { font-size: 14px; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; }
+    .cl-owner { font-size: 12px; color: var(--sub); flex: 0 0 auto; }
+    .cl-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px; color: #fff; flex: 0 0 auto; }
     .pin-wrap.s-SIGNUP .office-box { background: var(--signup); border-color: var(--signup); }
     .pin-wrap.s-DELIVERED .office-box { background: var(--delivered); border-color: var(--delivered); }
     .pin-wrap.s-REVISIT .office-box { background: var(--revisit); border-color: var(--revisit); }
@@ -559,6 +571,7 @@
     // 박스 충돌 회피 상수 (픽셀)
     var BOX_W = 124, BOX_H = 48, BOX_GAP = 8, TAIL_LEN = 24;
     var STEP_X = BOX_W + BOX_GAP;   // 같은 건물 좌우 초기 간격
+    var CLUSTER_MIN = 4;            // 같은 좌표 N곳 이상이면 묶음 박스 (2~3곳은 좌우 펼침)
 
     function renderAll() {
       if (!map) return;
@@ -588,24 +601,29 @@
       var latPad = (ne.getLat() - sw.getLat()) * 0.3, lngPad = (ne.getLng() - sw.getLng()) * 0.3;
       var minLat = sw.getLat() - latPad, maxLat = ne.getLat() + latPad;
       var minLng = sw.getLng() - lngPad, maxLng = ne.getLng() + lngPad;
-      var items = [];
+      // 2) 동일 좌표(같은 건물)로 묶기
+      var groups = {};
       list.forEach(function(o){
         if (o.lat < minLat || o.lat > maxLat || o.lng < minLng || o.lng > maxLng) return;
-        items.push({ o: o, ll: new kakao.maps.LatLng(o.lat, o.lng), baseOx: 0 });
+        var k = o.lat.toFixed(5) + ',' + o.lng.toFixed(5);
+        (groups[k] = groups[k] || []).push(o);
       });
-      // 2) 동일 좌표(같은 건물) 묶음 → 점 가운데 두고 대칭 좌/우 (초기 배치)
-      var groups = {};
-      items.forEach(function(it){ var k = it.o.lat.toFixed(5) + ',' + it.o.lng.toFixed(5); (groups[k] = groups[k] || []).push(it); });
+      // 3) 그룹 → item 생성. 4곳 이상=묶음박스 1개 / 2~3곳=좌우 펼침 / 1곳=단일
+      var items = [];
       Object.keys(groups).forEach(function(k){
         var g = groups[k];
-        if (g.length < 2) return;
-        g.sort(function(a, c){ return (a.o.name || '').localeCompare(c.o.name || '', 'ko'); });
-        var n = g.length;
-        g.forEach(function(it, i){ it.baseOx = (i - (n - 1) / 2) * STEP_X; });
+        var ll = new kakao.maps.LatLng(g[0].lat, g[0].lng);
+        if (g.length >= CLUSTER_MIN) {
+          items.push({ cluster: true, offices: g, ll: ll, baseOx: 0 });
+        } else {
+          g.sort(function(a, c){ return (a.name || '').localeCompare(c.name || '', 'ko'); });
+          var n = g.length;
+          g.forEach(function(o, i){ items.push({ o: o, ll: new kakao.maps.LatLng(o.lat, o.lng), baseOx: (i - (n - 1) / 2) * STEP_X }); });
+        }
       });
       items.forEach(function(it){ createBoxOverlay(it, it.baseOx, 0); });
       curBoxes = items;
-      // 3) 렌더 후 실제 화면 좌표 측정 → 절대 안 겹치게 밀어냄 (투영 무관, 100% 보장)
+      // 4) 렌더 후 실제 화면 좌표 측정 → 절대 안 겹치게 밀어냄 (투영 무관, 100% 보장)
       //    setTimeout 2회: Kakao 오버레이 배치 완료 후 측정. (rAF 는 백그라운드 탭에서 멈춰 사용 안 함)
       deCollTimers.forEach(function(t){ clearTimeout(t); });
       deCollTimers = [setTimeout(decollideRendered, 60), setTimeout(decollideRendered, 320)];
@@ -621,19 +639,47 @@
     }
 
     function createBoxOverlay(it, ox, oy) {
-      var o = it.o;
       var wrap = document.createElement('div');
-      wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
       var leader = document.createElement('div'); leader.className = 'pin-leader';
       var dot = document.createElement('div'); dot.className = 'pin-dot';
-      var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
-      box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
+      var box = document.createElement('div'); box.style.width = BOX_W + 'px';
+      if (it.cluster) {
+        // 같은 좌표 N곳 묶음 — 탭하면 목록
+        var done = 0; it.offices.forEach(function(o){ if (o.status) done++; });
+        wrap.className = 'pin-wrap';
+        box.className = 'office-box cluster-box';
+        box.innerHTML = '<b>이 위치 ' + it.offices.length + '곳</b><span class="ob-sub">' + (done ? done + '곳 처리 · ' : '') + '탭하면 목록</span>';
+        (function(offs){ box.onclick = function(e){ e.stopPropagation(); openClusterList(offs); }; })(it.offices);
+      } else {
+        var o = it.o;
+        wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
+        box.className = 'office-box';
+        box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
+        (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
+      }
       wrap.appendChild(leader); wrap.appendChild(dot); wrap.appendChild(box);
       positionBox(box, leader, ox, oy);
-      (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
       it.box = box; it.leader = leader; it.wrap = wrap;
       var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: 3 });
       ov.setMap(map); overlays.push(ov);
+    }
+
+    // 같은 좌표 N곳 목록 (묶음 박스 탭) → 선택 시 상세 시트
+    function openClusterList(offices) {
+      var arr = offices.slice().sort(function(a, c){ return (a.name || '').localeCompare(c.name || '', 'ko'); });
+      var html = '<div class="sheet-name">이 위치 ' + arr.length + '곳</div>';
+      html += '<div class="cluster-sub">' + esc(arr[0].roadAddress || arr[0].jibunAddress || '') + '</div>';
+      html += '<div class="cluster-list">';
+      arr.forEach(function(o){
+        var st = o.status ? '<span class="cl-badge" style="background:' + STATUS_COLOR[o.status] + (o.status === 'REVISIT' ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + '</span>' : '';
+        html += '<button class="cl-row" data-id="' + o.id + '"><span class="cl-name">' + esc(o.name) + '</span>' + (o.ownerName ? '<span class="cl-owner">' + esc(o.ownerName) + '</span>' : '') + st + '</button>';
+      });
+      html += '</div>';
+      $('sheetBody').innerHTML = html;
+      $('scrim').classList.add('on'); $('sheet').classList.add('on');
+      Array.prototype.forEach.call($('sheetBody').querySelectorAll('.cl-row'), function(b){
+        b.onclick = function(){ openSheet(b.getAttribute('data-id')); };
+      });
     }
 
     function rectsOverlap(a, l, t, w, h, pad) {
