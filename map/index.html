@@ -355,23 +355,26 @@
     }
 
     function toggleRegion(sigungu) {
-      if (loaded[sigungu]) {
-        delete loaded[sigungu];
-        if (focusGu === sigungu) { focusGu = Object.keys(loaded)[0] || ''; dongFilter = ''; }
+      if (loaded[sigungu]) {  // 같은 구 다시 → 해제(빈 지도)
+        loaded = {}; focusGu = ''; dongFilter = '';
         renderAll(); renderChips(); renderDongChips(); updateHint(); return;
       }
       if (loadingSet[sigungu]) return;
-      loadingSet[sigungu] = true; renderChips();
+      // 단일 선택 — 다른 구 누르면 이전 구 전부 해제.
+      loaded = {}; focusGu = ''; dongFilter = ''; loadingSet = {};
+      loadingSet[sigungu] = true;
+      renderAll(); renderChips(); renderDongChips();
       fetch(API + '/fieldmap/offices?sigungu=' + encodeURIComponent(sigungu) + '&sido=' + encodeURIComponent(activeSido) + '&limit=60000', { headers: authHeaders() })
         .then(function(r){ if (r.status === 403) { showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
         .then(function(j){
           delete loadingSet[sigungu];
+          loaded = {};
           loaded[sigungu] = (j.offices || []).filter(function(o){
             if (o.lat == null || o.lng == null) return false;
             var g = getGu(o); // 지번주소 구와 선택 구가 명확히 다르면 제외(법인 등록지/실제위치 불일치)
             return !g || g === sigungu;
           });
-          focusGu = sigungu; dongFilter = '';  // 새로 누른 구가 동 선택 대상
+          focusGu = sigungu; dongFilter = '';
           renderAll(); renderChips(); renderDongChips(); centerOn(loaded[sigungu], 7); updateHint();
         })
         .catch(function(e){ delete loadingSet[sigungu]; renderChips(); if (String(e.message) !== '403') toast('지역 로드 실패'); });
@@ -493,8 +496,8 @@
         '<button class="btn-memo" id="memoBtn">📝 메모</button></div>';
       html += '<div class="sheet-meta">';
       if (o.ownerName) html += '대표 ' + esc(o.ownerName) + '<br>';
-      if (o.phone) html += '<a href="tel:' + phoneDigits + '">' + esc(o.phone) + '</a><br>';
-      if (o.regNo) html += '등록번호 ' + esc(o.regNo) + '<br>';
+      if (o.phone) html += '연락처 <a href="tel:' + phoneDigits + '">' + esc(o.phone) + '</a><br>';
+      else html += '<span style="color:#B0B8C1">연락처 없음</span><br>';
       if (addr) html += esc(addr);
       html += '</div>';
       html += '<div id="memoArea">' + (o.note ? '<div class="memo-box">' + esc(o.note) + '</div>' : '') + '</div>';
