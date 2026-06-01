@@ -25,20 +25,22 @@
     /* 상단 안내칩 */
     #hint { position: fixed; top: calc(env(safe-area-inset-top) + 10px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
     /* 부동산 박스 (CustomOverlay) */
-    .office-box { transform: translate(-50%, -100%); background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; min-width: 92px; box-shadow: 0 4px 12px rgba(0,0,0,.18); cursor: pointer; font-size: 11px; line-height: 1.35; }
-    .office-box::after { content: ""; position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #fff; }
+    /* 박스 + 아래 화살표(꼬리). 화살표 끝이 정확히 부동산 위치를 가리킴(yAnchor:1). */
+    .office-pin { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+    .office-box { background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; min-width: 92px; box-shadow: 0 4px 12px rgba(0,0,0,.18); font-size: 11px; line-height: 1.35; text-align: center; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); }
     .office-box .ob-sub { color: var(--sub); }
-    .office-box.s-SIGNUP { background: var(--signup); border-color: var(--signup); }
-    .office-box.s-DELIVERED { background: var(--delivered); border-color: var(--delivered); }
-    .office-box.s-REVISIT { background: var(--revisit); border-color: var(--revisit); }
-    .office-box.s-FAIL { background: var(--fail); border-color: var(--fail); }
-    .office-box.s-SIGNUP *, .office-box.s-REVISIT *, .office-box.s-FAIL * { color: #fff !important; }
-    .office-box.s-DELIVERED * { color: #4A3A00 !important; }
-    .office-box.s-SIGNUP::after { border-top-color: var(--signup); }
-    .office-box.s-DELIVERED::after { border-top-color: var(--delivered); }
-    .office-box.s-REVISIT::after { border-top-color: var(--revisit); }
-    .office-box.s-FAIL::after { border-top-color: var(--fail); }
+    .office-tail { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 10px solid #fff; margin-top: -1px; filter: drop-shadow(0 2px 1.5px rgba(0,0,0,.22)); }
+    .office-pin.s-SIGNUP .office-box { background: var(--signup); border-color: var(--signup); }
+    .office-pin.s-DELIVERED .office-box { background: var(--delivered); border-color: var(--delivered); }
+    .office-pin.s-REVISIT .office-box { background: var(--revisit); border-color: var(--revisit); }
+    .office-pin.s-FAIL .office-box { background: var(--fail); border-color: var(--fail); }
+    .office-pin.s-SIGNUP .office-box *, .office-pin.s-REVISIT .office-box *, .office-pin.s-FAIL .office-box * { color: #fff !important; }
+    .office-pin.s-DELIVERED .office-box * { color: #4A3A00 !important; }
+    .office-pin.s-SIGNUP .office-tail { border-top-color: var(--signup); }
+    .office-pin.s-DELIVERED .office-tail { border-top-color: var(--delivered); }
+    .office-pin.s-REVISIT .office-tail { border-top-color: var(--revisit); }
+    .office-pin.s-FAIL .office-tail { border-top-color: var(--fail); }
     /* 바텀시트 */
     #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .2s; }
     #scrim.on { opacity: 1; pointer-events: auto; }
@@ -240,12 +242,14 @@
         var pos = new kakao.maps.LatLng(o.lat, o.lng);
         if (showBoxes) {
           var el = document.createElement('div');
-          el.className = 'office-box' + (o.status ? ' s-' + o.status : '');
-          el.innerHTML = '<b>' + esc(o.name) + '</b>' +
+          el.className = 'office-pin' + (o.status ? ' s-' + o.status : '');
+          el.innerHTML = '<div class="office-box"><b>' + esc(o.name) + '</b>' +
             (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span><br>' : '') +
-            (o.phone ? '<span class="ob-sub">' + esc(o.phone) + '</span>' : '');
+            (o.phone ? '<span class="ob-sub">' + esc(o.phone) + '</span>' : '') +
+            '</div><div class="office-tail"></div>';
           (function(id){ el.onclick = function(){ openSheet(id); }; })(o.id);
-          var ov = new kakao.maps.CustomOverlay({ position: pos, content: el, yAnchor: 1, clickable: true });
+          // xAnchor 0.5 + yAnchor 1 → 화살표 끝(꼬리 tip)이 정확히 해당 좌표.
+          var ov = new kakao.maps.CustomOverlay({ position: pos, content: el, xAnchor: 0.5, yAnchor: 1, clickable: true });
           ov.setMap(map); overlays.push(ov);
         } else {
           var mk = new kakao.maps.Marker({ position: pos });
