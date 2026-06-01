@@ -39,6 +39,15 @@
     .gu-chip.on { background: #6155F5; color: #fff; }
     .gu-chip.on .gc-cnt { color: rgba(255,255,255,.82); }
     .gu-chip.loading { opacity: .55; }
+    /* 동 칩 (구 선택 시 하단) */
+    #dongChips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: none; margin-top: 2px; }
+    #dongChips::-webkit-scrollbar { display: none; }
+    .dong-chip { flex: 0 0 auto; border: none; border-radius: 999px; padding: 6px 11px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.92); color: #4E5968; box-shadow: 0 2px 6px rgba(0,0,0,.14); cursor: pointer; white-space: nowrap; }
+    .dong-chip.on { background: #39AFFD; color: #fff; }
+    /* 내 위치 버튼 (우하단) */
+    #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #locBtn:active { transform: scale(.94); }
+    .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
     /* 부동산 박스 (CustomOverlay) */
     /* 박스 + 아래 화살표(꼬리). 화살표 끝이 정확히 부동산 위치를 가리킴(yAnchor:1). */
     .office-pin { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
@@ -120,7 +129,9 @@
   <div id="regionbar" style="display:none">
     <div id="sidoTabs"></div>
     <div id="guChips"></div>
+    <div id="dongChips" style="display:none"></div>
   </div>
+  <button id="locBtn" title="내 위치">📍</button>
   <div id="hint">로그인 중…</div>
 
   <!-- 비번 게이트 -->
@@ -188,6 +199,9 @@
     var activeSido = '';     // 현재 탭 시/도
     var loaded = {};         // sigungu -> offices[] (지도에 표시 중인 지역)
     var loadingSet = {};     // sigungu -> true (조회 중)
+    var focusGu = '';        // 동 칩을 보여줄 시군구
+    var dongFilter = '';     // 선택된 동(법정동) — 빈값=전체
+    var meOverlay = null;    // 현재 내 위치 마커
 
     var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
     var STATUS_COLOR = { SIGNUP: 'var(--signup)', DELIVERED: 'var(--delivered)', REVISIT: 'var(--revisit)', FAIL: 'var(--fail)' };
@@ -197,6 +211,16 @@
     function authHeaders(extra) { var h = extra || {}; h.Authorization = 'Bearer ' + token; return h; }
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function fmtTime(iso) { var d = new Date(iso); if (isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+    // 지번주소에서 동(법정동) 추출 — 번지(숫자) 직전 토큰. "서울특별시 강남구 역삼동 123-45" → "역삼동".
+    function getDong(o) {
+      var jibun = (o.jibunAddress || '').trim();
+      if (!jibun) return '';
+      var t = jibun.split(/\s+/);
+      for (var i = 2; i < t.length; i++) {
+        if (/\d/.test(t[i])) return t[i - 1] || '';
+      }
+      return t[t.length - 1] || '';
+    }
 
     // ===== 비번 게이트 =====
     function showGate(msg) { $('gate').style.display = 'flex'; if (msg) $('gateErr').textContent = msg; $('gatePw').value=''; $('gatePw').focus(); }
@@ -249,6 +273,27 @@
 
     function scheduleRender() { if (renderTimer) clearTimeout(renderTimer); renderTimer = setTimeout(renderAll, 120); }
 
+    // ===== 내 위치 =====
+    $('locBtn').onclick = function() {
+      if (!navigator.geolocation) { toast('이 기기는 위치를 지원하지 않아요'); return; }
+      $('locBtn').textContent = '⏳';
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        $('locBtn').textContent = '📍';
+        var ll = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        if (!meOverlay) {
+          var dot = document.createElement('div'); dot.className = 'me-dot';
+          meOverlay = new kakao.maps.CustomOverlay({ position: ll, content: dot, zIndex: 9 });
+        } else {
+          meOverlay.setPosition(ll);
+        }
+        meOverlay.setMap(map);
+        map.setLevel(3); map.panTo(ll);
+      }, function(err) {
+        $('locBtn').textContent = '📍';
+        toast(err && err.code === 1 ? '위치 권한을 허용해 주세요' : '위치를 가져오지 못했어요');
+      }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 10000 });
+    };
+
     // 시/도·시군구 목록 받아 버튼 구성.
     function loadRegions() {
       $('hint').textContent = '지역 목록 불러오는 중…';
@@ -300,7 +345,11 @@
     }
 
     function toggleRegion(sigungu) {
-      if (loaded[sigungu]) { delete loaded[sigungu]; renderAll(); renderChips(); updateHint(); return; }
+      if (loaded[sigungu]) {
+        delete loaded[sigungu];
+        if (focusGu === sigungu) { focusGu = Object.keys(loaded)[0] || ''; dongFilter = ''; }
+        renderAll(); renderChips(); renderDongChips(); updateHint(); return;
+      }
       if (loadingSet[sigungu]) return;
       loadingSet[sigungu] = true; renderChips();
       fetch(API + '/fieldmap/offices?sigungu=' + encodeURIComponent(sigungu) + '&sido=' + encodeURIComponent(activeSido) + '&limit=60000', { headers: authHeaders() })
@@ -308,14 +357,53 @@
         .then(function(j){
           delete loadingSet[sigungu];
           loaded[sigungu] = (j.offices || []).filter(function(o){ return o.lat != null && o.lng != null; });
-          renderAll(); renderChips(); fitToRegion(loaded[sigungu]); updateHint();
+          focusGu = sigungu; dongFilter = '';  // 새로 누른 구가 동 선택 대상
+          renderAll(); renderChips(); renderDongChips(); fitToRegion(loaded[sigungu]); updateHint();
         })
         .catch(function(e){ delete loadingSet[sigungu]; renderChips(); if (String(e.message) !== '403') toast('지역 로드 실패'); });
+    }
+
+    // 구 선택 시 그 구의 동 칩 표시 (지번주소에서 추출).
+    function renderDongChips() {
+      var box = $('dongChips');
+      if (!focusGu || !loaded[focusGu]) { box.innerHTML = ''; box.style.display = 'none'; return; }
+      var dongs = [];
+      loaded[focusGu].forEach(function(o){ var d = getDong(o); if (d && dongs.indexOf(d) < 0) dongs.push(d); });
+      dongs.sort(function(a, b){ return a.localeCompare(b, 'ko'); });
+      var html = '<button class="dong-chip' + (dongFilter === '' ? ' on' : '') + '" data-dong="">' + esc(focusGu) + ' 전체</button>';
+      html += dongs.map(function(d){
+        return '<button class="dong-chip' + (dongFilter === d ? ' on' : '') + '" data-dong="' + esc(d) + '">' + esc(d) + '</button>';
+      }).join('');
+      box.innerHTML = html;
+      box.style.display = dongs.length ? 'flex' : 'none';
+      Array.prototype.forEach.call(box.querySelectorAll('[data-dong]'), function(b){
+        b.onclick = function(){ selectDong(b.getAttribute('data-dong')); };
+      });
+    }
+
+    function selectDong(dong) {
+      dongFilter = dong;
+      renderDongChips(); renderAll();
+      // 선택 동으로 줌
+      var list = loaded[focusGu] ? loaded[focusGu].filter(function(o){ return !dong || getDong(o) === dong; }) : [];
+      fitToRegion(list); updateHint();
     }
 
     function allLoadedOffices() {
       var arr = [];
       Object.keys(loaded).forEach(function(k){ arr = arr.concat(loaded[k]); });
+      return arr;
+    }
+    // 표시 대상 — focus 구에 동 필터가 있으면 그 동만, 나머지 구는 전체.
+    function visibleOffices() {
+      var arr = [];
+      Object.keys(loaded).forEach(function(k){
+        if (k === focusGu && dongFilter) {
+          loaded[k].forEach(function(o){ if (getDong(o) === dongFilter) arr.push(o); });
+        } else {
+          arr = arr.concat(loaded[k]);
+        }
+      });
       return arr;
     }
 
@@ -328,7 +416,7 @@
       if (!map) return;
       clearLayers();
       officeCache = {};
-      var list = allLoadedOffices();
+      var list = visibleOffices();
       var showBoxes = map.getLevel() <= BOX_LEVEL;
       list.forEach(function(o){
         officeCache[o.id] = o;
