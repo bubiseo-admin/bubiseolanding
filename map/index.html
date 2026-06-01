@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>부동산 영업 지도</title>
   <style>
     :root {
@@ -13,7 +15,10 @@
       --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
+    html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); background: #fff; }
+    /* 세이프에어리어(노치·홈바) 흰색 채움 */
+    #safeTop { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); background: #fff; z-index: 9500; pointer-events: none; }
+    #safeBottom { position: fixed; bottom: 0; left: 0; right: 0; height: env(safe-area-inset-bottom); background: #fff; z-index: 9500; pointer-events: none; }
     /* 세이프에리어 포함 화면 꽉차게 */
     #map { position: fixed; inset: 0; width: 100%; height: 100%; }
     /* 비번 게이트 */
@@ -21,9 +26,10 @@
     #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
     #gate h1 { font-size: 19px; margin: 0 0 6px; }
     #gate p { font-size: 13px; color: var(--sub); margin: 0 0 18px; }
-    #gate input { width: 100%; height: 52px; border: 1px solid var(--line); border-radius: 12px; font-size: 18px; text-align: center; letter-spacing: 4px; outline: none; }
+    #gate input { width: 100%; height: 52px; border: 1px solid var(--line); border-radius: 12px; font-size: 17px; text-align: center; outline: none; margin-bottom: 8px; box-sizing: border-box; }
     #gate input:focus { border-color: #6155F5; }
-    #gate button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    #gate #gateBtn { width: 100%; height: 50px; margin-top: 8px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    #gate #gateBack { width: 100%; height: 40px; margin-top: 6px; border: none; background: none; color: var(--sub); font-size: 13px; font-weight: 700; cursor: pointer; }
     #gateErr { color: var(--fail); font-size: 13px; min-height: 18px; margin-top: 8px; font-weight: 600; }
     /* 하단 안내칩 (지역바가 상단을 쓰므로 아래로) */
     #hint { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
@@ -74,7 +80,9 @@
     .sheet-pad { padding: 8px 18px 0; }
     .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
     .sheet-name { font-size: 20px; font-weight: 800; flex: 1; min-width: 0; }
+    .sheet-actions { flex: 0 0 auto; display: flex; gap: 6px; }
     .btn-memo { flex: 0 0 auto; border: 1.5px solid #C9CFFA; background: #EEF0FF; color: #4A40D0; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+    .btn-reset { flex: 0 0 auto; border: 1.5px solid #F4C7C7; background: #FFF1F1; color: #D14343; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
     .memo-box { margin-top: 10px; background: #FFF8E1; border: 1px solid #FFE9A8; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #5A4A1A; line-height: 1.5; white-space: pre-wrap; }
     .memo-edit { width: 100%; margin-top: 10px; min-height: 72px; border: 1.5px solid #C9CFFA; border-radius: 12px; padding: 10px 12px; font-size: 14px; color: var(--ink); line-height: 1.5; resize: vertical; outline: none; box-sizing: border-box; font-family: inherit; }
     .memo-actions { display: flex; gap: 8px; margin-top: 8px; }
@@ -102,8 +110,11 @@
     .hist-item .hi-photos img { width: 54px; height: 54px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
     .empty-hist { font-size: 13px; color: #B0B8C1; padding: 8px 0; }
     /* 액션 모달 (담당자/사진) */
-    #modal { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; padding: 22px; }
-    #modal.on { display: flex; }
+    #modal, #geoAsk { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; padding: 22px; }
+    #modal.on, #geoAsk.on { display: flex; }
+    #geoAsk .m-card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 22px; }
+    #geoAsk h3 { margin: 0 0 4px; font-size: 17px; }
+    #geoAsk .m-sub { font-size: 13px; color: var(--sub); margin: 0 0 16px; line-height: 1.5; }
     #modal .m-card { width: 100%; max-width: 380px; background: #fff; border-radius: 20px; padding: 22px; }
     #modal h3 { margin: 0 0 4px; font-size: 17px; }
     #modal .m-sub { font-size: 13px; color: var(--sub); margin: 0 0 16px; }
@@ -124,6 +135,8 @@
   </style>
 </head>
 <body>
+  <div id="safeTop"></div>
+  <div id="safeBottom"></div>
   <div id="map"></div>
   <div id="regionbar" style="display:none">
     <div id="sidoTabs"></div>
@@ -137,10 +150,13 @@
   <div id="gate">
     <div class="card">
       <h1>부동산 영업 지도</h1>
-      <p>비밀번호를 입력해 주세요</p>
-      <input id="gatePw" type="password" inputmode="numeric" autocomplete="off" />
+      <p id="gateSub">아이디를 입력해 주세요</p>
+      <input id="gateId" type="text" placeholder="아이디 (예: bubiseo1)" autocapitalize="off" autocomplete="username" />
+      <input id="gateName" type="text" placeholder="이름" autocomplete="name" style="display:none" />
+      <input id="gatePw" type="password" placeholder="비밀번호" autocomplete="current-password" style="display:none" />
       <div id="gateErr"></div>
-      <button id="gateBtn">들어가기</button>
+      <button id="gateBtn">다음</button>
+      <button id="gateBack" style="display:none">← 아이디 다시 입력</button>
     </div>
   </div>
 
@@ -161,15 +177,15 @@
         </div>
       </div>
       <div id="mStep2" style="display:none">
-        <h3>사진 등록 (필수)</h3>
-        <p class="m-sub">명함과 부동산 외관 사진을 등록해 주세요.</p>
+        <h3>사진 등록</h3>
+        <p class="m-sub" id="photoSub">매장사진과 명함사진을 등록해 주세요.</p>
         <div class="photo-slots">
           <label class="photo-slot" id="slot1">
-            <span class="ps-ic">💳</span><span>명함</span>
+            <span class="ps-ic">🏢</span><span>매장사진</span>
             <input type="file" accept="image/*" capture="environment" data-slot="1" />
           </label>
           <label class="photo-slot" id="slot2">
-            <span class="ps-ic">🏢</span><span>외관</span>
+            <span class="ps-ic">💳</span><span>명함사진</span>
             <input type="file" accept="image/*" capture="environment" data-slot="2" />
           </label>
         </div>
@@ -177,6 +193,18 @@
           <button class="ghost" data-mcancel>취소</button>
           <button class="primary" id="mSubmit" disabled>저장</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 위치 권한 안내 (로그인 직후) -->
+  <div id="geoAsk">
+    <div class="m-card">
+      <h3>📍 내 위치 사용</h3>
+      <p class="m-sub">현재 위치를 지도에 표시하면 가까운 부동산을 찾기 편해요. 위치 접근을 허용할까요?</p>
+      <div class="m-actions">
+        <button class="ghost" id="geoDeny">차단</button>
+        <button class="primary" id="geoAllow">허용</button>
       </div>
     </div>
   </div>
@@ -201,6 +229,7 @@
     var focusGu = '';        // 동 칩을 보여줄 시군구
     var dongFilter = '';     // 선택된 동(법정동) — 빈값=전체
     var meOverlay = null;    // 현재 내 위치 마커
+    var myName = sessionStorage.getItem('fieldmap_name') || localStorage.getItem('fieldmap_manager') || ''; // 로그인 사용자 이름
 
     var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
     var STATUS_COLOR = { SIGNUP: 'var(--signup)', DELIVERED: 'var(--delivered)', REVISIT: 'var(--revisit)', FAIL: 'var(--fail)' };
@@ -232,20 +261,106 @@
       return p.tokens.slice(1, p.dongIdx).join(' ');
     }
 
-    // ===== 비번 게이트 =====
-    function showGate(msg) { $('gate').style.display = 'flex'; if (msg) $('gateErr').textContent = msg; $('gatePw').value=''; $('gatePw').focus(); }
+    // ===== 아이디+비밀번호 로그인 게이트 =====
+    // gateStep: 'id'(아이디 입력) → 'login'(기존 사용자 비번) | 'register'(첫 로그인: 이름+새 비번)
+    var gateStep = 'id';
+    var gateLoginId = '';
+    var gateBusy = false;
+
+    function showGate(msg) { $('gate').style.display = 'flex'; gateToIdStep(); if (msg) $('gateErr').textContent = msg; }
     function hideGate() { $('gate').style.display = 'none'; }
-    $('gateBtn').onclick = doAuth;
-    $('gatePw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doAuth(); });
-    function doAuth() {
-      var pw = $('gatePw').value.trim();
-      if (!pw) return;
+
+    function gateToIdStep() {
+      gateStep = 'id'; gateLoginId = '';
+      $('gateSub').textContent = '아이디를 입력해 주세요';
+      $('gateId').style.display = ''; $('gateId').disabled = false;
+      $('gateName').style.display = 'none'; $('gateName').value = '';
+      $('gatePw').style.display = 'none'; $('gatePw').value = '';
+      $('gateBtn').textContent = '다음';
+      $('gateBack').style.display = 'none';
       $('gateErr').textContent = '';
-      fetch(API + '/fieldmap/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pw }) })
-        .then(function(r){ if (!r.ok) throw new Error('비밀번호가 올바르지 않아요'); return r.json(); })
-        .then(function(j){ token = j.token; sessionStorage.setItem('fieldmap_token', token); hideGate(); boot(); })
-        .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; });
+      setTimeout(function(){ $('gateId').focus(); }, 50);
     }
+
+    function gateToLoginStep() {
+      gateStep = 'login';
+      $('gateSub').textContent = '비밀번호를 입력해 주세요';
+      $('gateId').disabled = true;
+      $('gateName').style.display = 'none';
+      $('gatePw').style.display = ''; $('gatePw').value = '';
+      $('gateBtn').textContent = '로그인';
+      $('gateBack').style.display = '';
+      $('gateErr').textContent = '';
+      setTimeout(function(){ $('gatePw').focus(); }, 50);
+    }
+
+    function gateToRegisterStep() {
+      gateStep = 'register';
+      $('gateSub').textContent = '첫 로그인이에요. 이름과 사용할 비밀번호를 정해 주세요';
+      $('gateId').disabled = true;
+      $('gateName').style.display = ''; $('gateName').value = '';
+      $('gatePw').style.display = ''; $('gatePw').value = ''; $('gatePw').placeholder = '비밀번호 (4자 이상)';
+      $('gateBtn').textContent = '시작하기';
+      $('gateBack').style.display = '';
+      $('gateErr').textContent = '';
+      setTimeout(function(){ $('gateName').focus(); }, 50);
+    }
+
+    function loginOk(j) {
+      token = j.token;
+      myName = j.name || '';
+      sessionStorage.setItem('fieldmap_token', token);
+      if (myName) { sessionStorage.setItem('fieldmap_name', myName); localStorage.setItem('fieldmap_manager', myName); }
+      hideGate(); boot();
+      // 로그인 직후 위치 권한 안내 (허용/차단)
+      setTimeout(askGeo, 350);
+    }
+
+    function gateSubmit() {
+      if (gateBusy) return;
+      $('gateErr').textContent = '';
+      if (gateStep === 'id') {
+        var id = $('gateId').value.trim();
+        if (!id) { $('gateId').focus(); return; }
+        gateBusy = true; $('gateBtn').disabled = true;
+        fetch(API + '/fieldmap/auth/status', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: id }) })
+          .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+          .then(function(res){
+            if (!res.ok || !res.j.valid) { $('gateErr').textContent = '없는 아이디예요'; return; }
+            gateLoginId = id;
+            if (res.j.adminLocked) { $('gateErr').textContent = '관리자 비밀번호가 아직 설정되지 않았어요'; return; }
+            if (res.j.registered) gateToLoginStep(); else gateToRegisterStep();
+          })
+          .catch(function(){ $('gateErr').textContent = '잠시 후 다시 시도해 주세요'; })
+          .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
+      } else if (gateStep === 'login') {
+        var pw = $('gatePw').value.trim();
+        if (!pw) { $('gatePw').focus(); return; }
+        gateBusy = true; $('gateBtn').disabled = true;
+        fetch(API + '/fieldmap/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: gateLoginId, password: pw }) })
+          .then(function(r){ if (!r.ok) throw new Error('login'); return r.json(); })
+          .then(function(j){ loginOk(j); })
+          .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; $('gatePw').focus(); })
+          .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
+      } else if (gateStep === 'register') {
+        var nm = $('gateName').value.trim();
+        var npw = $('gatePw').value.trim();
+        if (!nm) { $('gateErr').textContent = '이름을 입력해 주세요'; $('gateName').focus(); return; }
+        if (npw.length < 4) { $('gateErr').textContent = '비밀번호는 4자 이상이에요'; $('gatePw').focus(); return; }
+        gateBusy = true; $('gateBtn').disabled = true;
+        fetch(API + '/fieldmap/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: gateLoginId, name: nm, password: npw }) })
+          .then(function(r){ if (!r.ok) throw new Error('register'); return r.json(); })
+          .then(function(j){ loginOk(j); })
+          .catch(function(){ $('gateErr').textContent = '등록에 실패했어요. 다시 시도해 주세요'; })
+          .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
+      }
+    }
+
+    $('gateBtn').onclick = gateSubmit;
+    $('gateBack').onclick = gateToIdStep;
+    $('gateId').addEventListener('keydown', function(e){ if (e.key === 'Enter') gateSubmit(); });
+    $('gateName').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('gatePw').focus(); });
+    $('gatePw').addEventListener('keydown', function(e){ if (e.key === 'Enter') gateSubmit(); });
 
     // ===== Kakao SDK (clusterer 포함) =====
     function ensureKakaoReady() {
@@ -284,11 +399,12 @@
     function scheduleRender() { if (renderTimer) clearTimeout(renderTimer); renderTimer = setTimeout(renderAll, 120); }
 
     // ===== 내 위치 =====
-    $('locBtn').onclick = function() {
+    function requestLocation() {
       if (!navigator.geolocation) { toast('이 기기는 위치를 지원하지 않아요'); return; }
       $('locBtn').textContent = '⏳';
       navigator.geolocation.getCurrentPosition(function(pos) {
         $('locBtn').textContent = '📍';
+        if (!map) return;
         var ll = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
         if (!meOverlay) {
           var dot = document.createElement('div'); dot.className = 'me-dot';
@@ -302,7 +418,13 @@
         $('locBtn').textContent = '📍';
         toast(err && err.code === 1 ? '위치 권한을 허용해 주세요' : '위치를 가져오지 못했어요');
       }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 10000 });
-    };
+    }
+    $('locBtn').onclick = requestLocation;
+
+    // ===== 위치 권한 안내 (로그인 직후) =====
+    function askGeo() { $('geoAsk').classList.add('on'); }
+    $('geoAllow').onclick = function() { $('geoAsk').classList.remove('on'); requestLocation(); };
+    $('geoDeny').onclick = function() { $('geoAsk').classList.remove('on'); };
 
     // 시/도·시군구 목록 받아 버튼 구성.
     function loadRegions() {
@@ -489,15 +611,16 @@
 
     function renderSheet(o) {
       var addr = o.roadAddress || o.jibunAddress || '';
-      var phoneDigits = (o.phone || '').replace(/[^0-9]/g, '');
       var routeUrl = 'https://map.kakao.com/link/to/' + encodeURIComponent(o.name || '부동산') + ',' + o.lat + ',' + o.lng;
       var html = '';
       html += '<div class="sheet-head"><div class="sheet-name">' + esc(o.name) + '</div>' +
-        '<button class="btn-memo" id="memoBtn">📝 메모</button></div>';
+        '<div class="sheet-actions">' +
+        (o.status ? '<button class="btn-reset" id="resetBtn">↺ 초기화</button>' : '') +
+        '<button class="btn-memo" id="memoBtn">📝 메모</button>' +
+        '</div></div>';
       html += '<div class="sheet-meta">';
       if (o.ownerName) html += '대표 ' + esc(o.ownerName) + '<br>';
-      if (o.phone) html += '연락처 <a href="tel:' + phoneDigits + '">' + esc(o.phone) + '</a><br>';
-      else html += '<span style="color:#B0B8C1">연락처 없음</span><br>';
+      if (o.regNo) html += '등록번호 ' + esc(o.regNo) + '<br>';
       if (addr) html += esc(addr);
       html += '</div>';
       html += '<div id="memoArea">' + (o.note ? '<div class="memo-box">' + esc(o.note) + '</div>' : '') + '</div>';
@@ -534,6 +657,25 @@
       });
       var mb = document.getElementById('memoBtn');
       if (mb) mb.onclick = function(){ editMemo(o); };
+      var rb = document.getElementById('resetBtn');
+      if (rb) rb.onclick = function(){ resetOffice(o); };
+    }
+
+    // ===== 상태 초기화 (실수 정정) =====
+    function resetOffice(o) {
+      if (!confirm('이 부동산의 사진·명함·상태가 모두 초기화됩니다.\n진행할까요?')) return;
+      fetch(API + '/fieldmap/offices/' + o.id + '/reset', { method: 'POST', headers: authHeaders() })
+        .then(function(r){ if (!r.ok) throw new Error('실패'); return r.json(); })
+        .then(function(updated){
+          officeCache[o.id] = updated;
+          renderSheet(updated);
+          toast('초기화됐어요');
+          Object.keys(loaded).forEach(function(k){
+            loaded[k].forEach(function(of){ if (of.id === o.id) { of.status = null; of.managerName = null; of.statusAt = null; } });
+          });
+          renderAll();
+        })
+        .catch(function(){ toast('초기화 실패'); });
     }
 
     // ===== 메모 (바텀시트 우측상단 버튼) =====
@@ -553,12 +695,15 @@
         .catch(function(){ toast('메모 저장 실패'); });
     }
 
-    // ===== 액션 모달 (담당자 → 사진2 → 저장) =====
+    // ===== 액션 모달 (담당자 → 사진 → 저장) =====
+    // 가입완료·전달완료: 매장+명함 2장 / 재방문·실패: 둘 중 1장.
     var pendingStatus = null, photo1Url = null, photo2Url = null;
+    function photosNeedBoth() { return pendingStatus === 'SIGNUP' || pendingStatus === 'DELIVERED'; }
+    function photosOk() { return photosNeedBoth() ? !!(photo1Url && photo2Url) : !!(photo1Url || photo2Url); }
     function startAction(status) {
       pendingStatus = status; photo1Url = null; photo2Url = null;
       $('mStep1').style.display = ''; $('mStep2').style.display = 'none';
-      $('mName').value = localStorage.getItem('fieldmap_manager') || '';
+      $('mName').value = myName || localStorage.getItem('fieldmap_manager') || '';
       resetSlot(1); resetSlot(2); $('mSubmit').disabled = true;
       $('modal').classList.add('on'); setTimeout(function(){ $('mName').focus(); }, 50);
     }
@@ -569,6 +714,9 @@
       var n = $('mName').value.trim();
       if (!n) { $('mName').focus(); return; }
       localStorage.setItem('fieldmap_manager', n);
+      $('photoSub').textContent = photosNeedBoth()
+        ? '매장사진과 명함사진 2장을 등록해 주세요.'
+        : '매장사진 또는 명함사진 중 1장만 등록해도 돼요.';
       $('mStep1').style.display = 'none'; $('mStep2').style.display = '';
     };
 
@@ -589,13 +737,13 @@
         // 업로드
         uploadPhoto(file).then(function(url){
           if (n === '1') photo1Url = url; else photo2Url = url;
-          $('mSubmit').disabled = !(photo1Url && photo2Url);
+          $('mSubmit').disabled = !photosOk();
         }).catch(function(){ toast('사진 업로드 실패'); slot.classList.remove('filled'); });
       };
     });
 
     $('mSubmit').onclick = function() {
-      if (!photo1Url || !photo2Url || !pendingStatus || !sheetOfficeId) return;
+      if (!photosOk() || !pendingStatus || !sheetOfficeId) return;
       var manager = ($('mName').value || localStorage.getItem('fieldmap_manager') || '').trim();
       $('mSubmit').disabled = true;
       fetch(API + '/fieldmap/offices/' + sheetOfficeId + '/visit', {
