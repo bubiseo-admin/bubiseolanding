@@ -22,8 +22,20 @@
     #gate input:focus { border-color: #6155F5; }
     #gate button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
     #gateErr { color: var(--fail); font-size: 13px; min-height: 18px; margin-top: 8px; font-weight: 600; }
-    /* 상단 안내칩 */
-    #hint { position: fixed; top: calc(env(safe-area-inset-top) + 10px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
+    /* 하단 안내칩 (지역바가 상단을 쓰므로 아래로) */
+    #hint { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
+    /* 지역 버튼 바 (상단) */
+    #regionbar { position: fixed; top: calc(env(safe-area-inset-top) + 8px); left: 8px; right: 8px; z-index: 600; }
+    #sidoTabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 6px; }
+    #sidoTabs button { border: none; border-radius: 999px; padding: 7px 18px; font-size: 13px; font-weight: 800; background: rgba(255,255,255,.96); color: var(--sub); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; }
+    #sidoTabs button.on { background: #6155F5; color: #fff; }
+    #guChips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
+    #guChips::-webkit-scrollbar { display: none; }
+    .gu-chip { flex: 0 0 auto; border: none; border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; }
+    .gu-chip .gc-cnt { color: var(--sub); font-weight: 600; margin-left: 4px; font-size: 11px; }
+    .gu-chip.on { background: #6155F5; color: #fff; }
+    .gu-chip.on .gc-cnt { color: rgba(255,255,255,.82); }
+    .gu-chip.loading { opacity: .55; }
     /* 부동산 박스 (CustomOverlay) */
     /* 박스 + 아래 화살표(꼬리). 화살표 끝이 정확히 부동산 위치를 가리킴(yAnchor:1). */
     .office-pin { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
@@ -93,6 +105,10 @@
 </head>
 <body>
   <div id="map"></div>
+  <div id="regionbar" style="display:none">
+    <div id="sidoTabs"></div>
+    <div id="guChips"></div>
+  </div>
   <div id="hint">로그인 중…</div>
 
   <!-- 비번 게이트 -->
@@ -154,7 +170,12 @@
     var overlays = [];       // 박스 CustomOverlay (가까이서만)
     var officeCache = {};    // id -> office (목록 응답)
     var BOX_LEVEL = 4;       // 이 레벨 이하(가까움)면 박스 표시
-    var fetchTimer = null;
+    var renderTimer = null;
+    // 지역 버튼 방식 — 기본 빈 지도, 버튼 누른 시군구만 로드.
+    var REGIONS = [];        // [{sido, sigungu, count}]
+    var activeSido = '';     // 현재 탭 시/도
+    var loaded = {};         // sigungu -> offices[] (지도에 표시 중인 지역)
+    var loadingSet = {};     // sigungu -> true (조회 중)
 
     var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
     var STATUS_COLOR = { SIGNUP: 'var(--signup)', DELIVERED: 'var(--delivered)', REVISIT: 'var(--revisit)', FAIL: 'var(--fail)' };
@@ -207,23 +228,76 @@
     }
 
     function initMap() {
-      // 서울시청 중심 시작
-      map = new kakao.maps.Map($('map'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 5 });
+      map = new kakao.maps.Map($('map'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 7 });
       clusterer = new kakao.maps.MarkerClusterer({ map: map, averageCenter: true, minLevel: BOX_LEVEL + 1, gridSize: 80 });
-      kakao.maps.event.addListener(map, 'idle', scheduleFetch);
-      $('hint').textContent = '지도를 움직여 영업할 동네를 확대하세요';
-      scheduleFetch();
+      // 줌 변경 시 박스/클러스터 전환만 (재조회 X — 이미 로드된 지역 데이터로).
+      kakao.maps.event.addListener(map, 'idle', scheduleRender);
+      loadRegions();
     }
 
-    function scheduleFetch() { if (fetchTimer) clearTimeout(fetchTimer); fetchTimer = setTimeout(fetchOffices, 250); }
+    function scheduleRender() { if (renderTimer) clearTimeout(renderTimer); renderTimer = setTimeout(renderAll, 120); }
 
-    function fetchOffices() {
-      var b = map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast();
-      var url = API + '/fieldmap/offices?swLat=' + sw.getLat() + '&swLng=' + sw.getLng() + '&neLat=' + ne.getLat() + '&neLng=' + ne.getLng() + '&limit=1500';
-      fetch(url, { headers: authHeaders() })
+    // 시/도·시군구 목록 받아 버튼 구성.
+    function loadRegions() {
+      $('hint').textContent = '지역 목록 불러오는 중…';
+      fetch(API + '/fieldmap/regions', { headers: authHeaders() })
         .then(function(r){ if (r.status === 403) { showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
-        .then(function(j){ renderOffices(j.offices || [], j.truncated); })
-        .catch(function(e){ if (String(e.message) !== '403') console.error(e); });
+        .then(function(j){
+          REGIONS = j.regions || [];
+          var sidos = [];
+          REGIONS.forEach(function(rg){ if (sidos.indexOf(rg.sido) < 0) sidos.push(rg.sido); });
+          activeSido = sidos[0] || '';
+          buildRegionUI(sidos);
+          $('regionbar').style.display = 'block';
+          $('hint').textContent = '지역 버튼을 눌러 표시하세요';
+        })
+        .catch(function(e){ if (String(e.message) !== '403') $('hint').textContent = '지역 목록 로드 실패'; });
+    }
+
+    function buildRegionUI(sidos) {
+      var tabs = sidos.map(function(s){
+        var short = s.replace('특별시','').replace('광역시','').replace('도','');
+        return '<button data-sido="' + esc(s) + '" class="' + (s === activeSido ? 'on' : '') + '">' + esc(short || s) + '</button>';
+      }).join('');
+      $('sidoTabs').innerHTML = tabs;
+      Array.prototype.forEach.call($('sidoTabs').querySelectorAll('[data-sido]'), function(b){
+        b.onclick = function(){ activeSido = b.getAttribute('data-sido'); buildRegionUI(sidos); };
+      });
+      renderChips();
+    }
+
+    function renderChips() {
+      var list = REGIONS.filter(function(rg){ return rg.sido === activeSido; });
+      var html = list.map(function(rg){
+        var on = !!loaded[rg.sigungu];
+        var ldn = !!loadingSet[rg.sigungu];
+        return '<button class="gu-chip' + (on ? ' on' : '') + (ldn ? ' loading' : '') + '" data-gu="' + esc(rg.sigungu) + '">' +
+          esc(rg.sigungu) + '<span class="gc-cnt">' + rg.count + '</span></button>';
+      }).join('');
+      $('guChips').innerHTML = html;
+      Array.prototype.forEach.call($('guChips').querySelectorAll('[data-gu]'), function(b){
+        b.onclick = function(){ toggleRegion(b.getAttribute('data-gu')); };
+      });
+    }
+
+    function toggleRegion(sigungu) {
+      if (loaded[sigungu]) { delete loaded[sigungu]; renderAll(); renderChips(); updateHint(); return; }
+      if (loadingSet[sigungu]) return;
+      loadingSet[sigungu] = true; renderChips();
+      fetch(API + '/fieldmap/offices?sigungu=' + encodeURIComponent(sigungu) + '&sido=' + encodeURIComponent(activeSido) + '&limit=60000', { headers: authHeaders() })
+        .then(function(r){ if (r.status === 403) { showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
+        .then(function(j){
+          delete loadingSet[sigungu];
+          loaded[sigungu] = (j.offices || []).filter(function(o){ return o.lat != null && o.lng != null; });
+          renderAll(); renderChips(); fitToRegion(loaded[sigungu]); updateHint();
+        })
+        .catch(function(e){ delete loadingSet[sigungu]; renderChips(); if (String(e.message) !== '403') toast('지역 로드 실패'); });
+    }
+
+    function allLoadedOffices() {
+      var arr = [];
+      Object.keys(loaded).forEach(function(k){ arr = arr.concat(loaded[k]); });
+      return arr;
     }
 
     function clearLayers() {
@@ -231,13 +305,13 @@
       overlays.forEach(function(o){ o.setMap(null); }); overlays = [];
     }
 
-    function renderOffices(list, truncated) {
+    function renderAll() {
+      if (!map) return;
       clearLayers();
       officeCache = {};
-      var level = map.getLevel();
-      var showBoxes = level <= BOX_LEVEL;
+      var list = allLoadedOffices();
+      var showBoxes = map.getLevel() <= BOX_LEVEL;
       list.forEach(function(o){
-        if (o.lat == null || o.lng == null) return;
         officeCache[o.id] = o;
         var pos = new kakao.maps.LatLng(o.lat, o.lng);
         if (showBoxes) {
@@ -248,7 +322,6 @@
             (o.phone ? '<span class="ob-sub">' + esc(o.phone) + '</span>' : '') +
             '</div><div class="office-tail"></div>';
           (function(id){ el.onclick = function(){ openSheet(id); }; })(o.id);
-          // xAnchor 0.5 + yAnchor 1 → 화살표 끝(꼬리 tip)이 정확히 해당 좌표.
           var ov = new kakao.maps.CustomOverlay({ position: pos, content: el, xAnchor: 0.5, yAnchor: 1, clickable: true });
           ov.setMap(map); overlays.push(ov);
         } else {
@@ -258,9 +331,19 @@
         }
       });
       if (!showBoxes && markers.length) clusterer.addMarkers(markers);
-      $('hint').textContent = showBoxes
-        ? (list.length + '곳 표시' + (truncated ? ' (더 확대 시 정밀)' : ''))
-        : '확대하면 상호·대표·전화 박스가 보여요 (' + list.length + '곳)';
+    }
+
+    function fitToRegion(list) {
+      if (!list || !list.length) return;
+      var bounds = new kakao.maps.LatLngBounds();
+      list.forEach(function(o){ bounds.extend(new kakao.maps.LatLng(o.lat, o.lng)); });
+      map.setBounds(bounds);
+    }
+
+    function updateHint() {
+      var n = allLoadedOffices().length;
+      var regs = Object.keys(loaded).length;
+      $('hint').textContent = regs ? (regs + '개 지역 · ' + n + '곳 (확대하면 박스)') : '지역 버튼을 눌러 표시하세요';
     }
 
     // ===== 바텀시트 =====
@@ -370,7 +453,13 @@
           officeCache[sheetOfficeId] = updated;
           closeModal(); renderSheet(updated);
           toast(STATUS_LABEL[pendingStatus] + ' 저장됨');
-          fetchOffices(); // 박스 색 갱신
+          // 로드된 지역 데이터의 해당 부동산 상태 갱신 → 박스 색 즉시 반영.
+          Object.keys(loaded).forEach(function(k){
+            loaded[k].forEach(function(o){
+              if (o.id === sheetOfficeId) { o.status = updated.status; o.managerName = updated.managerName; o.statusAt = updated.statusAt; }
+            });
+          });
+          renderAll();
         })
         .catch(function(){ toast('저장 실패'); $('mSubmit').disabled = false; });
     };
