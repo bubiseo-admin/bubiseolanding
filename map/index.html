@@ -558,8 +558,7 @@
 
     // 박스 충돌 회피 상수 (픽셀)
     var BOX_W = 124, BOX_H = 48, BOX_GAP = 8, TAIL_LEN = 24;
-    var STEP_X = BOX_W + BOX_GAP;   // 좌우 간격
-    var STEP_Y = BOX_H + BOX_GAP;   // 상하 간격
+    var STEP_X = BOX_W + BOX_GAP;   // 같은 건물 좌우 초기 간격
 
     function renderAll() {
       if (!map) return;
@@ -580,40 +579,21 @@
     }
 
     // 좌표 → 화면 픽셀 (투영). 실패 시 경계 선형보간 폴백.
-    function toPixel(o) {
-      var ll = new kakao.maps.LatLng(o.lat, o.lng);
-      var proj = map.getProjection();
-      if (proj && proj.containerPointFromCoords) {
-        var p = proj.containerPointFromCoords(ll);
-        if (p && isFinite(p.x) && isFinite(p.y)) return { x: p.x, y: p.y };
-      }
-      var b = map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast(), el = $('map');
-      return {
-        x: (o.lng - sw.getLng()) / (ne.getLng() - sw.getLng()) * el.clientWidth,
-        y: (1 - (o.lat - sw.getLat()) / (ne.getLat() - sw.getLat())) * el.clientHeight
-      };
-    }
-
-    function boxCollides(x, y, placed) {
-      for (var i = 0; i < placed.length; i++) {
-        if (Math.abs(placed[i].x - x) < STEP_X - 1 && Math.abs(placed[i].y - y) < STEP_Y - 1) return true;
-      }
-      return false;
-    }
+    var curBoxes = [];
+    var deCollRaf = null;
 
     function renderBoxes(list) {
       // 1) 뷰포트(+여유) 안 박스만 — 성능 + 화면 박스만 정렬
       var b = map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast();
-      var latPad = (ne.getLat() - sw.getLat()) * 0.25, lngPad = (ne.getLng() - sw.getLng()) * 0.25;
+      var latPad = (ne.getLat() - sw.getLat()) * 0.3, lngPad = (ne.getLng() - sw.getLng()) * 0.3;
       var minLat = sw.getLat() - latPad, maxLat = ne.getLat() + latPad;
       var minLng = sw.getLng() - lngPad, maxLng = ne.getLng() + lngPad;
       var items = [];
       list.forEach(function(o){
         if (o.lat < minLat || o.lat > maxLat || o.lng < minLng || o.lng > maxLng) return;
-        var p = toPixel(o);
-        items.push({ o: o, ll: new kakao.maps.LatLng(o.lat, o.lng), px: p.x, py: p.y, baseOx: 0, baseOy: 0 });
+        items.push({ o: o, ll: new kakao.maps.LatLng(o.lat, o.lng), baseOx: 0 });
       });
-      // 2) 동일 좌표(같은 건물) 묶음 → 점 가운데 두고 대칭 좌/우
+      // 2) 동일 좌표(같은 건물) 묶음 → 점 가운데 두고 대칭 좌/우 (초기 배치)
       var groups = {};
       items.forEach(function(it){ var k = it.o.lat.toFixed(5) + ',' + it.o.lng.toFixed(5); (groups[k] = groups[k] || []).push(it); });
       Object.keys(groups).forEach(function(k){
@@ -623,44 +603,86 @@
         var n = g.length;
         g.forEach(function(it, i){ it.baseOx = (i - (n - 1) / 2) * STEP_X; });
       });
-      // 3) 그리디 충돌 회피 — 겹치면 좌/우(필요시 위)로 밀어냄
-      items.sort(function(a, c){ return a.py - c.py || a.px - c.px; });
-      var placed = [];
-      var deColl = items.length <= 1200;
-      items.forEach(function(it){
-        var ox = it.baseOx, oy = it.baseOy;
-        if (deColl && boxCollides(it.px + ox, it.py + oy, placed)) {
-          var done = false;
-          for (var r = 1; r <= 14 && !done; r++) {
-            var cand = [[r * STEP_X, 0], [-r * STEP_X, 0], [r * STEP_X, -STEP_Y], [-r * STEP_X, -STEP_Y], [0, -r * STEP_Y], [r * STEP_X, -2 * STEP_Y], [-r * STEP_X, -2 * STEP_Y]];
-            for (var c = 0; c < cand.length; c++) {
-              var nx = it.baseOx + cand[c][0], ny = it.baseOy + cand[c][1];
-              if (!boxCollides(it.px + nx, it.py + ny, placed)) { ox = nx; oy = ny; done = true; break; }
-            }
-          }
-        }
-        placed.push({ x: it.px + ox, y: it.py + oy });
-        createBoxOverlay(it, ox, oy);
-      });
+      items.forEach(function(it){ createBoxOverlay(it, it.baseOx, 0); });
+      curBoxes = items;
+      // 3) 렌더 후 실제 화면 좌표 측정 → 절대 안 겹치게 밀어냄 (투영 무관, 100% 보장)
+      if (deCollRaf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(deCollRaf);
+      if (typeof requestAnimationFrame === 'function') deCollRaf = requestAnimationFrame(decollideRendered);
+      else setTimeout(decollideRendered, 30);
+    }
+
+    function positionBox(box, leader, ox, oy) {
+      box.style.left = (ox - BOX_W / 2).toFixed(1) + 'px';
+      box.style.top = (-TAIL_LEN - BOX_H + oy).toFixed(1) + 'px';
+      var dx = ox, dy = -TAIL_LEN + oy;
+      var len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx);
+      leader.style.width = len.toFixed(1) + 'px';
+      leader.style.transform = 'rotate(' + ang.toFixed(4) + 'rad)';
     }
 
     function createBoxOverlay(it, ox, oy) {
       var o = it.o;
-      var bx = ox - BOX_W / 2, by = -TAIL_LEN - BOX_H + oy;   // 박스 좌상단(점 기준 픽셀, 위=음수)
-      var dx = ox, dy = -TAIL_LEN + oy;                      // 리더 끝점(박스 하단중앙)
-      var len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx);
       var wrap = document.createElement('div');
       wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
-      wrap.innerHTML =
-        '<div class="pin-leader" style="width:' + len.toFixed(1) + 'px;transform:rotate(' + ang.toFixed(4) + 'rad);"></div>' +
-        '<div class="pin-dot"></div>' +
-        '<div class="office-box" style="left:' + bx.toFixed(1) + 'px;top:' + by.toFixed(1) + 'px;width:' + BOX_W + 'px;">' +
-          '<b>' + esc(o.name) + '</b>' +
-          (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '') +
-        '</div>';
-      (function(id){ wrap.querySelector('.office-box').onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
+      var leader = document.createElement('div'); leader.className = 'pin-leader';
+      var dot = document.createElement('div'); dot.className = 'pin-dot';
+      var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
+      box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
+      wrap.appendChild(leader); wrap.appendChild(dot); wrap.appendChild(box);
+      positionBox(box, leader, ox, oy);
+      (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
+      it.box = box; it.leader = leader; it.wrap = wrap;
       var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: 3 });
       ov.setMap(map); overlays.push(ov);
+    }
+
+    function rectsOverlap(a, l, t, w, h, pad) {
+      return l < a.l + a.w + pad && l + w + pad > a.l && t < a.t + a.h + pad && t + h + pad > a.t;
+    }
+    function overlapsAny(l, t, w, h, placed, pad) {
+      for (var i = 0; i < placed.length; i++) { if (rectsOverlap(placed[i], l, t, w, h, pad)) return true; }
+      return false;
+    }
+
+    // 렌더된 박스의 실제 화면 좌표를 측정해 절대 안 겹치게 재배치 (Kakao 투영과 무관).
+    function decollideRendered() {
+      deCollRaf = null;
+      var its = curBoxes;
+      if (!its || !its.length) return;
+      var rects = [];
+      its.forEach(function(it){
+        if (!it.box || !document.body.contains(it.box)) return;
+        var wr = it.wrap.getBoundingClientRect();  // 점(실제 위치) 화면 좌표
+        var br = it.box.getBoundingClientRect();    // 박스 화면 좌표
+        if (!br.width) return;
+        rects.push({ it: it, px: wr.left, py: wr.top, l: br.left, t: br.top, w: br.width, h: br.height });
+      });
+      rects.sort(function(a, c){ return a.py - c.py || a.px - c.px; });
+      var PAD = 5, placed = [];
+      rects.forEach(function(r){
+        var l = r.l, t = r.t, SX = r.w + PAD, SY = r.h + PAD;
+        if (overlapsAny(l, t, r.w, r.h, placed, PAD)) {
+          var done = false;
+          for (var k = 1; k <= 24 && !done; k++) {
+            var cand = [[k * SX, 0], [-k * SX, 0], [k * SX, -SY], [-k * SX, -SY], [0, -k * SY], [k * SX, -2 * SY], [-k * SX, -2 * SY]];
+            for (var c = 0; c < cand.length; c++) {
+              var nl = r.l + cand[c][0], nt = r.t + cand[c][1];
+              if (!overlapsAny(nl, nt, r.w, r.h, placed, PAD)) { l = nl; t = nt; done = true; break; }
+            }
+          }
+        }
+        placed.push({ l: l, t: t, w: r.w, h: r.h });
+        var box = r.it.box;
+        var newLeft = (parseFloat(box.style.left) || 0) + (l - r.l);
+        var newTop = (parseFloat(box.style.top) || 0) + (t - r.t);
+        box.style.left = newLeft.toFixed(1) + 'px';
+        box.style.top = newTop.toFixed(1) + 'px';
+        // 리더선: 점(0,0) → 박스 하단중앙
+        var bcx = newLeft + r.w / 2, bcy = newTop + r.h;
+        var len = Math.sqrt(bcx * bcx + bcy * bcy), ang = Math.atan2(bcy, bcx);
+        r.it.leader.style.width = len.toFixed(1) + 'px';
+        r.it.leader.style.transform = 'rotate(' + ang.toFixed(4) + 'rad)';
+      });
     }
 
     // 평균 좌표를 화면 중앙으로 + 지정 레벨 (구=7≈1km, 동=6≈500m).
