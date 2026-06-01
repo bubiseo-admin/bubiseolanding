@@ -151,9 +151,9 @@
     <div class="card">
       <h1>부동산 영업 지도</h1>
       <p id="gateSub">아이디를 입력해 주세요</p>
-      <input id="gateId" type="text" placeholder="아이디 (예: bubiseo1)" autocapitalize="off" autocomplete="username" />
-      <input id="gateName" type="text" placeholder="이름" autocomplete="name" style="display:none" />
-      <input id="gatePw" type="password" placeholder="비밀번호" autocomplete="current-password" style="display:none" />
+      <input id="gateId" type="text" autocapitalize="off" autocomplete="username" />
+      <input id="gateName" type="text" autocomplete="name" style="display:none" />
+      <input id="gatePw" type="password" autocomplete="current-password" style="display:none" />
       <div id="gateErr"></div>
       <button id="gateBtn">다음</button>
       <button id="gateBack" style="display:none">← 아이디 다시 입력</button>
@@ -299,7 +299,7 @@
       $('gateSub').textContent = '첫 로그인이에요. 이름과 사용할 비밀번호를 정해 주세요';
       $('gateId').disabled = true;
       $('gateName').style.display = ''; $('gateName').value = '';
-      $('gatePw').style.display = ''; $('gatePw').value = ''; $('gatePw').placeholder = '비밀번호 (4자 이상)';
+      $('gatePw').style.display = ''; $('gatePw').value = '';
       $('gateBtn').textContent = '시작하기';
       $('gateBack').style.display = '';
       $('gateErr').textContent = '';
