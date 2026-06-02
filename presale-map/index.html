@@ -91,6 +91,87 @@
     #toast.on { opacity:1; }
     #loading { position:fixed; inset:0; z-index:700; display:flex; align-items:center; justify-content:center; background:#fff; font-size:14px; color:var(--sub); font-weight:700; }
     #loading.hide { display:none; }
+
+    /* 2026-06-03 [사용자 명시] 박스 클릭 시트 — 모바일/데스크톱 분양파트너 카드 1:1 (배경사진+글자+뱃지) */
+    .sheet-hero { position:relative; width:100%; height:200px; border-radius:14px; overflow:hidden; background:var(--bg); margin-bottom:14px; }
+    .sheet-hero__img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .sheet-hero__grad { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.30) 50%, rgba(0,0,0,0) 100%); }
+    .sheet-hero__grad.feat { background:linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.22) 50%, rgba(0,0,0,0) 100%); }
+    .sheet-hero__noimg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#C9CCD1; font-size:13px; font-weight:700; }
+    .sheet-hero__star { position:absolute; top:10px; left:10px; width:22px; height:22px; border-radius:11px; background:#F5A623; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,.25); z-index:2; }
+    .sheet-hero__like { position:absolute; top:10px; right:12px; z-index:3; display:flex; align-items:center; gap:3px; background:rgba(255,255,255,.6); padding:3px 7px; border-radius:11px; }
+    .sheet-hero__like .h { color:#FF1744; font-size:13px; } .sheet-hero__like .n { font-size:12px; font-weight:800; color:#FF1744; }
+    .sheet-hero__txt { position:absolute; left:0; right:0; bottom:0; padding:14px 16px; z-index:2; }
+    .sheet-hero__cat { font-size:11px; font-weight:700; color:#fff; letter-spacing:-.2px; text-shadow:0 1px 2px rgba(0,0,0,.55); margin-bottom:3px; }
+    .sheet-hero__ttl { font-size:20px; font-weight:800; color:#fff; letter-spacing:-.3px; text-shadow:0 1px 3px rgba(0,0,0,.55); line-height:1.25; }
+    .sheet-hero__ttl.feat { font-size:24px; font-weight:900; }
+    .sheet-hero__addr { font-size:11px; color:#fff; opacity:.92; margin-top:3px; text-shadow:0 1px 2px rgba(0,0,0,.55); }
+    .sheet-hero__mgm { font-size:14px; font-weight:800; color:#fff; letter-spacing:-.3px; margin-top:5px; text-shadow:0 1px 3px rgba(0,0,0,.55); }
+    .sheet-badges { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+    .sheet-badge { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; background:rgba(97,85,245,.12); color:var(--purple); }
+    .sheet-badge.feat { background:#F5A623; color:#fff; }
+    .sheet-detail-btn { width:100%; height:48px; border:none; border-radius:12px; background:var(--blueGrad); color:#fff; font-size:15px; font-weight:800; cursor:pointer; margin-top:6px; }
+
+    /* 2026-06-03 [사용자 명시] 검색 돋보기 버튼 + 검색 패널 */
+    #searchBtn { flex:0 0 auto; width:40px; height:40px; border:none; border-radius:999px; background:rgba(255,255,255,.96); color:var(--ink); font-size:18px; box-shadow:0 2px 8px rgba(0,0,0,.18); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    #searchPanel { position:fixed; top:0; left:0; right:0; z-index:1200; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.18); padding:calc(env(safe-area-inset-top) + 10px) 12px 12px; transform:translateY(-110%); transition:transform .25s; }
+    #searchPanel.on { transform:translateY(0); }
+    #searchRow { display:flex; gap:8px; align-items:center; }
+    #searchInput { flex:1; height:44px; border:1.5px solid var(--line); border-radius:12px; padding:0 14px; font-size:15px; outline:none; }
+    #searchInput:focus { border-color:var(--purple); }
+    #searchClose { flex:0 0 auto; height:44px; padding:0 14px; border:none; border-radius:12px; background:var(--bg); color:var(--sub); font-size:14px; font-weight:700; cursor:pointer; }
+    #searchResults { max-height:50vh; overflow-y:auto; margin-top:8px; }
+    .sr-item { display:flex; align-items:center; gap:10px; padding:11px 8px; border-bottom:1px solid var(--line); cursor:pointer; }
+    .sr-item:active { background:var(--bg); }
+    .sr-thumb { flex:0 0 auto; width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--bg); }
+    .sr-info { flex:1; min-width:0; }
+    .sr-ttl { font-size:14px; font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sr-sub { font-size:12px; color:var(--sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+    .sr-empty { padding:20px; text-align:center; color:var(--sub); font-size:13px; }
+
+    /* 2026-06-03 [사용자 명시] 분양현장 상세 — 모바일/데스크톱 PreSalePartnershipDetailScreen 1:1 전체화면 */
+    #detail { position:fixed; inset:0; z-index:1500; background:#fff; transform:translateX(100%); transition:transform .28s cubic-bezier(.4,0,.2,1); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    #detail.on { transform:translateX(0); }
+    .dt-hero { position:relative; width:100%; aspect-ratio:5/4; background:var(--bg); overflow:hidden; }
+    .dt-hero__track { display:flex; width:100%; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
+    .dt-hero__track::-webkit-scrollbar { display:none; }
+    .dt-hero__img { flex:0 0 100%; width:100%; height:100%; object-fit:cover; scroll-snap-align:start; }
+    .dt-back { position:absolute; top:calc(env(safe-area-inset-top) + 12px); left:14px; width:38px; height:38px; border-radius:999px; background:rgba(255,255,255,.92); border:none; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,.15); }
+    .dt-mgm { position:absolute; top:calc(env(safe-area-inset-top) + 12px); right:14px; padding:9px 14px; border-radius:999px; background:var(--blueGrad); color:#fff; font-size:14px; font-weight:800; z-index:5; box-shadow:0 3px 8px rgba(97,85,245,.5); }
+    .dt-dots { position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:6px; z-index:4; }
+    .dt-dot { width:6px; height:6px; border-radius:3px; background:rgba(255,255,255,.55); }
+    .dt-dot.on { background:#fff; width:18px; }
+    .dt-caption { font-size:12px; font-style:italic; color:var(--sub); padding:14px 22px 0; letter-spacing:.2px; }
+    .dt-masthead { padding:8px 22px 22px; }
+    .dt-kicker { font-size:11px; font-weight:800; color:var(--sky); letter-spacing:2.5px; margin-bottom:8px; }
+    .dt-headline { font-size:30px; line-height:36px; font-weight:800; color:var(--ink); letter-spacing:-.3px; margin:0; }
+    .dt-oneliner { display:flex; margin-top:16px; }
+    .dt-oneliner__bar { width:3px; border-radius:2px; background:var(--sky); margin-right:12px; flex:0 0 auto; }
+    .dt-oneliner__txt { flex:1; font-size:15px; line-height:23px; color:var(--sub); font-style:italic; }
+    .dt-rule { height:1px; background:var(--line); margin:0 22px; }
+    .dt-sechead { display:flex; align-items:baseline; padding:22px 22px 4px; }
+    .dt-secnum { font-size:30px; font-weight:300; color:#D6DAE0; margin-right:12px; letter-spacing:-1px; }
+    .dt-seclabel { font-size:15px; font-weight:800; color:var(--ink); letter-spacing:.5px; }
+    .dt-section { padding:10px 22px 22px; }
+    .dt-bodylead { font-size:17px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+    .dt-bodymuted { font-size:14px; line-height:21px; color:var(--sub); }
+    .dt-pricelabel { font-size:12px; font-weight:700; color:var(--sub); letter-spacing:1px; margin-bottom:6px; }
+    .dt-pricevalue { font-size:26px; font-weight:800; color:var(--ink); letter-spacing:-.5px; }
+    .dt-rows { margin-top:16px; }
+    .dt-row { display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid var(--line); }
+    .dt-row:last-child { border-bottom:none; }
+    .dt-row__label { font-size:14px; color:var(--sub); font-weight:500; }
+    .dt-row__value { font-size:15px; color:var(--ink); font-weight:700; }
+    .dt-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .dt-chip { padding:7px 12px; border-radius:999px; border:1px solid var(--line); background:#fff; font-size:13px; color:var(--sub); font-weight:600; }
+    .dt-chip.accent { border-color:var(--sky); color:var(--sky); font-weight:700; }
+    .dt-medialabel { font-size:12px; font-weight:700; color:var(--sub); letter-spacing:1px; margin-bottom:10px; }
+    .dt-video { width:100%; aspect-ratio:16/9; border-radius:12px; background:#000; margin-bottom:12px; }
+    .dt-pdfbtn { display:flex; align-items:center; gap:8px; width:100%; background:rgba(97,85,245,.06); border:1px solid rgba(97,85,245,.25); border-radius:12px; padding:14px 16px; cursor:pointer; margin-bottom:10px; text-align:left; }
+    .dt-pdfbtn__txt { flex:1; font-size:14px; font-weight:700; color:var(--purple); }
+    .dt-footer { position:sticky; bottom:0; display:flex; gap:10px; padding:12px 18px calc(env(safe-area-inset-bottom) + 12px); background:#fff; border-top:1px solid var(--line); }
+    .dt-cta-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid var(--line); cursor:pointer; font-size:20px; }
+    .dt-cta-call { flex:1; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--blueGrad); border:none; color:#fff; font-size:16px; font-weight:800; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -100,8 +181,22 @@
   <div id="topbar">
     <button id="backBtn" type="button">← 돌아가기</button>
     <div id="titlePill"><span class="dot"></span><span id="titleText">내 광고 노출 지도</span></div>
+    <!-- 2026-06-03 [사용자 명시] 검색 돋보기 버튼 -->
+    <button id="searchBtn" type="button" aria-label="검색">🔍</button>
   </div>
   <div id="mineBar"></div>
+
+  <!-- 2026-06-03 [사용자 명시] 검색 패널 -->
+  <div id="searchPanel">
+    <div id="searchRow">
+      <input id="searchInput" type="text" placeholder="현장명·지역으로 검색" autocomplete="off" />
+      <button id="searchClose" type="button">닫기</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- 2026-06-03 [사용자 명시] 분양현장 상세 (모바일/데스크톱 1:1) -->
+  <div id="detail"></div>
 
   <div id="loading">분양지도 불러오는 중…</div>
 
@@ -310,25 +405,191 @@
       });
     }
 
-    // 마커 클릭 시트
+    function heroOf(a){ return a.thumbnailUrl || (a.imageUrls && a.imageUrls[0]) || ''; }
+
+    // 마커(박스) 클릭 시트 — 모바일/데스크톱 카드 1:1 (배경사진+글자+뱃지)
     function openSheet(a){
+      // 2026-06-03 [사용자 명시] 4번: 박스 클릭 시 그 좌표로 지도 중앙정렬
+      if (typeof a.latitude==='number' && typeof a.longitude==='number') {
+        map.setCenter(new kakao.maps.LatLng(a.latitude, a.longitude));
+      }
       var mine = !!myIds[a.id];
       var sub = (a.sigungu?('('+a.sigungu+') '):'') + (PRESALE_CATEGORY_LABEL[a.category]||'분양');
       var mgm = a.mgmFee>0 ? ('MGM '+fmtMan(a.mgmFee)) : '';
-      var live = a.paymentConfirmed === true; // 공개 응답이면 이미 노출 중
-      var html =
-        '<div class="sheet-tag '+(mine?'mine':'other')+'">'+(mine?'★ 내 광고':'분양 현장')+'</div>'+
-        '<div class="sheet-ttl">'+escapeHtml(a.title)+'</div>'+
-        '<div class="sheet-meta">'+escapeHtml(sub)+'<br/>'+escapeHtml(a.address||'')+(mgm?('<br/>'+escapeHtml(mgm)):'')+'</div>';
+      var hero = heroOf(a);
+      var feat = !!a.isFeatured;
+      var badges = (a.badges||[]).slice(0, feat?5:3);
+      // 2026-06-03 [사용자 명시] 3번: 배경사진 + 글자배치 + 뱃지
+      var html = '<div class="sheet-hero">';
+      if (hero) {
+        html += '<img class="sheet-hero__img" src="'+escapeHtml(hero)+'" alt=""/>';
+        html += '<div class="sheet-hero__grad'+(feat?' feat':'')+'"></div>';
+      } else {
+        html += '<div class="sheet-hero__noimg">사진 준비중</div>';
+      }
+      if (feat) html += '<div class="sheet-hero__star">★</div>';
+      if (a.likeCount>0) html += '<div class="sheet-hero__like"><span class="h">♥</span><span class="n">'+a.likeCount+'</span></div>';
+      html += '<div class="sheet-hero__txt">'+
+        '<div class="sheet-hero__cat">'+escapeHtml(sub)+(mine?' · ★ 내 광고':'')+'</div>'+
+        '<div class="sheet-hero__ttl'+(feat?' feat':'')+'">'+escapeHtml(a.title)+'</div>'+
+        (a.address?'<div class="sheet-hero__addr">'+escapeHtml(a.address)+'</div>':'')+
+        (mgm?'<div class="sheet-hero__mgm">'+escapeHtml(mgm)+'</div>':'')+
+      '</div></div>';
+      if (badges.length) {
+        html += '<div class="sheet-badges">';
+        badges.forEach(function(b){ html += '<span class="sheet-badge'+(feat?' feat':'')+'">'+escapeHtml(b)+'</span>'; });
+        html += '</div>';
+      }
       if (mine) {
         html += '<div class="sheet-status live">✅ 부동산 앱 지도에 노출되고 있어요. 초록 마커가 사장님 광고예요.</div>';
       }
+      html += '<button class="sheet-detail-btn" id="sheetDetailBtn">분양 현장 자세히 보기</button>';
       $('sheetBody').innerHTML = html;
+      var db = document.getElementById('sheetDetailBtn');
+      if (db) db.onclick = function(){ openDetail(a); };
       $('scrim').classList.add('on');
       $('sheet').classList.add('on');
     }
     function closeSheet(){ $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); }
     $('scrim').onclick = closeSheet;
+
+    // ── 2026-06-03 [사용자 명시] 5번: 분양현장 상세 (모바일/데스크톱 PreSalePartnershipDetailScreen 1:1) ──
+    function formatPriceEok(won){
+      if(!won||won<=0) return '';
+      var eok=won/100000000;
+      if(eok>=1) return (eok>=10?Math.round(eok):eok.toFixed(1))+'억';
+      return Math.round(won/10000).toLocaleString()+'만';
+    }
+    function priceRange(min,max){
+      var hi=min>0, ho=max>0;
+      if(!hi&&!ho) return '';
+      if(hi&&ho&&min!==max) return formatPriceEok(min)+'~'+formatPriceEok(max);
+      return formatPriceEok(min||max);
+    }
+    function dtRow(label,value){ return value?('<div class="dt-row"><span class="dt-row__label">'+escapeHtml(label)+'</span><span class="dt-row__value">'+escapeHtml(String(value))+'</span></div>'):''; }
+
+    function openDetail(a){
+      var cat = PRESALE_CATEGORY_LABEL[a.category]||'분양';
+      var regionLine = [a.region,a.sigungu,a.dong].filter(Boolean).join(' · ');
+      var imgs = (a.imageUrls&&a.imageUrls.length)?a.imageUrls:(a.thumbnailUrl?[a.thumbnailUrl]:[]);
+      var mgm = a.mgmFee>0?('MGM '+fmtMan(a.mgmFee)):'';
+      var html='';
+      // HERO 갤러리
+      html+='<div class="dt-hero"><button class="dt-back" id="dtBack">‹</button>';
+      if(mgm) html+='<div class="dt-mgm">'+escapeHtml(mgm)+'</div>';
+      html+='<div class="dt-hero__track" id="dtTrack">';
+      if(imgs.length){ imgs.forEach(function(u){ html+='<img class="dt-hero__img" src="'+escapeHtml(u)+'" alt=""/>'; }); }
+      else { html+='<div class="dt-hero__img" style="display:flex;align-items:center;justify-content:center;color:#C9CCD1;font-weight:700;">사진 준비중</div>'; }
+      html+='</div>';
+      if(imgs.length>1){ html+='<div class="dt-dots" id="dtDots">'; imgs.forEach(function(_,i){ html+='<span class="dt-dot'+(i===0?' on':'')+'"></span>'; }); html+='</div>'; }
+      html+='</div>';
+      // caption + masthead
+      html+='<div class="dt-caption">'+escapeHtml(regionLine||a.address||'')+'</div>';
+      html+='<div class="dt-masthead"><div class="dt-kicker">'+escapeHtml(cat)+'</div>'+
+        '<h1 class="dt-headline">'+escapeHtml(a.title)+'</h1>'+
+        (a.siteOneLiner?'<div class="dt-oneliner"><div class="dt-oneliner__bar"></div><div class="dt-oneliner__txt">'+escapeHtml(a.siteOneLiner)+'</div></div>':'')+
+      '</div><div class="dt-rule"></div>';
+      // 01 위치
+      html+='<div class="dt-sechead"><span class="dt-secnum">01</span><span class="dt-seclabel">위치</span></div>'+
+        '<div class="dt-section">'+(regionLine?'<div class="dt-bodylead">'+escapeHtml(regionLine)+'</div>':'')+
+        '<div class="dt-bodymuted">'+escapeHtml(a.address||'주소 미정')+'</div></div><div class="dt-rule"></div>';
+      // 02 분양 정보
+      var saleRows='';
+      saleRows+=dtRow('세대·호실', a.totalUnits?(a.totalUnits+'세대'):'');
+      saleRows+=dtRow('타입', a.unitType);
+      saleRows+=dtRow('입주예정', a.scheduledMoveInDate?String(a.scheduledMoveInDate).slice(0,10):(a.immediateMoveIn?'즉시입주':''));
+      var pr=priceRange(a.priceMin,a.priceMax);
+      html+='<div class="dt-sechead"><span class="dt-secnum">02</span><span class="dt-seclabel">분양 정보</span></div>'+
+        '<div class="dt-section"><div class="dt-pricelabel">분양가</div><div class="dt-pricevalue">'+(pr||'문의')+'</div>'+
+        (saleRows?'<div class="dt-rows">'+saleRows+'</div>':'')+'</div><div class="dt-rule"></div>';
+      // 03 현장 정보
+      var siteRows='';
+      siteRows+=dtRow('방', a.rooms);
+      siteRows+=dtRow('욕실', a.bathrooms);
+      siteRows+=dtRow('층', (a.floorMin||a.floorMax)?((a.floorMin||'')+(a.floorMax&&a.floorMax!==a.floorMin?('~'+a.floorMax):'')+'층'):'');
+      siteRows+=dtRow('주차', a.parkingCount?(a.parkingCount+'대'):'');
+      siteRows+=dtRow('난방', a.heatingType);
+      var opts=(a.options||[]), badges=(a.badges||[]);
+      html+='<div class="dt-sechead"><span class="dt-secnum">03</span><span class="dt-seclabel">현장 정보</span></div>'+
+        '<div class="dt-section">'+(siteRows?'<div class="dt-rows">'+siteRows+'</div>':'<div class="dt-bodymuted">등록된 현장 정보가 없어요.</div>');
+      if(opts.length||badges.length){
+        html+='<div class="dt-chips">';
+        opts.forEach(function(o){ html+='<span class="dt-chip">'+escapeHtml(o)+'</span>'; });
+        badges.forEach(function(b){ html+='<span class="dt-chip accent">'+escapeHtml(b)+'</span>'; });
+        html+='</div>';
+      }
+      if(a.likeCount>0) html+='<div style="margin-top:22px;font-size:13px;color:var(--sub);font-weight:600;">♥ 받은 관심 '+a.likeCount.toLocaleString()+'</div>';
+      html+='</div>';
+      // 영상
+      var vids=(a.videoUrls||[]);
+      if(vids.length){
+        html+='<div class="dt-rule"></div><div class="dt-section"><div class="dt-medialabel">현장 영상</div>';
+        vids.forEach(function(v){ html+='<video class="dt-video" src="'+escapeHtml(v)+'" controls playsinline></video>'; });
+        html+='</div>';
+      }
+      // 자료
+      var pdfs=[].concat(a.innerPageUrls||[], a.briefingPdfUrls||[]);
+      if(pdfs.length){
+        html+='<div class="dt-rule"></div><div class="dt-section"><div class="dt-medialabel">현장 자료</div>';
+        pdfs.forEach(function(p,i){ html+='<button class="dt-pdfbtn" data-url="'+escapeHtml(p)+'"><span class="dt-pdfbtn__txt">자료 '+(i+1)+' 보기</span><span>›</span></button>'; });
+        html+='</div>';
+      }
+      // 하단 액션바
+      html+='<div class="dt-footer">'+
+        '<button class="dt-cta-icon" id="dtShare" aria-label="공유">⤴</button>'+
+        '<button class="dt-cta-icon" id="dtLike" aria-label="관심">♡</button>'+
+        '<button class="dt-cta-call" id="dtCall">📞 담당자 전화</button></div>';
+
+      var d=$('detail'); d.innerHTML=html; d.classList.add('on'); document.body.style.overflow='hidden';
+      $('dtBack').onclick=closeDetail;
+      var track=document.getElementById('dtTrack');
+      if(track && imgs.length>1){
+        track.onscroll=function(){
+          var idx=Math.round(track.scrollLeft/track.clientWidth);
+          var dots=document.querySelectorAll('#dtDots .dt-dot');
+          Array.prototype.forEach.call(dots,function(dot,i){ dot.classList.toggle('on',i===idx); });
+        };
+      }
+      Array.prototype.forEach.call(d.querySelectorAll('.dt-pdfbtn'),function(b){ b.onclick=function(){ window.open(b.getAttribute('data-url'),'_blank','noopener'); }; });
+      var call=$('dtCall');
+      if(call){ call.onclick = a.managerPhone ? function(){ location.href='tel:'+a.managerPhone; } : function(){ toast('담당자 연락처가 없어요.'); }; }
+      var sh=$('dtShare');
+      if(sh){ sh.onclick=function(){ if(navigator.share){ navigator.share({title:a.title,text:a.title+' · '+cat}).catch(function(){}); } else { toast('공유를 지원하지 않는 환경이에요.'); } }; }
+      var lk=$('dtLike');
+      if(lk){ lk.onclick=function(){ toast('관심 표시는 부비서 앱에서 가능해요.'); }; }
+    }
+    function closeDetail(){ var d=$('detail'); d.classList.remove('on'); document.body.style.overflow=''; }
+
+    // ── 2026-06-03 [사용자 명시] 6번: 검색 ──
+    $('searchBtn').onclick=function(){ $('searchPanel').classList.add('on'); $('searchInput').focus(); renderSearch(''); };
+    $('searchClose').onclick=function(){ $('searchPanel').classList.remove('on'); $('searchInput').value=''; };
+    $('searchInput').oninput=function(){ renderSearch(this.value); };
+    function renderSearch(q){
+      q=(q||'').trim().toLowerCase();
+      var box=$('searchResults');
+      if(!q){ box.innerHTML='<div class="sr-empty">현장명·지역을 입력하세요</div>'; return; }
+      var list = allAds.filter(function(a){
+        return (a.title||'').toLowerCase().indexOf(q)>=0
+          || (a.address||'').toLowerCase().indexOf(q)>=0
+          || (a.sigungu||'').toLowerCase().indexOf(q)>=0
+          || (a.region||'').toLowerCase().indexOf(q)>=0;
+      }).slice(0,30);
+      if(!list.length){ box.innerHTML='<div class="sr-empty">검색 결과가 없어요</div>'; return; }
+      box.innerHTML='';
+      list.forEach(function(a){
+        var item=document.createElement('div'); item.className='sr-item';
+        var hero=heroOf(a);
+        var sub=(a.sigungu?('('+a.sigungu+') '):'')+(PRESALE_CATEGORY_LABEL[a.category]||'분양');
+        item.innerHTML=(hero?'<img class="sr-thumb" src="'+escapeHtml(hero)+'"/>':'<div class="sr-thumb"></div>')+
+          '<div class="sr-info"><div class="sr-ttl">'+escapeHtml(a.title)+'</div><div class="sr-sub">'+escapeHtml(sub)+' · '+escapeHtml(a.address||'')+'</div></div>';
+        item.onclick=function(){
+          $('searchPanel').classList.remove('on');
+          if(typeof a.latitude==='number'){ map.setCenter(new kakao.maps.LatLng(a.latitude,a.longitude)); map.setLevel(4); }
+          openSheet(a);
+        };
+        box.appendChild(item);
+      });
+    }
 
     // 돌아가기
     $('backBtn').onclick = function(){ location.href = '../ad2-inquiry.html'; };
