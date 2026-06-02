@@ -74,7 +74,10 @@
     .cp-row:active { background: #F2F4F7; }
     .cp-name { font-size: 13px; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .cp-owner { font-size: 11px; color: var(--sub); flex: 0 0 auto; }
-    .cp-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 999px; color: #fff; flex: 0 0 auto; }
+    .cp-stat { font-size: 10px; font-weight: 800; flex: 0 0 auto; }
+    /* 완료된 곳: 행 배경을 상태 색으로 (지도 박스와 동일). 대비 — 재방문(amber)만 어두운 글자 */
+    .cp-row.done .cp-name, .cp-row.done .cp-owner, .cp-row.done .cp-stat { color: #fff; }
+    .cp-row.done.dark .cp-name, .cp-row.done.dark .cp-owner, .cp-row.done.dark .cp-stat { color: #4A3A00; }
     .pin-wrap.s-SIGNUP .office-box { background: var(--signup); border-color: var(--signup); }
     .pin-wrap.s-DELIVERED .office-box { background: var(--delivered); border-color: var(--delivered); }
     .pin-wrap.s-REVISIT .office-box { background: var(--revisit); border-color: var(--revisit); }
@@ -652,8 +655,11 @@
       var pop = document.createElement('div'); pop.className = 'cluster-pop'; pop.id = 'clusterPop';
       var html = '<div class="cp-head">이 위치 ' + arr.length + '곳</div><div class="cp-list">';
       arr.forEach(function(o){
-        var st = o.status ? '<span class="cp-badge" style="background:' + STATUS_COLOR[o.status] + (o.status === 'REVISIT' ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + '</span>' : '';
-        html += '<button class="cp-row" data-id="' + o.id + '"><span class="cp-name">' + esc(o.name) + '</span>' + (o.ownerName ? '<span class="cp-owner">' + esc(o.ownerName) + '</span>' : '') + st + '</button>';
+        var dark = (o.status === 'REVISIT');
+        var rowCls = 'cp-row' + (o.status ? ' done' + (dark ? ' dark' : '') : '');
+        var rowBg = o.status ? ' style="background:' + STATUS_COLOR[o.status] + '"' : '';
+        var st = o.status ? '<span class="cp-stat">' + STATUS_LABEL[o.status] + '</span>' : '';
+        html += '<button class="' + rowCls + '"' + rowBg + ' data-id="' + o.id + '"><span class="cp-name">' + esc(o.name) + '</span>' + (o.ownerName ? '<span class="cp-owner">' + esc(o.ownerName) + '</span>' : '') + st + '</button>';
       });
       html += '</div>';
       pop.innerHTML = html;
