@@ -54,26 +54,27 @@
     #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #locBtn:active { transform: scale(.94); }
     .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
-    /* 부동산 박스 (CustomOverlay) — 충돌 회피: 박스는 실제 위치(점)에서 리더선으로 연결.
-       wrap(0x0) 의 좌상단이 실제 좌표. dot=실제 위치, leader=연결선, box=오프셋된 라벨. */
+    /* 부동산 박스 (CustomOverlay) — 점(실제 위치) 바로 위에 라벨 박스. 연결선 없음.
+       동일 좌표 2곳 이상은 "이 위치 N곳" 흰색 묶음 박스 → 탭하면 옆에 팝오버 목록. */
     .pin-wrap { position: relative; width: 0; height: 0; }
     .pin-dot { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #6155F5; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.45); z-index: 2; }
-    .pin-leader { position: absolute; left: 0; top: 0; height: 0; border-top: 2px solid #6155F5; transform-origin: 0 0; z-index: 1; }
     .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .office-box .ob-sub { color: var(--sub); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     /* 같은 좌표 N곳 묶음 박스 */
-    .office-box.cluster-box { background: #2A2F3A; border-color: #2A2F3A; }
-    .office-box.cluster-box b { color: #fff; }
-    .office-box.cluster-box .ob-sub { color: #C4CBFA; }
-    /* 묶음 목록 (바텀시트) */
-    .cluster-sub { font-size: 13px; color: var(--sub); margin: 4px 0 8px; }
-    .cluster-list { margin-top: 6px; max-height: 62vh; overflow-y: auto; }
-    .cl-row { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: none; border-bottom: 1px solid #F0F2F5; background: #fff; padding: 13px 4px; cursor: pointer; }
-    .cl-row:active { background: #F7F8FA; }
-    .cl-name { font-size: 14px; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; }
-    .cl-owner { font-size: 12px; color: var(--sub); flex: 0 0 auto; }
-    .cl-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px; color: #fff; flex: 0 0 auto; }
+    /* 동일 좌표 N곳 묶음 박스 — 흰 배경 */
+    .office-box.cluster-box { background: #fff; border-color: #6155F5; }
+    .office-box.cluster-box b { color: #6155F5; }
+    .office-box.cluster-box .ob-sub { color: var(--sub); }
+    /* 묶음 목록 — 박스 바로 옆 팝오버 */
+    .cluster-pop { position: fixed; z-index: 1100; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.28); width: 232px; max-height: 60vh; overflow-y: auto; padding: 6px; }
+    .cp-head { font-size: 12px; font-weight: 800; color: var(--ink); padding: 6px 8px 8px; border-bottom: 1px solid #F0F2F5; }
+    .cp-list { padding-top: 4px; }
+    .cp-row { display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; border: none; background: #fff; border-radius: 8px; padding: 9px 8px; cursor: pointer; }
+    .cp-row:active { background: #F2F4F7; }
+    .cp-name { font-size: 13px; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cp-owner { font-size: 11px; color: var(--sub); flex: 0 0 auto; }
+    .cp-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 999px; color: #fff; flex: 0 0 auto; }
     .pin-wrap.s-SIGNUP .office-box { background: var(--signup); border-color: var(--signup); }
     .pin-wrap.s-DELIVERED .office-box { background: var(--delivered); border-color: var(--delivered); }
     .pin-wrap.s-REVISIT .office-box { background: var(--revisit); border-color: var(--revisit); }
@@ -84,10 +85,6 @@
     .pin-wrap.s-DELIVERED .pin-dot { background: var(--delivered); }
     .pin-wrap.s-REVISIT .pin-dot { background: var(--revisit); }
     .pin-wrap.s-FAIL .pin-dot { background: var(--fail); }
-    .pin-wrap.s-SIGNUP .pin-leader { border-top-color: var(--signup); }
-    .pin-wrap.s-DELIVERED .pin-leader { border-top-color: var(--delivered); }
-    .pin-wrap.s-REVISIT .pin-leader { border-top-color: var(--revisit); }
-    .pin-wrap.s-FAIL .pin-leader { border-top-color: var(--fail); }
     /* 바텀시트 */
     #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .2s; }
     #scrim.on { opacity: 1; pointer-events: auto; }
@@ -564,14 +561,14 @@
     }
 
     function clearLayers() {
+      if (typeof closeClusterPopover === 'function') closeClusterPopover();
       clusterer.clear(); markers = [];
       overlays.forEach(function(o){ o.setMap(null); }); overlays = [];
     }
 
-    // 박스 충돌 회피 상수 (픽셀)
-    var BOX_W = 124, BOX_H = 48, BOX_GAP = 8, TAIL_LEN = 24;
-    var STEP_X = BOX_W + BOX_GAP;   // 같은 건물 좌우 초기 간격
-    var CLUSTER_MIN = 4;            // 같은 좌표 N곳 이상이면 묶음 박스 (2~3곳은 좌우 펼침)
+    // 박스 상수 (픽셀)
+    var BOX_W = 124, BOX_H = 48;
+    var CLUSTER_MIN = 2;            // 같은 좌표 2곳 이상이면 "이 위치 N곳" 묶음 박스 (탭 → 옆 팝오버)
 
     function renderAll() {
       if (!map) return;
@@ -591,10 +588,6 @@
       }
     }
 
-    // 좌표 → 화면 픽셀 (투영). 실패 시 경계 선형보간 폴백.
-    var curBoxes = [];
-    var deCollTimers = [];
-
     function renderBoxes(list) {
       // 1) 뷰포트(+여유) 안 박스만 — 성능 + 화면 박스만 정렬
       var b = map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast();
@@ -608,48 +601,33 @@
         var k = o.lat.toFixed(5) + ',' + o.lng.toFixed(5);
         (groups[k] = groups[k] || []).push(o);
       });
-      // 3) 그룹 → item 생성. 4곳 이상=묶음박스 1개 / 2~3곳=좌우 펼침 / 1곳=단일
-      var items = [];
+      // 3) 그룹 → 1곳=단일 박스 / 2곳 이상="이 위치 N곳" 묶음 박스. 연결선·펼침·de-collision 없음.
       Object.keys(groups).forEach(function(k){
         var g = groups[k];
         var ll = new kakao.maps.LatLng(g[0].lat, g[0].lng);
         if (g.length >= CLUSTER_MIN) {
-          items.push({ cluster: true, offices: g, ll: ll, baseOx: 0 });
+          createBoxOverlay({ cluster: true, offices: g, ll: ll });
         } else {
-          g.sort(function(a, c){ return (a.name || '').localeCompare(c.name || '', 'ko'); });
-          var n = g.length;
-          g.forEach(function(o, i){ items.push({ o: o, ll: new kakao.maps.LatLng(o.lat, o.lng), baseOx: (i - (n - 1) / 2) * STEP_X }); });
+          createBoxOverlay({ o: g[0], ll: ll });
         }
       });
-      items.forEach(function(it){ createBoxOverlay(it, it.baseOx, 0); });
-      curBoxes = items;
-      // 4) 렌더 후 실제 화면 좌표 측정 → 절대 안 겹치게 밀어냄 (투영 무관, 100% 보장)
-      //    setTimeout 2회: Kakao 오버레이 배치 완료 후 측정. (rAF 는 백그라운드 탭에서 멈춰 사용 안 함)
-      deCollTimers.forEach(function(t){ clearTimeout(t); });
-      deCollTimers = [setTimeout(decollideRendered, 60), setTimeout(decollideRendered, 320)];
     }
 
-    function positionBox(box, leader, ox, oy) {
-      box.style.left = (ox - BOX_W / 2).toFixed(1) + 'px';
-      box.style.top = (-TAIL_LEN - BOX_H + oy).toFixed(1) + 'px';
-      var dx = ox, dy = -TAIL_LEN + oy;
-      var len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx);
-      leader.style.width = len.toFixed(1) + 'px';
-      leader.style.transform = 'rotate(' + ang.toFixed(4) + 'rad)';
+    // 박스를 점(실제 위치) 바로 위, 가로 중앙에 배치 (연결선 없음).
+    function positionBox(box) {
+      box.style.left = (-BOX_W / 2).toFixed(1) + 'px';
+      box.style.top = (-(BOX_H + 10)).toFixed(1) + 'px';
     }
 
-    function createBoxOverlay(it, ox, oy) {
+    function createBoxOverlay(it) {
       var wrap = document.createElement('div');
-      var leader = document.createElement('div'); leader.className = 'pin-leader';
       var dot = document.createElement('div'); dot.className = 'pin-dot';
       var box = document.createElement('div'); box.style.width = BOX_W + 'px';
       if (it.cluster) {
-        // 같은 좌표 N곳 묶음 — 탭하면 목록
-        var done = 0; it.offices.forEach(function(o){ if (o.status) done++; });
         wrap.className = 'pin-wrap';
         box.className = 'office-box cluster-box';
-        box.innerHTML = '<b>이 위치 ' + it.offices.length + '곳</b><span class="ob-sub">' + (done ? done + '곳 처리 · ' : '') + '탭하면 목록</span>';
-        (function(offs){ box.onclick = function(e){ e.stopPropagation(); openClusterList(offs); }; })(it.offices);
+        box.innerHTML = '<b>이 위치 ' + it.offices.length + '곳</b><span class="ob-sub">탭하면 목록이 보여요!</span>';
+        (function(offs){ box.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, box); }; })(it.offices);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
@@ -657,77 +635,42 @@
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
         (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
       }
-      wrap.appendChild(leader); wrap.appendChild(dot); wrap.appendChild(box);
-      positionBox(box, leader, ox, oy);
-      it.box = box; it.leader = leader; it.wrap = wrap;
+      wrap.appendChild(dot); wrap.appendChild(box);
+      positionBox(box);
       var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: 3 });
       ov.setMap(map); overlays.push(ov);
     }
 
-    // 같은 좌표 N곳 목록 (묶음 박스 탭) → 선택 시 상세 시트
-    function openClusterList(offices) {
+    // 묶음 박스 탭 → 바로 옆 팝오버에 N곳 목록. 항목 선택 시 상세 시트.
+    function openClusterPopover(offices, anchorEl) {
+      closeClusterPopover();
       var arr = offices.slice().sort(function(a, c){ return (a.name || '').localeCompare(c.name || '', 'ko'); });
-      var html = '<div class="sheet-name">이 위치 ' + arr.length + '곳</div>';
-      html += '<div class="cluster-sub">' + esc(arr[0].roadAddress || arr[0].jibunAddress || '') + '</div>';
-      html += '<div class="cluster-list">';
+      var back = document.createElement('div'); back.id = 'clusterPopBack';
+      back.style.cssText = 'position:fixed;inset:0;z-index:1099;';
+      back.onclick = function(){ closeClusterPopover(); };
+      document.body.appendChild(back);
+      var pop = document.createElement('div'); pop.className = 'cluster-pop'; pop.id = 'clusterPop';
+      var html = '<div class="cp-head">이 위치 ' + arr.length + '곳</div><div class="cp-list">';
       arr.forEach(function(o){
-        var st = o.status ? '<span class="cl-badge" style="background:' + STATUS_COLOR[o.status] + (o.status === 'REVISIT' ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + '</span>' : '';
-        html += '<button class="cl-row" data-id="' + o.id + '"><span class="cl-name">' + esc(o.name) + '</span>' + (o.ownerName ? '<span class="cl-owner">' + esc(o.ownerName) + '</span>' : '') + st + '</button>';
+        var st = o.status ? '<span class="cp-badge" style="background:' + STATUS_COLOR[o.status] + (o.status === 'REVISIT' ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + '</span>' : '';
+        html += '<button class="cp-row" data-id="' + o.id + '"><span class="cp-name">' + esc(o.name) + '</span>' + (o.ownerName ? '<span class="cp-owner">' + esc(o.ownerName) + '</span>' : '') + st + '</button>';
       });
       html += '</div>';
-      $('sheetBody').innerHTML = html;
-      $('scrim').classList.add('on'); $('sheet').classList.add('on');
-      Array.prototype.forEach.call($('sheetBody').querySelectorAll('.cl-row'), function(b){
-        b.onclick = function(){ openSheet(b.getAttribute('data-id')); };
+      pop.innerHTML = html;
+      document.body.appendChild(pop);
+      // 박스 오른쪽에 배치, 공간 없으면 왼쪽/화면 안으로 보정.
+      var r = anchorEl.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, M = 8;
+      var left = r.right + M; if (left + pw > window.innerWidth - M) left = r.left - pw - M;
+      if (left < M) left = M;
+      var top = r.top; if (top + ph > window.innerHeight - M) top = window.innerHeight - ph - M;
+      if (top < M) top = M;
+      pop.style.left = left.toFixed(0) + 'px'; pop.style.top = top.toFixed(0) + 'px';
+      Array.prototype.forEach.call(pop.querySelectorAll('.cp-row'), function(btn){
+        btn.onclick = function(e){ e.stopPropagation(); closeClusterPopover(); openSheet(btn.getAttribute('data-id')); };
       });
     }
-
-    function rectsOverlap(a, l, t, w, h, pad) {
-      return l < a.l + a.w + pad && l + w + pad > a.l && t < a.t + a.h + pad && t + h + pad > a.t;
-    }
-    function overlapsAny(l, t, w, h, placed, pad) {
-      for (var i = 0; i < placed.length; i++) { if (rectsOverlap(placed[i], l, t, w, h, pad)) return true; }
-      return false;
-    }
-
-    // 렌더된 박스의 실제 화면 좌표를 측정해 절대 안 겹치게 재배치 (Kakao 투영과 무관).
-    function decollideRendered() {
-      var its = curBoxes;
-      if (!its || !its.length) return;
-      var rects = [];
-      its.forEach(function(it){
-        if (!it.box || !document.body.contains(it.box)) return;
-        var wr = it.wrap.getBoundingClientRect();  // 점(실제 위치) 화면 좌표
-        var br = it.box.getBoundingClientRect();    // 박스 화면 좌표
-        if (!br.width) return;
-        rects.push({ it: it, px: wr.left, py: wr.top, l: br.left, t: br.top, w: br.width, h: br.height });
-      });
-      rects.sort(function(a, c){ return a.py - c.py || a.px - c.px; });
-      var PAD = 5, placed = [];
-      rects.forEach(function(r){
-        var l = r.l, t = r.t, SX = r.w + PAD, SY = r.h + PAD;
-        if (overlapsAny(l, t, r.w, r.h, placed, PAD)) {
-          var done = false;
-          for (var k = 1; k <= 24 && !done; k++) {
-            var cand = [[k * SX, 0], [-k * SX, 0], [k * SX, -SY], [-k * SX, -SY], [0, -k * SY], [k * SX, -2 * SY], [-k * SX, -2 * SY]];
-            for (var c = 0; c < cand.length; c++) {
-              var nl = r.l + cand[c][0], nt = r.t + cand[c][1];
-              if (!overlapsAny(nl, nt, r.w, r.h, placed, PAD)) { l = nl; t = nt; done = true; break; }
-            }
-          }
-        }
-        placed.push({ l: l, t: t, w: r.w, h: r.h });
-        var box = r.it.box;
-        var newLeft = (parseFloat(box.style.left) || 0) + (l - r.l);
-        var newTop = (parseFloat(box.style.top) || 0) + (t - r.t);
-        box.style.left = newLeft.toFixed(1) + 'px';
-        box.style.top = newTop.toFixed(1) + 'px';
-        // 리더선: 점(0,0) → 박스 하단중앙
-        var bcx = newLeft + r.w / 2, bcy = newTop + r.h;
-        var len = Math.sqrt(bcx * bcx + bcy * bcy), ang = Math.atan2(bcy, bcx);
-        r.it.leader.style.width = len.toFixed(1) + 'px';
-        r.it.leader.style.transform = 'rotate(' + ang.toFixed(4) + 'rad)';
-      });
+    function closeClusterPopover() {
+      ['clusterPop', 'clusterPopBack'].forEach(function(id){ var e = document.getElementById(id); if (e && e.parentNode) e.parentNode.removeChild(e); });
     }
 
     // 평균 좌표를 화면 중앙으로 + 지정 레벨 (구=7≈1km, 동=6≈500m).
