@@ -607,6 +607,8 @@
   </header>
 
   <main>
+    <!-- 2026-06-02 [사용자 명시] 광고주 로그인 상태 바 — 로그인해야 광고 직접등록 가능. 로그인 시 분양지도 버튼 노출. -->
+    <div id="advAuthBar" class="adv-auth-bar" style="display:none"></div>
     <form id="ad2Form" autocomplete="off">
       <!-- 2026-05-29 [사용자 명시] 위저드 시작 — "광고직접등록" 버튼 클릭 시 step 1 부터 차례대로 노출. -->
       <div class="wizard-start-card" id="wizardStartCard">
@@ -1215,6 +1217,11 @@
 
       if (wizardStartBtn && wizardStartCard) {
         wizardStartBtn.addEventListener('click', () => {
+          // 2026-06-02 [사용자 명시] 로그인 안 되어 있으면 광고 등록 불가 → 로그인/회원가입 모달.
+          if (!window.advAuth || !window.advAuth.isLoggedIn()) {
+            if (window.advAuth) window.advAuth.openModal('login');
+            return;
+          }
           wizardStartCard.style.display = 'none';
           activateStep(1);
         });
@@ -2023,9 +2030,12 @@
           immediateMoveIn: form.immediateMoveIn?.value === 'true',
         };
         try {
+          // 2026-06-02 [사용자 명시] 광고주 로그인 상태면 토큰 첨부 → 등록한 광고가 본인 계정에 귀속(지도 초록 표시).
+          const advHeaders = { 'Content-Type': 'application/json' };
+          try { const __t = localStorage.getItem('bubiseo_adv_token'); if (__t) advHeaders['Authorization'] = 'Bearer ' + __t; } catch (e) {}
           const r = await fetch(API_BASE + '/public/presale-inquiry/submit', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: advHeaders,
             body: JSON.stringify(payload),
           });
           if (!r.ok) {
@@ -2090,6 +2100,224 @@
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     }
+  })();
+  </script>
+
+  <!-- 2026-06-02 [사용자 명시] 광고주(웹 전용) 로그인/회원가입 + 분양지도 게이팅 -->
+  <style>
+    .adv-auth-bar { margin: 0 0 14px; padding: 13px 15px; border-radius: 14px; background: #F4F4FF; border: 1px solid #E1E0FB; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .adv-auth-bar .aab-text { font-size: 14px; font-weight: 700; color: #2A2A50; flex: 1; min-width: 160px; }
+    .adv-auth-bar .aab-text small { display: block; font-weight: 600; color: #6B6B85; font-size: 12px; margin-top: 2px; }
+    .adv-btn { border: none; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .adv-btn.primary { background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; }
+    .adv-btn.ghost { background: #fff; color: #5B53D6; border: 1.5px solid #C9C5F5; }
+    .adv-btn.map { background: linear-gradient(135deg,#0EA371,#10B981); color: #fff; }
+    .adv-btn.link { background: none; color: #8888A0; font-weight: 700; font-size: 13px; padding: 8px 6px; }
+    #advModalScrim { position: fixed; inset: 0; z-index: 4000; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; padding: 20px; }
+    #advModalScrim.on { display: flex; }
+    #advModalCard { width: 100%; max-width: 380px; background: #fff; border-radius: 20px; padding: 24px 22px; box-shadow: 0 24px 70px rgba(0,0,0,.35); max-height: 92vh; overflow-y: auto; }
+    #advModalCard h2 { margin: 0 0 4px; font-size: 20px; font-weight: 900; color: #191F28; text-align: center; }
+    #advModalCard .sub { margin: 0 0 18px; font-size: 13px; color: #6B7684; text-align: center; }
+    .adv-tabs { display: flex; background: #F2F4F6; border-radius: 12px; padding: 4px; margin-bottom: 18px; }
+    .adv-tabs button { flex: 1; height: 38px; border: none; background: none; border-radius: 9px; font-size: 14px; font-weight: 800; color: #8B95A1; cursor: pointer; }
+    .adv-tabs button.on { background: #fff; color: #5B53D6; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .adv-field { margin-bottom: 12px; }
+    .adv-field label { display: block; font-size: 13px; font-weight: 700; color: #4E5968; margin-bottom: 6px; }
+    .adv-field input[type=text], .adv-field input[type=tel], .adv-field input[type=password] { width: 100%; height: 48px; border: 1px solid #E5E8EB; border-radius: 11px; padding: 0 14px; font-size: 16px; outline: none; box-sizing: border-box; }
+    .adv-field input:focus { border-color: #6155F5; }
+    .adv-check { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 4px; font-size: 13px; color: #4E5968; line-height: 1.45; cursor: pointer; }
+    .adv-check input { width: 18px; height: 18px; margin-top: 1px; flex: 0 0 auto; accent-color: #6155F5; }
+    .adv-consent { margin-bottom: 6px; }
+    .adv-more { background: none; border: none; color: #5B53D6; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 0 4px 27px; text-decoration: underline; }
+    .adv-terms { display: none; background: #F7F8FA; border: 1px solid #E5E8EB; border-radius: 10px; padding: 11px 13px; margin: 2px 0 8px; font-size: 12px; line-height: 1.6; color: #4E5968; max-height: 210px; overflow-y: auto; }
+    .adv-terms.on { display: block; }
+    .adv-terms h4 { margin: 0 0 6px; font-size: 12.5px; color: #191F28; font-weight: 800; }
+    .adv-terms ul { margin: 0 0 8px; padding-left: 16px; }
+    .adv-terms li { margin-bottom: 4px; }
+    .adv-submit { width: 100%; height: 52px; border: none; border-radius: 12px; background: linear-gradient(135deg,#6155F5,#39AFFD); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 8px; }
+    .adv-submit:disabled { opacity: .6; }
+    #advModalErr { color: #EF4444; font-size: 13px; font-weight: 700; min-height: 18px; text-align: center; margin-top: 10px; }
+    #advModalClose { width: 100%; height: 40px; border: none; background: none; color: #8B95A1; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+  </style>
+
+  <div id="advModalScrim">
+    <div id="advModalCard">
+      <h2 id="advModalTitle">광고주 로그인</h2>
+      <p class="sub">분양 광고 직접등록은 로그인 후 이용하실 수 있어요.</p>
+      <div class="adv-tabs">
+        <button type="button" id="advTabLogin" class="on">로그인</button>
+        <button type="button" id="advTabSignup">회원가입</button>
+      </div>
+
+      <!-- 로그인 -->
+      <div id="advLoginForm">
+        <div class="adv-field"><label>휴대폰번호 (아이디)</label><input type="tel" id="advLoginPhone" inputmode="numeric" placeholder="010-0000-0000" /></div>
+        <div class="adv-field"><label>비밀번호</label><input type="password" id="advLoginPw" placeholder="비밀번호" /></div>
+        <button type="button" class="adv-submit" id="advLoginBtn">로그인</button>
+      </div>
+
+      <!-- 회원가입 -->
+      <div id="advSignupForm" style="display:none">
+        <div class="adv-field"><label>휴대폰번호 (아이디) <span style="color:#EF4444">*</span></label><input type="tel" id="advSignupPhone" inputmode="numeric" placeholder="010-0000-0000" /></div>
+        <div class="adv-field"><label>비밀번호 (6자 이상) <span style="color:#EF4444">*</span></label><input type="password" id="advSignupPw" placeholder="비밀번호" /></div>
+        <div class="adv-field"><label>비밀번호 확인 <span style="color:#EF4444">*</span></label><input type="password" id="advSignupPw2" placeholder="비밀번호 다시 입력" /></div>
+        <div class="adv-field"><label>대행사 상호명 (선택)</label><input type="text" id="advSignupAgency" maxlength="80" placeholder="예: OO분양대행" /></div>
+        <div class="adv-consent">
+          <label class="adv-check"><input type="checkbox" id="advSignupPrivacy" /><span>(필수) 개인정보 수집·이용에 동의합니다.</span></label>
+          <button type="button" class="adv-more" data-terms="advTermsPrivacy">약관 더보기 ▾</button>
+          <div class="adv-terms" id="advTermsPrivacy">
+            <h4>개인정보 수집·이용 동의 (필수)</h4>
+            <ul>
+              <li><b>수집 항목</b> : 휴대폰번호(아이디), 비밀번호, 대행사 상호명(선택 입력 시)</li>
+              <li><b>수집·이용 목적</b> : 광고주 계정 식별 및 로그인, 분양 광고 등록·노출 관리, 본인 광고 노출 확인 지도 제공, 등록 내용 문의 응대</li>
+              <li><b>보유·이용 기간</b> : 회원 탈퇴 시 또는 마지막 광고 종료일로부터 1년까지 보관 후 지체 없이 파기</li>
+              <li><b>동의 거부 권리</b> : 동의를 거부할 수 있으나, 거부 시 광고 직접등록 서비스 이용이 제한됩니다.</li>
+            </ul>
+            <p style="margin:0;color:#8B95A1;">본 동의는 부비서(광고 직접등록) 서비스 제공을 위한 최소한의 정보 처리에 한합니다.</p>
+          </div>
+        </div>
+        <div class="adv-consent">
+          <label class="adv-check"><input type="checkbox" id="advSignupMkt" /><span>(선택) 마케팅·이벤트 정보 수신에 동의합니다.</span></label>
+          <button type="button" class="adv-more" data-terms="advTermsMkt">약관 더보기 ▾</button>
+          <div class="adv-terms" id="advTermsMkt">
+            <h4>마케팅·이벤트 정보 수신 동의 (선택)</h4>
+            <ul>
+              <li><b>수신 정보</b> : 신규 광고 상품·요금 할인·이벤트·프로모션·서비스 개선 안내</li>
+              <li><b>수신 방법</b> : 문자(SMS)·앱/웹 알림 등</li>
+              <li><b>동의 거부 권리</b> : 동의하지 않아도 회원가입 및 광고 등록 이용에는 제한이 없으며, 동의 후에도 언제든지 수신을 철회할 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+        <button type="button" class="adv-submit" id="advSignupBtn">회원가입 완료</button>
+      </div>
+
+      <div id="advModalErr"></div>
+      <button type="button" id="advModalClose">닫기</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var ADV_API = 'https://api.bubiseo.com';
+    var KEY = 'bubiseo_adv_token';
+    var PKEY = 'bubiseo_adv_profile';
+    var token = '', profile = null;
+    try { token = localStorage.getItem(KEY) || ''; profile = JSON.parse(localStorage.getItem(PKEY) || 'null'); } catch (e) {}
+
+    var $ = function(id){ return document.getElementById(id); };
+    function setErr(m){ var e = $('advModalErr'); if (e) e.textContent = m || ''; }
+    function normPhone(s){ return (s||'').replace(/[^0-9]/g,''); }
+
+    function save(t, p){
+      token = t || ''; profile = p || null;
+      try { if (t) { localStorage.setItem(KEY, t); localStorage.setItem(PKEY, JSON.stringify(p||null)); } else { localStorage.removeItem(KEY); localStorage.removeItem(PKEY); } } catch (e) {}
+      renderBar(); updateStartBtn();
+    }
+
+    function renderBar(){
+      var bar = $('advAuthBar'); if (!bar) return;
+      bar.style.display = 'flex';
+      if (token) {
+        var who = (profile && profile.agencyName) ? profile.agencyName : (profile && profile.phone ? profile.phone : '광고주');
+        bar.innerHTML =
+          '<div class="aab-text">✅ ' + escAd(who) + '님 로그인됨<small>등록한 광고가 지도에 잘 노출되는지 확인해보세요.</small></div>' +
+          '<button type="button" class="adv-btn map" id="advGoMap">🗺️ 내 광고 분양지도</button>' +
+          '<button type="button" class="adv-btn link" id="advLogout">로그아웃</button>';
+        $('advGoMap').onclick = function(){ location.href = 'presale-map/'; };
+        $('advLogout').onclick = function(){ save('', null); };
+      } else {
+        bar.innerHTML =
+          '<div class="aab-text">📢 광고 직접등록은 로그인 후 가능합니다<small>휴대폰번호로 간편 가입하고 내 광고를 지도에서 확인하세요.</small></div>' +
+          '<button type="button" class="adv-btn primary" id="advOpenLogin">로그인</button>' +
+          '<button type="button" class="adv-btn ghost" id="advOpenSignup">회원가입</button>';
+        $('advOpenLogin').onclick = function(){ openModal('login'); };
+        $('advOpenSignup').onclick = function(){ openModal('signup'); };
+      }
+    }
+    function escAd(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+    function updateStartBtn(){
+      var btn = $('wizardStartBtn'); if (!btn) return;
+      btn.textContent = token ? '광고 직접 등록' : '로그인 후 이용하세요!';
+    }
+
+    function openModal(mode){ setErr(''); switchTab(mode || 'login'); $('advModalScrim').classList.add('on'); }
+    function closeModal(){ $('advModalScrim').classList.remove('on'); }
+    function switchTab(mode){
+      var isLogin = mode !== 'signup';
+      $('advTabLogin').classList.toggle('on', isLogin);
+      $('advTabSignup').classList.toggle('on', !isLogin);
+      $('advLoginForm').style.display = isLogin ? '' : 'none';
+      $('advSignupForm').style.display = isLogin ? 'none' : '';
+      $('advModalTitle').textContent = isLogin ? '광고주 로그인' : '광고주 회원가입';
+      setErr('');
+    }
+
+    $('advTabLogin').onclick = function(){ switchTab('login'); };
+    $('advTabSignup').onclick = function(){ switchTab('signup'); };
+    $('advModalClose').onclick = closeModal;
+    $('advModalScrim').onclick = function(e){ if (e.target === $('advModalScrim')) closeModal(); };
+
+    // 약관 더보기 토글 (인라인 펼침 — 별도 페이지 없음)
+    Array.prototype.forEach.call(document.querySelectorAll('.adv-more'), function(b){
+      b.onclick = function(){
+        var box = $(b.getAttribute('data-terms'));
+        if (!box) return;
+        var open = box.classList.toggle('on');
+        b.textContent = open ? '약관 접기 ▴' : '약관 더보기 ▾';
+      };
+    });
+
+    // 로그인
+    $('advLoginBtn').onclick = function(){
+      var phone = normPhone($('advLoginPhone').value);
+      var pw = $('advLoginPw').value || '';
+      if (phone.length < 10) { setErr('휴대폰번호를 정확히 입력해주세요.'); return; }
+      if (!pw) { setErr('비밀번호를 입력해주세요.'); return; }
+      var btn = $('advLoginBtn'); btn.disabled = true; setErr('');
+      fetch(ADV_API + '/advertiser/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, password: pw })
+      }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+        .then(function(res){
+          btn.disabled = false;
+          if (!res.ok) { setErr((res.j && res.j.message) || '로그인에 실패했어요.'); return; }
+          save(res.j.token, res.j.advertiser); closeModal();
+        })
+        .catch(function(){ btn.disabled = false; setErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    };
+
+    // 회원가입
+    $('advSignupBtn').onclick = function(){
+      var phone = normPhone($('advSignupPhone').value);
+      var pw = $('advSignupPw').value || '';
+      var pw2 = $('advSignupPw2').value || '';
+      var agency = ($('advSignupAgency').value || '').trim();
+      var privacy = $('advSignupPrivacy').checked;
+      var mkt = $('advSignupMkt').checked;
+      if (phone.length < 10) { setErr('휴대폰번호를 정확히 입력해주세요.'); return; }
+      if (pw.length < 6) { setErr('비밀번호는 6자 이상이어야 해요.'); return; }
+      if (pw !== pw2) { setErr('비밀번호가 일치하지 않아요.'); return; }
+      if (!privacy) { setErr('개인정보 수집·이용에 동의해주세요.'); return; }
+      var btn = $('advSignupBtn'); btn.disabled = true; setErr('');
+      fetch(ADV_API + '/advertiser/signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, password: pw, agencyName: agency || null, consentPrivacy: privacy, consentMarketing: mkt })
+      }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+        .then(function(res){
+          btn.disabled = false;
+          if (!res.ok) { setErr((res.j && res.j.message) || '회원가입에 실패했어요.'); return; }
+          save(res.j.token, res.j.advertiser); closeModal();
+        })
+        .catch(function(){ btn.disabled = false; setErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    };
+
+    // 외부(위저드 버튼)에서 접근
+    window.advAuth = { get token(){ return token; }, isLoggedIn: function(){ return !!token; }, openModal: openModal, logout: function(){ save('', null); } };
+
+    function boot(){ renderBar(); updateStartBtn(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
   })();
   </script>
 </body>

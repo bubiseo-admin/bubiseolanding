@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>부비서 분양지도 — 내 광고 노출 확인</title>
+  <style>
+    :root {
+      --ink:#191F28; --sub:#6B7684; --line:#E5E8EB; --bg:#F2F4F6;
+      --purple:#6155F5; --sky:#39AFFD; --mine:#10B981;
+      --blueGrad:linear-gradient(135deg,#6155F5,#39AFFD);
+    }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; height:100%; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--ink); background:#fff; }
+    #safeTop { position:fixed; top:0; left:0; right:0; height:env(safe-area-inset-top); background:#fff; z-index:9500; pointer-events:none; }
+    #map { position:fixed; inset:0; width:100%; height:100%; }
+
+    /* 상단 바 */
+    #topbar { position:fixed; top:calc(env(safe-area-inset-top) + 8px); left:8px; right:8px; z-index:600; display:flex; align-items:center; gap:8px; }
+    #backBtn { flex:0 0 auto; height:40px; padding:0 14px; border:none; border-radius:999px; background:rgba(255,255,255,.96); color:var(--ink); font-size:14px; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,.18); cursor:pointer; }
+    #titlePill { flex:1; min-width:0; height:40px; display:flex; align-items:center; gap:7px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,.96); box-shadow:0 2px 8px rgba(0,0,0,.18); font-size:13px; font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #titlePill .dot { width:10px; height:10px; border-radius:50%; background:var(--mine); flex:0 0 auto; box-shadow:0 0 0 3px rgba(16,185,129,.2); }
+
+    /* 내 광고 요약 칩 (상단 아래) */
+    #mineBar { position:fixed; top:calc(env(safe-area-inset-top) + 56px); left:8px; right:8px; z-index:590; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+    #mineBar::-webkit-scrollbar { display:none; }
+    .mine-chip { flex:0 0 auto; border:none; border-radius:999px; padding:8px 13px; font-size:12px; font-weight:800; background:#fff; color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.18); cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; }
+    .mine-chip .st { font-size:10px; font-weight:900; padding:2px 7px; border-radius:999px; }
+    .mine-chip .st.live { background:#E7F9F1; color:#0B9d6f; }
+    .mine-chip .st.wait { background:#FFF4E5; color:#B26A00; }
+
+    /* 마커 — 앱 분양지도 재현 */
+    .mk { position:relative; width:0; height:0; }
+    /* 기본(bubble) — 흰 카드 빨강 테두리 */
+    .bubble { position:absolute; transform:translate(-50%,-100%); background:#fff; border:1.5px solid #FF3B30; border-radius:8px; padding:4px 8px; box-shadow:0 3px 10px rgba(0,0,0,.18); text-align:center; cursor:pointer; min-width:74px; }
+    .bubble .sub { font-size:8px; font-weight:700; color:#004FFF; white-space:nowrap; }
+    .bubble .ttl { font-size:11px; font-weight:800; color:#191F28; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px; }
+    .bubble .mgm { font-size:9px; font-weight:800; color:#191F28; white-space:nowrap; }
+    .bubble:after { content:""; position:absolute; left:50%; bottom:-7px; transform:translateX(-50%); border-left:6px solid transparent; border-right:6px solid transparent; border-top:7px solid #FF3B30; }
+    /* featured — 보라 알약 + 흰 카드 (sky 테두리) */
+    .feat { position:absolute; transform:translate(-50%,-100%); text-align:center; cursor:pointer; }
+    .feat .pill { display:inline-block; background:var(--blueGrad); color:#fff; font-size:9px; font-weight:900; padding:3px 9px; border-radius:6px; box-shadow:0 2px 6px rgba(97,85,245,.4); margin-bottom:2px; white-space:nowrap; }
+    .feat .card { background:#fff; border:1.5px solid var(--sky); border-radius:6px; padding:4px 9px; box-shadow:0 2px 8px rgba(57,175,253,.25); position:relative; min-width:80px; }
+    .feat .card .sub { font-size:8px; font-weight:700; color:var(--sub); white-space:nowrap; }
+    .feat .card .ttl { font-size:11px; font-weight:800; color:#191F28; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; }
+    .feat .card:after { content:""; position:absolute; left:50%; bottom:-7px; transform:translateX(-50%); border-left:6px solid transparent; border-right:6px solid transparent; border-top:7px solid var(--sky); }
+    /* 내 광고 — 초록 강조 (테두리·알약·화살표 모두 초록) */
+    .mine .bubble, .mine.bubble { border-color:var(--mine) !important; box-shadow:0 4px 14px rgba(16,185,129,.45) !important; }
+    .mine.bubble:after { border-top-color:var(--mine) !important; }
+    .mine .pill { background:linear-gradient(135deg,#0EA371,#10B981) !important; box-shadow:0 2px 8px rgba(16,185,129,.5) !important; }
+    .mine .card { border-color:var(--mine) !important; box-shadow:0 4px 14px rgba(16,185,129,.4) !important; }
+    .mine .card:after { border-top-color:var(--mine) !important; }
+    .mine-tag { display:inline-block; background:var(--mine); color:#fff; font-size:8px; font-weight:900; padding:1px 6px; border-radius:999px; margin-top:2px; }
+    /* 클러스터(줌아웃) — 지역 + 개수 */
+    .cluster { position:absolute; transform:translate(-50%,-50%); background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 12px; box-shadow:0 3px 10px rgba(0,0,0,.2); text-align:center; cursor:pointer; }
+    .cluster .rg { font-size:11px; font-weight:800; color:#191F28; white-space:nowrap; }
+    .cluster .cnt { font-size:10px; font-weight:700; color:var(--purple); }
+    .cluster.has-mine { border-color:var(--mine); box-shadow:0 3px 12px rgba(16,185,129,.4); }
+
+    /* 일일 중앙 팝업 */
+    #promoScrim { position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:22px; }
+    #promoScrim.on { display:flex; }
+    #promoCard { width:100%; max-width:340px; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.4); }
+    #promoCard img { display:block; width:100%; height:auto; }
+    #promoBody { padding:14px 16px 16px; }
+    #promoBody h3 { margin:0 0 6px; font-size:16px; font-weight:900; color:var(--ink); }
+    #promoBody p { margin:0; font-size:13px; color:var(--sub); line-height:1.5; }
+    #promoBtns { display:flex; gap:8px; padding:0 16px 16px; }
+    #promoClose { flex:1.6; height:46px; border:none; border-radius:12px; background:var(--blueGrad); color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
+    #promoNever { flex:1; height:46px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--sub); font-size:13px; font-weight:700; cursor:pointer; }
+
+    /* 마커 클릭 시트 */
+    #scrim { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:opacity .2s; }
+    #scrim.on { opacity:1; pointer-events:auto; }
+    #sheet { position:fixed; left:0; right:0; bottom:0; z-index:1001; background:#fff; border-radius:20px 20px 0 0; transform:translateY(100%); transition:transform .25s; max-height:80vh; overflow-y:auto; padding-bottom:calc(env(safe-area-inset-bottom) + 18px); }
+    #sheet.on { transform:translateY(0); }
+    .grip { width:40px; height:4px; background:#D1D6DB; border-radius:2px; margin:10px auto 6px; }
+    .sheet-pad { padding:6px 18px 0; }
+    .sheet-tag { display:inline-block; font-size:11px; font-weight:900; padding:3px 10px; border-radius:999px; margin-bottom:8px; }
+    .sheet-tag.mine { background:#E7F9F1; color:#0B9D6F; }
+    .sheet-tag.other { background:#F2F4F6; color:var(--sub); }
+    .sheet-ttl { font-size:20px; font-weight:900; }
+    .sheet-meta { font-size:13px; color:var(--sub); margin-top:6px; line-height:1.6; }
+    .sheet-status { margin-top:12px; font-size:13px; font-weight:800; padding:10px 12px; border-radius:12px; }
+    .sheet-status.live { background:#E7F9F1; color:#0B9D6F; }
+    .sheet-status.wait { background:#FFF4E5; color:#B26A00; }
+
+    #toast { position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom) + 22px); transform:translateX(-50%); z-index:3000; background:rgba(25,31,40,.92); color:#fff; font-size:13px; font-weight:700; padding:10px 16px; border-radius:999px; opacity:0; transition:opacity .25s; pointer-events:none; max-width:90vw; text-align:center; }
+    #toast.on { opacity:1; }
+    #loading { position:fixed; inset:0; z-index:700; display:flex; align-items:center; justify-content:center; background:#fff; font-size:14px; color:var(--sub); font-weight:700; }
+    #loading.hide { display:none; }
+  </style>
+</head>
+<body>
+  <div id="safeTop"></div>
+  <div id="map"></div>
+
+  <div id="topbar">
+    <button id="backBtn" type="button">← 돌아가기</button>
+    <div id="titlePill"><span class="dot"></span><span id="titleText">내 광고 노출 지도</span></div>
+  </div>
+  <div id="mineBar"></div>
+
+  <div id="loading">분양지도 불러오는 중…</div>
+
+  <!-- 마커 클릭 시트 -->
+  <div id="scrim"></div>
+  <div id="sheet">
+    <div class="grip"></div>
+    <div class="sheet-pad" id="sheetBody"></div>
+  </div>
+
+  <!-- 일일 중앙 팝업 -->
+  <div id="promoScrim">
+    <div id="promoCard">
+      <img src="../assets/screen-desktop2.png" alt="부비서 분양 노출 예시" />
+      <div id="promoBody">
+        <h3>내 광고, 부동산 앱에 이렇게 노출돼요</h3>
+        <p>부비서를 쓰는 전국 공인중개사들이 이 화면에서 사장님의 분양 현장을 봅니다. 지도에서 <b style="color:#10B981">초록 마커</b>가 내 광고예요.</p>
+      </div>
+      <div id="promoBtns">
+        <button id="promoClose" type="button">확인</button>
+        <button id="promoNever" type="button">오늘 그만보기</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+  (function(){
+    var API = 'https://api.bubiseo.com';
+    var TOKEN_KEY = 'bubiseo_adv_token';
+    var token = '';
+    try { token = localStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+
+    // 로그인 안 되어 있으면 광고주 포털로 돌려보냄 (이 페이지는 로그인 회원 전용).
+    if (!token) { location.replace('../ad2-inquiry.html'); return; }
+
+    var PRESALE_CATEGORY_LABEL = {
+      APARTMENT:'아파트', OFFICETEL:'오피스텔', KNOWLEDGE_INDUSTRY_CENTER:'지식산업센터',
+      COMMERCIAL:'상가', VILLA:'빌라', DETACHED_HOUSE:'단독주택', TOWNHOUSE:'타운하우스'
+    };
+    var BOX_LEVEL = 6;     // 이 줌 이하면 박스, 초과면 지역 클러스터
+    var DONG_LEVEL = 6;    // 동 단위 클러스터 기준
+
+    var $ = function(id){ return document.getElementById(id); };
+    var map, overlays = [], allAds = [], myIds = {}, myAds = [];
+
+    function fmtMan(won){
+      if (!won || won <= 0) return '';
+      var man = Math.round(won/10000);
+      if (man >= 10000) return (man/10000).toFixed(man%10000===0?0:1)+'억';
+      return man.toLocaleString()+'만원';
+    }
+    function escapeHtml(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.add('on'); setTimeout(function(){t.classList.remove('on');},2200); }
+
+    // ── Kakao SDK 동적 로드 (키는 백엔드 한 곳) ──
+    fetch(API + '/public/presale-inquiry/kakao-js-key')
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var key = j && j.kakaoJsKey;
+        if (!key) throw new Error('no key');
+        var s = document.createElement('script');
+        s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + encodeURIComponent(key) + '&libraries=services&autoload=false';
+        s.onload = function(){ kakao.maps.load(initMap); };
+        s.onerror = function(){ $('loading').textContent = '지도를 불러오지 못했어요.'; };
+        document.head.appendChild(s);
+      })
+      .catch(function(){ $('loading').textContent = '지도를 불러오지 못했어요.'; });
+
+    function initMap(){
+      map = new kakao.maps.Map($('map'), { center:new kakao.maps.LatLng(37.5172,127.0473), level:9 });
+      kakao.maps.event.addListener(map, 'idle', render);
+      loadData();
+    }
+
+    function loadData(){
+      Promise.all([
+        fetch(API + '/presale-partnerships').then(function(r){return r.json();}).catch(function(){return null;}),
+        fetch(API + '/advertiser/my-presale-ids', { headers:{ 'Authorization':'Bearer '+token } })
+          .then(function(r){ if(r.status===401){ throw new Error('expired'); } return r.json(); })
+          .catch(function(e){ if(e&&e.message==='expired'){ try{localStorage.removeItem(TOKEN_KEY);}catch(x){} location.replace('../ad2-inquiry.html'); } return null; })
+      ]).then(function(res){
+        var list = res[0];
+        var items = Array.isArray(list) ? list : (list && Array.isArray(list.items) ? list.items : []);
+        allAds = items.filter(function(a){ return typeof a.latitude==='number' && typeof a.longitude==='number'; });
+        var mine = res[1];
+        myAds = (mine && Array.isArray(mine.ads)) ? mine.ads : [];
+        myIds = {};
+        ((mine && Array.isArray(mine.ids)) ? mine.ids : []).forEach(function(id){ myIds[id]=true; });
+        $('loading').classList.add('hide');
+        renderMineBar();
+        fitToMine();
+        render();
+        maybeShowPromo();
+      });
+    }
+
+    function fitToMine(){
+      var pts = allAds.filter(function(a){ return myIds[a.id]; });
+      if (pts.length === 0) return; // 내 광고 좌표 없으면 기본 뷰 유지
+      if (pts.length === 1) { map.setCenter(new kakao.maps.LatLng(pts[0].latitude, pts[0].longitude)); map.setLevel(5); return; }
+      var bounds = new kakao.maps.LatLngBounds();
+      pts.forEach(function(a){ bounds.extend(new kakao.maps.LatLng(a.latitude, a.longitude)); });
+      map.setBounds(bounds);
+    }
+
+    function renderMineBar(){
+      var bar = $('mineBar');
+      bar.innerHTML = '';
+      if (!myAds.length) {
+        var c = document.createElement('div');
+        c.className = 'mine-chip';
+        c.innerHTML = '아직 등록한 광고가 없어요 · ad2-inquiry에서 등록';
+        bar.appendChild(c);
+        return;
+      }
+      myAds.forEach(function(a){
+        var chip = document.createElement('button');
+        chip.className = 'mine-chip';
+        var st = a.isLive ? '<span class="st live">노출중</span>' : '<span class="st wait">대기</span>';
+        chip.innerHTML = st + '<span>'+escapeHtml(a.title)+'</span>';
+        chip.onclick = function(){
+          var found = allAds.filter(function(x){ return x.id===a.id; })[0];
+          if (found) { map.setCenter(new kakao.maps.LatLng(found.latitude, found.longitude)); map.setLevel(4); openSheet(found); }
+          else if (!a.hasCoordinates) toast('이 광고는 주소 좌표를 못 찾았어요. 주소를 확인해주세요.');
+          else if (!a.isLive) toast('결제 확인 후 노출되면 지도에 떠요.');
+        };
+        bar.appendChild(chip);
+      });
+    }
+
+    function clearOverlays(){ overlays.forEach(function(o){ o.setMap(null); }); overlays = []; }
+
+    function render(){
+      if (!map) return;
+      clearOverlays();
+      var level = map.getLevel();
+      if (level > BOX_LEVEL) { renderClusters(level); }
+      else { renderBoxes(); }
+    }
+
+    // 줌인 — 개별 박스 (featured / bubble / 내광고 초록)
+    function renderBoxes(){
+      var bounds = map.getBounds();
+      allAds.forEach(function(a){
+        var pos = new kakao.maps.LatLng(a.latitude, a.longitude);
+        if (!bounds.contain(pos)) return;
+        var el = buildMarkerEl(a);
+        var ov = new kakao.maps.CustomOverlay({ position:pos, content:el, yAnchor:1, xAnchor:0.5, zIndex: myIds[a.id]?50:(a.isFeatured?30:10), clickable:true });
+        ov.setMap(map);
+        overlays.push(ov);
+      });
+    }
+
+    function buildMarkerEl(a){
+      var mine = !!myIds[a.id];
+      var sigungu = a.sigungu ? '('+a.sigungu+') ' : '';
+      var sub = sigungu + (PRESALE_CATEGORY_LABEL[a.category] || '분양');
+      var mgm = a.mgmFee > 0 ? ('MGM '+fmtMan(a.mgmFee)) : '';
+      var wrap = document.createElement('div');
+      if (a.isFeatured) {
+        wrap.className = 'feat' + (mine?' mine':'');
+        var tag = a.siteOneLiner || mgm || '';
+        wrap.innerHTML =
+          (tag ? '<div class="pill">'+escapeHtml(tag)+'</div>' : '') +
+          '<div class="card"><div class="sub">'+escapeHtml(sub)+'</div><div class="ttl">'+escapeHtml(a.title)+'</div>'+
+          (mine?'<div class="mine-tag">내 광고</div>':'')+'</div>';
+      } else {
+        wrap.className = 'bubble' + (mine?' mine':'');
+        wrap.innerHTML =
+          '<div class="sub">'+escapeHtml(sub)+'</div>'+
+          '<div class="ttl">'+escapeHtml(a.title)+'</div>'+
+          (mgm?'<div class="mgm">'+escapeHtml(mgm)+'</div>':'')+
+          (mine?'<div class="mine-tag">내 광고</div>':'');
+      }
+      wrap.onclick = function(){ openSheet(a); };
+      return wrap;
+    }
+
+    // 줌아웃 — 지역(구/군 또는 동) 묶음 + 개수, 내광고 포함 그룹은 초록 테두리
+    function renderClusters(level){
+      var bounds = map.getBounds();
+      var byKey = {};
+      allAds.forEach(function(a){
+        var pos = new kakao.maps.LatLng(a.latitude, a.longitude);
+        if (!bounds.contain(pos)) return;
+        var key = (level > DONG_LEVEL)
+          ? (a.region||'') + '|' + (a.sigungu||'기타')
+          : (a.sigungu||'') + '|' + (a.dong||'기타');
+        if (!byKey[key]) byKey[key] = { label:(level>DONG_LEVEL ? (a.sigungu||'기타') : (a.dong||a.sigungu||'기타')), latSum:0, lngSum:0, n:0, mine:false };
+        var g = byKey[key];
+        g.latSum += a.latitude; g.lngSum += a.longitude; g.n += 1;
+        if (myIds[a.id]) g.mine = true;
+      });
+      Object.keys(byKey).forEach(function(k){
+        var g = byKey[k];
+        var el = document.createElement('div');
+        el.className = 'cluster' + (g.mine?' has-mine':'');
+        el.innerHTML = '<div class="rg">'+escapeHtml(g.label)+'</div><div class="cnt">'+g.n+'곳'+(g.mine?' · 내광고':'')+'</div>';
+        var center = new kakao.maps.LatLng(g.latSum/g.n, g.lngSum/g.n);
+        el.onclick = (function(c){ return function(){ map.setCenter(c); map.setLevel(Math.max(4, level-2)); }; })(center);
+        var ov = new kakao.maps.CustomOverlay({ position:center, content:el, yAnchor:0.5, xAnchor:0.5, zIndex:g.mine?50:5, clickable:true });
+        ov.setMap(map);
+        overlays.push(ov);
+      });
+    }
+
+    // 마커 클릭 시트
+    function openSheet(a){
+      var mine = !!myIds[a.id];
+      var sub = (a.sigungu?('('+a.sigungu+') '):'') + (PRESALE_CATEGORY_LABEL[a.category]||'분양');
+      var mgm = a.mgmFee>0 ? ('MGM '+fmtMan(a.mgmFee)) : '';
+      var live = a.paymentConfirmed === true; // 공개 응답이면 이미 노출 중
+      var html =
+        '<div class="sheet-tag '+(mine?'mine':'other')+'">'+(mine?'★ 내 광고':'분양 현장')+'</div>'+
+        '<div class="sheet-ttl">'+escapeHtml(a.title)+'</div>'+
+        '<div class="sheet-meta">'+escapeHtml(sub)+'<br/>'+escapeHtml(a.address||'')+(mgm?('<br/>'+escapeHtml(mgm)):'')+'</div>';
+      if (mine) {
+        html += '<div class="sheet-status live">✅ 부동산 앱 지도에 노출되고 있어요. 초록 마커가 사장님 광고예요.</div>';
+      }
+      $('sheetBody').innerHTML = html;
+      $('scrim').classList.add('on');
+      $('sheet').classList.add('on');
+    }
+    function closeSheet(){ $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); }
+    $('scrim').onclick = closeSheet;
+
+    // 돌아가기
+    $('backBtn').onclick = function(){ location.href = '../ad2-inquiry.html'; };
+
+    // ── 일일 중앙 팝업 (하루 1회, 다시 안 보기) ──
+    function todayKey(){
+      // KST 기준 날짜 (모든 광고 정책이 KST). UTC+9.
+      var now = new Date();
+      var kst = new Date(now.getTime() + (9*60 + now.getTimezoneOffset())*60000);
+      return 'presaleMapPromo_' + kst.getFullYear() + ('0'+(kst.getMonth()+1)).slice(-2) + ('0'+kst.getDate()).slice(-2);
+    }
+    function maybeShowPromo(){
+      var seen = false;
+      try { seen = localStorage.getItem(todayKey()) === '1'; } catch(e){}
+      if (!seen) $('promoScrim').classList.add('on');
+    }
+    function dismissPromo(remember){
+      if (remember) { try { localStorage.setItem(todayKey(), '1'); } catch(e){} }
+      $('promoScrim').classList.remove('on');
+    }
+    $('promoClose').onclick = function(){ dismissPromo(true); };  // 확인 = 오늘 다시 안 띄움
+    $('promoNever').onclick = function(){ dismissPromo(true); };
+    $('promoScrim').onclick = function(e){ if (e.target === $('promoScrim')) dismissPromo(true); };
+  })();
+  </script>
+</body>
+</html>
