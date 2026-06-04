@@ -56,9 +56,10 @@
     /* 검색 — 우측 하단 돋보기 FAB + 검색 패널 */
     #searchFab { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 700; width: 54px; height: 54px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.26); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
-    #searchPanel { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 84px); z-index: 700; width: 348px; max-width: calc(100vw - 40px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); overflow: hidden; transform-origin: bottom right; clip-path: inset(0 0 0 100%); opacity: 0; transform: translateX(12px); pointer-events: none; transition: clip-path .3s cubic-bezier(.22,1,.36,1), opacity .22s ease, transform .3s cubic-bezier(.22,1,.36,1); }
-    #searchPanel.on { clip-path: inset(0 0 0 0); opacity: 1; transform: translateX(0); pointer-events: auto; }
-    .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
+    #searchPanel { position: fixed; right: 84px; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 700; width: 330px; max-width: calc(100vw - 98px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); overflow: hidden; display: none; }
+    #searchPanel.on { display: block; }
+    .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; }
+    #searchResults:not(:empty) { border-bottom: 1px solid var(--line); }
     .sp-head input { flex: 1; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 12px; font-size: 15px; outline: none; }
     .sp-head input:focus { border-color: #6155F5; }
     .sp-head .sp-x { border: none; background: none; font-size: 18px; color: var(--sub); cursor: pointer; padding: 4px 6px; }
@@ -96,11 +97,11 @@
 
   <button id="searchFab" title="검색"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#191F28" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.6" y1="16.6" x2="21" y2="21"/></svg></button>
   <div id="searchPanel">
+    <div id="searchResults"></div>
     <div class="sp-head">
       <input id="searchInput" type="text" inputmode="search" autocomplete="off" placeholder="등록번호·대표자·상호명·주소 검색" />
       <button class="sp-x" id="searchClose">✕</button>
     </div>
-    <div id="searchResults"></div>
   </div>
 
   <div id="gate">
