@@ -168,9 +168,9 @@
     <div class="card">
       <h1>부동산 영업 지도</h1>
       <p id="gateSub">아이디를 입력해 주세요</p>
-      <input id="gateId" type="text" autocapitalize="off" autocomplete="username" />
-      <input id="gateName" type="text" autocomplete="name" style="display:none" />
-      <input id="gatePw" type="password" autocomplete="current-password" style="display:none" />
+      <input id="gateId" type="text" autocapitalize="off" autocomplete="username" placeholder="아이디" />
+      <input id="gateName" type="text" autocomplete="name" placeholder="이름" style="display:none" />
+      <input id="gatePw" type="password" autocomplete="current-password" placeholder="비밀번호" />
       <div id="gateErr"></div>
       <button id="gateBtn">다음</button>
       <button id="gateBack" style="display:none">← 아이디 다시 입력</button>
@@ -279,8 +279,8 @@
     }
 
     // ===== 아이디+비밀번호 로그인 게이트 =====
-    // gateStep: 'id'(아이디 입력) → 'login'(기존 사용자 비번) | 'register'(첫 로그인: 이름+새 비번)
-    var gateStep = 'id';
+    // gateStep: 'idpw'(아이디+비번 동시 입력) → 기존 사용자 즉시 로그인 | 'register'(첫 로그인만 이름 추가)
+    var gateStep = 'idpw';
     var gateLoginId = '';
     var gateBusy = false;
 
@@ -288,35 +288,25 @@
     function hideGate() { $('gate').style.display = 'none'; }
 
     function gateToIdStep() {
-      gateStep = 'id'; gateLoginId = '';
-      $('gateSub').textContent = '아이디를 입력해 주세요';
+      // 2026-06-05 [사용자 명시] 아이디+비밀번호 한 화면 두 칸 동시 입력.
+      gateStep = 'idpw'; gateLoginId = '';
+      $('gateSub').textContent = '아이디와 비밀번호를 입력해 주세요';
       $('gateId').style.display = ''; $('gateId').disabled = false;
       $('gateName').style.display = 'none'; $('gateName').value = '';
-      $('gatePw').style.display = 'none'; $('gatePw').value = '';
-      $('gateBtn').textContent = '다음';
+      $('gatePw').style.display = ''; $('gatePw').value = '';
+      $('gateBtn').textContent = '로그인';
       $('gateBack').style.display = 'none';
       $('gateErr').textContent = '';
       setTimeout(function(){ $('gateId').focus(); }, 50);
     }
 
-    function gateToLoginStep() {
-      gateStep = 'login';
-      $('gateSub').textContent = '비밀번호를 입력해 주세요';
-      $('gateId').disabled = true;
-      $('gateName').style.display = 'none';
-      $('gatePw').style.display = ''; $('gatePw').value = '';
-      $('gateBtn').textContent = '로그인';
-      $('gateBack').style.display = '';
-      $('gateErr').textContent = '';
-      setTimeout(function(){ $('gatePw').focus(); }, 50);
-    }
-
     function gateToRegisterStep() {
+      // 첫 로그인만: 이름 칸 노출. 비밀번호는 앞에서 입력한 값을 그대로 새 비번으로 사용(지우지 않음).
       gateStep = 'register';
-      $('gateSub').textContent = '첫 로그인이에요. 이름과 사용할 비밀번호를 정해 주세요';
+      $('gateSub').textContent = '첫 로그인이에요. 사용할 이름을 입력해 주세요';
       $('gateId').disabled = true;
       $('gateName').style.display = ''; $('gateName').value = '';
-      $('gatePw').style.display = ''; $('gatePw').value = '';
+      $('gatePw').style.display = '';
       $('gateBtn').textContent = '시작하기';
       $('gateBack').style.display = '';
       $('gateErr').textContent = '';
@@ -336,9 +326,11 @@
     function gateSubmit() {
       if (gateBusy) return;
       $('gateErr').textContent = '';
-      if (gateStep === 'id') {
+      if (gateStep === 'idpw') {
         var id = $('gateId').value.trim();
+        var pw = $('gatePw').value.trim();
         if (!id) { $('gateId').focus(); return; }
+        if (!pw) { $('gatePw').focus(); return; }
         gateBusy = true; $('gateBtn').disabled = true;
         fetch(API + '/fieldmap/auth/status', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: id }) })
           .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
@@ -346,18 +338,18 @@
             if (!res.ok || !res.j.valid) { $('gateErr').textContent = '없는 아이디예요'; return; }
             gateLoginId = id;
             if (res.j.adminLocked) { $('gateErr').textContent = '관리자 비밀번호가 아직 설정되지 않았어요'; return; }
-            if (res.j.registered) gateToLoginStep(); else gateToRegisterStep();
+            if (res.j.registered) {
+              // 기존 사용자 — 입력한 비밀번호로 바로 로그인
+              return fetch(API + '/fieldmap/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: id, password: pw }) })
+                .then(function(r){ if (!r.ok) throw new Error('login'); return r.json(); })
+                .then(function(j){ loginOk(j); })
+                .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; $('gatePw').focus(); });
+            }
+            // 첫 로그인 — 비번 4자 이상 확인 후 이름 입력 단계로
+            if (pw.length < 4) { $('gateErr').textContent = '비밀번호는 4자 이상이에요'; $('gatePw').focus(); return; }
+            gateToRegisterStep();
           })
           .catch(function(){ $('gateErr').textContent = '잠시 후 다시 시도해 주세요'; })
-          .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
-      } else if (gateStep === 'login') {
-        var pw = $('gatePw').value.trim();
-        if (!pw) { $('gatePw').focus(); return; }
-        gateBusy = true; $('gateBtn').disabled = true;
-        fetch(API + '/fieldmap/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: gateLoginId, password: pw }) })
-          .then(function(r){ if (!r.ok) throw new Error('login'); return r.json(); })
-          .then(function(j){ loginOk(j); })
-          .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; $('gatePw').focus(); })
           .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
       } else if (gateStep === 'register') {
         var nm = $('gateName').value.trim();
@@ -375,7 +367,7 @@
 
     $('gateBtn').onclick = gateSubmit;
     $('gateBack').onclick = gateToIdStep;
-    $('gateId').addEventListener('keydown', function(e){ if (e.key === 'Enter') gateSubmit(); });
+    $('gateId').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('gatePw').focus(); });
     $('gateName').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('gatePw').focus(); });
     $('gatePw').addEventListener('keydown', function(e){ if (e.key === 'Enter') gateSubmit(); });
 
