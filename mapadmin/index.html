@@ -370,7 +370,7 @@
       var q = $('searchInput').value.trim();
       if(!q){ $('searchResults').innerHTML = ''; return; }
       $('searchResults').innerHTML = '<div class="sr-empty">검색 중…</div>';
-      fetch(API+'/fieldmap/admin/search?q='+encodeURIComponent(q), { headers: authHeaders() })
+      fetch(API+'/fieldmap/search?q='+encodeURIComponent(q), { headers: authHeaders() })
         .then(function(r){ if(r.status===403){ showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.ok ? r.json() : { results: [] }; })
         .then(function(j){ renderSearchResults(j.results || []); })
         .catch(function(e){ if(String(e.message)!=='403') $('searchResults').innerHTML = '<div class="sr-empty">검색 실패</div>'; });

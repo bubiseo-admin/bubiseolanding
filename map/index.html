@@ -53,6 +53,27 @@
     /* 내 위치 버튼 (우하단) */
     #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #locBtn:active { transform: scale(.94); }
+    /* 검색 — 우측 하단 돋보기 FAB(내위치 버튼 위) + 검색 패널 */
+    #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #191F28; color: #fff; font-size: 19px; box-shadow: 0 3px 12px rgba(0,0,0,.32); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #searchFab:active { transform: scale(.94); }
+    #searchPanel { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 166px); z-index: 1200; width: 330px; max-width: calc(100vw - 28px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); display: none; overflow: hidden; }
+    #searchPanel.on { display: block; }
+    .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
+    .sp-head input { flex: 1; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 12px; font-size: 15px; outline: none; }
+    .sp-head input:focus { border-color: #6155F5; }
+    .sp-head .sp-x { border: none; background: none; font-size: 18px; color: var(--sub); cursor: pointer; padding: 4px 6px; }
+    #searchResults { max-height: 46vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .sr-item { padding: 11px 14px; border-bottom: 1px solid #F2F4F6; cursor: pointer; }
+    .sr-item:last-child { border-bottom: none; }
+    .sr-item:active { background: #F2F4F6; }
+    .sr-name { font-size: 14px; font-weight: 800; }
+    .sr-name .sr-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; color: #fff; }
+    .sr-sub { font-size: 12px; color: var(--sub); margin-top: 3px; line-height: 1.45; }
+    .sr-nogeo { color: var(--fail); font-weight: 700; }
+    .sr-empty { padding: 18px 14px; text-align: center; color: #B0B8C1; font-size: 13px; }
+    .search-pin { display: flex; flex-direction: column; align-items: center; transform: translateY(-3px); }
+    .search-pin .sp-label { background: #6155F5; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; box-shadow: 0 3px 10px rgba(97,85,245,.5); white-space: nowrap; max-width: 170px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .search-pin .sp-dot { width: 14px; height: 14px; border-radius: 50%; background: #6155F5; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(97,85,245,.3), 0 2px 6px rgba(0,0,0,.4); }
     .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
     /* 부동산 박스 (CustomOverlay) — 점(실제 위치) 바로 위에 라벨 박스. 연결선 없음.
        동일 좌표 2곳 이상은 "이 위치 N곳" 흰색 묶음 박스 → 탭하면 옆에 팝오버 목록. */
@@ -161,6 +182,14 @@
   </div>
   <div id="incentiveBadge"><span class="ib-label">누적 인센티브</span><span class="ib-amt" id="ibAmt">0원</span></div>
   <button id="locBtn" title="내 위치">📍</button>
+  <button id="searchFab" title="검색">🔍</button>
+  <div id="searchPanel">
+    <div class="sp-head">
+      <input id="searchInput" type="text" inputmode="search" autocomplete="off" placeholder="등록번호·대표자·상호명·주소 검색" />
+      <button class="sp-x" id="searchClose">✕</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
   <div id="hint">로그인 중…</div>
 
   <!-- 비번 게이트 -->
@@ -959,6 +988,68 @@
         img.onerror = function(){ reject(new Error('img')); };
         img.src = url;
       });
+    }
+
+    // ===== 검색 (등록번호/대표자/상호명/주소 → 지도 20m 이동) =====
+    var searchTimer = null, searchPin = null;
+
+    $('searchFab').onclick = function(){
+      var p = $('searchPanel'); p.classList.toggle('on');
+      if (p.classList.contains('on')) setTimeout(function(){ $('searchInput').focus(); }, 50);
+    };
+    $('searchClose').onclick = function(){ $('searchPanel').classList.remove('on'); };
+    $('searchInput').addEventListener('input', function(){
+      if (searchTimer) clearTimeout(searchTimer); searchTimer = setTimeout(doSearch, 280);
+    });
+    $('searchInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { if (searchTimer) clearTimeout(searchTimer); doSearch(); }
+    });
+
+    function doSearch(){
+      var q = $('searchInput').value.trim();
+      if (!q) { $('searchResults').innerHTML = ''; return; }
+      $('searchResults').innerHTML = '<div class="sr-empty">검색 중…</div>';
+      fetch(API + '/fieldmap/search?q=' + encodeURIComponent(q), { headers: authHeaders() })
+        .then(function(r){ return r.ok ? r.json() : { results: [] }; })
+        .then(function(j){ renderSearchResults(j.results || []); })
+        .catch(function(){ $('searchResults').innerHTML = '<div class="sr-empty">검색 실패</div>'; });
+    }
+
+    function renderSearchResults(rows){
+      if (!rows.length) { $('searchResults').innerHTML = '<div class="sr-empty">검색 결과가 없어요</div>'; return; }
+      var html = '';
+      rows.forEach(function(o, i){
+        var addr = o.roadAddress || o.jibunAddress || '';
+        var noGeo = (o.lat == null || o.lng == null);
+        var badge = o.status ? '<span class="sr-badge" style="background:' + STATUS_COLOR[o.status] + (o.status === 'DELIVERED' ? ';color:#4A3A00' : '') + '">' + STATUS_LABEL[o.status] + '</span>' : '';
+        html += '<div class="sr-item" data-i="' + i + '">'
+          + '<div class="sr-name">' + esc(o.name) + badge + '</div>'
+          + '<div class="sr-sub">' + (o.ownerName ? esc(o.ownerName) + ' · ' : '') + (o.regNo ? esc(o.regNo) : '') + (addr ? '<br>' + esc(addr) : '') + (noGeo ? '<br><span class="sr-nogeo">좌표 없음 — 지도 이동 불가</span>' : '') + '</div>'
+          + '</div>';
+      });
+      $('searchResults').innerHTML = html;
+      Array.prototype.forEach.call($('searchResults').querySelectorAll('.sr-item'), function(el){
+        el.onclick = function(){ gotoOffice(rows[Number(el.getAttribute('data-i'))]); };
+      });
+    }
+
+    function setSearchPin(o, ll){
+      if (searchPin) searchPin.setMap(null);
+      var el = document.createElement('div');
+      el.className = 'search-pin';
+      el.innerHTML = '<div class="sp-label">' + esc(o.name) + '</div><div class="sp-dot"></div>';
+      searchPin = new kakao.maps.CustomOverlay({ position: ll, content: el, xAnchor: 0.5, yAnchor: 1, zIndex: 99 });
+      searchPin.setMap(map);
+    }
+
+    function gotoOffice(o){
+      if (o.lat == null || o.lng == null) { toast('이 부동산은 좌표가 없어 이동할 수 없어요'); return; }
+      if (!map) { toast('지도를 불러오는 중이에요'); return; }
+      $('searchPanel').classList.remove('on');
+      var ll = new kakao.maps.LatLng(o.lat, o.lng);
+      map.setLevel(1);            // 약 20m 뷰 (가장 가까이)
+      map.setCenter(ll);
+      setSearchPin(o, ll);
     }
 
     // ===== 시작 =====
