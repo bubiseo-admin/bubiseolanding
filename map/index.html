@@ -502,8 +502,11 @@
           loaded = {};
           loaded[sigungu] = (j.offices || []).filter(function(o){
             if (o.lat == null || o.lng == null) return false;
-            var g = getGu(o); // 지번주소 구와 선택 구가 명확히 다르면 제외(법인 등록지/실제위치 불일치)
-            return !g || g === sigungu;
+            // 2026-06-05 [사용자 명시] 지번주소 구 비교 — 시도 접두 유무로 getGu 가 "안양시 만안구"/"만안구"
+            //   둘 다 나올 수 있어 구 마지막 토큰으로 비교(경기 481→2 사고 fix). 명확히 다른 구만 제외.
+            var g = getGu(o);
+            if (!g) return true;
+            return g === sigungu || g.split(' ').pop() === sigungu.split(' ').pop();
           });
           focusGu = sigungu; dongFilter = '';
           renderAll(); renderChips(); renderDongChips(); centerOn(loaded[sigungu], 7); updateHint();
