@@ -54,7 +54,7 @@
     .adm-box.FAIL { background: var(--fail); border-color: var(--fail); color: #fff; }
     .adm-box.FAIL .ab-sub { color: rgba(255,255,255,.92); }
     /* 검색 — 우측 하단 돋보기 FAB + 검색 패널 */
-    #searchFab { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 700; width: 54px; height: 54px; border-radius: 50%; border: none; background: #191F28; color: #fff; font-size: 22px; box-shadow: 0 6px 18px rgba(0,0,0,.32); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #searchFab { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 700; width: 54px; height: 54px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.26); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
     #searchPanel { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 84px); z-index: 700; width: 348px; max-width: calc(100vw - 40px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); display: none; overflow: hidden; }
     #searchPanel.on { display: block; }
@@ -94,7 +94,7 @@
   <button id="reloadBtn" title="새로고침">↻</button>
   <div id="mapMsg"></div>
 
-  <button id="searchFab" title="검색">🔍</button>
+  <button id="searchFab" title="검색"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#191F28" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.6" y1="16.6" x2="21" y2="21"/></svg></button>
   <div id="searchPanel">
     <div class="sp-head">
       <input id="searchInput" type="text" inputmode="search" autocomplete="off" placeholder="등록번호·대표자·상호명·주소 검색" />

@@ -53,8 +53,11 @@
     /* 내 위치 버튼 (우하단) */
     #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #locBtn:active { transform: scale(.94); }
+    #locBtn.loading svg { display: none; }
+    #locBtn.loading::after { content: ''; width: 18px; height: 18px; border: 2.5px solid #E5E8EB; border-top-color: #191F28; border-radius: 50%; animation: loc-spin .7s linear infinite; }
+    @keyframes loc-spin { to { transform: rotate(360deg); } }
     /* 검색 — 우측 하단 돋보기 FAB(내위치 버튼 위) + 검색 패널 */
-    #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #191F28; color: #fff; font-size: 19px; box-shadow: 0 3px 12px rgba(0,0,0,.32); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
     #searchPanel { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 166px); z-index: 1200; width: 330px; max-width: calc(100vw - 28px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); display: none; overflow: hidden; }
     #searchPanel.on { display: block; }
@@ -181,8 +184,8 @@
     <div id="rPop" style="display:none"></div>
   </div>
   <div id="incentiveBadge"><span class="ib-label">누적 인센티브</span><span class="ib-amt" id="ibAmt">0원</span></div>
-  <button id="locBtn" title="내 위치">📍</button>
-  <button id="searchFab" title="검색">🔍</button>
+  <button id="locBtn" title="내 위치"><svg width="24" height="24" viewBox="0 0 24 24" fill="#191F28" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></button>
+  <button id="searchFab" title="검색"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#191F28" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.6" y1="16.6" x2="21" y2="21"/></svg></button>
   <div id="searchPanel">
     <div class="sp-head">
       <input id="searchInput" type="text" inputmode="search" autocomplete="off" placeholder="등록번호·대표자·상호명·주소 검색" />
@@ -453,9 +456,9 @@
     // ===== 내 위치 =====
     function requestLocation() {
       if (!navigator.geolocation) { toast('이 기기는 위치를 지원하지 않아요'); return; }
-      $('locBtn').textContent = '⏳';
+      $('locBtn').classList.add('loading');
       navigator.geolocation.getCurrentPosition(function(pos) {
-        $('locBtn').textContent = '📍';
+        $('locBtn').classList.remove('loading');
         if (!map) return;
         var ll = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
         if (!meOverlay) {
@@ -467,7 +470,7 @@
         meOverlay.setMap(map);
         map.setLevel(3); map.panTo(ll);
       }, function(err) {
-        $('locBtn').textContent = '📍';
+        $('locBtn').classList.remove('loading');
         // 2026-06-05 [사용자 명시] 위치 거부 원인별 안내 — 인앱 웹뷰(카톡 등)는 위치가 막혀 외부 브라우저로 유도.
         if (err && err.code === 1) {
           if (isInAppBrowser()) toast('카톡·문자 등 앱 안 브라우저는 위치가 막혀요. 우측 상단 메뉴로 사파리·크롬에서 열어 주세요', 5500);
