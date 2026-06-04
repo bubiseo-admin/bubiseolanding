@@ -59,8 +59,8 @@
     /* 검색 — 우측 하단 돋보기 FAB(내위치 버튼 위) + 검색 패널 */
     #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
-    #searchPanel { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 166px); z-index: 1200; width: 330px; max-width: calc(100vw - 28px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); display: none; overflow: hidden; }
-    #searchPanel.on { display: block; }
+    #searchPanel { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 166px); z-index: 1200; width: 330px; max-width: calc(100vw - 28px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); overflow: hidden; transform-origin: bottom right; clip-path: inset(0 0 0 100%); opacity: 0; transform: translateX(12px); pointer-events: none; transition: clip-path .3s cubic-bezier(.22,1,.36,1), opacity .22s ease, transform .3s cubic-bezier(.22,1,.36,1); }
+    #searchPanel.on { clip-path: inset(0 0 0 0); opacity: 1; transform: translateX(0); pointer-events: auto; }
     .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
     .sp-head input { flex: 1; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 12px; font-size: 15px; outline: none; }
     .sp-head input:focus { border-color: #6155F5; }
