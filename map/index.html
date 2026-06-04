@@ -428,7 +428,8 @@
         // 2026-06-05 [사용자 명시] 위치 거부 원인별 안내 — 인앱 웹뷰(카톡 등)는 위치가 막혀 외부 브라우저로 유도.
         if (err && err.code === 1) {
           if (isInAppBrowser()) toast('카톡·문자 등 앱 안 브라우저는 위치가 막혀요. 우측 상단 메뉴로 사파리·크롬에서 열어 주세요', 5500);
-          else toast('위치 권한이 꺼져 있어요. 브라우저·폰 설정 > 위치를 허용한 뒤 다시 눌러 주세요', 5000);
+          else if (isIOS()) toast('아이폰: 설정 > 개인정보 보호 및 보안 > 위치 서비스 > Safari 웹사이트 > "물어보기/허용" 으로 켠 뒤 다시 눌러 주세요', 6500);
+          else toast('위치 권한이 꺼져 있어요. 폰·브라우저 설정에서 위치를 허용한 뒤 다시 눌러 주세요', 5000);
         } else {
           toast(err && err.code === 2 ? '위치 신호를 못 잡았어요. 잠시 후 다시 시도해 주세요' : '위치를 가져오지 못했어요');
         }
@@ -439,6 +440,7 @@
       var ua = navigator.userAgent || '';
       return /KAKAOTALK|FBAN|FBAV|FB_IAB|Instagram|Line\/|NAVER\(inapp|DaumApps|BAND|everytime|; wv\)/i.test(ua);
     }
+    function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent || ''); }
     $('locBtn').onclick = requestLocation;
 
     // ===== 위치 권한 안내 (로그인 직후) =====
