@@ -38,7 +38,7 @@
     /* 2026-06-05 [사용자 명시] 서울/경기 세로 2줄 + 줄마다 [구 선택]·[동 선택] 팝오버 */
     .rrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
     .rr-name { flex: 0 0 auto; width: 46px; text-align: center; font-size: 13px; font-weight: 800; color: #fff; background: #6155F5; border-radius: 999px; padding: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
-    .rr-pick { flex: 1 1 0; min-width: 0; border: none; border-radius: 999px; padding: 10px 14px; font-size: 13px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+    .rr-pick { flex: 0 1 auto; max-width: 44%; min-width: 0; border: none; border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
     .rr-pick.on { background: #6155F5; color: #fff; }
     .rr-pick:disabled { opacity: .42; cursor: default; }
     #rPop { position: fixed; z-index: 700; max-height: 52vh; overflow-y: auto; background: #fff; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.3); padding: 6px; min-width: 150px; -webkit-overflow-scrolling: touch; }
@@ -483,10 +483,10 @@
       }).join('');
       $('regionRows').innerHTML = html;
       Array.prototype.forEach.call($('regionRows').querySelectorAll('.rr-gu'), function(b){
-        b.onclick = function(e){ e.stopPropagation(); openGuPop(b, b.getAttribute('data-sido')); };
+        b.onclick = function(e){ e.stopPropagation(); if (togglePop(b)) return; openGuPop(b, b.getAttribute('data-sido')); };
       });
       Array.prototype.forEach.call($('regionRows').querySelectorAll('.rr-dong'), function(b){
-        b.onclick = function(e){ e.stopPropagation(); openDongPop(b, b.getAttribute('data-sido')); };
+        b.onclick = function(e){ e.stopPropagation(); if (togglePop(b)) return; openDongPop(b, b.getAttribute('data-sido')); };
       });
       refreshRegionLabels();
     }
@@ -510,7 +510,10 @@
     }
 
     // ===== 구/동 선택 팝오버 =====
-    function closePop() { $('rPop').style.display = 'none'; }
+    var popBtn = null;
+    function closePop() { $('rPop').style.display = 'none'; popBtn = null; }
+    // 같은 버튼 재클릭 시 닫기 — 열려있고 그 버튼이면 닫고 true 반환.
+    function togglePop(btn) { if (popBtn === btn && $('rPop').style.display === 'block') { closePop(); return true; } return false; }
     function openPop(btn, items, curVal, onPick) {
       var pop = $('rPop');
       pop.innerHTML = items.map(function(it){
@@ -518,6 +521,7 @@
           esc(it.label) + (it.cnt != null ? '<span class="rp-cnt">' + it.cnt + '</span>' : '') + '</button>';
       }).join('');
       pop.style.display = 'block';
+      popBtn = btn;
       var r = btn.getBoundingClientRect();
       pop.style.minWidth = Math.round(r.width) + 'px';
       pop.style.left = Math.round(r.left) + 'px';
