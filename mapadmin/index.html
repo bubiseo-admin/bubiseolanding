@@ -11,20 +11,9 @@
       --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
-    .wrap { max-width: 860px; margin: 0 auto; padding: 16px 14px 60px; }
-    header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 6px 2px 14px; }
-    header.top h1 { font-size: 19px; margin: 0; }
-    header.top .reload { font-size: 13px; color: #6155F5; background: none; border: none; cursor: pointer; font-weight: 700; }
-    .top-l { display: flex; align-items: center; gap: 10px; }
-    /* 우측 상단 시/도 요약 (서울 / 경기 — 전체·가입완료·전달완료) */
-    .sido-summary { margin-left: auto; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 9px 13px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
-    .ss-row { display: flex; align-items: center; gap: 10px; font-size: 12px; white-space: nowrap; }
-    .ss-region { font-weight: 800; font-size: 13px; min-width: 28px; color: var(--ink); }
-    .ss-stat { color: var(--sub); font-weight: 600; }
-    .ss-stat b { color: var(--ink); font-weight: 800; }
-    .ss-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
-    .ss-dot.s { background: var(--signup); } .ss-dot.d { background: var(--delivered); }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
+    /* 전체화면 지도 */
+    #admMap { position: fixed; inset: 0; background: #E9EEF3; }
     /* 게이트 */
     #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#3D4452,#191F28); display: flex; align-items: center; justify-content: center; padding: 24px; }
     #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
@@ -34,57 +23,23 @@
     #gate input:focus { border-color: #6155F5; }
     #gate button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: #191F28; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
     #gateErr { color: var(--fail); font-size: 13px; min-height: 18px; margin-top: 8px; font-weight: 600; }
-    /* 탭 */
-    .tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
-    .tab { background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; cursor: pointer; }
-    .tab .t-num { font-size: 20px; font-weight: 800; }
-    .tab .t-lbl { font-size: 12px; color: var(--sub); margin-top: 2px; }
-    .tab.active { border-width: 2px; }
-    .tab.SIGNUP.active { border-color: var(--signup); } .tab.SIGNUP .t-num { color: var(--signup); }
-    .tab.DELIVERED.active { border-color: var(--delivered); } .tab.DELIVERED .t-num { color: var(--delivered); }
-    .tab.REVISIT.active { border-color: var(--revisit); } .tab.REVISIT .t-num { color: var(--revisit); }
-    .tab.FAIL.active { border-color: var(--fail); } .tab.FAIL .t-num { color: var(--fail); }
-    /* 카드 */
-    .card-o { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 5px solid var(--line); }
-    .card-o.SIGNUP { border-left-color: var(--signup); }
-    .card-o.DELIVERED { border-left-color: var(--delivered); }
-    .card-o.REVISIT { border-left-color: var(--revisit); }
-    .card-o.FAIL { border-left-color: var(--fail); }
-    .co-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .co-name { font-size: 16px; font-weight: 800; }
-    .co-sub { font-size: 12px; color: var(--sub); margin-top: 3px; line-height: 1.5; }
-    .badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; color: #fff; white-space: nowrap; }
-    .b-SIGNUP { background: var(--signup); } .b-DELIVERED { background: var(--delivered); color: #4A3A00; }
-    .b-REVISIT { background: var(--revisit); } .b-FAIL { background: var(--fail); }
-    .co-toggle { margin-top: 10px; font-size: 13px; font-weight: 700; color: #6155F5; background: none; border: none; cursor: pointer; padding: 0; }
-    .hist { display: none; margin-top: 8px; border-top: 1px solid #F0F2F5; padding-top: 8px; }
-    .hist.on { display: block; }
-    .h-item { padding: 8px 0; border-bottom: 1px dashed #EEF0F3; }
-    .h-item:last-child { border-bottom: none; }
-    .h-row { display: flex; justify-content: space-between; align-items: center; }
-    .h-st { font-size: 13px; font-weight: 800; }
-    .h-time { font-size: 12px; color: var(--sub); }
-    .h-photos { display: flex; gap: 6px; margin-top: 6px; }
-    .h-photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); cursor: pointer; }
-    .empty { text-align: center; color: #B0B8C1; font-size: 14px; padding: 40px 0; }
-    #lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; padding: 20px; }
-    #lightbox.on { display: flex; }
-    #lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
-    /* 뷰 토글 (현황 / 지도) */
-    .view-toggle { display: flex; gap: 6px; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 14px; }
-    .vt-btn { flex: 1; border: none; background: none; border-radius: 9px; padding: 9px 0; font-size: 14px; font-weight: 800; color: var(--sub); cursor: pointer; }
-    .vt-btn.active { background: #191F28; color: #fff; }
-    /* 지도 뷰 */
-    #mapWrap { display: none; position: relative; }
-    #admMap { width: 100%; height: 68vh; min-height: 420px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E9EEF3; }
-    .map-legend { position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255,255,255,.96); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 8px 11px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 5px; }
-    .map-legend .lg-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
-    .map-reload { position: absolute; top: 10px; right: 10px; z-index: 5; width: 42px; height: 42px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.25); font-size: 20px; color: #191F28; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .map-reload.spin { animation: mr-spin .6s linear; }
+    /* 좌측 상단 시/도 집계 (서울 / 경기 — 전체·가입·전달·재방문·실패) */
+    #summaryBar { position: fixed; top: calc(env(safe-area-inset-top) + 10px); left: 10px; z-index: 600; background: rgba(255,255,255,.97); border-radius: 12px; box-shadow: 0 3px 14px rgba(0,0,0,.16); padding: 8px 10px; }
+    .ss-tbl { border-collapse: collapse; font-size: 11px; }
+    .ss-tbl th, .ss-tbl td { padding: 2px 6px; text-align: right; white-space: nowrap; }
+    .ss-tbl thead th { font-size: 10px; font-weight: 800; color: var(--sub); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+    .ss-tbl thead th.c-s { color: var(--signup); } .ss-tbl thead th.c-d { color: #C98A00; }
+    .ss-tbl thead th.c-r { color: var(--revisit); } .ss-tbl thead th.c-f { color: var(--fail); }
+    .ss-tbl tbody th { text-align: left; font-weight: 800; font-size: 12px; color: var(--ink); padding-top: 4px; }
+    .ss-tbl tbody td { font-weight: 800; font-size: 12px; color: var(--ink); padding-top: 4px; }
+    /* 우측 상단 새로고침 */
+    #reloadBtn { position: fixed; top: calc(env(safe-area-inset-top) + 10px); right: 10px; z-index: 600; width: 44px; height: 44px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.22); font-size: 20px; color: #191F28; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #reloadBtn.spin { animation: mr-spin .6s linear; }
     @keyframes mr-spin { to { transform: rotate(360deg); } }
-    .map-msg { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 5; background: rgba(25,31,40,.85); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
-    .map-msg:empty { display: none; }
-    /* 지도 박스 — 가입완료(초록) / 전달완료(노랑) + 박스 위 담당 직원 이름 */
+    /* 하단 안내 토스트 */
+    #mapMsg { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 50%; transform: translateX(-50%); z-index: 600; background: rgba(25,31,40,.85); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; pointer-events: none; }
+    #mapMsg:empty { display: none; }
+    /* 지도 박스 — 4종(가입 초록 / 전달 노랑 / 재방문 파랑 / 실패 빨강) + 박스 위 담당 직원 이름 */
     .adm-pin { display: flex; flex-direction: column; align-items: center; gap: 3px; transform: translateY(-6px); }
     .adm-name { background: #191F28; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 9px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,.3); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
     .adm-box { border-radius: 9px; padding: 5px 9px; box-shadow: 0 3px 10px rgba(0,0,0,.28); font-size: 11px; line-height: 1.25; text-align: center; white-space: nowrap; border: 1.5px solid transparent; }
@@ -94,8 +49,13 @@
     .adm-box.SIGNUP .ab-sub { color: rgba(255,255,255,.92); }
     .adm-box.DELIVERED { background: var(--delivered); border-color: var(--delivered); color: #4A3A00; }
     .adm-box.DELIVERED .ab-sub { color: #6B5200; }
+    .adm-box.REVISIT { background: var(--revisit); border-color: var(--revisit); color: #fff; }
+    .adm-box.REVISIT .ab-sub { color: rgba(255,255,255,.92); }
+    .adm-box.FAIL { background: var(--fail); border-color: var(--fail); color: #fff; }
+    .adm-box.FAIL .ab-sub { color: rgba(255,255,255,.92); }
     /* 검색 — 우측 하단 돋보기 FAB + 검색 패널 */
     #searchFab { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 700; width: 54px; height: 54px; border-radius: 50%; border: none; background: #191F28; color: #fff; font-size: 22px; box-shadow: 0 6px 18px rgba(0,0,0,.32); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #searchFab:active { transform: scale(.94); }
     #searchPanel { position: fixed; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 84px); z-index: 700; width: 348px; max-width: calc(100vw - 40px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); display: none; overflow: hidden; }
     #searchPanel.on { display: block; }
     .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
@@ -118,42 +78,21 @@
   </style>
 </head>
 <body>
-  <div id="gate">
-    <div class="card">
-      <h1>영업 지도 관리자</h1>
-      <p>관리자 비밀번호를 입력해 주세요</p>
-      <input id="gatePw" type="password" autocomplete="off" />
-      <div id="gateErr"></div>
-      <button id="gateBtn">들어가기</button>
-    </div>
-  </div>
+  <div id="admMap"></div>
 
-  <div class="wrap">
-    <header class="top">
-      <div class="top-l"><h1>영업 현황</h1><button class="reload" id="reloadBtn">새로고침</button></div>
-      <div class="sido-summary" id="sidoSummary">
-        <div class="ss-row"><span class="ss-region">서울</span><span class="ss-stat">전체 <b id="ssSeoulTotal">-</b></span><span class="ss-stat"><i class="ss-dot s"></i>가입 <b id="ssSeoulSignup">-</b></span><span class="ss-stat"><i class="ss-dot d"></i>전달 <b id="ssSeoulDeliv">-</b></span></div>
-        <div class="ss-row"><span class="ss-region">경기</span><span class="ss-stat">전체 <b id="ssGgTotal">-</b></span><span class="ss-stat"><i class="ss-dot s"></i>가입 <b id="ssGgSignup">-</b></span><span class="ss-stat"><i class="ss-dot d"></i>전달 <b id="ssGgDeliv">-</b></span></div>
-      </div>
-    </header>
-    <div class="view-toggle">
-      <button class="vt-btn active" id="vtList" data-view="list">현황</button>
-      <button class="vt-btn" id="vtMap" data-view="map">지도</button>
-    </div>
-    <div id="listView">
-      <div class="tabs" id="tabs"></div>
-      <div id="list"></div>
-    </div>
-    <div id="mapWrap">
-      <div id="admMap"></div>
-      <div class="map-legend">
-        <span><i class="lg-dot" style="background:var(--signup)"></i>가입완료 <b id="lgSignup">0</b></span>
-        <span><i class="lg-dot" style="background:var(--delivered)"></i>전달완료 <b id="lgDelivered">0</b></span>
-      </div>
-      <button class="map-reload" id="mapReloadBtn" title="새로고침">↻</button>
-      <div class="map-msg" id="mapMsg"></div>
-    </div>
+  <div id="summaryBar">
+    <table class="ss-tbl">
+      <thead>
+        <tr><th></th><th>전체</th><th class="c-s">가입</th><th class="c-d">전달</th><th class="c-r">재방문</th><th class="c-f">실패</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>서울</th><td id="ssSeoulTotal">-</td><td id="ssSeoulSignup">-</td><td id="ssSeoulDeliv">-</td><td id="ssSeoulRevisit">-</td><td id="ssSeoulFail">-</td></tr>
+        <tr><th>경기</th><td id="ssGgTotal">-</td><td id="ssGgSignup">-</td><td id="ssGgDeliv">-</td><td id="ssGgRevisit">-</td><td id="ssGgFail">-</td></tr>
+      </tbody>
+    </table>
   </div>
+  <button id="reloadBtn" title="새로고침">↻</button>
+  <div id="mapMsg"></div>
 
   <button id="searchFab" title="검색">🔍</button>
   <div id="searchPanel">
@@ -164,20 +103,26 @@
     <div id="searchResults"></div>
   </div>
 
-  <div id="lightbox"><img id="lightboxImg" src="" alt="" /></div>
+  <div id="gate">
+    <div class="card">
+      <h1>영업 지도 관리자</h1>
+      <p>관리자 비밀번호를 입력해 주세요</p>
+      <input id="gatePw" type="password" autocomplete="off" />
+      <div id="gateErr"></div>
+      <button id="gateBtn">들어가기</button>
+    </div>
+  </div>
 
   <script>
     var API = 'https://api.bubiseo.com';
     var token = sessionStorage.getItem('fieldmap_admin_token') || '';
     var ALL = [];
-    var activeTab = 'SIGNUP';
     var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
-    var ORDER = ['SIGNUP','DELIVERED','REVISIT','FAIL'];
-    var admMap = null, admOverlays = [], curView = 'list', sdkReadyPromise = null;
+    var STATUS_HEX = { SIGNUP: '#00C896', DELIVERED: '#FFB020', REVISIT: '#3B82F6', FAIL: '#EF4444' };
+    var admMap = null, admOverlays = [], sdkReadyPromise = null, searchTimer = null, searchPin = null;
 
     function $(id){ return document.getElementById(id); }
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-    function fmtTime(iso){ var d=new Date(iso); if(isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
     function authHeaders(){ return { Authorization: 'Bearer ' + token }; }
 
     // ===== 게이트 =====
@@ -191,17 +136,18 @@
         .then(function(r){ if(!r.ok) throw new Error('pw'); return r.json(); })
         .then(function(j){
           if(j.scope!=='admin'){ $('gateErr').textContent='관리자 비밀번호가 아니에요'; return; }
-          token=j.token; sessionStorage.setItem('fieldmap_admin_token',token); hideGate(); load();
+          token=j.token; sessionStorage.setItem('fieldmap_admin_token',token); hideGate(); boot();
         })
         .catch(function(){ $('gateErr').textContent='비밀번호가 올바르지 않아요'; $('gatePw').value=''; });
     }
 
-    // ===== 로드 =====
-    $('reloadBtn').onclick = load;
+    // ===== 시/도 집계 =====
     function fillSido(key, s){
       $('ss'+key+'Total').textContent = ((s&&s.total)||0).toLocaleString('ko-KR');
       $('ss'+key+'Signup').textContent = ((s&&s.signup)||0).toLocaleString('ko-KR');
       $('ss'+key+'Deliv').textContent = ((s&&s.delivered)||0).toLocaleString('ko-KR');
+      $('ss'+key+'Revisit').textContent = ((s&&s.revisit)||0).toLocaleString('ko-KR');
+      $('ss'+key+'Fail').textContent = ((s&&s.fail)||0).toLocaleString('ko-KR');
     }
     function loadSummary(){
       fetch(API+'/fieldmap/admin/summary', { headers: authHeaders() })
@@ -215,92 +161,18 @@
         .catch(function(){});
     }
 
+    // ===== 로드 =====
+    $('reloadBtn').onclick = function(){
+      var b=$('reloadBtn'); b.classList.remove('spin'); void b.offsetWidth; b.classList.add('spin');
+      load();
+    };
     function load(){
-      $('list').innerHTML = '<div class="empty">불러오는 중…</div>';
       loadSummary();
       fetch(API+'/fieldmap/admin/offices', { headers: authHeaders() })
         .then(function(r){ if(r.status===403){ showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
-        .then(function(j){ ALL = j.offices || []; renderTabs(); render(); if (admMap) renderAdminMap(); })
-        .catch(function(e){ if(String(e.message)!=='403'){ $('list').innerHTML='<div class="empty">불러오기 실패</div>'; } });
+        .then(function(j){ ALL = j.offices || []; renderAdminMap(); })
+        .catch(function(e){ if(String(e.message)!=='403') $('mapMsg').textContent='불러오기 실패'; });
     }
-
-    function countBy(status){ return ALL.filter(function(o){ return o.status===status; }).length; }
-
-    function renderTabs(){
-      var html = '';
-      ORDER.forEach(function(s){
-        html += '<div class="tab ' + s + (s===activeTab?' active':'') + '" data-tab="' + s + '">' +
-          '<div class="t-num">' + countBy(s) + '</div><div class="t-lbl">' + STATUS_LABEL[s] + '</div></div>';
-      });
-      $('tabs').innerHTML = html;
-      Array.prototype.forEach.call($('tabs').querySelectorAll('[data-tab]'), function(t){
-        t.onclick = function(){ activeTab = t.getAttribute('data-tab'); renderTabs(); render(); };
-      });
-    }
-
-    function render(){
-      var rows = ALL.filter(function(o){ return o.status===activeTab; })
-        .sort(function(a,b){ return new Date(b.statusAt||0) - new Date(a.statusAt||0); });
-      if(!rows.length){ $('list').innerHTML = '<div class="empty">' + STATUS_LABEL[activeTab] + ' 부동산이 없어요.</div>'; return; }
-      var html = '';
-      rows.forEach(function(o){
-        var addr = o.roadAddress || o.jibunAddress || '';
-        html += '<div class="card-o ' + o.status + '">';
-        html += '<div class="co-top"><div><div class="co-name">' + esc(o.name) + '</div>' +
-          '<div class="co-sub">' + (o.ownerName?esc(o.ownerName)+' · ':'') + (o.phone?esc(o.phone):'') + (addr?'<br>'+esc(addr):'') + '</div></div>' +
-          '<span class="badge b-' + o.status + '">' + STATUS_LABEL[o.status] + '</span></div>';
-        html += '<div class="co-sub" style="margin-top:8px">담당자 <b>' + esc(o.managerName||'-') + '</b> · ' + (o.statusAt?fmtTime(o.statusAt):'') + '</div>';
-        var vc = (o.visits&&o.visits.length)||0;
-        html += '<button class="co-toggle" data-id="' + o.id + '">이력 ' + vc + '건 보기 ▾</button>';
-        html += '<div class="hist" id="hist-' + o.id + '">';
-        (o.visits||[]).forEach(function(v){
-          html += '<div class="h-item"><div class="h-row"><span class="h-st b-' + v.status + '" style="background:none;color:' +
-            ({SIGNUP:'var(--signup)',DELIVERED:'#B8860B',REVISIT:'var(--revisit)',FAIL:'var(--fail)'}[v.status]) + '">' +
-            STATUS_LABEL[v.status] + ' · ' + esc(v.managerName) + '</span><span class="h-time">' + fmtTime(v.createdAt) + '</span></div>';
-          html += '<div class="h-photos">' + (v.photo1Url?'<img src="'+esc(v.photo1Url)+'" data-full="'+esc(v.photo1Url)+'">':'') +
-            (v.photo2Url?'<img src="'+esc(v.photo2Url)+'" data-full="'+esc(v.photo2Url)+'">':'') + '</div></div>';
-        });
-        html += '</div></div>';
-      });
-      $('list').innerHTML = html;
-      Array.prototype.forEach.call($('list').querySelectorAll('.co-toggle'), function(b){
-        b.onclick = function(){ var h = $('hist-' + b.getAttribute('data-id')); h.classList.toggle('on'); b.textContent = (h.classList.contains('on')?'이력 접기 ▴':b.textContent.replace('접기 ▴','보기 ▾').replace('▴','▾')); };
-      });
-      Array.prototype.forEach.call($('list').querySelectorAll('.h-photos img'), function(im){
-        im.onclick = function(){ $('lightboxImg').src = im.getAttribute('data-full'); $('lightbox').classList.add('on'); };
-      });
-    }
-
-    $('lightbox').onclick = function(){ $('lightbox').classList.remove('on'); };
-
-    // ===== 뷰 토글 (현황 / 지도) =====
-    function setToggle(){
-      $('vtList').classList.toggle('active', curView==='list');
-      $('vtMap').classList.toggle('active', curView==='map');
-    }
-    function showList(){
-      curView='list'; setToggle();
-      $('listView').style.display=''; $('mapWrap').style.display='none';
-    }
-    function ensureMapShown(cb){
-      curView='map'; setToggle();
-      $('listView').style.display='none'; $('mapWrap').style.display='block';
-      if(admMap){
-        admMap.relayout(); renderAdminMap(); if(cb) cb();
-      } else {
-        $('mapMsg').textContent='지도 불러오는 중…';
-        ensureKakaoReady()
-          .then(function(){ initAdminMap(); renderAdminMap(); if(cb) cb(); })
-          .catch(function(){ $('mapMsg').textContent='지도 로드 실패'; });
-      }
-    }
-    function showMap(){ ensureMapShown(null); }
-    $('vtList').onclick = showList;
-    $('vtMap').onclick = showMap;
-    $('mapReloadBtn').onclick = function(){
-      var b=$('mapReloadBtn'); b.classList.remove('spin'); void b.offsetWidth; b.classList.add('spin');
-      load();
-    };
 
     // ===== Kakao SDK =====
     function ensureKakaoReady(){
@@ -326,34 +198,35 @@
       admMap = new kakao.maps.Map($('admMap'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 9 });
     }
 
-    // ===== 지도 렌더 (가입완료=초록 / 전달완료=노랑 박스만) =====
+    function boot(){
+      $('mapMsg').textContent = '지도 불러오는 중…';
+      ensureKakaoReady()
+        .then(function(){ initAdminMap(); load(); })
+        .catch(function(){ $('mapMsg').textContent = '지도 로드 실패'; });
+    }
+
+    // ===== 지도 렌더 (가입 초록 / 전달 노랑 / 재방문 파랑 / 실패 빨강) =====
     function renderAdminMap(){
       if(!admMap) return;
       admOverlays.forEach(function(o){ o.setMap(null); }); admOverlays = [];
-      var rows = ALL.filter(function(o){
-        return (o.status==='SIGNUP' || o.status==='DELIVERED') && o.lat!=null && o.lng!=null;
-      });
-      var nS=0, nD=0, bounds = new kakao.maps.LatLngBounds(), has=false;
+      var Z = { SIGNUP: 5, DELIVERED: 4, REVISIT: 3, FAIL: 2 };
+      var rows = ALL.filter(function(o){ return STATUS_LABEL[o.status] && o.lat!=null && o.lng!=null; });
+      var bounds = new kakao.maps.LatLngBounds(), has=false;
       rows.forEach(function(o){
-        if(o.status==='SIGNUP') nS++; else nD++;
         var ll = new kakao.maps.LatLng(o.lat, o.lng);
         var nameTag = o.managerName ? '<div class="adm-name">' + esc(o.managerName) + '</div>' : '';
         var el = document.createElement('div');
         el.className = 'adm-pin';
         el.innerHTML = nameTag + '<div class="adm-box ' + o.status + '"><b>' + esc(o.name) + '</b><span class="ab-sub">' + STATUS_LABEL[o.status] + '</span></div>';
-        var ov = new kakao.maps.CustomOverlay({ position: ll, content: el, xAnchor: 0.5, yAnchor: 1, zIndex: o.status==='SIGNUP'?4:3 });
+        var ov = new kakao.maps.CustomOverlay({ position: ll, content: el, xAnchor: 0.5, yAnchor: 1, zIndex: Z[o.status] || 2 });
         ov.setMap(admMap); admOverlays.push(ov);
         bounds.extend(ll); has=true;
       });
-      $('lgSignup').textContent = nS; $('lgDelivered').textContent = nD;
       if(has) admMap.setBounds(bounds);
-      $('mapMsg').textContent = (nS+nD)===0 ? '가입완료·전달완료 부동산이 아직 없어요.' : '';
+      $('mapMsg').textContent = rows.length===0 ? '표시할 영업 기록이 아직 없어요.' : '';
     }
 
     // ===== 검색 (등록번호/대표자/상호명/주소 → 지도 20m 이동) =====
-    var STATUS_HEX = { SIGNUP: '#00C896', DELIVERED: '#FFB020', REVISIT: '#3B82F6', FAIL: '#EF4444' };
-    var searchTimer = null, searchPin = null;
-
     $('searchFab').onclick = function(){
       var p = $('searchPanel'); p.classList.toggle('on');
       if(p.classList.contains('on')) setTimeout(function(){ $('searchInput').focus(); }, 50);
@@ -405,17 +278,16 @@
 
     function gotoOffice(o){
       if(o.lat==null || o.lng==null){ alert('이 부동산은 좌표가 없어 지도 이동이 불가해요.'); return; }
+      if(!admMap){ alert('지도를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'); return; }
       $('searchPanel').classList.remove('on');
-      ensureMapShown(function(){
-        var ll = new kakao.maps.LatLng(o.lat, o.lng);
-        admMap.setLevel(1);            // 약 20m 뷰 (가장 가까이)
-        admMap.setCenter(ll);
-        setSearchPin(o, ll);
-      });
+      var ll = new kakao.maps.LatLng(o.lat, o.lng);
+      admMap.setLevel(1);            // 약 20m 뷰 (가장 가까이)
+      admMap.setCenter(ll);
+      setSearchPin(o, ll);
     }
 
     // ===== 시작 =====
-    if(token) { hideGate(); load(); } else { showGate(); }
+    if(token) { hideGate(); boot(); } else { showGate(); }
   </script>
 </body>
 </html>
