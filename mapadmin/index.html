@@ -61,6 +61,28 @@
     #lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; padding: 20px; }
     #lightbox.on { display: flex; }
     #lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+    /* 뷰 토글 (현황 / 지도) */
+    .view-toggle { display: flex; gap: 6px; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 14px; }
+    .vt-btn { flex: 1; border: none; background: none; border-radius: 9px; padding: 9px 0; font-size: 14px; font-weight: 800; color: var(--sub); cursor: pointer; }
+    .vt-btn.active { background: #191F28; color: #fff; }
+    /* 지도 뷰 */
+    #mapWrap { display: none; position: relative; }
+    #admMap { width: 100%; height: 68vh; min-height: 420px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E9EEF3; }
+    .map-legend { position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255,255,255,.96); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 8px 11px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 5px; }
+    .map-legend .lg-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+    .map-reload { position: absolute; top: 10px; right: 10px; z-index: 5; width: 42px; height: 42px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.25); font-size: 20px; color: #191F28; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .map-reload.spin { animation: mr-spin .6s linear; }
+    @keyframes mr-spin { to { transform: rotate(360deg); } }
+    .map-msg { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 5; background: rgba(25,31,40,.85); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+    .map-msg:empty { display: none; }
+    /* 지도 박스 — 가입완료(초록) / 전달완료(노랑) */
+    .adm-box { border-radius: 9px; padding: 5px 9px; box-shadow: 0 3px 10px rgba(0,0,0,.28); font-size: 11px; line-height: 1.25; text-align: center; white-space: nowrap; border: 1.5px solid transparent; transform: translateY(-6px); }
+    .adm-box b { display: block; font-size: 12px; font-weight: 800; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+    .adm-box .ab-sub { display: block; font-size: 10px; font-weight: 700; }
+    .adm-box.SIGNUP { background: var(--signup); border-color: var(--signup); color: #fff; }
+    .adm-box.SIGNUP .ab-sub { color: rgba(255,255,255,.92); }
+    .adm-box.DELIVERED { background: var(--delivered); border-color: var(--delivered); color: #4A3A00; }
+    .adm-box.DELIVERED .ab-sub { color: #6B5200; }
   </style>
 </head>
 <body>
@@ -79,8 +101,23 @@
       <h1>영업 현황</h1>
       <button class="reload" id="reloadBtn">새로고침</button>
     </header>
-    <div class="tabs" id="tabs"></div>
-    <div id="list"></div>
+    <div class="view-toggle">
+      <button class="vt-btn active" id="vtList" data-view="list">현황</button>
+      <button class="vt-btn" id="vtMap" data-view="map">지도</button>
+    </div>
+    <div id="listView">
+      <div class="tabs" id="tabs"></div>
+      <div id="list"></div>
+    </div>
+    <div id="mapWrap">
+      <div id="admMap"></div>
+      <div class="map-legend">
+        <span><i class="lg-dot" style="background:var(--signup)"></i>가입완료 <b id="lgSignup">0</b></span>
+        <span><i class="lg-dot" style="background:var(--delivered)"></i>전달완료 <b id="lgDelivered">0</b></span>
+      </div>
+      <button class="map-reload" id="mapReloadBtn" title="새로고침">↻</button>
+      <div class="map-msg" id="mapMsg"></div>
+    </div>
   </div>
 
   <div id="lightbox"><img id="lightboxImg" src="" alt="" /></div>
@@ -92,6 +129,7 @@
     var activeTab = 'SIGNUP';
     var STATUS_LABEL = { SIGNUP: '가입완료', DELIVERED: '전달완료', REVISIT: '재방문', FAIL: '실패' };
     var ORDER = ['SIGNUP','DELIVERED','REVISIT','FAIL'];
+    var admMap = null, admOverlays = [], curView = 'list', sdkReadyPromise = null;
 
     function $(id){ return document.getElementById(id); }
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
@@ -120,7 +158,7 @@
       $('list').innerHTML = '<div class="empty">불러오는 중…</div>';
       fetch(API+'/fieldmap/admin/offices', { headers: authHeaders() })
         .then(function(r){ if(r.status===403){ showGate('다시 로그인해 주세요'); throw new Error('403'); } return r.json(); })
-        .then(function(j){ ALL = j.offices || []; renderTabs(); render(); })
+        .then(function(j){ ALL = j.offices || []; renderTabs(); render(); if (admMap) renderAdminMap(); })
         .catch(function(e){ if(String(e.message)!=='403'){ $('list').innerHTML='<div class="empty">불러오기 실패</div>'; } });
     }
 
@@ -172,6 +210,81 @@
     }
 
     $('lightbox').onclick = function(){ $('lightbox').classList.remove('on'); };
+
+    // ===== 뷰 토글 (현황 / 지도) =====
+    function setToggle(){
+      $('vtList').classList.toggle('active', curView==='list');
+      $('vtMap').classList.toggle('active', curView==='map');
+    }
+    function showList(){
+      curView='list'; setToggle();
+      $('listView').style.display=''; $('mapWrap').style.display='none';
+    }
+    function showMap(){
+      curView='map'; setToggle();
+      $('listView').style.display='none'; $('mapWrap').style.display='block';
+      if(!admMap){
+        $('mapMsg').textContent='지도 불러오는 중…';
+        ensureKakaoReady()
+          .then(function(){ initAdminMap(); renderAdminMap(); })
+          .catch(function(){ $('mapMsg').textContent='지도 로드 실패'; });
+      } else {
+        admMap.relayout(); renderAdminMap();
+      }
+    }
+    $('vtList').onclick = showList;
+    $('vtMap').onclick = showMap;
+    $('mapReloadBtn').onclick = function(){
+      var b=$('mapReloadBtn'); b.classList.remove('spin'); void b.offsetWidth; b.classList.add('spin');
+      load();
+    };
+
+    // ===== Kakao SDK =====
+    function ensureKakaoReady(){
+      if(sdkReadyPromise) return sdkReadyPromise;
+      sdkReadyPromise = new Promise(function(resolve, reject){
+        if(typeof kakao!=='undefined' && kakao.maps && kakao.maps.LatLng){ resolve(); return; }
+        fetch(API + '/public/presale-inquiry/kakao-js-key')
+          .then(function(r){ if(!r.ok) throw new Error('키 fetch 실패'); return r.json(); })
+          .then(function(j){
+            var key = j && j.kakaoJsKey; if(!key) throw new Error('키 없음');
+            var s = document.createElement('script');
+            s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + encodeURIComponent(key) + '&libraries=services&autoload=false';
+            s.onload = function(){ if(typeof kakao==='undefined' || !kakao.maps){ reject(new Error('kakao.maps 없음')); return; } kakao.maps.load(function(){ resolve(); }); };
+            s.onerror = function(){ reject(new Error('SDK 로드 실패')); };
+            document.head.appendChild(s);
+          })
+          .catch(reject);
+      });
+      return sdkReadyPromise;
+    }
+
+    function initAdminMap(){
+      admMap = new kakao.maps.Map($('admMap'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 9 });
+    }
+
+    // ===== 지도 렌더 (가입완료=초록 / 전달완료=노랑 박스만) =====
+    function renderAdminMap(){
+      if(!admMap) return;
+      admOverlays.forEach(function(o){ o.setMap(null); }); admOverlays = [];
+      var rows = ALL.filter(function(o){
+        return (o.status==='SIGNUP' || o.status==='DELIVERED') && o.lat!=null && o.lng!=null;
+      });
+      var nS=0, nD=0, bounds = new kakao.maps.LatLngBounds(), has=false;
+      rows.forEach(function(o){
+        if(o.status==='SIGNUP') nS++; else nD++;
+        var ll = new kakao.maps.LatLng(o.lat, o.lng);
+        var el = document.createElement('div');
+        el.className = 'adm-box ' + o.status;
+        el.innerHTML = '<b>' + esc(o.name) + '</b><span class="ab-sub">' + STATUS_LABEL[o.status] + '</span>';
+        var ov = new kakao.maps.CustomOverlay({ position: ll, content: el, xAnchor: 0.5, yAnchor: 1, zIndex: o.status==='SIGNUP'?4:3 });
+        ov.setMap(admMap); admOverlays.push(ov);
+        bounds.extend(ll); has=true;
+      });
+      $('lgSignup').textContent = nS; $('lgDelivered').textContent = nD;
+      if(has) admMap.setBounds(bounds);
+      $('mapMsg').textContent = (nS+nD)===0 ? '가입완료·전달완료 부동산이 아직 없어요.' : '';
+    }
 
     // ===== 시작 =====
     if(token) { hideGate(); load(); } else { showGate(); }
