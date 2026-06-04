@@ -35,6 +35,11 @@
     #hint { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 50%; transform: translateX(-50%); z-index: 500; background: rgba(25,31,40,.82); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; pointer-events: none; max-width: 90vw; text-align: center; }
     /* 지역 버튼 바 (상단) */
     #regionbar { position: fixed; top: calc(env(safe-area-inset-top) + 8px); left: 8px; right: 8px; z-index: 600; }
+    #regionRows { max-width: calc(100% - 132px); }
+    #incentiveBadge { position: fixed; top: calc(env(safe-area-inset-top) + 8px); right: 8px; z-index: 650; display: none; align-items: center; gap: 6px; background: #fff; border: 1.5px solid #6155F5; border-radius: 999px; padding: 7px 12px; box-shadow: 0 3px 12px rgba(97,85,245,.22); }
+    #incentiveBadge.on { display: inline-flex; }
+    #incentiveBadge .ib-label { font-size: 10.5px; font-weight: 700; color: #6155F5; white-space: nowrap; }
+    #incentiveBadge .ib-amt { font-size: 13px; font-weight: 900; color: #191F28; white-space: nowrap; }
     /* 2026-06-05 [사용자 명시] 서울/경기 세로 2줄 + 줄마다 [구 선택]·[동 선택] 팝오버 */
     .rrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
     .rr-name { flex: 0 0 auto; width: 46px; text-align: center; font-size: 13px; font-weight: 800; color: #fff; background: #6155F5; border-radius: 999px; padding: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
@@ -154,6 +159,7 @@
     <div id="regionRows"></div>
     <div id="rPop" style="display:none"></div>
   </div>
+  <div id="incentiveBadge"><span class="ib-label">누적 인센티브</span><span class="ib-amt" id="ibAmt">0원</span></div>
   <button id="locBtn" title="내 위치">📍</button>
   <div id="hint">로그인 중…</div>
 
@@ -389,6 +395,20 @@
     function boot() {
       $('hint').textContent = '지도 불러오는 중…';
       ensureKakaoReady().then(initMap).catch(function(e){ $('hint').textContent = '지도 로드 실패'; console.error(e); });
+      loadIncentive();
+    }
+
+    // ===== 누적 인센티브 (가입완료 1건당 5,000원) =====
+    function loadIncentive() {
+      if (!token) return;
+      fetch(API + '/fieldmap/me/incentive', { headers: authHeaders() })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){
+          if (!j) return;
+          $('ibAmt').textContent = (Number(j.incentive) || 0).toLocaleString('ko-KR') + '원';
+          $('incentiveBadge').classList.add('on');
+        })
+        .catch(function(){});
     }
 
     function initMap() {
@@ -821,6 +841,7 @@
             loaded[k].forEach(function(of){ if (of.id === o.id) { of.status = null; of.managerName = null; of.statusAt = null; } });
           });
           renderAll();
+          loadIncentive();
         })
         .catch(function(){ toast('초기화 실패'); });
     }
@@ -909,6 +930,7 @@
             });
           });
           renderAll();
+          if (pendingStatus === 'SIGNUP') loadIncentive();
         })
         .catch(function(){ toast('저장 실패'); $('mSubmit').disabled = false; });
     };
