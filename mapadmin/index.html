@@ -75,8 +75,10 @@
     @keyframes mr-spin { to { transform: rotate(360deg); } }
     .map-msg { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 5; background: rgba(25,31,40,.85); color: #fff; font-size: 12px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
     .map-msg:empty { display: none; }
-    /* 지도 박스 — 가입완료(초록) / 전달완료(노랑) */
-    .adm-box { border-radius: 9px; padding: 5px 9px; box-shadow: 0 3px 10px rgba(0,0,0,.28); font-size: 11px; line-height: 1.25; text-align: center; white-space: nowrap; border: 1.5px solid transparent; transform: translateY(-6px); }
+    /* 지도 박스 — 가입완료(초록) / 전달완료(노랑) + 박스 위 담당 직원 이름 */
+    .adm-pin { display: flex; flex-direction: column; align-items: center; gap: 3px; transform: translateY(-6px); }
+    .adm-name { background: #191F28; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 9px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,.3); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+    .adm-box { border-radius: 9px; padding: 5px 9px; box-shadow: 0 3px 10px rgba(0,0,0,.28); font-size: 11px; line-height: 1.25; text-align: center; white-space: nowrap; border: 1.5px solid transparent; }
     .adm-box b { display: block; font-size: 12px; font-weight: 800; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
     .adm-box .ab-sub { display: block; font-size: 10px; font-weight: 700; }
     .adm-box.SIGNUP { background: var(--signup); border-color: var(--signup); color: #fff; }
@@ -274,9 +276,10 @@
       rows.forEach(function(o){
         if(o.status==='SIGNUP') nS++; else nD++;
         var ll = new kakao.maps.LatLng(o.lat, o.lng);
+        var nameTag = o.managerName ? '<div class="adm-name">' + esc(o.managerName) + '</div>' : '';
         var el = document.createElement('div');
-        el.className = 'adm-box ' + o.status;
-        el.innerHTML = '<b>' + esc(o.name) + '</b><span class="ab-sub">' + STATUS_LABEL[o.status] + '</span>';
+        el.className = 'adm-pin';
+        el.innerHTML = nameTag + '<div class="adm-box ' + o.status + '"><b>' + esc(o.name) + '</b><span class="ab-sub">' + STATUS_LABEL[o.status] + '</span></div>';
         var ov = new kakao.maps.CustomOverlay({ position: ll, content: el, xAnchor: 0.5, yAnchor: 1, zIndex: o.status==='SIGNUP'?4:3 });
         ov.setMap(admMap); admOverlays.push(ov);
         bounds.extend(ll); has=true;
