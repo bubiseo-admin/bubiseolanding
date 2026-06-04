@@ -252,7 +252,7 @@
     var STATUS_COLOR = { SIGNUP: 'var(--signup)', DELIVERED: 'var(--delivered)', REVISIT: 'var(--revisit)', FAIL: 'var(--fail)' };
 
     function $(id) { return document.getElementById(id); }
-    function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); setTimeout(function(){ el.classList.remove('on'); }, 1800); }
+    function toast(t, ms) { var el = $('toast'); el.textContent = t; el.classList.add('on'); setTimeout(function(){ el.classList.remove('on'); }, ms || 1800); }
     function authHeaders(extra) { var h = extra || {}; h.Authorization = 'Bearer ' + token; return h; }
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function fmtTime(iso) { var d = new Date(iso); if (isNaN(d)) return ''; function p(n){return ('0'+n).slice(-2);} return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
@@ -425,8 +425,19 @@
         map.setLevel(3); map.panTo(ll);
       }, function(err) {
         $('locBtn').textContent = '📍';
-        toast(err && err.code === 1 ? '위치 권한을 허용해 주세요' : '위치를 가져오지 못했어요');
+        // 2026-06-05 [사용자 명시] 위치 거부 원인별 안내 — 인앱 웹뷰(카톡 등)는 위치가 막혀 외부 브라우저로 유도.
+        if (err && err.code === 1) {
+          if (isInAppBrowser()) toast('카톡·문자 등 앱 안 브라우저는 위치가 막혀요. 우측 상단 메뉴로 사파리·크롬에서 열어 주세요', 5500);
+          else toast('위치 권한이 꺼져 있어요. 브라우저·폰 설정 > 위치를 허용한 뒤 다시 눌러 주세요', 5000);
+        } else {
+          toast(err && err.code === 2 ? '위치 신호를 못 잡았어요. 잠시 후 다시 시도해 주세요' : '위치를 가져오지 못했어요');
+        }
       }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 10000 });
+    }
+    // 인앱 웹뷰(카톡/문자/SNS) 감지 — 위치 권한이 막히는 환경 안내용.
+    function isInAppBrowser() {
+      var ua = navigator.userAgent || '';
+      return /KAKAOTALK|FBAN|FBAV|FB_IAB|Instagram|Line\/|NAVER\(inapp|DaumApps|BAND|everytime|; wv\)/i.test(ua);
     }
     $('locBtn').onclick = requestLocation;
 
