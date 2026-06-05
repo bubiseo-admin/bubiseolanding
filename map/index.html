@@ -479,8 +479,10 @@
       map = new kakao.maps.Map($('map'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 7 });
       // iOS 세이프에리어 적용 후 지도 캔버스 크기 재계산 (상단 미렌더 띠 방지)
       var fixLayout = function(){ if (map) map.relayout(); };
-      setTimeout(fixLayout, 200); setTimeout(fixLayout, 700);
+      setTimeout(fixLayout, 200); setTimeout(fixLayout, 700); setTimeout(fixLayout, 1600);
       window.addEventListener('orientationchange', function(){ setTimeout(fixLayout, 350); });
+      window.addEventListener('pageshow', function(){ setTimeout(fixLayout, 120); });
+      window.addEventListener('resize', fixLayout);
       clusterer = new kakao.maps.MarkerClusterer({ map: map, averageCenter: true, minLevel: BOX_LEVEL + 1, gridSize: 80 });
       // 줌 변경 시 박스/클러스터 전환만 (재조회 X — 이미 로드된 지역 데이터로).
       kakao.maps.event.addListener(map, 'idle', scheduleRender);
