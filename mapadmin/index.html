@@ -89,6 +89,7 @@
       <tbody>
         <tr><th>서울</th><td id="ssSeoulTotal">-</td><td id="ssSeoulSignup">-</td><td id="ssSeoulDeliv">-</td><td id="ssSeoulRevisit">-</td><td id="ssSeoulFail">-</td></tr>
         <tr><th>경기</th><td id="ssGgTotal">-</td><td id="ssGgSignup">-</td><td id="ssGgDeliv">-</td><td id="ssGgRevisit">-</td><td id="ssGgFail">-</td></tr>
+        <tr><th>인천</th><td id="ssIcTotal">-</td><td id="ssIcSignup">-</td><td id="ssIcDeliv">-</td><td id="ssIcRevisit">-</td><td id="ssIcFail">-</td></tr>
       </tbody>
     </table>
   </div>
@@ -155,9 +156,9 @@
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(j){
           if(!j || !j.summary) return;
-          var seoul=null, gg=null;
-          j.summary.forEach(function(s){ if(s.sido==='서울특별시') seoul=s; else if(s.sido==='경기도') gg=s; });
-          fillSido('Seoul', seoul); fillSido('Gg', gg);
+          var seoul=null, gg=null, ic=null;
+          j.summary.forEach(function(s){ if(s.sido==='서울특별시') seoul=s; else if(s.sido==='경기도') gg=s; else if(s.sido==='인천광역시') ic=s; });
+          fillSido('Seoul', seoul); fillSido('Gg', gg); fillSido('Ic', ic);
         })
         .catch(function(){});
     }
