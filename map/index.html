@@ -42,7 +42,7 @@
     /* 2026-06-05 [사용자 명시] 서울/경기 세로 2줄 + 줄마다 [구 선택]·[동 선택] 팝오버 */
     .rrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
     .rr-sido { flex: 0 0 auto; max-width: none; background: #6155F5; color: #fff; font-weight: 800; }
-    .rr-pick { flex: 0 1 auto; max-width: 44%; min-width: 0; border: none; border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+    .rr-pick { flex: 0 1 auto; max-width: 44%; min-width: 0; border: none; border-radius: 11px; padding: 10px 16px; font-size: 13px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
     .rr-pick.on { background: #6155F5; color: #fff; }
     .rr-pick:disabled { opacity: .42; cursor: default; }
     #rPop { position: fixed; z-index: 700; max-height: 52vh; overflow-y: auto; background: #fff; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.3); padding: 6px; min-width: 150px; -webkit-overflow-scrolling: touch; }
@@ -50,15 +50,15 @@
     #rPop button.on { background: #F0EEFF; color: #6155F5; font-weight: 800; }
     #rPop .rp-cnt { float: right; color: var(--sub); font-weight: 600; font-size: 12px; margin-left: 14px; }
     /* 내 위치 버튼 (우하단) */
-    #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #locBtn { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 14px; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #locBtn:active { transform: scale(.94); }
     #locBtn.loading svg { display: none; }
     #locBtn.loading::after { content: ''; width: 18px; height: 18px; border: 2.5px solid #E5E8EB; border-top-color: #191F28; border-radius: 50%; animation: loc-spin .7s linear infinite; }
     @keyframes loc-spin { to { transform: rotate(360deg); } }
-    #logoutBtn { position: fixed; left: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #logoutBtn { position: fixed; left: 14px; bottom: calc(env(safe-area-inset-bottom) + 56px); z-index: 550; width: 46px; height: 46px; border-radius: 14px; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #logoutBtn:active { transform: scale(.94); }
     /* 검색 — 우측 하단 돋보기 FAB(내위치 버튼 위) + 검색 패널 */
-    #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 14px; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
     #searchPanel { position: fixed; right: 70px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 1200; width: 300px; max-width: calc(100vw - 84px); background: transparent; display: none; }
     #searchPanel.on { display: block; }
