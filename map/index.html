@@ -17,7 +17,7 @@
     /* 세이프에어리어(노치·홈바) 흰색 채움 */
     #safeBottom { position: fixed; bottom: 0; left: 0; right: 0; height: env(safe-area-inset-bottom); background: #fff; z-index: 9500; pointer-events: none; }
     /* 세이프에리어 포함 화면 꽉차게 */
-    #map { position: fixed; inset: 0; width: 100%; height: 100%; }
+    #map { position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; }
     /* 비번 게이트 */
     #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#6155F5,#39AFFD); display: flex; align-items: center; justify-content: center; padding: 24px; }
     #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
