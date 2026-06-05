@@ -59,14 +59,14 @@
     /* 검색 — 우측 하단 돋보기 FAB(내위치 버튼 위) + 검색 패널 */
     #searchFab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 555; width: 46px; height: 46px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.28); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     #searchFab:active { transform: scale(.94); }
-    #searchPanel { position: fixed; right: 70px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 1200; width: 320px; max-width: calc(100vw - 84px); background: #fff; border-radius: 16px; box-shadow: 0 14px 44px rgba(0,0,0,.3); overflow: hidden; display: none; }
+    #searchPanel { position: fixed; right: 70px; bottom: calc(env(safe-area-inset-bottom) + 110px); z-index: 1200; width: 300px; max-width: calc(100vw - 84px); background: transparent; display: none; }
     #searchPanel.on { display: block; }
-    .sp-head { display: flex; align-items: center; gap: 8px; padding: 12px; }
-    #searchResults:not(:empty) { border-bottom: 1px solid var(--line); }
-    .sp-head input { flex: 1; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 12px; font-size: 15px; outline: none; }
-    .sp-head input:focus { border-color: #6155F5; }
-    .sp-head .sp-x { border: none; background: none; font-size: 18px; color: var(--sub); cursor: pointer; padding: 4px 6px; }
+    .sp-head { display: flex; align-items: center; background: #fff; border-radius: 999px; box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+    .sp-head:focus-within { box-shadow: 0 4px 16px rgba(0,0,0,.18), 0 0 0 2px rgba(97,85,245,.35); }
+    .sp-head input { flex: 1; min-width: 0; height: 46px; border: none; background: transparent; padding: 0 4px 0 18px; font-size: 15px; outline: none; }
+    .sp-head .sp-x { border: none; background: none; font-size: 17px; color: var(--sub); cursor: pointer; padding: 0 15px 0 4px; }
     #searchResults { max-height: 46vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #searchResults:not(:empty) { background: #fff; border-radius: 14px; box-shadow: 0 8px 28px rgba(0,0,0,.16); margin-bottom: 8px; }
     .sr-item { padding: 11px 14px; border-bottom: 1px solid #F2F4F6; cursor: pointer; }
     .sr-item:last-child { border-bottom: none; }
     .sr-item:active { background: #F2F4F6; }
