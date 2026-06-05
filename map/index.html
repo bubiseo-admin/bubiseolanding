@@ -312,10 +312,12 @@
     }
 
     // ===== 아이디+비밀번호 로그인 게이트 =====
-    // gateStep: 'idpw'(아이디+비번 동시 입력) → 기존 사용자 즉시 로그인 | 'register'(첫 로그인만 이름 추가)
+    // gateStep: 'idpw'(아이디+비번) | 'setup'(첫 로그인 — 이름+새 비번 설정)
     var gateStep = 'idpw';
     var gateLoginId = '';
     var gateBusy = false;
+    var gateSetupMode = '';  // 'reset'(초기비번 0000) | 'register'(비번 미설정)
+    var gateTempPw = '';     // reset 모드에서 입력한 초기 비번(현재 비번)
 
     function showGate(msg) { $('gate').style.display = 'flex'; gateToIdStep(); if (msg) $('gateErr').textContent = msg; }
     function hideGate() { $('gate').style.display = 'none'; }
@@ -326,21 +328,21 @@
       $('gateSub').textContent = '아이디와 비밀번호를 입력해 주세요';
       $('gateId').style.display = ''; $('gateId').disabled = false;
       $('gateName').style.display = 'none'; $('gateName').value = '';
-      $('gatePw').style.display = ''; $('gatePw').value = '';
+      $('gatePw').style.display = ''; $('gatePw').value = ''; $('gatePw').placeholder = '비밀번호';
       $('gateBtn').textContent = '로그인';
       $('gateBack').style.display = 'none';
       $('gateErr').textContent = '';
       setTimeout(function(){ $('gateId').focus(); }, 50);
     }
 
-    function gateToRegisterStep() {
-      // 첫 로그인만: 이름 칸 노출. 비밀번호는 앞에서 입력한 값을 그대로 새 비번으로 사용(지우지 않음).
-      gateStep = 'register';
-      $('gateSub').textContent = '첫 로그인이에요. 사용할 이름을 입력해 주세요';
+    function gateToSetupStep(mode) {
+      // 첫 로그인 — 이름 + 새 비밀번호 설정. mode: 'reset'(초기비번 0000) / 'register'(비번 미설정)
+      gateStep = 'setup'; gateSetupMode = mode;
+      $('gateSub').innerHTML = '첫 로그인이에요. 이름과 새 비밀번호를 설정해 주세요<br><span style="font-size:12px;color:var(--sub)">재설정 후에는 새 비밀번호로 로그인하세요</span>';
       $('gateId').disabled = true;
       $('gateName').style.display = ''; $('gateName').value = '';
-      $('gatePw').style.display = '';
-      $('gateBtn').textContent = '시작하기';
+      $('gatePw').style.display = ''; $('gatePw').value = ''; $('gatePw').placeholder = '새 비밀번호';
+      $('gateBtn').textContent = '설정하고 시작하기';
       $('gateBack').style.display = '';
       $('gateErr').textContent = '';
       setTimeout(function(){ $('gateName').focus(); }, 50);
@@ -372,28 +374,35 @@
             gateLoginId = id;
             if (res.j.adminLocked) { $('gateErr').textContent = '관리자 비밀번호가 아직 설정되지 않았어요'; return; }
             if (res.j.registered) {
-              // 기존 사용자 — 입력한 비밀번호로 바로 로그인
+              // 입력한 비밀번호로 로그인 시도 — 초기비번(0000)이면 재설정 요구
               return fetch(API + '/fieldmap/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: id, password: pw }) })
                 .then(function(r){ if (!r.ok) throw new Error('login'); return r.json(); })
-                .then(function(j){ loginOk(j); })
+                .then(function(j){
+                  if (j.needsReset) { gateTempPw = pw; gateToSetupStep('reset'); return; }
+                  loginOk(j);
+                })
                 .catch(function(){ $('gateErr').textContent = '비밀번호가 올바르지 않아요'; $('gatePw').value=''; $('gatePw').focus(); });
             }
-            // 첫 로그인 — 비번 4자 이상 확인 후 이름 입력 단계로
-            if (pw.length < 4) { $('gateErr').textContent = '비밀번호는 4자 이상이에요'; $('gatePw').focus(); return; }
-            gateToRegisterStep();
+            // 비번 미설정 계정 — 이름 + 새 비밀번호 설정 단계로
+            gateToSetupStep('register');
           })
           .catch(function(){ $('gateErr').textContent = '잠시 후 다시 시도해 주세요'; })
           .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
-      } else if (gateStep === 'register') {
+      } else if (gateStep === 'setup') {
         var nm = $('gateName').value.trim();
         var npw = $('gatePw').value.trim();
         if (!nm) { $('gateErr').textContent = '이름을 입력해 주세요'; $('gateName').focus(); return; }
         if (npw.length < 4) { $('gateErr').textContent = '비밀번호는 4자 이상이에요'; $('gatePw').focus(); return; }
+        if (npw === '0000') { $('gateErr').textContent = '초기 비밀번호(0000)는 사용할 수 없어요'; $('gatePw').focus(); return; }
         gateBusy = true; $('gateBtn').disabled = true;
-        fetch(API + '/fieldmap/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loginId: gateLoginId, name: nm, password: npw }) })
-          .then(function(r){ if (!r.ok) throw new Error('register'); return r.json(); })
+        var setupUrl = gateSetupMode === 'reset' ? '/fieldmap/auth/reset-password' : '/fieldmap/auth/register';
+        var setupBody = gateSetupMode === 'reset'
+          ? { loginId: gateLoginId, currentPassword: gateTempPw, name: nm, newPassword: npw }
+          : { loginId: gateLoginId, name: nm, password: npw };
+        fetch(API + setupUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(setupBody) })
+          .then(function(r){ if (!r.ok) throw new Error('setup'); return r.json(); })
           .then(function(j){ loginOk(j); })
-          .catch(function(){ $('gateErr').textContent = '등록에 실패했어요. 다시 시도해 주세요'; })
+          .catch(function(){ $('gateErr').textContent = '설정에 실패했어요. 다시 시도해 주세요'; })
           .then(function(){ gateBusy = false; $('gateBtn').disabled = false; });
       }
     }
