@@ -41,7 +41,7 @@
     #accountInfo.on { display: block; }
     /* 2026-06-05 [사용자 명시] 서울/경기 세로 2줄 + 줄마다 [구 선택]·[동 선택] 팝오버 */
     .rrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-    .rr-name { flex: 0 0 auto; width: 46px; text-align: center; font-size: 13px; font-weight: 800; color: #fff; background: #6155F5; border-radius: 999px; padding: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .rr-sido { flex: 0 0 auto; max-width: none; background: #6155F5; color: #fff; font-weight: 800; }
     .rr-pick { flex: 0 1 auto; max-width: 44%; min-width: 0; border: none; border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 700; background: rgba(255,255,255,.96); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
     .rr-pick.on { background: #6155F5; color: #fff; }
     .rr-pick:disabled { opacity: .42; cursor: default; }
@@ -275,7 +275,8 @@
     var renderTimer = null;
     // 지역 버튼 방식 — 기본 빈 지도, 버튼 누른 시군구만 로드.
     var REGIONS = [];        // [{sido, sigungu, count}]
-    var activeSido = '';     // 현재 탭 시/도
+    var activeSido = '';     // 현재 선택 시/도
+    var REGION_SIDOS = [];   // 시도 목록 (시도 팝오버용)
     var loaded = {};         // sigungu -> offices[] (지도에 표시 중인 지역)
     var loadingSet = {};     // sigungu -> true (조회 중)
     var focusGu = '';        // 동 칩을 보여줄 시군구
@@ -556,47 +557,52 @@
         .catch(function(e){ if (String(e.message) !== '403') $('hint').textContent = '지역 목록 로드 실패'; });
     }
 
-    function sidoOf(sg) {
-      for (var i = 0; i < REGIONS.length; i++) if (REGIONS[i].sigungu === sg) return REGIONS[i].sido;
-      return '';
-    }
+    function sidoShort(s) { return (s || '').replace('특별시', '').replace('광역시', '').replace('도', ''); }
 
-    // 2026-06-05 [사용자 명시] 서울/경기 세로 2줄. 줄마다 [구 선택]·[동 선택] 버튼 → 팝오버로 선택.
+    // 2026-06-06 [사용자 명시] 시도 토글(팝오버) 1줄 — [시도 ▾][구 선택 ▾][동 선택 ▾]. 3줄 → 1줄로 지도 공간 절약.
+    //   시도 선택 시 그 시도의 구/군만 구 팝오버에 노출, 동은 선택한 구의 동만.
     function buildRegionUI(sidos) {
-      var html = sidos.map(function(s){
-        var short = s.replace('특별시','').replace('광역시','').replace('도','');
-        return '<div class="rrow" data-sido="' + esc(s) + '">' +
-          '<span class="rr-name">' + esc(short || s) + '</span>' +
-          '<button class="rr-pick rr-gu" data-sido="' + esc(s) + '">구 선택 ▾</button>' +
-          '<button class="rr-pick rr-dong" data-sido="' + esc(s) + '" disabled>동 선택 ▾</button>' +
-          '</div>';
-      }).join('');
-      $('regionRows').innerHTML = html;
-      Array.prototype.forEach.call($('regionRows').querySelectorAll('.rr-gu'), function(b){
-        b.onclick = function(e){ e.stopPropagation(); if (togglePop(b)) return; openGuPop(b, b.getAttribute('data-sido')); };
-      });
-      Array.prototype.forEach.call($('regionRows').querySelectorAll('.rr-dong'), function(b){
-        b.onclick = function(e){ e.stopPropagation(); if (togglePop(b)) return; openDongPop(b, b.getAttribute('data-sido')); };
-      });
+      REGION_SIDOS = sidos;
+      if (!activeSido || sidos.indexOf(activeSido) < 0) activeSido = sidos[0] || '';
+      $('regionRows').innerHTML =
+        '<div class="rrow">' +
+          '<button class="rr-pick rr-sido"></button>' +
+          '<button class="rr-pick rr-gu">구 선택 ▾</button>' +
+          '<button class="rr-pick rr-dong" disabled>동 선택 ▾</button>' +
+        '</div>';
+      var row = $('regionRows').querySelector('.rrow');
+      row.querySelector('.rr-sido').onclick = function(e){ e.stopPropagation(); if (togglePop(this)) return; openSidoPop(this); };
+      row.querySelector('.rr-gu').onclick = function(e){ e.stopPropagation(); if (togglePop(this)) return; openGuPop(this, activeSido); };
+      row.querySelector('.rr-dong').onclick = function(e){ e.stopPropagation(); if (togglePop(this)) return; openDongPop(this); };
       refreshRegionLabels();
     }
 
-    // 줄 버튼 라벨/상태 갱신 — 로드된 구가 있는 시도 줄만 구/동 활성.
+    // 시도 팝오버 — 서울/경기/인천 중 선택.
+    function openSidoPop(btn) {
+      var items = REGION_SIDOS.map(function(s){ return { v: s, label: sidoShort(s) }; });
+      openPop(btn, items, activeSido, function(s){ setActiveSido(s); });
+    }
+    function setActiveSido(s) {
+      if (s === activeSido) { refreshRegionLabels(); return; }
+      activeSido = s;
+      loaded = {}; focusGu = ''; dongFilter = ''; loadingSet = {};
+      renderAll(); refreshRegionLabels(); updateHint();
+    }
+
+    // 단일 행 라벨 갱신 — [시도][구][동].
     function refreshRegionLabels() {
-      var fSido = focusGu ? sidoOf(focusGu) : '';
-      Array.prototype.forEach.call($('regionRows').querySelectorAll('.rrow'), function(row){
-        var s = row.getAttribute('data-sido');
-        var guBtn = row.querySelector('.rr-gu'), dongBtn = row.querySelector('.rr-dong');
-        if (focusGu && fSido === s) {
-          guBtn.textContent = focusGu + ' ▾'; guBtn.classList.add('on');
-          dongBtn.disabled = false;
-          dongBtn.textContent = (dongFilter || '동 선택') + ' ▾';
-          dongBtn.classList.toggle('on', !!dongFilter);
-        } else {
-          guBtn.textContent = '구 선택 ▾'; guBtn.classList.remove('on');
-          dongBtn.disabled = true; dongBtn.textContent = '동 선택 ▾'; dongBtn.classList.remove('on');
-        }
-      });
+      var row = $('regionRows').querySelector('.rrow'); if (!row) return;
+      var sidoBtn = row.querySelector('.rr-sido'), guBtn = row.querySelector('.rr-gu'), dongBtn = row.querySelector('.rr-dong');
+      sidoBtn.textContent = (sidoShort(activeSido) || '시도') + ' ▾';
+      if (focusGu && loaded[focusGu]) {
+        guBtn.textContent = focusGu + ' ▾'; guBtn.classList.add('on');
+        dongBtn.disabled = false;
+        dongBtn.textContent = (dongFilter || '동 선택') + ' ▾';
+        dongBtn.classList.toggle('on', !!dongFilter);
+      } else {
+        guBtn.textContent = '구 선택 ▾'; guBtn.classList.remove('on');
+        dongBtn.disabled = true; dongBtn.textContent = '동 선택 ▾'; dongBtn.classList.remove('on');
+      }
     }
 
     // ===== 구/동 선택 팝오버 =====
@@ -630,8 +636,8 @@
         activeSido = sido; toggleRegion(sg);
       });
     }
-    function openDongPop(btn, sido) {
-      if (!focusGu || sidoOf(focusGu) !== sido || !loaded[focusGu]) return;
+    function openDongPop(btn) {
+      if (!focusGu || !loaded[focusGu]) return;
       var dongs = [];
       loaded[focusGu].forEach(function(o){ var d = getDong(o); if (d && dongs.indexOf(d) < 0) dongs.push(d); });
       dongs.sort(function(a, b){ return a.localeCompare(b, 'ko'); });
