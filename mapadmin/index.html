@@ -13,7 +13,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); }
     /* 전체화면 지도 */
-    #admMap { position: fixed; inset: 0; background: #E9EEF3; }
+    #admMap { position: fixed; inset: 0; width: 100%; height: 100%; background: #fff; }
     /* 게이트 */
     #gate { position: fixed; inset: 0; z-index: 9000; background: linear-gradient(160deg,#3D4452,#191F28); display: flex; align-items: center; justify-content: center; padding: 24px; }
     #gate .card { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 28px 22px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
@@ -197,6 +197,10 @@
 
     function initAdminMap(){
       admMap = new kakao.maps.Map($('admMap'), { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 9 });
+      // iOS 세이프에리어 적용 후 지도 캔버스 크기 재계산 (상단 미렌더 회색 띠 방지)
+      var fixLayout = function(){ if (admMap) admMap.relayout(); };
+      setTimeout(fixLayout, 200); setTimeout(fixLayout, 700);
+      window.addEventListener('orientationchange', function(){ setTimeout(fixLayout, 350); });
     }
 
     function boot(){
