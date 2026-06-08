@@ -37,7 +37,7 @@
     .titlerow{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 18px;}
     .titlerow h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-1px;}
 
-    .layout{display:grid;grid-template-columns:1fr 232px;gap:28px;align-items:start;}
+    .layout{display:grid;grid-template-columns:1fr;gap:28px;align-items:start;}
 
     /* section card */
     .seccard{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:18px;scroll-margin-top:84px;}
@@ -101,14 +101,6 @@
     .photobox .ph-ic{width:60px;height:60px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--tert);margin:0 auto 14px;}
     .photobox .addph{background:var(--primary);color:#fff;border:none;border-radius:11px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;}
 
-    /* step nav */
-    .stepnav{position:sticky;top:84px;background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:12px 10px;}
-    .stepnav a{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;font-size:14px;font-weight:600;color:var(--sub);transition:.12s;}
-    .stepnav a:hover{background:var(--soft);}
-    .stepnav a.on{background:var(--tint);color:var(--primary);font-weight:800;}
-    .stepnav .n{width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--tert);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;}
-    .stepnav a.on .n{background:var(--primary);color:#fff;}
-
     /* bottom actions */
     .actbar{position:fixed;left:0;right:0;bottom:0;z-index:90;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);}
     .actbar .inner{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;justify-content:flex-end;gap:10px;}
@@ -138,7 +130,7 @@
     .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:300;pointer-events:none;}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-    @media (max-width:980px){.layout{grid-template-columns:1fr;} .stepnav{display:none;} .chkgrid{grid-template-columns:repeat(2,1fr);} .frow{grid-template-columns:1fr;}}
+    @media (max-width:980px){.chkgrid{grid-template-columns:repeat(2,1fr);} .frow{grid-template-columns:1fr;}}
   </style>
   <script>
     /* 부동산관리센터 가드 — 포털 로그인 토큰 없으면 로그인으로. (로컬 file:// 미리보기는 통과) */
@@ -185,9 +177,10 @@
             </div>
           </section>
 
-          <!-- 2. 기본 정보 -->
+          <!-- 2. 자동입력 정보 (매물 정보 불러오기로 채워짐) -->
           <section class="seccard" id="s2">
-            <div class="sec-h">기본 정보<span class="right"><button class="loadbtn" onclick="openLoad()">매물 정보 불러오기</button></span></div>
+            <div class="sec-h">자동입력 정보<span class="right"><button class="loadbtn" onclick="openLoad()">매물 정보 불러오기</button></span></div>
+            <div class="infobox"><ul><li>아래 항목은 [매물 정보 불러오기] 로 자동 입력됩니다. 불러온 뒤 값을 확인·보완해 주세요.</li></ul></div>
             <div class="frow">
               <div class="flabel">매물 분류 <span class="req">*</span></div>
               <div class="ffield row">
@@ -204,11 +197,6 @@
                 <label class="opt"><input type="radio" name="deal" value="단기임대"> 단기임대</label>
               </div>
             </div>
-          </section>
-
-          <!-- 3. 매물 소재지 -->
-          <section class="seccard" id="s3">
-            <div class="sec-h">매물 소재지</div>
             <div class="frow">
               <div class="flabel">소재지 <span class="req">*</span></div>
               <div class="ffield row">
@@ -236,11 +224,13 @@
                 <div class="fnote">· 선택된 면적이 등기와 동일한 면적인지 확인 후 등록해주시고 면적이 다를 경우 직접입력으로 등록하셔야 합니다.<br/>· 주소, 면적을 다르게 입력할 경우 허위매물로 신고될 수 있으니 꼭 동일하게 입력 바랍니다.</div>
               </div>
             </div>
-          </section>
-
-          <!-- 4. 가격 정보 -->
-          <section class="seccard" id="s4">
-            <div class="sec-h">가격 정보</div>
+            <div class="frow">
+              <div class="flabel">건축물용도 <span class="req">*</span></div>
+              <div class="ffield">
+                <input class="inp full" id="buildingUse" placeholder="예) 공동주택(아파트), 제2종근린생활시설, 단독주택 등" />
+                <div class="fnote">· 건축물대장상의 용도를 입력해주세요.</div>
+              </div>
+            </div>
             <div class="frow">
               <div class="flabel">매매가 <span class="req">*</span></div>
               <div class="ffield">
@@ -256,15 +246,7 @@
               <div class="flabel">현 월세</div>
               <div class="ffield row"><input class="inp num w160" id="priceMonthly" placeholder="0" /><span class="suffix">만원 - 원</span></div>
             </div>
-            <div class="frow">
-              <div class="flabel">융자여부/융자금</div>
-              <div class="ffield">
-                <div class="row"><select class="sel w130" id="loanYn"><option>표시안함</option><option>있음</option><option>없음</option></select><input class="inp num w160" id="loanAmt" placeholder="0" /><span class="suffix">만원 - 원</span></div>
-                <div class="fnote warn">· 융자금이 있는 매물은 융자금을 정확히 입력해주세요. 허위매물 신고시 경고처리됩니다.</div>
-              </div>
-            </div>
-
-            <div class="sec-h" style="margin-top:24px;">관리비 부과정보</div>
+            <div class="sec-h" style="margin-top:24px;">관리비 부과정보 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b id="feeSum" style="color:var(--primary);">0원</b></span></div>
             <div class="frow">
               <div class="flabel">부과방식 <span class="req">*</span></div>
               <div class="ffield optrow">
@@ -276,34 +258,15 @@
             </div>
             <div class="frow">
               <div class="flabel">부과기준 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="optrow">
-                  <label class="opt"><input type="radio" name="feeBase"> 직전 월 관리비</label>
-                  <label class="opt"><input type="radio" name="feeBase"> 최근 3개월 평균</label>
-                  <label class="opt"><input type="radio" name="feeBase"> 최근 1년 평균</label>
-                  <label class="opt"><input type="radio" name="feeBase"> 기타</label>
-                </div>
-                <input class="inp full gap" placeholder="" />
+              <div class="ffield optrow">
+                <label class="opt"><input type="radio" name="feeBase"> 직전 월 관리비</label>
+                <label class="opt"><input type="radio" name="feeBase"> 최근 3개월 평균</label>
+                <label class="opt"><input type="radio" name="feeBase"> 최근 1년 평균</label>
+                <label class="opt"><input type="radio" name="feeBase"> 기타</label>
               </div>
             </div>
-
-            <div class="sec-h" style="margin-top:24px;">사용료 세부내역 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b id="feeSum" style="color:var(--primary);">0원</b></span></div>
-            <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
-            <div id="feeList"></div>
-            <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
-          </section>
-
-          <!-- 5. 매물 정보 -->
-          <section class="seccard" id="s5">
-            <div class="sec-h">매물 정보</div>
+            <div class="sec-h" style="margin-top:24px;">매물 정보</div>
             <div class="infobox"><ul><li>정확한 정보를 입력해 주세요. 부정확한 정보 입력 시 과태료 부과 대상이 될 수 있습니다.</li><li>집합건물등기 : 전용면적 기준으로 검증 / 건물등기(개별등기 없음): 매물종류에 따라 전용·연면적 기준 검증</li><li>등기상 면적과 소수점까지 동일하게 기재 (0.1이라도 오차가 있을 시 검증 실패)</li></ul></div>
-            <div class="frow">
-              <div class="flabel">건축물용도 <span class="req">*</span></div>
-              <div class="ffield">
-                <input class="inp full" id="buildingUse" placeholder="예) 공동주택(아파트), 제2종근린생활시설, 단독주택 등" />
-                <div class="fnote">· 건축물대장상의 용도를 입력해주세요.</div>
-              </div>
-            </div>
             <div class="frow">
               <div class="flabel">해당층 / 해당동 총층 <span class="req">*</span></div>
               <div class="ffield">
@@ -323,23 +286,8 @@
               </div>
             </div>
             <div class="frow">
-              <div class="flabel">층노출 동의여부 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="optrow"><label class="opt"><input type="radio" name="floorShow"> 동의 (층 노출)</label><label class="opt"><input type="radio" name="floorShow"> 동의안함 (고/중/저 노출)</label></div>
-                <div class="fnote">· 중개의뢰인(소유자 또는 임대인)의 의사를 확인하여 층노출 동의여부를 선택해주시길 바랍니다.</div>
-              </div>
-            </div>
-            <div class="frow">
               <div class="flabel">방수 / 욕실수 <span class="req">*</span></div>
               <div class="ffield row"><span class="suffix">방수</span><input class="inp num w90" id="rooms" /><span class="suffix">개</span><span class="suffix" style="margin-left:14px;">욕실수</span><input class="inp num w90" id="baths" /><span class="suffix">개</span></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">현관유형</div>
-              <div class="ffield optrow"><label class="opt"><input type="radio" name="entry"> 복도식</label><label class="opt"><input type="radio" name="entry"> 계단식</label><label class="opt"><input type="radio" name="entry"> 복합식</label></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">복층여부</div>
-              <div class="ffield optrow"><label class="opt"><input type="radio" name="duplex" checked> 단층</label><label class="opt"><input type="radio" name="duplex"> 복층</label></div>
             </div>
             <div class="frow">
               <div class="flabel">주차가능여부 <span class="req">*</span></div>
@@ -349,11 +297,7 @@
               <div class="flabel">세대당 / 총 주차대수</div>
               <div class="ffield row"><span class="suffix">세대당</span><input class="inp num w120" id="parkPer" /><span class="suffix">대 주차</span><span class="suffix" style="margin-left:14px;">총</span><input class="inp num w120" id="parkTotal" /><span class="suffix">대 주차</span></div>
             </div>
-          </section>
-
-          <!-- 6. 시설 정보 -->
-          <section class="seccard" id="s6">
-            <div class="sec-h">시설 정보</div>
+            <div class="sec-h" style="margin-top:24px;">시설 정보</div>
             <div class="frow">
               <div class="flabel">냉방시설</div>
               <div class="ffield chkgrid"><label class="chk"><input type="checkbox"> 냉방시설 전체</label><label class="chk"><input type="checkbox"> 벽걸이에어컨</label><label class="chk"><input type="checkbox"> 스탠드에어컨</label><label class="chk"><input type="checkbox"> 천장에어컨</label></div>
@@ -374,19 +318,7 @@
               <div class="flabel">기타시설</div>
               <div class="ffield chkgrid"><label class="chk"><input type="checkbox"> 기타시설 전체</label><label class="chk"><input type="checkbox"> 엘리베이터</label><label class="chk"><input type="checkbox"> 화재경보기</label><label class="chk"><input type="checkbox"> 베란다</label><label class="chk"><input type="checkbox"> 테라스</label><label class="chk"><input type="checkbox"> 마당</label><label class="chk"><input type="checkbox"> 무인택배함</label></div>
             </div>
-          </section>
-
-          <!-- 7. 매물 상세정보 -->
-          <section class="seccard" id="s7">
-            <div class="sec-h">매물 상세정보</div>
-            <div class="frow">
-              <div class="flabel">입주정보 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="optrow"><label class="opt"><input type="radio" name="moveIn" checked> 즉시 입주</label></div>
-                <div class="row gap"><label class="opt"><input type="radio" name="moveIn"> </label><select class="sel w130"><option>년 선택</option></select><select class="sel w130"><option>월 선택</option></select><select class="sel w130"><option>일 선택</option></select><select class="sel w130"><option>초/중/하순</option></select><span class="suffix">이후 입주</span></div>
-                <label class="chk gap"><input type="checkbox"> 협의가능</label>
-              </div>
-            </div>
+            <div class="sec-h" style="margin-top:24px;">매물 상세정보</div>
             <div class="frow">
               <div class="flabel">매물특징</div>
               <div class="ffield">
@@ -412,6 +344,51 @@
                   <button class="addph" onclick="document.getElementById('photoFile').click()">사진 추가 +</button>
                 </div>
                 <div class="fnote">· 첫번째 사진은 대표사진으로 노출됩니다. · 매물 사진의 가로 사이즈는 400pixel 이상만 가능하며 jpg/jpeg/png. · 1개 매물당 최대 20개, 총 30MB.</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 직접입력 정보 (자동으로 안 채워지는 항목) -->
+          <section class="seccard" id="s3">
+            <div class="sec-h">직접입력 정보</div>
+            <div class="infobox"><ul><li>아래 항목은 자동으로 채워지지 않습니다. 직접 확인 후 입력해 주세요.</li></ul></div>
+            <div class="frow">
+              <div class="flabel">융자여부/융자금</div>
+              <div class="ffield">
+                <div class="row"><select class="sel w130" id="loanYn"><option>표시안함</option><option>있음</option><option>없음</option></select><input class="inp num w160" id="loanAmt" placeholder="0" /><span class="suffix">만원 - 원</span></div>
+                <div class="fnote warn">· 융자금이 있는 매물은 융자금을 정확히 입력해주세요. 허위매물 신고시 경고처리됩니다.</div>
+              </div>
+            </div>
+            <div class="sec-h" style="margin-top:24px;">사용료 세부내역</div>
+            <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
+            <div id="feeList"></div>
+            <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
+            <div class="frow">
+              <div class="flabel">부과기준 기타</div>
+              <div class="ffield"><input class="inp full" placeholder="부과기준이 '기타'인 경우 직접 입력" /></div>
+            </div>
+            <div class="sec-h" style="margin-top:24px;">기타 직접입력</div>
+            <div class="frow">
+              <div class="flabel">층노출 동의여부 <span class="req">*</span></div>
+              <div class="ffield">
+                <div class="optrow"><label class="opt"><input type="radio" name="floorShow"> 동의 (층 노출)</label><label class="opt"><input type="radio" name="floorShow"> 동의안함 (고/중/저 노출)</label></div>
+                <div class="fnote">· 중개의뢰인(소유자 또는 임대인)의 의사를 확인하여 층노출 동의여부를 선택해주시길 바랍니다.</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="flabel">현관유형</div>
+              <div class="ffield optrow"><label class="opt"><input type="radio" name="entry"> 복도식</label><label class="opt"><input type="radio" name="entry"> 계단식</label><label class="opt"><input type="radio" name="entry"> 복합식</label></div>
+            </div>
+            <div class="frow">
+              <div class="flabel">복층여부</div>
+              <div class="ffield optrow"><label class="opt"><input type="radio" name="duplex" checked> 단층</label><label class="opt"><input type="radio" name="duplex"> 복층</label></div>
+            </div>
+            <div class="frow">
+              <div class="flabel">입주정보 <span class="req">*</span></div>
+              <div class="ffield">
+                <div class="optrow"><label class="opt"><input type="radio" name="moveIn" checked> 즉시 입주</label></div>
+                <div class="row gap"><label class="opt"><input type="radio" name="moveIn"> </label><select class="sel w130"><option>년 선택</option></select><select class="sel w130"><option>월 선택</option></select><select class="sel w130"><option>일 선택</option></select><select class="sel w130"><option>초/중/하순</option></select><span class="suffix">이후 입주</span></div>
+                <label class="chk gap"><input type="checkbox"> 협의가능</label>
               </div>
             </div>
           </section>
@@ -462,21 +439,6 @@
             <label class="agree"><input type="checkbox" /> 매물 등록 약관에 모두 동의합니다.</label>
           </section>
         </div>
-
-        <!-- step navigator -->
-        <nav class="stepnav" id="stepnav">
-          <a href="#s1" class="on"><span class="n">1</span>확인 매물 등록 시 주의사항</a>
-          <a href="#s2"><span class="n">2</span>기본 정보</a>
-          <a href="#s3"><span class="n">3</span>매물 소재지</a>
-          <a href="#s4"><span class="n">4</span>가격 정보</a>
-          <a href="#s5"><span class="n">5</span>매물 정보</a>
-          <a href="#s6"><span class="n">6</span>시설 정보</a>
-          <a href="#s7"><span class="n">7</span>매물 상세정보</a>
-          <a href="#s8"><span class="n">8</span>중개업소 정보</a>
-          <a href="#s9"><span class="n">9</span>검증방식</a>
-          <a href="#s10"><span class="n">10</span>의뢰인 정보</a>
-          <a href="#s11"><span class="n">11</span>약관 동의</a>
-        </nav>
       </div>
     </div>
   </main>
@@ -517,19 +479,6 @@
     /* 글자수 카운터 */
     function bindCnt(id, cntId){ var el = document.getElementById(id); var c = document.getElementById(cntId); if (el && c){ el.addEventListener('input', function(){ c.textContent = el.value.length; }); } }
     bindCnt('feature', 'featCnt'); bindCnt('detail', 'detailCnt');
-
-    /* step nav 활성 하이라이트 */
-    (function(){
-      var links = [].slice.call(document.querySelectorAll('.stepnav a'));
-      var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
-      function onScroll(){
-        var y = window.scrollY + 120, idx = 0;
-        for (var i = 0; i < secs.length; i++){ if (secs[i] && secs[i].offsetTop <= y) idx = i; }
-        links.forEach(function(a, i){ a.classList.toggle('on', i === idx); });
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      links.forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); var t = document.getElementById(a.getAttribute('href').slice(1)); if (t) window.scrollTo({ top: t.offsetTop - 78, behavior: 'smooth' }); }); });
-    })();
 
     /* toast */
     function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2200); }
