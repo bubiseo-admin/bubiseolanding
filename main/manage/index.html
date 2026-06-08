@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 광고관리페이지 — 전체 광고관리</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE; --tintline:#DCD9FE;
+      --shadow:0 6px 24px rgba(17,24,39,.05);
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+    .hide{display:none !important;}
+
+    /* nav */
+    header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);}
+    .nav{position:relative;display:flex;align-items:center;height:64px;}
+    .logo{font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;gap:0;cursor:pointer;}
+    .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+    .menu .item{position:relative;}
+    .menu .item>a{display:block;padding:9px 16px;font-size:15.5px;font-weight:600;color:var(--sub);border-radius:10px;transition:.12s;}
+    .menu .item:hover>a,.menu .item>a.on{color:var(--ink);background:var(--soft);}
+    .drop{position:absolute;top:46px;left:50%;transform:translateX(-50%) translateY(-6px);min-width:188px;background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(17,24,39,.12);padding:8px;opacity:0;visibility:hidden;transition:.16s;}
+    .menu .item:hover .drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+    .drop a{display:block;padding:11px 13px;font-size:14.5px;font-weight:600;color:var(--sub);border-radius:10px;white-space:nowrap;}
+    .drop a:hover{background:var(--soft);color:var(--primary);}
+    .navright{margin-left:auto;display:flex;align-items:center;gap:14px;}
+    .bell{width:22px;height:22px;color:var(--tert);}
+    .chip{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:700;color:var(--sub);}
+    .chip .av{width:28px;height:28px;border-radius:50%;background:#E8EBF0;display:grid;place-items:center;color:var(--tert);}
+    .navitem{position:relative;display:flex;align-items:center;}
+    .navitem::after{content:'';position:absolute;top:100%;left:-12px;right:-12px;height:12px;}
+    .navtrig{display:flex;align-items:center;cursor:pointer;}
+    .rdrop{position:absolute;top:calc(100% + 12px);right:0;background:#fff;border-radius:16px;box-shadow:0 14px 40px rgba(17,24,39,.14);padding:10px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.16s;z-index:130;}
+    .navitem:hover .rdrop{opacity:1;visibility:visible;transform:translateY(0);}
+    .rdrop-h{font-size:13px;font-weight:800;color:var(--tert);padding:8px 12px 6px;}
+    .rdrop.noti{width:300px;}
+    .noti-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;transition:.12s;}
+    .noti-row:hover{background:var(--soft);}
+    .noti-row .ni{width:38px;height:38px;border-radius:12px;background:#EEF0FE;color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .noti-row .nt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+    .noti-row .nt b{font-size:14px;font-weight:700;color:var(--ink);}
+    .noti-row .nt span{font-size:12.5px;color:var(--tert);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .noti-foot{display:block;text-align:center;padding:11px;margin-top:4px;border-top:1px solid #F2F4F6;font-size:13px;font-weight:700;color:var(--primary);}
+    .rdrop.acct{width:240px;}
+    .acct-head{padding:10px 14px 13px;border-bottom:1px solid #F2F4F6;margin-bottom:6px;}
+    .acct-head b{display:block;font-size:15px;font-weight:800;color:var(--ink);}
+    .acct-head span{font-size:12.5px;color:var(--tert);font-weight:600;}
+    .acct-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:11px;font-size:14.5px;font-weight:600;color:var(--ink);transition:.12s;}
+    .acct-row:hover{background:var(--soft);}
+    .acct-row svg{color:var(--tert);flex-shrink:0;}
+    .acct-row.logout{color:#F04452;}
+    .acct-row.logout svg{color:#F04452;}
+
+    main{padding:24px 0 90px;}
+    .titlerow{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 18px;}
+    .titlerow h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-1px;}
+    .addbtn{background:var(--grad);color:#fff;border-radius:13px;padding:12px 20px;font-size:15px;font-weight:700;box-shadow:0 8px 22px rgba(97,85,245,.24);}
+
+    /* tabs */
+    .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:6px;overflow-x:auto;}
+    .tab{padding:14px 18px;font-size:15px;font-weight:700;color:var(--tert);border-bottom:2.5px solid transparent;white-space:nowrap;cursor:pointer;}
+    .tab.on{color:var(--primary);border-bottom-color:var(--primary);}
+
+    /* segmented status pills */
+    .segbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:20px 0 16px;}
+    .seg{padding:9px 16px;border-radius:999px;background:var(--soft);font-size:14px;font-weight:700;color:var(--sub);cursor:pointer;border:1.5px solid transparent;transition:.12s;}
+    .seg b{margin-left:5px;color:var(--tert);font-weight:800;}
+    .seg:hover{color:var(--ink);}
+    .seg.on{background:var(--tint);color:var(--primary);border-color:var(--tintline);}
+    .seg.on b{color:var(--primary);}
+
+    /* search */
+    .search{display:flex;gap:8px;}
+    .search.right{margin-left:auto;}
+    .search input{background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:11px 15px;font-size:14px;font-family:inherit;width:240px;color:var(--ink);}
+    .search input:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .search button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:0 20px;font-size:14px;font-weight:700;cursor:pointer;}
+
+    /* inline filter toolbar */
+    .filterbar{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px 20px;}
+    .fbrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+    .fbrow + .fbrow{margin-top:12px;}
+    .fkey{font-size:13px;font-weight:800;color:var(--tert);margin-right:2px;}
+    .fsel,.finp{background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;color:var(--ink);}
+    .finp{flex:1;min-width:160px;}
+    .fsel{cursor:pointer;}
+    .finp:focus,.fsel:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .fchips{display:flex;gap:7px;flex-wrap:wrap;}
+    .fchip{padding:9px 15px;border-radius:999px;background:var(--soft);font-size:13.5px;font-weight:600;color:var(--sub);cursor:pointer;border:1.5px solid transparent;transition:.12s;}
+    .fchip.on{background:var(--tint);color:var(--primary);border-color:var(--tintline);}
+    .fbtns{margin-left:auto;display:flex;gap:8px;}
+    .btn-ghost{background:#fff;color:var(--sub);border:1.5px solid var(--line);border-radius:11px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;}
+    .btn-pri{background:var(--primary);color:#fff;border:none;border-radius:11px;padding:11px 26px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(97,85,245,.22);}
+
+    /* tools row */
+    .tools{display:flex;align-items:center;gap:10px;margin:24px 2px 14px;}
+    .tcount{font-size:14px;font-weight:700;color:var(--sub);}
+    .tcount b{color:var(--primary);}
+    .tsort{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:700;color:var(--sub);cursor:pointer;background:transparent;border:none;padding:6px 8px;border-radius:9px;}
+    .tsort:hover{background:var(--soft);color:var(--ink);}
+    .tacts{margin-left:auto;display:flex;gap:2px;}
+    .tact{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--sub);cursor:pointer;background:transparent;border:none;transition:.12s;}
+    .tact:hover{background:var(--soft);color:var(--ink);}
+
+    /* empty state */
+    .emptybox{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:74px 24px;text-align:center;}
+    .emptybox .ei{width:66px;height:66px;border-radius:20px;background:var(--soft);display:grid;place-items:center;margin:0 auto 18px;color:var(--tert);}
+    .emptybox .et{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.4px;}
+    .emptybox .es{margin-top:8px;font-size:14px;color:var(--tert);font-weight:500;line-height:1.6;}
+    .emptybox .eb{display:inline-block;margin-top:22px;background:var(--grad);color:#fff;border-radius:13px;padding:13px 26px;font-size:14.5px;font-weight:700;box-shadow:0 8px 22px rgba(97,85,245,.24);cursor:pointer;}
+
+    /* section head (report / same) */
+    .sec-head{display:flex;align-items:center;gap:12px;padding:8px 2px 18px;}
+    .sec-title{font-size:19px;font-weight:800;letter-spacing:-.5px;}
+    .seebtn{background:var(--tint);color:var(--primary);border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;}
+    .sec-meta{margin-left:auto;font-size:13px;color:var(--tert);font-weight:600;}
+
+    /* unified summary card (inline metrics) */
+    .summary{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:28px 14px;display:flex;align-items:stretch;}
+    .metric{flex:1;display:flex;flex-direction:column;gap:11px;padding:0 26px;}
+    .metric + .metric{border-left:1px solid var(--line2);}
+    .metric .ml{font-size:14px;font-weight:600;color:var(--sub);}
+    .metric .mv{font-size:30px;font-weight:800;letter-spacing:-1.2px;color:var(--ink);}
+    .metric .mv i{font-size:15px;font-weight:700;color:var(--tert);font-style:normal;margin-left:3px;}
+
+    /* guide list (vertical) */
+    .subhead{font-size:16px;font-weight:800;margin:32px 2px 14px;letter-spacing:-.5px;}
+    .guidelist{background:var(--card);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;}
+    .glink{display:flex;align-items:center;gap:14px;padding:17px 22px;border-bottom:1px solid var(--line2);color:var(--ink);transition:.12s;cursor:pointer;}
+    .glink:last-child{border-bottom:none;}
+    .glink:hover{background:var(--soft);}
+    .glink .gi{width:38px;height:38px;border-radius:12px;background:var(--tint);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .glink .gt{flex:1;font-size:15px;font-weight:600;}
+    .glink .gc{color:var(--tert);font-size:20px;line-height:1;}
+    .notice{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--tert);font-weight:500;margin:16px 2px 0;}
+    .notice .klink{margin-left:auto;color:var(--primary);font-weight:700;cursor:pointer;}
+    .panel-grid{display:block;}
+    .panel-main{width:100%;}
+    .panel-side{margin-top:20px;}
+    .panel-side .subhead{margin-top:0;}
+    .panel-side .notice{flex-direction:column;align-items:flex-start;gap:10px;margin-top:14px;}
+    .panel-side .notice .klink{margin-left:0;}
+    @media (min-width:1680px){
+      .panel-grid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start;margin-right:-304px;}
+      .panel-side{margin-top:0;position:sticky;top:84px;}
+    }
+
+    /* light date filter */
+    .dfbar{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:22px 24px;margin-top:14px;}
+    .dfg{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .dfg + .dfg{margin-top:18px;padding-top:18px;border-top:1px solid var(--line2);}
+    .dfg .k{font-size:13px;font-weight:800;color:var(--tert);width:54px;flex-shrink:0;}
+    .dt{background:var(--soft);border:1.5px solid transparent;border-radius:10px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);}
+    .dt:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .tilde{color:var(--tert);}
+    .qprow{display:flex;gap:6px;flex-wrap:wrap;}
+    .qp{padding:7px 13px;border-radius:999px;background:var(--soft);font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;border:1.5px solid transparent;transition:.12s;}
+    .qp.on{background:var(--tint);color:var(--primary);border-color:var(--tintline);}
+    .rchips{display:flex;flex-wrap:wrap;gap:8px;}
+    .rc{padding:8px 14px;border-radius:999px;background:var(--soft);font-size:13.5px;font-weight:600;color:var(--sub);cursor:pointer;border:1.5px solid transparent;transition:.12s;}
+    .rc.on{background:var(--tint);color:var(--primary);border-color:var(--tintline);}
+    .dfactions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
+
+    /* modal */
+    .modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(17,24,39,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px;}
+    .modal.show{display:flex;}
+    .modal-card{width:100%;max-width:620px;max-height:88vh;overflow-y:auto;background:#fff;border-radius:24px;padding:30px 32px 28px;box-shadow:0 30px 80px rgba(17,24,39,.3);}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
+    .modal-head h3{margin:0;font-size:19px;font-weight:800;letter-spacing:-.6px;}
+    .mx{background:none;border:none;font-size:26px;color:var(--tert);cursor:pointer;line-height:1;padding:0;}
+    .m-sub{font-size:14.5px;font-weight:800;margin:24px 0 11px;display:flex;align-items:center;gap:6px;}
+    .m-sub b{color:var(--tert);font-weight:800;}
+    .m-empty-box{border:1.5px dashed var(--line);border-radius:14px;padding:34px 0;text-align:center;color:var(--tert);font-size:14px;font-weight:600;}
+    .m-link{display:block;text-align:right;color:var(--primary);font-size:13.5px;font-weight:700;margin-top:20px;padding-top:18px;border-top:1px solid var(--line2);cursor:pointer;}
+    .m-close{display:block;margin:22px auto 0;background:var(--grad);color:#fff;border:none;border-radius:13px;padding:14px 64px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(97,85,245,.24);}
+    /* guide modal (tabbed) */
+    .gmodal{max-width:760px;}
+    .gtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:10px 0 20px;overflow-x:auto;}
+    .gtab{padding:12px 15px;font-size:14px;font-weight:700;color:var(--tert);border-bottom:2.5px solid transparent;white-space:nowrap;cursor:pointer;flex-shrink:0;}
+    .gtab.on{color:var(--primary);border-bottom-color:var(--primary);}
+    .gpane{display:none;}
+    .gpane.on{display:block;}
+    .gsec{margin-bottom:20px;}
+    .gsec:last-child{margin-bottom:0;}
+    .gsec-h{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:11px;display:flex;align-items:center;gap:8px;}
+    .gsec-h::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--primary);}
+    .gcard{background:var(--soft);border-radius:16px;padding:20px 22px;}
+    .gemph-h{font-size:13.5px;font-weight:800;color:var(--primary);margin:18px 0 10px;}
+    .gemph-h:first-child{margin-top:0;}
+    .glist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;}
+    .glist>li{position:relative;font-size:14px;line-height:1.65;color:var(--ink);font-weight:500;}
+    .glist.dot>li{padding-left:15px;}
+    .glist.dot>li::before{content:'·';position:absolute;left:3px;top:-2px;color:var(--tert);font-weight:800;font-size:17px;}
+    .glist.num{counter-reset:gi;}
+    .glist.num>li{counter-increment:gi;padding-left:25px;}
+    .glist.num>li::before{content:counter(gi)'.';position:absolute;left:0;top:0;color:var(--primary);font-weight:800;font-size:13.5px;}
+    .gsub{margin:9px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .gsub>li{position:relative;padding-left:14px;font-size:13.5px;color:var(--sub);font-weight:500;line-height:1.55;}
+    .gsub>li::before{content:'–';position:absolute;left:0;top:0;color:var(--tert);}
+    .gkey{font-weight:800;color:var(--ink);}
+    .gwarn{color:#F04452;font-weight:700;}
+    .gem{color:var(--primary);font-weight:700;cursor:pointer;}
+
+    @media (max-width:880px){
+      .menu{display:none;}
+      .summary{flex-direction:column;gap:22px;padding:24px;}
+      .metric + .metric{border-left:none;border-top:1px solid var(--line2);padding-top:22px;}
+      .finp{min-width:120px;}
+    }
+  </style>
+  <script>
+    /* 부동산관리센터 가드 — 포털 로그인 토큰 없으면 로그인으로. (로컬 file:// 미리보기는 통과) */
+    (function(){
+      if (location.protocol === 'file:') return;
+      try { if (!localStorage.getItem('bbs_portal_token')) location.replace('../login/'); } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
+      <nav class="menu">
+        <div class="item">
+          <a class="on" href="#t0">통합관리</a>
+          <div class="drop">
+            <a href="#t0">등록 리스트</a>
+            <a href="#t1">임시저장 리스트</a>
+            <a href="#t2">등록종료 리스트</a>
+            <a href="#t3">신고매물 리스트</a>
+            <a href="#t4">동일주소매물 리스트</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">광고상품안내</a>
+          <div class="drop">
+            <a href="#">상품 구매</a>
+            <a href="#">광고 · 가입 문의</a>
+            <a href="#">충전하기</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">고객센터</a>
+          <div class="drop">
+            <a href="#">공지사항</a>
+            <a href="#">FAQ</a>
+            <a href="#">1:1 문의</a>
+            <a href="#">단지등록 문의</a>
+          </div>
+        </div>
+      </nav>
+      <div class="navright">
+        <div class="navitem">
+          <div class="navtrig"><svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+          <div class="rdrop noti">
+            <div class="rdrop-h">알림</div>
+            <a class="noti-row" href="#t0"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></span><span class="nt"><b>등록 매물 광고 현황</b><span>진행 중인 광고 상태를 확인하세요</span></span></a>
+            <a class="noti-row" href="#t3"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="nt"><b>허위매물 신고 현황</b><span>신고된 매물 처리가 필요해요</span></span></a>
+            <a class="noti-row" href="#t4"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="nt"><b>동일주소 매물 미처리</b><span>중복 노출 매물을 확인하세요</span></span></a>
+            <a class="noti-foot" href="#">모든 알림 보기</a>
+          </div>
+        </div>
+        <div class="navitem">
+          <div class="navtrig"><div class="chip"><span class="av"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>저스트부동산중개법인</div></div>
+          <div class="rdrop acct">
+            <div class="acct-head"><b>저스트부동산중개법인</b><span>bubiseo0</span></div>
+            <a class="acct-row" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>회원사 정보</a>
+            <a class="acct-row" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>1:1 문의</a>
+            <a class="acct-row logout" href="../login/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>로그아웃</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="titlerow">
+        <h1>전체 광고관리</h1>
+        <a class="addbtn" href="#">매물 등록</a>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" onclick="setTab(0)">등록 리스트</div>
+        <div class="tab" onclick="setTab(1)">임시저장 리스트</div>
+        <div class="tab" onclick="setTab(2)">등록종료 리스트</div>
+        <div class="tab" onclick="setTab(3)">신고매물 리스트</div>
+        <div class="tab" onclick="setTab(4)">동일주소매물 리스트</div>
+      </div>
+
+      <!-- ============ PANEL: 등록/임시저장/등록종료 ============ -->
+      <section class="panel" id="panel-list">
+        <div class="segbar">
+          <span class="seg on" onclick="segPick(this)">전체<b>0</b></span>
+          <span class="seg" onclick="segPick(this)">확인중<b>0</b></span>
+          <span class="seg" onclick="segPick(this)">확인실패<b>0</b></span>
+          <span class="seg" onclick="segPick(this)">서비스중<b>0</b></span>
+          <span class="seg" onclick="segPick(this)">금일 종료 예정<b>0</b></span>
+          <div class="search right"><input placeholder="매물번호 검색" /><button>검색</button></div>
+        </div>
+
+        <div class="filterbar">
+          <div class="fbrow">
+            <span class="fkey">매물종류</span>
+            <select class="fsel">
+              <option>전체</option><option>아파트</option><option>오피스텔</option><option>빌라 · 연립</option>
+              <option>단독 · 다가구</option><option>상가 · 사무실</option><option>토지</option>
+            </select>
+            <input class="finp" placeholder="지역으로 검색" />
+            <input class="finp" placeholder="관리자 메모 검색" />
+          </div>
+          <div class="fbrow">
+            <span class="fkey">거래종류</span>
+            <div class="fchips">
+              <span class="fchip" onclick="chipTog(this)">매매</span>
+              <span class="fchip" onclick="chipTog(this)">전세</span>
+              <span class="fchip" onclick="chipTog(this)">월세</span>
+              <span class="fchip" onclick="chipTog(this)">단기임대</span>
+            </div>
+            <div class="fbtns">
+              <button class="btn-ghost">초기화</button>
+              <button class="btn-pri">검색</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tools">
+          <span class="tcount">총 <b>0</b>건</span>
+          <button class="tsort">최신순 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg></button>
+          <div class="tacts">
+            <button class="tact">선택 삭제</button>
+            <button class="tact">목록 인쇄</button>
+            <button class="tact">선택 다운로드</button>
+            <button class="tact">전체 다운로드</button>
+          </div>
+        </div>
+
+        <div class="emptybox">
+          <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div>
+          <div class="et" id="listEmptyT">등록된 매물이 없어요</div>
+          <div class="es" id="listEmptyS">매물을 등록하면 여기에서 광고 상태를 한눈에 관리할 수 있어요.</div>
+          <a class="eb" href="#">매물 등록하기</a>
+        </div>
+      </section>
+
+      <!-- ============ PANEL: 신고매물 ============ -->
+      <section class="panel hide" id="panel-report">
+        <div class="sec-head">
+          <div class="sec-title">허위매물 신고 현황</div>
+          <button class="seebtn" onclick="openModal('m-penalty')">한 눈에 보기 ›</button>
+          <span class="sec-meta">매물등록제한기간 : -</span>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel-main">
+            <div class="summary">
+              <div class="metric"><span class="ml">신고당한 매물</span><span class="mv">0<i>건</i></span></div>
+              <div class="metric"><span class="ml">허위매물 경고 횟수</span><span class="mv">0<i>회</i></span></div>
+            </div>
+
+        <div class="dfbar">
+          <div class="dfg">
+            <span class="k">신고일</span>
+            <input type="date" class="dt" value="2025-06-08" /><span class="tilde">~</span><input type="date" class="dt" value="2026-06-08" />
+            <div class="qprow">
+              <span class="qp" onclick="qPick(this)">1주일</span>
+              <span class="qp" onclick="qPick(this)">1개월</span>
+              <span class="qp" onclick="qPick(this)">3개월</span>
+              <span class="qp on" onclick="qPick(this)">1년</span>
+            </div>
+          </div>
+          <div class="dfg">
+            <span class="k">처리일</span>
+            <input type="date" class="dt" /><span class="tilde">~</span><input type="date" class="dt" />
+            <div class="qprow">
+              <span class="qp" onclick="qPick(this)">1주일</span>
+              <span class="qp" onclick="qPick(this)">1개월</span>
+              <span class="qp" onclick="qPick(this)">3개월</span>
+              <span class="qp" onclick="qPick(this)">1년</span>
+            </div>
+          </div>
+          <div class="dfg">
+            <span class="k">처리결과</span>
+            <div class="rchips">
+              <span class="rc" onclick="chipTog(this)">미처리</span>
+              <span class="rc" onclick="chipTog(this)">정상매물</span>
+              <span class="rc" onclick="chipTog(this)">거래완료</span>
+              <span class="rc" onclick="chipTog(this)">노출종료</span>
+              <span class="rc" onclick="chipTog(this)">매물등록제한</span>
+              <span class="rc" onclick="chipTog(this)">경고취소</span>
+              <span class="rc" onclick="chipTog(this)">기간만료</span>
+            </div>
+          </div>
+          <div class="dfactions">
+            <button class="btn-ghost">초기화</button>
+            <button class="btn-pri">검색</button>
+          </div>
+        </div>
+
+        <div class="tools">
+          <span class="tcount">총 <b>0</b>건</span>
+          <button class="tsort">최신순 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg></button>
+        </div>
+
+            <div class="emptybox">
+              <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+              <div class="et">신고된 매물이 없어요</div>
+              <div class="es">허위매물로 신고되어 처리가 필요한 매물이 여기에 표시돼요.</div>
+            </div>
+          </div>
+          <aside class="panel-side">
+            <div class="subhead">허위 매물 규정 / 가이드</div>
+            <div class="guidelist">
+              <a class="glink" href="#" onclick="openGuide('false',0);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="gt">허위 매물 관리 규정</span><span class="gc">›</span></a>
+              <a class="glink" href="#" onclick="openGuide('false',1);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span><span class="gt">허위 매물 처리 가이드</span><span class="gc">›</span></a>
+              <a class="glink" href="#" onclick="openGuide('false',2);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg></span><span class="gt">허위매물 패널티 규정</span><span class="gc">›</span></a>
+              <a class="glink" href="#" onclick="openGuide('false',3);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span><span class="gt">자주 신고되는 경고 유형</span><span class="gc">›</span></a>
+            </div>
+            <p class="notice">* 문의사항은 KISO 부동산 매물 클린 관리센터(1600-7186)로 문의 주시기 바랍니다.</p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ PANEL: 동일주소 ============ -->
+      <section class="panel hide" id="panel-same">
+        <div class="sec-head">
+          <div class="sec-title">네이버 노출 동일주소 매물 미처리 현황</div>
+          <button class="seebtn" onclick="openModal('m-same')">한 눈에 보기 ›</button>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel-main">
+            <div class="summary">
+              <div class="metric"><span class="ml">부비서 동일주소 매물 미처리</span><span class="mv">0<i>건</i></span></div>
+              <div class="metric"><span class="ml">다른 정보업체 동일주소 미처리</span><span class="mv">0<i>건</i></span></div>
+            </div>
+
+        <div class="dfbar">
+          <div class="dfg">
+            <span class="k">확인일</span>
+            <input type="date" class="dt" value="2025-06-08" /><span class="tilde">~</span><input type="date" class="dt" value="2026-06-08" />
+            <div class="qprow">
+              <span class="qp" onclick="qPick(this)">1주일</span>
+              <span class="qp" onclick="qPick(this)">1개월</span>
+              <span class="qp" onclick="qPick(this)">3개월</span>
+              <span class="qp on" onclick="qPick(this)">1년</span>
+            </div>
+          </div>
+          <div class="dfg">
+            <span class="k">처리일</span>
+            <input type="date" class="dt" /><span class="tilde">~</span><input type="date" class="dt" />
+            <div class="qprow">
+              <span class="qp" onclick="qPick(this)">1주일</span>
+              <span class="qp" onclick="qPick(this)">1개월</span>
+              <span class="qp" onclick="qPick(this)">3개월</span>
+              <span class="qp" onclick="qPick(this)">1년</span>
+            </div>
+          </div>
+          <div class="dfg">
+            <span class="k">처리결과</span>
+            <div class="rchips">
+              <span class="rc" onclick="chipTog(this)">미처리</span>
+              <span class="rc" onclick="chipTog(this)">정상매물</span>
+              <span class="rc" onclick="chipTog(this)">노출종료</span>
+              <span class="rc" onclick="chipTog(this)">거래완료</span>
+            </div>
+          </div>
+          <div class="dfactions">
+            <button class="btn-ghost">초기화</button>
+            <button class="btn-pri">검색</button>
+          </div>
+        </div>
+
+        <div class="tools">
+          <span class="tcount">총 <b>0</b>건</span>
+          <button class="tsort">최신순 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg></button>
+        </div>
+
+            <div class="emptybox">
+              <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+              <div class="et">동일주소 미처리 매물이 없어요</div>
+              <div class="es">같은 주소로 중복 노출되어 처리가 필요한 매물이 여기에 표시돼요.</div>
+            </div>
+          </div>
+          <aside class="panel-side">
+            <div class="subhead">동일주소 매물관리규정</div>
+            <div class="guidelist">
+              <a class="glink" href="#" onclick="openGuide('same',0);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="gt">동일주소 처리 매물이란</span><span class="gc">›</span></a>
+              <a class="glink" href="#" onclick="openGuide('same',1);return false;"><span class="gi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span><span class="gt">동일주소 처리 매물 처리 가이드</span><span class="gc">›</span></a>
+            </div>
+            <p class="notice">* 상세 내용 및 최신 개정안은 [KISO 온라인 부동산 광고 자율규약]을 확인해 주시기 바랍니다.<a class="klink" href="https://www.kiso.or.kr/정보센터/부동산매물클린관리센터-2/온라인부동산매물광고자율규약/" target="_blank" rel="noopener">KISO 온라인 부동산 광고 자율규약 ›</a></p>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL: 중개업소 패널티 현황 -->
+  <div class="modal" id="m-penalty">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>네이버 노출 매물에 대한 중개업소 패널티 현황</h3>
+        <button class="mx" onclick="closeModal('m-penalty')">&times;</button>
+      </div>
+      <div class="m-sub">신고매물 미처리 현황</div>
+      <div class="m-empty-box">미처리 현황 내역 없음</div>
+      <div class="m-sub">경고 현황 <b>(0)</b></div>
+      <div class="m-empty-box">경고 현황 내역 없음</div>
+      <div class="m-sub">패널티 현황</div>
+      <div class="m-empty-box">패널티 현황 내역 없음</div>
+      <a class="m-link" href="https://www.kiso.or.kr/정보센터/부동산매물클린관리센터-2/온라인부동산매물광고자율규약/" target="_blank" rel="noopener">KISO 부동산 매물 클린관리센터 ›</a>
+      <button class="m-close" onclick="closeModal('m-penalty')">닫기</button>
+    </div>
+  </div>
+
+  <!-- MODAL: 동일주소 매물 미처리 현황 -->
+  <div class="modal" id="m-same">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>네이버 노출 매물에 대한 동일주소 매물 미처리 현황</h3>
+        <button class="mx" onclick="closeModal('m-same')">&times;</button>
+      </div>
+      <div class="m-sub">미처리 현황</div>
+      <div class="m-empty-box">미처리 현황 내역 없음</div>
+      <a class="m-link" href="https://www.kiso.or.kr/정보센터/부동산매물클린관리센터-2/온라인부동산매물광고자율규약/" target="_blank" rel="noopener">KISO 부동산 매물 클린관리센터 ›</a>
+      <button class="m-close" onclick="closeModal('m-same')">닫기</button>
+    </div>
+  </div>
+
+  <!-- MODAL: 허위 매물 규정 / 가이드 (4탭) -->
+  <div class="modal" id="m-falseguide">
+    <div class="modal-card gmodal">
+      <div class="modal-head">
+        <h3>허위 매물 규정 · 가이드</h3>
+        <button class="mx" onclick="closeModal('m-falseguide')">&times;</button>
+      </div>
+      <div class="gtabs">
+        <div class="gtab on" onclick="selectGuideTab('m-falseguide',0)">허위 매물 관리 규정</div>
+        <div class="gtab" onclick="selectGuideTab('m-falseguide',1)">허위 매물 처리 가이드</div>
+        <div class="gtab" onclick="selectGuideTab('m-falseguide',2)">허위매물 패널티 규정</div>
+        <div class="gtab" onclick="selectGuideTab('m-falseguide',3)">자주 신고되는 경고 유형</div>
+      </div>
+
+      <div class="gpane on">
+        <div class="gcard">
+          <ul class="glist dot">
+            <li>거짓, 과장된 가격의 매물</li>
+            <li>노출기간 중 거래가 완료되었음에도 부동산정보사이트에 게재되어 있는 매물</li>
+            <li>가격 이외의 매물정보를 거짓으로 기입한 매물</li>
+            <li>매도자의 매도의사가 확인되지 않은 매물</li>
+            <li>매도자 정보를 거짓으로 기입한 매물</li>
+            <li>신고 내용을 정확히 확인하지 않고 처리할 경우 경고 및 전송 제한에 걸릴 수 있으니 꼭 <span class="gem" onclick="selectGuideTab('m-falseguide',1)">[허위매물 처리가이드]</span>를 필독한 후 처리하시기 바랍니다.</li>
+            <li>문의사항은 KISO 부동산 매물 클린 관리센터(1600-7186)로 문의 주시기 바랍니다</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gpane">
+        <div class="gsec">
+          <div class="gsec-h">중개업소 처리하기 버튼 안내</div>
+          <div class="gcard">
+            <div class="gemph-h">정상매물</div>
+            <ul class="glist num">
+              <li>정상매물이란 현재 거래가 가능하고 실제 정보와 게시한 매물 정보가 일치하는 매물입니다. <span class="gwarn">정상매물임이 입증이 가능할 경우에 정상처리 해주세요. 실제 매물 정보와 네이버에 전송한 매물정보(주소, 면적, 소유자, 융자금, 가격 등)가 다를 경우 정상매물이 아닙니다.</span></li>
+              <li>중개사무소가 신고 매물을 정상 매물로 처리한 경우 관리센터는 해당 중개사무소에 유선검증을 실시하여 매물의 거래 가능 여부를 확인합니다.</li>
+              <li>관리센터의 유선검증에서도 중개사무소가 정상 매물로 응답하는 경우, 신고 매물의 거래 가능 여부를 판정하기 위해 관리센터가 중개사무소 또는 현장을 방문할 수 있습니다. 현장방문에 대한 중개사무소 사전 고지에도 불구하고 다음 각 호의 어느 하나에 해당하는 중개사무소에 대해 14일간 매물등록제한 조치를 취할 수 있다. 1. 전화 수신을 거부하는 경우(반복적인 전화연결 실패 등) 2. 현장방문 시 무단 부재하는 경우 3. 기타 고의적인 회피가 인정되는 경우</li>
+              <li>정상매물이 아닌데 정상처리하여 입증이 안될 경우 패널티가 중과됩니다.
+                <ul class="gsub">
+                  <li>전화 확인 시 정상입증 못할 경우 누적 경고수와 상관없이 1주일 전송제한 패널티(누적 경고수 소멸 안됨)</li>
+                  <li>중개업소 또는 현장 방문 시 정상입증 못할 경우 누적 경고수와 상관없이 2주일 전송제한 패널티(누적 경고수 소멸 안됨)</li>
+                </ul>
+              </li>
+              <li>신고내용(매물과 관련이 없는 내용)에 따라 중개업소 확인이 필요 없는 경우는 정상처리 하면 검증불가 처리 될 수 있습니다.</li>
+            </ul>
+            <div class="gemph-h">노출종료</div>
+            <ul class="glist num">
+              <li>정상매물이 아닐 경우 노출종료 해주세요.</li>
+              <li><span class="gwarn">노출종료시 허위매물 임을 인정하는 것으로 경고 1회가 누적되며 3회 누적 시 1주일간 매물전송이 제한됩니다. (경고 누적 유효기간 1년)</span></li>
+              <li>의뢰인 변심에 의한 가격변경, 거래완료, 보류 매물일 경우 노출종료 후 클린센터에 의뢰인의 연락처를 알려주시면 확인 후 경고취소가 가능합니다.</li>
+              <li>경고 횟수는 사업자등록번호 기준으로 모든 정보사 통합 관리됩니다.(협회는 제외)</li>
+            </ul>
+            <div class="gemph-h">거래완료</div>
+            <ul class="glist num">
+              <li>신고사유가 <span class="gwarn">거래완료로 신고되었을 경우</span> 거래완료 처리하시면 경고를 받지 않습니다.</li>
+              <li>신고사유가 거래완료로 신고 되었을 경우만 거래완료 버튼이 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="gsec">
+          <div class="gsec-h">신고 매물 처리시 주의사항</div>
+          <div class="gcard">
+            <ul class="glist num">
+              <li>중개업소에서 매물 자율처리 후에 클린관리센터의 확인이 끝나야 해당 매물을 수정하거나 종료할 수 있습니다.</li>
+              <li><span class="gwarn">신고접수 후 영업일 2일안에 중개업소에서 처리하지 않을 경우 자동으로 노출 종료되며 경고처리 됩니다</span></li>
+              <li>소비자의 신고가 거짓인 것으로 판명된 경우 신고 유저는 2주 동안 동일 아이디로 매물신고가 불가능합니다. (신고 제한을 받은 횟수가 3개월간 10회 이상인 경우, 반복적 거짓 신고자로 판단하여 6개월 신고 제한 가능)</li>
+              <li>정상매물 처리 후 클린센터의 전화를 받지 않거나 확인을 거부할 경우 패널티처리 됩니다.</li>
+              <li>KISO를 통한 신고가 아닌 국토부 신고센터를 통한 신고는 KISO온라인 부동산광고 자율규약 내용과 별도 프로세스로 진행됩니다.</li>
+              <li>신고매물 처리 관련한 상세 문의는 KISO클린관리센터로 문의 하시기 바랍니다.(1600-7186)</li>
+              <li>경고철회를 위한 소명 기한은 경고부과일로부터 14일입니다.(공휴일 포함)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="gsec">
+          <div class="gsec-h">게재 금지 매물 게시 중개업소에 대한 처리</div>
+          <div class="gcard">
+            <ul class="glist num">
+              <li>중개사무소가 자율처리 단계에서 게재 금지 매물로 처리하는 경우 경고를 부과하고, 경고 누적 3회 시 마다 7일간 매물 등록을 제한한다.</li>
+              <li>전 호에 따라 부과된 경고는 1년을 경과한 경우 소멸된다.</li>
+              <li>유선검증을 통해 게재 금지 매물로 확인되는 경우 즉시 해당 중개사무소에 대해 7일간 매물 등록을 제한한다.</li>
+              <li>현장검증을 통해 게재 금지 매물로 확인되는 경우 즉시 해당 중개사무소에 대해 14일간 매물 등록을 제한한다. ①항에 따라 매물 등록 제한 조치를 월 누적 3회 이상 받은 중개사무소 명단을 공정거래 위원회 등 관계 기관에 공유할 수 있다.</li>
+              <li>참여사는 반복적 게재 금지 매물 게시 중개사무소에 대해 다음 각 호의 어느 하나에 해당하는 추가적인 제재 방안을 시행할 수 있다.
+                <ul class="gsub">
+                  <li>최대 6개월간 매물등록 제한</li>
+                  <li>기타 참여사 정책에 따른 제한</li>
+                </ul>
+              </li>
+              <li>관리센터는 공정거래위원회에 의해 시정조치 등의 조치가 취해지는 중개사무소를 참여사에 고지하고, 참여사는 중개사무소의 플랫폼 가입을 최대 1년간 제한할 수 있다.</li>
+              <li>제재 조치에 이의가 있는 중개사무소는 조치 시점부터 최대 14일 이내에 참여사에 이의 신청을 할 수 있다. 참여사는 이를 접수해야 하며 관리센터에 재검증을 요청할 수 있다.</li>
+              <li>게재 금지 매물을 게시한 중개사무소에 페널티를 부과하는 데 있어 동일 중개사무소가 연속적으로 매물등록제한 조치를 받은 경우, 가장 최근에 페널티를 부과한 시점부터 그 기간을 산정한다. (제한 조치를 연속으로 받는 경우)</li>
+              <li>중개사무소에 최근 부과한 매물등록제한 조치가 기존 매물등록제한의 종료일보다 이른 경우에는 이전에 부과한 매물등록제한의 종료일까지로 한다. (예로 2주 제한조치 중 다시 1주 제한조치를 받은 경우 기존 제한조치의 종료일로 하는 것)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="gpane">
+        <div class="gcard">
+          <ul class="glist dot">
+            <li>신고 접수 후 48시간(일요일, 공휴일 제외) 안에 처리하지 않으면 자동으로 경고가 부과되고 매물 노출은 종료됨 또한 노출종료 시 허위매물을 인정하는 것으로 경고 1회 누적</li>
+            <li>경고는 사업자번호 기준으로 누적되며, 경고일로 부터 1년이 경과한 경우, 경고 3회 누적으로 1주일간 패널티를 받을 경우 경고 삭제</li>
+            <li>허위매물 관리는 사업자번호로 관리 되므로 모든 정보사 매물이 합산되어 관리됨</li>
+            <li>누적 경고 횟수 3회 시마다 7일간 매물등록이 제한됩니다. (ex. 3회차, 6회차, 9회차...)</li>
+            <li>정상매물로 처리 후 클린센터에서 전화 또는 방문 시 정상입증 못할 경우 누적 경고수와 상관없이 바로 전송 제한함</li>
+            <li>정상매물을 신고할 경우 신고 고객은 2주일 동안 해당 아이디로 매물 신고 불가</li>
+            <li>정상매물 처리 후 클린센터의 전화를 받지 않거나 확인을 거부할 경우 패널티 경고 3점 처리</li>
+            <li>패널티 사유가 경매매물인 경우 6개월간 해당 중개업소의 매물 전송이 금지됨</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gpane">
+        <div class="gcard">
+          <ul class="glist dot">
+            <li>의뢰인이 직접 의뢰 없이 타 중개업소의 의뢰를 받아 매물을 전송한 경우</li>
+            <li>매물금액, 프리미엄 융자금 등을 실제와 다르게 올리는 경우</li>
+            <li>홍보중인 매물이 타 중개업소 등을 통해 거래된 후에도 거래완료 처리 하지 않는 경우</li>
+            <li>전매제한 물건을 전송하는 경우</li>
+            <li>경매매물 또는 경매매물로 유도하기 위해 게재한 매물</li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="m-close" onclick="closeModal('m-falseguide')">닫기</button>
+    </div>
+  </div>
+
+  <!-- MODAL: 동일주소 매물관리규정 (2탭) -->
+  <div class="modal" id="m-sameguide">
+    <div class="modal-card gmodal">
+      <div class="modal-head">
+        <h3>동일주소 매물관리규정</h3>
+        <button class="mx" onclick="closeModal('m-sameguide')">&times;</button>
+      </div>
+      <div class="gtabs">
+        <div class="gtab on" onclick="selectGuideTab('m-sameguide',0)">동일주소 처리 매물이란</div>
+        <div class="gtab" onclick="selectGuideTab('m-sameguide',1)">동일주소 처리 매물 가이드</div>
+      </div>
+
+      <div class="gpane on">
+        <div class="gcard">
+          <ul class="glist dot">
+            <li>네이버에 노출하고 있는 매물 중 특정 중개업소가 등록한 매물을 거래완료로 처리하거나, 특정매물이 허위매물신고 된 경우 거래가능 여부를 재확인하는 프로세스입니다.</li>
+            <li>동일주소 거래완료 매물에 대해서는 별도의 패널티가 없습니다.</li>
+            <li>동일주소매물처리는 매물을 등록한 각각의 정보업체에서 처리하셔야 하며, 모든 동일주소매물 처리를 완료하셔야 신규매물등록 가능하니 이점 양해해주시기 바랍니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gpane">
+        <div class="gcard">
+          <ul class="glist dot">
+            <li>동일주소 처리매물에 대해서는 거래 가능 여부에 따라 정상매물, 거래완료로 처리하시면 됩니다.
+              <ul class="gsub">
+                <li><span class="gkey">정상매물</span>: 서비스 노출이 유지됩니다.</li>
+                <li><span class="gkey">거래완료</span> : 매물 정보 노출이 종료되며, 등록종료리스트내 거래완료로 표시됩니다.</li>
+                <li><span class="gkey">노출종료</span>: 매물정보 노출이 종료됩니다.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="m-close" onclick="closeModal('m-sameguide')">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    function setTab(i){
+      var tabs = document.querySelectorAll('.tab');
+      for (var t = 0; t < tabs.length; t++){ tabs[t].classList.toggle('on', t === i); }
+      ['panel-list','panel-report','panel-same'].forEach(function(id){ document.getElementById(id).classList.add('hide'); });
+      if (i <= 2){
+        document.getElementById('panel-list').classList.remove('hide');
+        var ti = ['등록된 매물이 없어요','임시저장된 매물이 없어요','등록 종료된 매물이 없어요'];
+        var su = ['매물을 등록하면 여기에서 광고 상태를 한눈에 관리할 수 있어요.','작성하다 멈춘 매물이 임시저장되면 여기에 모여요.','광고가 종료된 매물이 여기에 모여요.'];
+        document.getElementById('listEmptyT').textContent = ti[i];
+        document.getElementById('listEmptyS').textContent = su[i];
+      } else if (i === 3){
+        document.getElementById('panel-report').classList.remove('hide');
+      } else {
+        document.getElementById('panel-same').classList.remove('hide');
+      }
+    }
+    function segPick(el){ var p = el.parentNode; p.querySelectorAll('.seg').forEach(function(s){ s.classList.remove('on'); }); el.classList.add('on'); }
+    function qPick(el){ var p = el.parentNode; p.querySelectorAll('.qp').forEach(function(s){ s.classList.remove('on'); }); el.classList.add('on'); }
+    function chipTog(el){ el.classList.toggle('on'); }
+    function openModal(id){ document.getElementById(id).classList.add('show'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+    function selectGuideTab(modalId, idx){
+      var modal = document.getElementById(modalId);
+      var tabs = modal.querySelectorAll('.gtab');
+      var panes = modal.querySelectorAll('.gpane');
+      for (var i = 0; i < tabs.length; i++){ tabs[i].classList.toggle('on', i === idx); }
+      for (var j = 0; j < panes.length; j++){ panes[j].classList.toggle('on', j === idx); }
+      modal.querySelector('.modal-card').scrollTop = 0;
+    }
+    function openGuide(which, idx){
+      var modalId = which === 'false' ? 'm-falseguide' : 'm-sameguide';
+      selectGuideTab(modalId, idx);
+      openModal(modalId);
+    }
+    document.querySelectorAll('.modal').forEach(function(m){
+      m.addEventListener('click', function(e){ if (e.target === m){ m.classList.remove('show'); } });
+    });
+    function applyHash(){
+      var m = (location.hash || '').match(/^#t([0-4])$/);
+      if (m){ setTab(parseInt(m[1], 10)); }
+    }
+    window.addEventListener('hashchange', applyHash);
+    applyHash();
+  </script>
+</body>
+</html>

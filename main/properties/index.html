@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 광고관리페이지 — 우리 부동산 매물목록</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE;
+      --shadow:0 6px 24px rgba(17,24,39,.05);
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+    .hide{display:none !important;}
+
+    header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);}
+    .nav{position:relative;display:flex;align-items:center;height:64px;}
+    .logo{font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;gap:0;cursor:pointer;}
+    .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+    .menu .item{position:relative;}
+    .menu .item>a{display:block;padding:9px 16px;font-size:15.5px;font-weight:600;color:var(--sub);border-radius:10px;transition:.12s;}
+    .menu .item:hover>a,.menu .item>a.on{color:var(--ink);background:var(--soft);}
+    .drop{position:absolute;top:46px;left:50%;transform:translateX(-50%) translateY(-6px);min-width:188px;background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(17,24,39,.12);padding:8px;opacity:0;visibility:hidden;transition:.16s;}
+    .menu .item:hover .drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+    .drop a{display:block;padding:11px 13px;font-size:14.5px;font-weight:600;color:var(--sub);border-radius:10px;white-space:nowrap;}
+    .drop a:hover{background:var(--soft);color:var(--primary);}
+    .navright{margin-left:auto;display:flex;align-items:center;gap:14px;}
+    .bell{width:22px;height:22px;color:var(--tert);}
+    .chip{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:700;color:var(--sub);}
+    .chip .av{width:28px;height:28px;border-radius:50%;background:#E8EBF0;display:grid;place-items:center;color:var(--tert);}
+
+    main{padding:24px 0 90px;}
+    .titlerow{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 16px;gap:16px;}
+    .titlerow h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-1px;}
+    .titlerow .who{font-size:14px;color:var(--sub);font-weight:600;margin-top:6px;}
+    .titlerow .who b{color:var(--primary);font-weight:800;}
+    .addbtn{display:inline-flex;align-items:center;gap:7px;background:var(--grad);color:#fff;border:none;border-radius:13px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 8px 22px rgba(97,85,245,.24);}
+
+    .demo{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#FFF6E9,#FFF0F0);border-radius:14px;padding:13px 18px;font-size:13.5px;color:#9A6B00;font-weight:600;margin-bottom:18px;}
+    .demo svg{flex-shrink:0;color:#E08A00;}
+
+    /* filter / search bar */
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;}
+    .fchip{padding:9px 15px;border-radius:999px;background:var(--soft);font-size:13.5px;font-weight:700;color:var(--sub);cursor:pointer;border:1.5px solid transparent;transition:.12s;}
+    .fchip.on{background:var(--tint);color:var(--primary);border-color:#DCD9FE;}
+    .search{margin-left:auto;display:flex;gap:8px;}
+    .search input{background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:11px 15px;font-size:14px;font-family:inherit;width:230px;color:var(--ink);}
+    .search input:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .search button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:0 18px;font-size:14px;font-weight:700;cursor:pointer;}
+
+    .count{font-size:14px;font-weight:700;color:var(--sub);margin:0 2px 14px;}
+    .count b{color:var(--primary);}
+
+    /* property list */
+    .plist{display:flex;flex-direction:column;gap:12px;}
+    .prow{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:18px 22px;display:flex;align-items:center;gap:18px;transition:.14s;}
+    .prow:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(17,24,39,.07);}
+    .pthumb{width:62px;height:62px;border-radius:14px;background:var(--tint);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .pmain{flex:1;min-width:0;}
+    .ptags{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
+    .ptag{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--tint);color:var(--primary);}
+    .ptag.deal{background:#EAF2FF;color:#3182F6;}
+    .ptitle{font-size:15.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .paddr{font-size:13px;color:var(--sub);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .pextra{font-size:12.5px;color:var(--tert);font-weight:500;margin-top:5px;}
+    .pmeta{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+    .pprice{font-size:17px;font-weight:800;letter-spacing:-.5px;color:var(--ink);}
+    .pstatus{font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;}
+    .pstatus.on{background:#EAF7EE;color:#16A34A;}
+    .pstatus.off{background:#F2F4F6;color:var(--tert);}
+    .pstatus.ready{background:#FFF4E5;color:#D97706;}
+
+    .emptybox{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:74px 24px;text-align:center;}
+    .emptybox .ei{width:66px;height:66px;border-radius:20px;background:var(--soft);display:grid;place-items:center;margin:0 auto 18px;color:var(--tert);}
+    .emptybox .et{font-size:17px;font-weight:800;color:var(--ink);}
+    .emptybox .es{margin-top:8px;font-size:14px;color:var(--tert);font-weight:500;}
+
+    @media (max-width:880px){
+      .menu{display:none;}
+      .prow{flex-wrap:wrap;}
+      .pmeta{align-items:flex-start;text-align:left;}
+    }
+  </style>
+  <script>
+    /* 부동산관리센터 가드 — 포털 로그인 토큰 없으면 로그인으로. (로컬 file:// 미리보기는 통과) */
+    (function(){
+      if (location.protocol === 'file:') return;
+      try { if (!localStorage.getItem('bbs_portal_token')) location.replace('../login/'); } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
+      <nav class="menu">
+        <div class="item">
+          <a href="../manage/#t0">통합관리</a>
+          <div class="drop">
+            <a href="../manage/#t0">등록 리스트</a>
+            <a href="../manage/#t1">임시저장 리스트</a>
+            <a href="../manage/#t2">등록종료 리스트</a>
+            <a href="../manage/#t3">신고매물 리스트</a>
+            <a href="../manage/#t4">동일주소매물 리스트</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">광고상품안내</a>
+          <div class="drop">
+            <a href="#">상품 구매</a>
+            <a href="#">광고 · 가입 문의</a>
+            <a href="#">충전하기</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">고객센터</a>
+          <div class="drop">
+            <a href="#">공지사항</a>
+            <a href="#">FAQ</a>
+            <a href="#">1:1 문의</a>
+            <a href="#">단지등록 문의</a>
+          </div>
+        </div>
+      </nav>
+      <div class="navright">
+        <svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <div class="chip"><span class="av"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>저스트부동산중개법인</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="titlerow">
+        <div>
+          <h1>우리 부동산 매물목록</h1>
+          <div class="who"><b>저스트부동산중개법인</b> · 부비서 앱 계정에 등록된 매물</div>
+        </div>
+        <a class="addbtn" href="../manage/"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>매물 등록</a>
+      </div>
+
+      <div class="demo" id="demoBanner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span>지금은 <b>예시 데이터</b>입니다. 부비서 앱으로 <b>QR 로그인</b>하면 우리 부동산의 <b>실제 매물</b>이 그대로 표시됩니다.</span>
+      </div>
+
+      <div class="toolbar">
+        <span class="fchip on" onclick="setFilter(this,'all')">전체</span>
+        <span class="fchip" onclick="setFilter(this,'아파트')">아파트</span>
+        <span class="fchip" onclick="setFilter(this,'오피스텔')">오피스텔</span>
+        <span class="fchip" onclick="setFilter(this,'빌라·연립')">빌라·연립</span>
+        <span class="fchip" onclick="setFilter(this,'상가')">상가</span>
+        <div class="search"><input id="q" placeholder="건물명 · 주소 검색" oninput="render()" /><button onclick="render()">검색</button></div>
+      </div>
+
+      <div class="count">총 <b id="pcount">0</b>건</div>
+      <div class="plist" id="rows"></div>
+      <div class="emptybox hide" id="empty">
+        <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div>
+        <div class="et">조건에 맞는 매물이 없어요</div>
+        <div class="es">필터·검색어를 바꾸거나 매물을 등록해보세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 2026 — 우리 부동산 매물목록.
+    //   로그인(QR 포털 토큰) 후에는 인증 API로 우리 부동산 실제 매물을 받아 렌더.
+    //   현재는 백엔드 포털 API 연동 전 → 예시 데이터로 레이아웃 표시.
+    var PORTAL_TOKEN_KEY = 'bbs_portal_token';
+    var filterType = 'all';
+
+    var SAMPLE = [
+      { type:'아파트', deal:'매매', title:'수원역푸르지오자이 138동 1104호', addr:'경기 수원시 팔달구 매산로', area:'84.9㎡ (25.6평)', price:'8억 5,000', status:'on' },
+      { type:'아파트', deal:'전세', title:'영통자이 105동 801호', addr:'경기 수원시 영통구 봉영로', area:'59.8㎡ (18.1평)', price:'5억 5,000', status:'on' },
+      { type:'오피스텔', deal:'월세', title:'광교중흥S클래스 A동 2503호', addr:'경기 수원시 영통구 광교중앙로', area:'33.1㎡ (10.0평)', price:'1,000 / 90', status:'ready' },
+      { type:'빌라·연립', deal:'전세', title:'행복빌라 302호', addr:'경기 수원시 권선구 권선로', area:'45.2㎡ (13.7평)', price:'2억 1,000', status:'off' },
+      { type:'상가', deal:'매매', title:'인계동 프라자 1층 102호', addr:'경기 수원시 팔달구 인계로', area:'66.0㎡ (20.0평)', price:'12억', status:'on' }
+    ];
+
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function statusLabel(s){ return s === 'on' ? '광고중' : (s === 'ready' ? '광고대기' : '노출종료'); }
+    var homeSvg = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>';
+
+    var API = 'https://api.bubiseo.com';
+    var DATA = SAMPLE.slice();
+
+    function fmtMan(v){
+      if (v === null || v === undefined || isNaN(v)) return '';
+      v = Number(v);
+      if (v >= 10000){ var eok = Math.floor(v / 10000); var rest = v % 10000; return eok + '억' + (rest ? ' ' + rest.toLocaleString() : ''); }
+      return v.toLocaleString();
+    }
+    function priceOf(p){
+      var d = p.dealKind || '';
+      if (d === '전세') return fmtMan(p.deposit);
+      if (d === '월세' || d === '단기임대') return fmtMan(p.deposit) + ' / ' + fmtMan(p.monthlyRent);
+      return fmtMan(p.dealPrice != null ? p.dealPrice : p.deposit);
+    }
+    function mapStatusRaw(s){
+      if (s === '광고중' || s === 'ACTIVE' || s === 'on') return 'on';
+      if (s === '노출종료' || s === 'ENDED' || s === 'off') return 'off';
+      return 'ready';
+    }
+    function mapProp(p){
+      var dongho = (p.dong ? ' ' + p.dong + '동' : '') + (p.ho ? ' ' + p.ho + '호' : '');
+      return {
+        type: p.propertyType || p.category || '-',
+        deal: p.dealKind || '-',
+        title: (p.buildingName || p.aptName || p.address || '주소 미입력') + dongho,
+        addr: p.address || '',
+        area: p.exclusiveArea ? (p.exclusiveArea + '㎡') : '-',
+        price: priceOf(p) || '-',
+        status: mapStatusRaw(p.status)
+      };
+    }
+    function loadReal(){
+      var token = null;
+      try { token = localStorage.getItem(PORTAL_TOKEN_KEY); } catch (e) {}
+      if (!token) return; // 비로그인(로컬 미리보기) → 예시 데이터 유지
+      fetch(API + '/portal/properties', { headers: { Authorization: 'Bearer ' + token } })
+        .then(function(r){ if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function(res){
+          var rows = (res && res.data) || [];
+          DATA = rows.map(mapProp);
+          var b = document.getElementById('demoBanner'); if (b) b.classList.add('hide');
+          render();
+        })
+        .catch(function(){ /* 실패 → 예시 유지 */ });
+    }
+
+    function setFilter(el, t){
+      filterType = t;
+      var chips = document.querySelectorAll('.fchip');
+      for (var i = 0; i < chips.length; i++){ chips[i].classList.remove('on'); }
+      el.classList.add('on');
+      render();
+    }
+
+    function render(){
+      var list = DATA;
+      var q = (document.getElementById('q').value || '').trim();
+      var filtered = list.filter(function(p){
+        if (filterType !== 'all' && p.type !== filterType) return false;
+        if (q && (p.title + ' ' + p.addr).indexOf(q) === -1) return false;
+        return true;
+      });
+      document.getElementById('pcount').textContent = filtered.length;
+      var box = document.getElementById('rows');
+      var empty = document.getElementById('empty');
+      if (!filtered.length){ box.innerHTML = ''; empty.classList.remove('hide'); return; }
+      empty.classList.add('hide');
+      box.innerHTML = filtered.map(function(p){
+        return '<div class="prow">'
+          + '<span class="pthumb">' + homeSvg + '</span>'
+          + '<div class="pmain">'
+          + '<div class="ptags"><span class="ptag">' + esc(p.type) + '</span><span class="ptag deal">' + esc(p.deal) + '</span></div>'
+          + '<div class="ptitle">' + esc(p.title) + '</div>'
+          + '<div class="paddr">' + esc(p.addr) + '</div>'
+          + '<div class="pextra">전용 ' + esc(p.area) + '</div>'
+          + '</div>'
+          + '<div class="pmeta">'
+          + '<div class="pprice">' + esc(p.price) + '</div>'
+          + '<span class="pstatus ' + p.status + '">' + statusLabel(p.status) + '</span>'
+          + '</div></div>';
+      }).join('');
+    }
+
+    render();
+    loadReal();
+  </script>
+</body>
+</html>

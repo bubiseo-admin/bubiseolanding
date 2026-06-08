@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 광고관리페이지 — 등기부등본 관리</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE;
+      --shadow:0 6px 24px rgba(17,24,39,.05);
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+    .hide{display:none !important;}
+
+    /* nav */
+    header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);}
+    .nav{position:relative;display:flex;align-items:center;height:64px;}
+    .logo{font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;gap:0;cursor:pointer;}
+    .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+    .menu .item{position:relative;}
+    .menu .item>a{display:block;padding:9px 16px;font-size:15.5px;font-weight:600;color:var(--sub);border-radius:10px;transition:.12s;}
+    .menu .item:hover>a,.menu .item>a.on{color:var(--ink);background:var(--soft);}
+    .drop{position:absolute;top:46px;left:50%;transform:translateX(-50%) translateY(-6px);min-width:188px;background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(17,24,39,.12);padding:8px;opacity:0;visibility:hidden;transition:.16s;}
+    .menu .item:hover .drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+    .drop a{display:block;padding:11px 13px;font-size:14.5px;font-weight:600;color:var(--sub);border-radius:10px;white-space:nowrap;}
+    .drop a:hover{background:var(--soft);color:var(--primary);}
+    .navright{margin-left:auto;display:flex;align-items:center;gap:14px;}
+    .bell{width:22px;height:22px;color:var(--tert);}
+    .chip{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:700;color:var(--sub);}
+    .chip .av{width:28px;height:28px;border-radius:50%;background:#E8EBF0;display:grid;place-items:center;color:var(--tert);}
+    .navitem{position:relative;display:flex;align-items:center;}
+    .navitem::after{content:'';position:absolute;top:100%;left:-12px;right:-12px;height:12px;}
+    .navtrig{display:flex;align-items:center;cursor:pointer;}
+    .rdrop{position:absolute;top:calc(100% + 12px);right:0;background:#fff;border-radius:16px;box-shadow:0 14px 40px rgba(17,24,39,.14);padding:10px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.16s;z-index:130;}
+    .navitem:hover .rdrop{opacity:1;visibility:visible;transform:translateY(0);}
+    .rdrop-h{font-size:13px;font-weight:800;color:var(--tert);padding:8px 12px 6px;}
+    .rdrop.noti{width:300px;}
+    .noti-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;transition:.12s;}
+    .noti-row:hover{background:var(--soft);}
+    .noti-row .ni{width:38px;height:38px;border-radius:12px;background:#EEF0FE;color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .noti-row .nt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+    .noti-row .nt b{font-size:14px;font-weight:700;color:var(--ink);}
+    .noti-row .nt span{font-size:12.5px;color:var(--tert);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .noti-foot{display:block;text-align:center;padding:11px;margin-top:4px;border-top:1px solid #F2F4F6;font-size:13px;font-weight:700;color:var(--primary);}
+    .rdrop.acct{width:240px;}
+    .acct-head{padding:10px 14px 13px;border-bottom:1px solid #F2F4F6;margin-bottom:6px;}
+    .acct-head b{display:block;font-size:15px;font-weight:800;color:var(--ink);}
+    .acct-head span{font-size:12.5px;color:var(--tert);font-weight:600;}
+    .acct-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:11px;font-size:14.5px;font-weight:600;color:var(--ink);transition:.12s;}
+    .acct-row:hover{background:var(--soft);}
+    .acct-row svg{color:var(--tert);flex-shrink:0;}
+    .acct-row.logout{color:#F04452;}
+    .acct-row.logout svg{color:#F04452;}
+
+    main{padding:24px 0 90px;}
+    .titlerow{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 18px;}
+    .titlerow h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-1px;}
+    .addbtn{display:inline-flex;align-items:center;gap:7px;background:var(--grad);color:#fff;border:none;border-radius:13px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 8px 22px rgba(97,85,245,.24);}
+
+    .introbar{background:linear-gradient(135deg,#F3F1FF,#EAF3FF);border-radius:18px;padding:17px 22px;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--sub);font-weight:500;margin-bottom:22px;line-height:1.5;}
+    .introbar svg{color:var(--primary);flex-shrink:0;}
+    .introbar b{color:var(--ink);font-weight:700;}
+
+    .tools{display:flex;align-items:center;gap:10px;margin:0 2px 14px;}
+    .tcount{font-size:14px;font-weight:700;color:var(--sub);}
+    .tcount b{color:var(--primary);}
+
+    /* registry list */
+    .rlist{display:flex;flex-direction:column;gap:12px;}
+    .rrow{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:20px 22px;display:flex;align-items:center;gap:18px;transition:.14s;}
+    .rrow.expired{opacity:.66;}
+    .ricon{width:46px;height:46px;border-radius:14px;background:var(--tint);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .rrow.expired .ricon{background:#F2F4F6;color:var(--tert);}
+    .rmain{flex:1;min-width:0;}
+    .raddr{font-size:15.5px;font-weight:800;color:var(--ink);}
+    .rdetail{font-size:13.5px;color:var(--sub);font-weight:500;margin-top:3px;}
+    .rfile{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12.5px;color:var(--tert);font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .rmeta{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:9px;}
+    .rdate{font-size:13px;color:var(--sub);font-weight:600;}
+    .rdate b{color:var(--ink);font-weight:800;}
+    .rbadge{font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:999px;}
+    .rbadge.ok{background:#EAF7EE;color:#16A34A;}
+    .rbadge.soon{background:#FFF4E5;color:#D97706;}
+    .rbadge.exp{background:#FDECEE;color:#F04452;}
+    .ract{flex-shrink:0;min-width:84px;text-align:right;}
+    .rbtn{border:none;border-radius:11px;padding:11px 20px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;}
+    .rbtn.renew{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(97,85,245,.22);}
+
+    .emptybox{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:74px 24px;text-align:center;}
+    .emptybox .ei{width:66px;height:66px;border-radius:20px;background:var(--soft);display:grid;place-items:center;margin:0 auto 18px;color:var(--tert);}
+    .emptybox .et{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.4px;}
+    .emptybox .es{margin-top:8px;font-size:14px;color:var(--tert);font-weight:500;}
+
+    /* modal */
+    .modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(17,24,39,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px;}
+    .modal.show{display:flex;}
+    .modal-card{width:100%;max-width:520px;max-height:88vh;overflow-y:auto;background:#fff;border-radius:24px;padding:28px 30px 26px;box-shadow:0 30px 80px rgba(17,24,39,.3);}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;}
+    .modal-head h3{margin:0;font-size:19px;font-weight:800;letter-spacing:-.6px;}
+    .mx{background:none;border:none;font-size:26px;color:var(--tert);cursor:pointer;line-height:1;padding:0;}
+    .mfield{margin-top:18px;}
+    .mfield>label{display:block;font-size:13.5px;font-weight:700;color:var(--sub);margin-bottom:8px;}
+    .mi{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:13px 15px;font-size:14.5px;font-family:inherit;color:var(--ink);}
+    .mi:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .adbtns{display:flex;gap:7px;}
+    .rbtn.adgo,.rbtn.adstop{padding:10px 16px;font-size:13.5px;}
+    .rbtn.adgo{background:var(--soft);color:var(--tert);}
+    .rbtn.adgo.on{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(97,85,245,.22);}
+    .rbtn.adstop{background:var(--soft);color:var(--tert);}
+    .rbtn.adstop.on{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);}
+    .rbadge.ad{background:#EAF2FF;color:#3182F6;}
+    .filebox{display:flex;align-items:center;gap:12px;background:var(--soft);border:1.5px dashed var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;}
+    .filebox .fname{flex:1;font-size:14px;color:var(--tert);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .filebox .fname.has{color:var(--ink);}
+    .filebox .fbtn{flex-shrink:0;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--sub);}
+    .renew-addr{display:flex;gap:14px;background:var(--soft);border-radius:14px;padding:18px 20px;margin-top:8px;}
+    .renew-addr .ra-k{font-size:13px;font-weight:800;color:var(--tert);flex-shrink:0;padding-top:2px;}
+    .renew-addr .ra-v b{display:block;font-size:15.5px;font-weight:800;color:var(--ink);}
+    .renew-addr .ra-v span{font-size:13.5px;color:var(--sub);font-weight:500;}
+    .renew-msg{font-size:14.5px;font-weight:700;color:var(--primary);margin:18px 2px 0;}
+    .m-submit{display:block;width:100%;margin-top:24px;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 10px 26px rgba(97,85,245,.26);}
+
+    @media (max-width:880px){
+      .menu{display:none;}
+      .rrow{flex-wrap:wrap;}
+      .rmeta{align-items:flex-start;text-align:left;}
+      .ract{width:100%;text-align:left;}
+    }
+  </style>
+  <script>
+    /* 부동산관리센터 가드 — 포털 로그인 토큰 없으면 로그인으로. (로컬 file:// 미리보기는 통과) */
+    (function(){
+      if (location.protocol === 'file:') return;
+      try { if (!localStorage.getItem('bbs_portal_token')) location.replace('../login/'); } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
+      <nav class="menu">
+        <div class="item">
+          <a href="../manage/#t0">통합관리</a>
+          <div class="drop">
+            <a href="../manage/#t0">등록 리스트</a>
+            <a href="../manage/#t1">임시저장 리스트</a>
+            <a href="../manage/#t2">등록종료 리스트</a>
+            <a href="../manage/#t3">신고매물 리스트</a>
+            <a href="../manage/#t4">동일주소매물 리스트</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">광고상품안내</a>
+          <div class="drop">
+            <a href="#">상품 구매</a>
+            <a href="#">광고 · 가입 문의</a>
+            <a href="#">충전하기</a>
+          </div>
+        </div>
+        <div class="item">
+          <a href="#">고객센터</a>
+          <div class="drop">
+            <a href="#">공지사항</a>
+            <a href="#">FAQ</a>
+            <a href="#">1:1 문의</a>
+            <a href="#">단지등록 문의</a>
+          </div>
+        </div>
+      </nav>
+      <div class="navright">
+        <div class="navitem">
+          <div class="navtrig"><svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+          <div class="rdrop noti">
+            <div class="rdrop-h">알림</div>
+            <a class="noti-row" href="../manage/#t0"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></span><span class="nt"><b>등록 매물 광고 현황</b><span>진행 중인 광고 상태를 확인하세요</span></span></a>
+            <a class="noti-row" href="../manage/#t3"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="nt"><b>허위매물 신고 현황</b><span>신고된 매물 처리가 필요해요</span></span></a>
+            <a class="noti-row" href="../manage/#t4"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="nt"><b>동일주소 매물 미처리</b><span>중복 노출 매물을 확인하세요</span></span></a>
+            <a class="noti-foot" href="#">모든 알림 보기</a>
+          </div>
+        </div>
+        <div class="navitem">
+          <div class="navtrig"><div class="chip"><span class="av"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>저스트부동산중개법인</div></div>
+          <div class="rdrop acct">
+            <div class="acct-head"><b>저스트부동산중개법인</b><span>bubiseo0</span></div>
+            <a class="acct-row" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>회원사 정보</a>
+            <a class="acct-row" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>1:1 문의</a>
+            <a class="acct-row logout" href="../login/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>로그아웃</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="titlerow">
+        <h1>등기부등본 관리</h1>
+        <button class="addbtn" onclick="openNew()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>등기부등본 업로드</button>
+      </div>
+
+      <div class="introbar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span>등기부등본은 <b>업로드일로부터 90일</b>이 지나면 자동으로 만료돼요. 만료된 문서는 <b>갱신</b> 버튼으로 다시 등록해 주세요.</span>
+      </div>
+
+      <div class="tools">
+        <span class="tcount">총 <b id="rcount">0</b>건</span>
+      </div>
+
+      <div class="rlist" id="rows"></div>
+
+      <div class="emptybox hide" id="rempty">
+        <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div>
+        <div class="et">업로드한 등기부등본이 없어요</div>
+        <div class="es">‘등기부등본 업로드’ 버튼으로 첫 문서를 등록해보세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: 업로드 -->
+  <div class="modal" id="m-new">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>등기부등본 업로드</h3>
+        <button class="mx" onclick="closeModal('m-new')">&times;</button>
+      </div>
+      <div class="mfield">
+        <label>소재지(주소)</label>
+        <input id="newAddr" class="mi" placeholder="소재지 주소를 입력해주세요" />
+      </div>
+      <div class="mfield"><label>상세주소</label><input id="newDetail" class="mi" placeholder="동 · 호수 등 상세주소" /></div>
+      <div class="mfield">
+        <label>등기부등본 파일</label>
+        <div class="filebox" onclick="document.getElementById('newFile').click()">
+          <input type="file" id="newFile" accept=".pdf,.png,.jpg,.jpeg" hidden onchange="onFile('new')" />
+          <span id="newFileName" class="fname">파일을 첨부해주세요 (PDF · JPG · PNG)</span>
+          <span class="fbtn">파일 선택</span>
+        </div>
+      </div>
+      <button class="m-submit" onclick="submitNew()">완료</button>
+    </div>
+  </div>
+
+  <!-- MODAL: 갱신 -->
+  <div class="modal" id="m-renew">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>등기부등본 갱신</h3>
+        <button class="mx" onclick="closeModal('m-renew')">&times;</button>
+      </div>
+      <div class="renew-addr">
+        <span class="ra-k">소재지</span>
+        <div class="ra-v"><b id="renewAddr">—</b><span id="renewDetail"></span></div>
+      </div>
+      <p class="renew-msg">위 주소의 등기부등본을 재등록해주세요.</p>
+      <div class="mfield">
+        <label>등기부등본 파일</label>
+        <div class="filebox" onclick="document.getElementById('renewFile').click()">
+          <input type="file" id="renewFile" accept=".pdf,.png,.jpg,.jpeg" hidden onchange="onFile('renew')" />
+          <span id="renewFileName" class="fname">파일을 첨부해주세요 (PDF · JPG · PNG)</span>
+          <span class="fbtn">파일 선택</span>
+        </div>
+      </div>
+      <button class="m-submit" onclick="submitRenew()">완료</button>
+    </div>
+  </div>
+
+  <script>
+    var KEY = 'bbs_registry_v1';
+    var renewId = null;
+    var pick = { new: null, renew: null };
+    var docSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
+    var clipSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.4 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3 3 0 014.24 4.24l-9.2 9.19a1 1 0 01-1.41-1.41l8.49-8.49"/></svg>';
+
+    function todayMid(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
+    function pad(n){ return (n < 10 ? '0' : '') + n; }
+    function iso(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+    function isoMinus(n){ var d = todayMid(); d.setDate(d.getDate() - n); return iso(d); }
+    function fmtDot(s){ var p = s.split('-'); return p[0] + '.' + p[1] + '.' + p[2]; }
+    function daysSince(s){ var u = new Date(s); u.setHours(0,0,0,0); return Math.floor((todayMid() - u) / 86400000); }
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+    function seed(){
+      return [
+        { id:1, addr:'서울특별시 강남구 테헤란로 152', detail:'강남파이낸스센터 1203호', uploadedAt:isoMinus(12), file:'등기부등본_테헤란로152.pdf' },
+        { id:2, addr:'경기도 성남시 분당구 판교역로 235', detail:'에이치스퀘어 N동 501호', uploadedAt:isoMinus(83), file:'등기부등본_판교역로235.pdf' },
+        { id:3, addr:'인천광역시 연수구 송도과학로 32', detail:'송도더샵 105동 2304호', uploadedAt:isoMinus(118), file:'등기부등본_송도과학로32.pdf' }
+      ];
+    }
+    function load(){ try { var s = localStorage.getItem(KEY); if (s){ return JSON.parse(s); } } catch(e){} var d = seed(); save(d); return d; }
+    function save(l){ try { localStorage.setItem(KEY, JSON.stringify(l)); } catch(e){} }
+
+    function render(){
+      var list = load();
+      document.getElementById('rcount').textContent = list.length;
+      var box = document.getElementById('rows');
+      var empty = document.getElementById('rempty');
+      if (!list.length){ box.innerHTML = ''; empty.classList.remove('hide'); return; }
+      empty.classList.add('hide');
+      box.innerHTML = list.map(function(r){
+        var rem = 90 - daysSince(r.uploadedAt);
+        var expired = rem <= 0;
+        var soon = !expired && rem <= 14;
+        var badge = expired
+          ? '<span class="rbadge exp">만료</span>'
+          : '<span class="rbadge ' + (soon ? 'soon' : 'ok') + '">유효 · D-' + rem + '</span>';
+        var adActive = !!r.ad;
+        var act, adBadge = '';
+        if (expired){
+          act = '<button class="rbtn renew" onclick="openRenew(' + r.id + ')">갱신</button>';
+        } else {
+          act = '<div class="adbtns">'
+            + '<button class="rbtn adgo' + (adActive ? '' : ' on') + '" onclick="setAd(' + r.id + ',true)">광고하기</button>'
+            + '<button class="rbtn adstop' + (adActive ? ' on' : '') + '" onclick="setAd(' + r.id + ',false)">광고종료</button>'
+            + '</div>';
+          if (adActive){ adBadge = '<span class="rbadge ad">광고중</span>'; }
+        }
+        return '<div class="rrow' + (expired ? ' expired' : '') + '">'
+          + '<span class="ricon">' + docSvg + '</span>'
+          + '<div class="rmain"><div class="raddr">' + esc(r.addr) + '</div>'
+          + '<div class="rdetail">' + esc(r.detail || '') + '</div>'
+          + '<div class="rfile">' + clipSvg + ' ' + esc(r.file) + '</div></div>'
+          + '<div class="rmeta"><div class="rdate">업로드 <b>' + fmtDot(r.uploadedAt) + '</b></div>' + badge + adBadge + '</div>'
+          + '<div class="ract">' + act + '</div></div>';
+      }).join('');
+    }
+
+    function resetFile(which){
+      pick[which] = null;
+      var inp = document.getElementById(which + 'File'); if (inp){ inp.value = ''; }
+      var el = document.getElementById(which + 'FileName');
+      el.textContent = '파일을 첨부해주세요 (PDF · JPG · PNG)';
+      el.classList.remove('has');
+    }
+    function onFile(which){
+      var inp = document.getElementById(which + 'File');
+      var f = inp.files && inp.files[0];
+      if (!f){ return; }
+      pick[which] = f.name;
+      var el = document.getElementById(which + 'FileName');
+      el.textContent = f.name;
+      el.classList.add('has');
+    }
+    function openNew(){
+      document.getElementById('newAddr').value = '';
+      document.getElementById('newDetail').value = '';
+      resetFile('new');
+      openModal('m-new');
+    }
+    function openRenew(id){
+      var r = load().filter(function(x){ return x.id === id; })[0];
+      if (!r){ return; }
+      renewId = id;
+      document.getElementById('renewAddr').textContent = r.addr;
+      document.getElementById('renewDetail').textContent = r.detail || '';
+      resetFile('renew');
+      openModal('m-renew');
+    }
+    function submitNew(){
+      var addr = document.getElementById('newAddr').value.trim();
+      if (!addr){ alert('소재지 주소를 입력해주세요.'); return; }
+      if (!pick.new){ alert('등기부등본 파일을 첨부해주세요.'); return; }
+      var list = load();
+      var id = list.reduce(function(m, x){ return Math.max(m, x.id); }, 0) + 1;
+      list.unshift({ id:id, addr:addr, detail:document.getElementById('newDetail').value.trim(), uploadedAt:iso(todayMid()), file:pick.new });
+      save(list); render(); closeModal('m-new');
+    }
+    function submitRenew(){
+      if (!pick.renew){ alert('등기부등본 파일을 첨부해주세요.'); return; }
+      var list = load();
+      for (var i = 0; i < list.length; i++){
+        if (list[i].id === renewId){ list[i].uploadedAt = iso(todayMid()); list[i].file = pick.renew; break; }
+      }
+      save(list); render(); closeModal('m-renew');
+    }
+    function setAd(id, on){
+      var list = load();
+      for (var i = 0; i < list.length; i++){ if (list[i].id === id){ list[i].ad = on; break; } }
+      save(list); render();
+    }
+    function openModal(id){ document.getElementById(id).classList.add('show'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+    document.querySelectorAll('.modal').forEach(function(m){
+      m.addEventListener('click', function(e){ if (e.target === m){ m.classList.remove('show'); } });
+    });
+    render();
+  </script>
+</body>
+</html>

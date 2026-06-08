@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 광고관리페이지 — 로그인</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;height:100%;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+    a{text-decoration:none;color:inherit;}
+    .hide{display:none !important;}
+    .box{width:100%;max-width:412px;background:var(--card);border-radius:24px;box-shadow:0 10px 40px rgba(17,24,39,.07);padding:40px 36px 34px;}
+    .logo{text-align:center;font-size:24px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;justify-content:center;gap:0;cursor:pointer;}
+    .logo .sub{font-weight:900;color:var(--primary);}
+    .tag{text-align:center;font-size:14px;color:var(--sub);font-weight:500;margin-top:10px;}
+
+    .seg{display:flex;background:var(--soft);border-radius:13px;padding:5px;margin-top:24px;gap:4px;}
+    .seg button{flex:1;border:none;background:transparent;border-radius:10px;padding:11px;font-size:14px;font-weight:700;color:var(--sub);cursor:pointer;font-family:inherit;transition:.12s;}
+    .seg button.on{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(17,24,39,.06);}
+
+    /* QR panel */
+    .qr-wrap{margin-top:24px;text-align:center;}
+    #qrbox{width:188px;height:188px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:11px;display:flex;align-items:center;justify-content:center;}
+    #qrbox img,#qrbox canvas{display:block;border-radius:6px;}
+    .qr-fallback{font-size:13px;color:var(--tert);font-weight:600;padding:0 12px;line-height:1.5;}
+    .qr-steps{margin:20px 4px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;text-align:left;}
+    .qr-steps li{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--sub);font-weight:600;}
+    .qr-steps .n{width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--primary);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;}
+    .qr-steps b{color:var(--ink);font-weight:700;}
+    .qr-status{margin-top:20px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13px;color:var(--primary);font-weight:700;background:var(--tint);border-radius:11px;padding:12px;}
+    .qr-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulse 1.2s infinite;}
+    @keyframes pulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+
+    /* ID panel */
+    .field{margin-top:14px;}
+    .field input{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:13px;padding:15px 16px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
+    .field input::placeholder{color:var(--tert);}
+    .field input:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .keep{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;color:var(--sub);font-weight:500;cursor:pointer;}
+    .keep input{width:17px;height:17px;accent-color:var(--primary);}
+    .submit{width:100%;margin-top:18px;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 10px 26px rgba(97,85,245,.26);transition:.14s;}
+    .submit:hover{transform:translateY(-1px);}
+
+    .alt{display:flex;align-items:center;justify-content:center;gap:0;margin-top:24px;font-size:13.5px;color:var(--sub);font-weight:600;}
+    .alt a{padding:4px 16px;transition:.12s;cursor:pointer;}
+    .alt a:hover{color:var(--primary);}
+    .alt .bar{width:1px;height:12px;background:var(--line);}
+    .foot{text-align:center;margin-top:26px;font-size:12px;color:var(--tert);}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
+    <p class="tag">부동산관리센터 · 부비서 앱 계정으로 로그인</p>
+
+    <div class="seg">
+      <button id="seg-qr" class="on" onclick="showMethod('qr')">QR 로그인</button>
+      <button id="seg-id" onclick="showMethod('id')">아이디 로그인</button>
+    </div>
+
+    <!-- QR 페어링 로그인 -->
+    <div id="panel-qr" class="qr-wrap">
+      <div id="qrbox"><div class="qr-fallback">QR 코드를 불러오는 중…</div></div>
+      <ul class="qr-steps">
+        <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
+        <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
+        <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
+      </ul>
+      <div class="qr-status"><span class="qr-dot"></span>앱에서 승인하면 자동으로 입장합니다</div>
+    </div>
+
+    <!-- 아이디 로그인 -->
+    <div id="panel-id" class="hide">
+      <div class="field"><input type="text" placeholder="아이디" autocomplete="username" /></div>
+      <div class="field"><input type="password" placeholder="비밀번호" autocomplete="current-password" /></div>
+      <label class="keep"><input type="checkbox" /> 로그인 상태 유지</label>
+      <button class="submit" onclick="location.href='../'">로그인</button>
+    </div>
+
+    <div class="alt">
+      <a>아이디 찾기</a>
+      <span class="bar"></span>
+      <a>비밀번호 찾기</a>
+      <span class="bar"></span>
+      <a href="../signup/">회원가입</a>
+    </div>
+
+    <div class="foot">부비서 — 공인중개사를 위한 부동산 IT 솔루션</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <script>
+    // 2026-06-08 — 부동산관리센터 QR 페어링 로그인. 부비서 앱 기존 'QR 페어링' 스캐너 그대로 사용.
+    //   ① POST /pairing/init (clientType:'web') → pairingToken
+    //   ② QR 에 {token,clientId} JSON 렌더 (앱 스캐너가 token 파싱)
+    //   ③ 앱이 승인 → GET /pairing/:token/result 폴링 → portalToken 저장 → /main 진입
+    var API = 'https://api.bubiseo.com';
+    var TOKEN_KEY = 'bbs_portal_token';
+    var USER_KEY = 'bbs_portal_user';
+    var webClientId = genId();
+    var currentToken = null;
+    var pollTimer = null;
+
+    function genId(){
+      try { if (window.crypto && crypto.randomUUID) return 'web-' + crypto.randomUUID(); } catch (e) {}
+      return 'web-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+    }
+
+    function showMethod(m){
+      document.getElementById('panel-qr').classList.toggle('hide', m !== 'qr');
+      document.getElementById('panel-id').classList.toggle('hide', m !== 'id');
+      document.getElementById('seg-qr').classList.toggle('on', m === 'qr');
+      document.getElementById('seg-id').classList.toggle('on', m === 'id');
+    }
+
+    function qrFail(msg){
+      var el = document.getElementById('qrbox');
+      el.innerHTML = '<div class="qr-fallback">' + msg + '</div>';
+    }
+
+    function initQR(){
+      if (pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+      var box = document.getElementById('qrbox');
+      box.innerHTML = '<div class="qr-fallback">QR 코드를 불러오는 중…</div>';
+      fetch(API + '/pairing/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ desktopClientId: webClientId, desktopUserAgent: navigator.userAgent, clientType: 'web' })
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (!data || !data.pairingToken){ throw new Error('no token'); }
+          currentToken = data.pairingToken;
+          box.innerHTML = '';
+          if (typeof QRCode === 'undefined'){ qrFail('QR 로더 실패 · 아이디 로그인을 이용해주세요.'); return; }
+          new QRCode(box, {
+            text: JSON.stringify({ token: data.pairingToken, clientId: webClientId }),
+            width: 166, height: 166,
+            colorDark: '#191F28', colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+          startPoll();
+        })
+        .catch(function(){
+          qrFail('QR을 불러오지 못했어요.<br/>새로고침하거나 아이디 로그인을 이용해주세요.');
+        });
+    }
+
+    function startPoll(){
+      if (pollTimer){ clearInterval(pollTimer); }
+      pollTimer = setInterval(function(){
+        if (!currentToken){ return; }
+        fetch(API + '/pairing/' + encodeURIComponent(currentToken) + '/result')
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            if (d.status === 'APPROVED' && d.portalToken){
+              clearInterval(pollTimer); pollTimer = null;
+              localStorage.setItem(TOKEN_KEY, d.portalToken);
+              if (d.user){ localStorage.setItem(USER_KEY, JSON.stringify(d.user)); }
+              var st = document.querySelector('.qr-status');
+              if (st){ st.innerHTML = '로그인 완료! 이동 중…'; }
+              location.replace('../');
+            } else if (d.status === 'EXPIRED' || d.status === 'REJECTED'){
+              clearInterval(pollTimer); pollTimer = null;
+              initQR(); // 만료/거부 → QR 재발급
+            }
+          })
+          .catch(function(){ /* 일시 네트워크 오류 무시 (다음 폴링 재시도) */ });
+      }, 2000);
+    }
+
+    if (document.readyState !== 'loading'){ initQR(); }
+    else { document.addEventListener('DOMContentLoaded', initQR); }
+  </script>
+</body>
+</html>
