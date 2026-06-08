@@ -17,43 +17,23 @@
     html,body{margin:0;height:100%;}
     body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
     a{text-decoration:none;color:inherit;}
-    .hide{display:none !important;}
     .box{width:100%;max-width:412px;background:var(--card);border-radius:24px;box-shadow:0 10px 40px rgba(17,24,39,.07);padding:40px 36px 34px;}
     .logo{text-align:center;font-size:24px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;justify-content:center;gap:0;cursor:pointer;}
     .logo .sub{font-weight:900;color:var(--primary);}
     .tag{text-align:center;font-size:14px;color:var(--sub);font-weight:500;margin-top:10px;}
 
-    .seg{display:flex;background:var(--soft);border-radius:13px;padding:5px;margin-top:24px;gap:4px;}
-    .seg button{flex:1;border:none;background:transparent;border-radius:10px;padding:11px;font-size:14px;font-weight:700;color:var(--sub);cursor:pointer;font-family:inherit;transition:.12s;}
-    .seg button.on{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(17,24,39,.06);}
-
-    /* QR panel */
-    .qr-wrap{margin-top:24px;text-align:center;}
+    .qr-wrap{margin-top:26px;text-align:center;}
     #qrbox{width:188px;height:188px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:11px;display:flex;align-items:center;justify-content:center;}
     #qrbox img,#qrbox canvas{display:block;border-radius:6px;}
     .qr-fallback{font-size:13px;color:var(--tert);font-weight:600;padding:0 12px;line-height:1.5;}
-    .qr-steps{margin:20px 4px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;text-align:left;}
+    .qr-steps{margin:22px 4px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;text-align:left;}
     .qr-steps li{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--sub);font-weight:600;}
     .qr-steps .n{width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--primary);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;}
     .qr-steps b{color:var(--ink);font-weight:700;}
     .qr-status{margin-top:20px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13px;color:var(--primary);font-weight:700;background:var(--tint);border-radius:11px;padding:12px;}
-    .qr-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulse 1.2s infinite;}
+    .qr-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulse 1.2s infinite;flex-shrink:0;}
     @keyframes pulse{0%,100%{opacity:.25;}50%{opacity:1;}}
 
-    /* ID panel */
-    .field{margin-top:14px;}
-    .field input{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:13px;padding:15px 16px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
-    .field input::placeholder{color:var(--tert);}
-    .field input:focus{outline:none;border-color:var(--primary);background:#fff;}
-    .keep{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;color:var(--sub);font-weight:500;cursor:pointer;}
-    .keep input{width:17px;height:17px;accent-color:var(--primary);}
-    .submit{width:100%;margin-top:18px;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 10px 26px rgba(97,85,245,.26);transition:.14s;}
-    .submit:hover{transform:translateY(-1px);}
-
-    .alt{display:flex;align-items:center;justify-content:center;gap:0;margin-top:24px;font-size:13.5px;color:var(--sub);font-weight:600;}
-    .alt a{padding:4px 16px;transition:.12s;cursor:pointer;}
-    .alt a:hover{color:var(--primary);}
-    .alt .bar{width:1px;height:12px;background:var(--line);}
     .foot{text-align:center;margin-top:26px;font-size:12px;color:var(--tert);}
   </style>
 </head>
@@ -62,36 +42,14 @@
     <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
     <p class="tag">부동산관리센터 · 부비서 앱 계정으로 로그인</p>
 
-    <div class="seg">
-      <button id="seg-qr" class="on" onclick="showMethod('qr')">QR 로그인</button>
-      <button id="seg-id" onclick="showMethod('id')">아이디 로그인</button>
-    </div>
-
-    <!-- QR 페어링 로그인 -->
-    <div id="panel-qr" class="qr-wrap">
+    <div class="qr-wrap">
       <div id="qrbox"><div class="qr-fallback">QR 코드를 불러오는 중…</div></div>
       <ul class="qr-steps">
         <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
         <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
         <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
       </ul>
-      <div class="qr-status"><span class="qr-dot"></span>앱에서 승인하면 자동으로 입장합니다</div>
-    </div>
-
-    <!-- 아이디 로그인 -->
-    <div id="panel-id" class="hide">
-      <div class="field"><input type="text" placeholder="아이디" autocomplete="username" /></div>
-      <div class="field"><input type="password" placeholder="비밀번호" autocomplete="current-password" /></div>
-      <label class="keep"><input type="checkbox" /> 로그인 상태 유지</label>
-      <button class="submit" onclick="location.href='../'">로그인</button>
-    </div>
-
-    <div class="alt">
-      <a>아이디 찾기</a>
-      <span class="bar"></span>
-      <a>비밀번호 찾기</a>
-      <span class="bar"></span>
-      <a href="../signup/">회원가입</a>
+      <div class="qr-status"><span class="qr-dot"></span>앱 로그인 후 QR를 촬영해주세요.</div>
     </div>
 
     <div class="foot">부비서 — 공인중개사를 위한 부동산 IT 솔루션</div>
@@ -99,7 +57,7 @@
 
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script>
-    // 2026-06-08 — 부동산관리센터 QR 페어링 로그인. 부비서 앱 기존 'QR 페어링' 스캐너 그대로 사용.
+    // 2026-06-08 — 부동산관리센터 QR 페어링 로그인 (전용). 부비서 앱 기존 'QR 페어링' 스캐너 그대로 사용.
     //   ① POST /pairing/init (clientType:'web') → pairingToken
     //   ② QR 에 {token,clientId} JSON 렌더 (앱 스캐너가 token 파싱)
     //   ③ 앱이 승인 → GET /pairing/:token/result 폴링 → portalToken 저장 → /main 진입
@@ -115,16 +73,8 @@
       return 'web-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
     }
 
-    function showMethod(m){
-      document.getElementById('panel-qr').classList.toggle('hide', m !== 'qr');
-      document.getElementById('panel-id').classList.toggle('hide', m !== 'id');
-      document.getElementById('seg-qr').classList.toggle('on', m === 'qr');
-      document.getElementById('seg-id').classList.toggle('on', m === 'id');
-    }
-
     function qrFail(msg){
-      var el = document.getElementById('qrbox');
-      el.innerHTML = '<div class="qr-fallback">' + msg + '</div>';
+      document.getElementById('qrbox').innerHTML = '<div class="qr-fallback">' + msg + '</div>';
     }
 
     function initQR(){
@@ -141,7 +91,7 @@
           if (!data || !data.pairingToken){ throw new Error('no token'); }
           currentToken = data.pairingToken;
           box.innerHTML = '';
-          if (typeof QRCode === 'undefined'){ qrFail('QR 로더 실패 · 아이디 로그인을 이용해주세요.'); return; }
+          if (typeof QRCode === 'undefined'){ qrFail('QR 코드를 표시할 수 없어요.<br/>새로고침해주세요.'); return; }
           new QRCode(box, {
             text: JSON.stringify({ token: data.pairingToken, clientId: webClientId }),
             width: 166, height: 166,
@@ -150,9 +100,7 @@
           });
           startPoll();
         })
-        .catch(function(){
-          qrFail('QR을 불러오지 못했어요.<br/>새로고침하거나 아이디 로그인을 이용해주세요.');
-        });
+        .catch(function(){ qrFail('QR을 불러오지 못했어요.<br/>새로고침해주세요.'); });
     }
 
     function startPoll(){
@@ -171,10 +119,10 @@
               location.replace('../');
             } else if (d.status === 'EXPIRED' || d.status === 'REJECTED'){
               clearInterval(pollTimer); pollTimer = null;
-              initQR(); // 만료/거부 → QR 재발급
+              initQR();
             }
           })
-          .catch(function(){ /* 일시 네트워크 오류 무시 (다음 폴링 재시도) */ });
+          .catch(function(){ /* 일시 네트워크 오류 무시 */ });
       }, 2000);
     }
 

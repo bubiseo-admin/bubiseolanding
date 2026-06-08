@@ -60,21 +60,20 @@
     .count{font-size:14px;font-weight:700;color:var(--sub);margin:0 2px 14px;}
     .count b{color:var(--primary);}
 
-    /* property list */
-    .plist{display:flex;flex-direction:column;gap:12px;}
-    .prow{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:18px 22px;display:flex;align-items:center;gap:18px;transition:.14s;}
-    .prow:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(17,24,39,.07);}
-    .pthumb{width:62px;height:62px;border-radius:14px;background:var(--tint);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
-    .pmain{flex:1;min-width:0;}
-    .ptags{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
-    .ptag{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--tint);color:var(--primary);}
-    .ptag.deal{background:#EAF2FF;color:#3182F6;}
-    .ptitle{font-size:15.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .paddr{font-size:13px;color:var(--sub);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .pextra{font-size:12.5px;color:var(--tert);font-weight:500;margin-top:5px;}
-    .pmeta{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-    .pprice{font-size:17px;font-weight:800;letter-spacing:-.5px;color:var(--ink);}
-    .pstatus{font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;}
+    /* property table */
+    .ptable{width:100%;background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border-collapse:collapse;}
+    .ptable thead th{background:var(--soft);font-size:13px;font-weight:700;color:var(--sub);text-align:left;padding:14px 18px;white-space:nowrap;}
+    .ptable thead th.center{text-align:center;}
+    .ptable thead th.right{text-align:right;}
+    .ptable tbody td{padding:15px 18px;border-top:1px solid var(--line2);font-size:14px;color:var(--ink);vertical-align:middle;}
+    .ptable tbody tr:hover{background:var(--soft);}
+    .pt-chip{display:inline-block;font-size:12px;font-weight:800;padding:4px 10px;border-radius:8px;background:var(--tint);color:var(--primary);white-space:nowrap;}
+    .pt-chip.deal{background:#EAF2FF;color:#3182F6;}
+    .pt-title{font-size:14.5px;font-weight:800;color:var(--ink);}
+    .pt-addr{font-size:12.5px;color:var(--sub);font-weight:500;margin-top:2px;}
+    .pt-area{color:var(--sub);white-space:nowrap;}
+    .pt-price{font-size:15.5px;font-weight:800;letter-spacing:-.3px;color:var(--ink);white-space:nowrap;}
+    .pstatus{display:inline-block;font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;}
     .pstatus.on{background:#EAF7EE;color:#16A34A;}
     .pstatus.off{background:#F2F4F6;color:var(--tert);}
     .pstatus.ready{background:#FFF4E5;color:#D97706;}
@@ -86,8 +85,7 @@
 
     @media (max-width:880px){
       .menu{display:none;}
-      .prow{flex-wrap:wrap;}
-      .pmeta{align-items:flex-start;text-align:left;}
+      .ptable{display:block;overflow-x:auto;}
     }
   </style>
   <script>
@@ -163,7 +161,13 @@
       </div>
 
       <div class="count">총 <b id="pcount">0</b>건</div>
-      <div class="plist" id="rows"></div>
+      <table class="ptable" id="ptable">
+        <thead><tr>
+          <th>매물종류</th><th>거래</th><th>매물정보</th>
+          <th class="center">전용면적</th><th class="right">가격</th><th class="center">광고상태</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
       <div class="emptybox hide" id="empty">
         <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div>
         <div class="et">조건에 맞는 매물이 없어요</div>
@@ -189,7 +193,6 @@
 
     function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function statusLabel(s){ return s === 'on' ? '광고중' : (s === 'ready' ? '광고대기' : '노출종료'); }
-    var homeSvg = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>';
 
     var API = 'https://api.bubiseo.com';
     var DATA = SAMPLE.slice();
@@ -257,21 +260,20 @@
       document.getElementById('pcount').textContent = filtered.length;
       var box = document.getElementById('rows');
       var empty = document.getElementById('empty');
-      if (!filtered.length){ box.innerHTML = ''; empty.classList.remove('hide'); return; }
-      empty.classList.add('hide');
+      var table = document.getElementById('ptable');
+      if (!filtered.length){
+        box.innerHTML = ''; table.classList.add('hide'); empty.classList.remove('hide'); return;
+      }
+      table.classList.remove('hide'); empty.classList.add('hide');
       box.innerHTML = filtered.map(function(p){
-        return '<div class="prow">'
-          + '<span class="pthumb">' + homeSvg + '</span>'
-          + '<div class="pmain">'
-          + '<div class="ptags"><span class="ptag">' + esc(p.type) + '</span><span class="ptag deal">' + esc(p.deal) + '</span></div>'
-          + '<div class="ptitle">' + esc(p.title) + '</div>'
-          + '<div class="paddr">' + esc(p.addr) + '</div>'
-          + '<div class="pextra">전용 ' + esc(p.area) + '</div>'
-          + '</div>'
-          + '<div class="pmeta">'
-          + '<div class="pprice">' + esc(p.price) + '</div>'
-          + '<span class="pstatus ' + p.status + '">' + statusLabel(p.status) + '</span>'
-          + '</div></div>';
+        return '<tr>'
+          + '<td><span class="pt-chip">' + esc(p.type) + '</span></td>'
+          + '<td><span class="pt-chip deal">' + esc(p.deal) + '</span></td>'
+          + '<td><div class="pt-title">' + esc(p.title) + '</div><div class="pt-addr">' + esc(p.addr) + '</div></td>'
+          + '<td class="pt-area" style="text-align:center;">' + esc(p.area) + '</td>'
+          + '<td class="pt-price" style="text-align:right;">' + esc(p.price) + '</td>'
+          + '<td style="text-align:center;"><span class="pstatus ' + p.status + '">' + statusLabel(p.status) + '</span></td>'
+          + '</tr>';
       }).join('');
     }
 
