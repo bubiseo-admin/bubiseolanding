@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>준비 중 · 부비서 광고관리</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE; --tintline:#DCD9FE;
+      --shadow:0 6px 24px rgba(17,24,39,.05);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;cursor:pointer;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;min-height:100vh;display:flex;flex-direction:column;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;width:100%;}
+    header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);}
+    .nav{display:flex;align-items:center;height:64px;}
+    .logo{font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;cursor:pointer;}
+    .logo .sub{font-size:14px;font-weight:800;color:var(--tert);letter-spacing:-.5px;}
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px 80px;}
+    .soon{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:56px 40px;max-width:460px;width:100%;text-align:center;}
+    .ic{width:96px;height:96px;border-radius:30px;background:var(--grad);display:grid;place-items:center;margin:0 auto 24px;box-shadow:0 12px 28px rgba(97,85,245,.32);}
+    .badge{display:inline-block;font-size:12px;font-weight:800;color:var(--primary);background:var(--tint);border:1px solid var(--tintline);border-radius:999px;padding:6px 13px;margin-bottom:15px;letter-spacing:.4px;}
+    .soon h1{font-size:23px;font-weight:900;letter-spacing:-.6px;line-height:1.34;}
+    .soon p{margin-top:13px;font-size:15px;font-weight:500;color:var(--sub);line-height:1.64;}
+    .btns{display:flex;gap:10px;margin-top:30px;}
+    .btns button{flex:1;height:52px;border:0;border-radius:14px;font-size:15.5px;font-weight:800;transition:.14s;}
+    .btns .ghost{background:var(--soft);color:var(--sub);}
+    .btns .ghost:hover{background:var(--line2);color:var(--ink);}
+    .btns .primary{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(97,85,245,.28);}
+    .btns .primary:hover{filter:brightness(1.04);}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
+    </div>
+  </header>
+  <main>
+    <div class="soon">
+      <div class="ic">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l1.9 4.6 4.9.4-3.7 3.2 1.1 4.8L12 13.2 7.7 16l1.1-4.8L5.1 8l4.9-.4z"/>
+          <path d="M19 14v4M21 16h-4M5 16v3M6.5 17.5h-3"/>
+        </svg>
+      </div>
+      <div class="badge">COMING SOON</div>
+      <h1 id="ttl">준비 중이에요</h1>
+      <p>더 나은 서비스로 준비하고 있어요.<br/>조금만 기다려 주시면 곧 만나보실 수 있어요.</p>
+      <div class="btns">
+        <button class="ghost" onclick="if(history.length>1){history.back();}else{location.href='../';}">이전으로</button>
+        <button class="primary" onclick="location.href='../'">대시보드로</button>
+      </div>
+    </div>
+  </main>
+  <script>
+    var MAP = {
+      product:'상품 구매', adinquiry:'광고 · 가입 문의', charge:'충전하기',
+      notice:'공지사항', faq:'FAQ', qna:'1:1 문의', complex:'단지등록 문의',
+      adproduct:'광고상품안내', support:'고객센터'
+    };
+    var k = new URLSearchParams(location.search).get('m');
+    var name = MAP[k];
+    if (name) {
+      document.getElementById('ttl').textContent = name + ' 준비 중이에요';
+      document.title = name + ' · 준비 중 · 부비서 광고관리';
+    }
+  </script>
+</body>
+</html>
