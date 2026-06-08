@@ -287,7 +287,7 @@
               </div>
             </div>
 
-            <div class="sec-h" style="margin-top:24px;">사용료 세부내역 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b style="color:var(--primary);">0원</b></span></div>
+            <div class="sec-h" style="margin-top:24px;">사용료 세부내역 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b id="feeSum" style="color:var(--primary);">0원</b></span></div>
             <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
             <div id="feeList"></div>
             <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
@@ -536,8 +536,8 @@
 
     /* ── 매물 정보 불러오기 ── */
     var SAMPLE_LOAD = [
-      { propertyType:'아파트', dealKind:'매매', buildingName:'수원역푸르지오자이', dong:'138', ho:'1104', address:'경기 수원시 팔달구 매산로', exclusiveArea:'84.9', supplyArea:'112.3', dealPrice:'85000', floor:'11', floorTotal:'25', rooms:'3', baths:'2', buildingUse:'공동주택(아파트)' },
-      { propertyType:'오피스텔', dealKind:'월세', buildingName:'광교중흥S클래스', dong:'A', ho:'2503', address:'경기 수원시 영통구 광교중앙로', exclusiveArea:'33.1', supplyArea:'47.2', deposit:'1000', monthlyRent:'90', floor:'25', floorTotal:'40', rooms:'1', baths:'1', buildingUse:'업무시설(오피스텔)' }
+      { propertyType:'아파트', dealKind:'매매', buildingName:'수원역푸르지오자이', unitDong:'138', unitHo:'1104', address:'경기 수원시 팔달구 매산로', exclusiveArea:'84.9', contractArea:'112.3', dealPrice:'85000', managementFee:'15', feeMode:'정액', feeStandard:'직전월', floor:'11', maxFloor:'25', roomCount:'3', bathroomCount:'2', direction:'남', parkingAvailable:'가능', totalParking:'1200', buildingUse:'공동주택(아파트)', options:['엘리베이터','CCTV','비디오폰'], propertyFeature:'역세권 대단지, 채광 우수' },
+      { propertyType:'오피스텔', dealKind:'월세', buildingName:'광교중흥S클래스', unitDong:'A', unitHo:'2503', address:'경기 수원시 영통구 광교중앙로', exclusiveArea:'33.1', contractArea:'47.2', deposit:'1000', monthlyRent:'90', managementFee:'8', feeMode:'정액', feeStandard:'3개월', floor:'25', maxFloor:'40', roomCount:'1', bathroomCount:'1', direction:'남동', parkingAvailable:'가능', totalParking:'300', buildingUse:'업무시설(오피스텔)', options:['엘리베이터','카드키','CCTV'], propertyFeature:'신축 풀옵션, 즉시입주' }
     ];
     function loadList(){
       var token = null; try { token = localStorage.getItem(PORTAL_TOKEN_KEY); } catch (e) {}
@@ -577,25 +577,104 @@
     function setVal(id, v){ var el = document.getElementById(id); if (el && v != null && v !== '') el.value = v; }
     function setDeal(d){ if (!d) return; var r = document.querySelector('input[name="deal"][value="' + d + '"]'); if (r) r.checked = true; }
     function setSelect(id, v){ var el = document.getElementById(id); if (!el || v == null) return; for (var i = 0; i < el.options.length; i++){ if (el.options[i].text === v){ el.selectedIndex = i; return; } } }
+    /* select 에 해당 option 이 없으면 동적으로 추가 후 선택 (불러온 주소·동·호·단지·방향). */
+    function setSelectAdd(id, v){
+      if (v == null || v === '') return; v = String(v);
+      var el = document.getElementById(id); if (!el) return;
+      for (var i = 0; i < el.options.length; i++){ if (el.options[i].text === v || el.options[i].value === v){ el.selectedIndex = i; return; } }
+      var o = document.createElement('option'); o.text = v; o.value = v; o.selected = true; el.add(o);
+    }
+    /* radio: 같은 name 중 라벨에 v 가 포함된 항목 체크. */
+    function setRadio(name, v){
+      if (!v) return;
+      var rs = document.querySelectorAll('input[name="' + name + '"]');
+      for (var i = 0; i < rs.length; i++){
+        var lab = rs[i].parentNode ? (rs[i].parentNode.textContent || '').trim() : '';
+        if (lab && lab.indexOf(v) !== -1){ rs[i].checked = true; return; }
+      }
+    }
+    /* 시설 체크박스: 라벨 텍스트가 배열 값과 일치하면 체크. */
+    function setChecks(arr){
+      if (!arr || !arr.length) return;
+      var want = {}; for (var k = 0; k < arr.length; k++){ want[String(arr[k]).trim()] = true; }
+      var cbs = document.querySelectorAll('.chk input[type="checkbox"]');
+      for (var i = 0; i < cbs.length; i++){
+        var lab = cbs[i].parentNode ? (cbs[i].parentNode.textContent || '').trim() : '';
+        if (want[lab]) cbs[i].checked = true;
+      }
+    }
+    /* 주소 → 시/도·시군구·읍면동 분해 (없는 option 은 추가). */
+    var SIDO_MAP = { '서울':'서울특별시','부산':'부산광역시','대구':'대구광역시','인천':'인천광역시','광주':'광주광역시','대전':'대전광역시','울산':'울산광역시','세종':'세종특별자치시','경기':'경기도','강원':'강원특별자치도','충북':'충청북도','충남':'충청남도','전북':'전북특별자치도','전남':'전라남도','경북':'경상북도','경남':'경상남도','제주':'제주특별자치도' };
+    function fillAddress(addr){
+      if (!addr) return;
+      var parts = String(addr).trim().split(/\s+/);
+      if (!parts.length) return;
+      var sido = parts[0];
+      for (var key in SIDO_MAP){ if (sido.indexOf(key) === 0){ sido = SIDO_MAP[key]; break; } }
+      setSelectAdd('sido', sido);
+      var gu = [];
+      for (var i = 1; i < parts.length; i++){ if (/[시군구]$/.test(parts[i])){ gu.push(parts[i]); } else if (gu.length){ break; } }
+      if (gu.length) setSelectAdd('gugun', gu.join(' '));
+      for (var j = 1; j < parts.length; j++){ if (/[동읍면가]$/.test(parts[j]) && !/[시군구]$/.test(parts[j])){ setSelectAdd('dongSel', parts[j]); break; } }
+    }
+    /* 사진: file input 엔 URL 을 넣을 수 없어 photobox 에 썸네일 미리보기로 표시. */
+    function fillPhotos(photos){
+      if (!photos || !photos.length) return;
+      var box = document.querySelector('#s7 .photobox'); if (!box) return;
+      var old = box.querySelector('.ph-preview'); if (old) old.parentNode.removeChild(old);
+      var wrap = document.createElement('div'); wrap.className = 'ph-preview';
+      wrap.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;width:100%;';
+      photos.slice(0, 20).forEach(function(u){
+        var im = document.createElement('img'); im.src = u;
+        im.style.cssText = 'width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line);';
+        wrap.appendChild(im);
+      });
+      box.appendChild(wrap);
+    }
+    var FEE_MODE = { '정액':'정액관리비', '기타':'기타부과', '확인불가':'확인불가' };
+    var FEE_STD = { '직전월':'직전 월', '3개월':'3개월', '1년':'1년', '기타':'기타' };
     function pickLoad(i){
       var p = window.__loadRows[i]; if (!p) return;
+      var dk = dealKo(p.dealKind);
+      /* 기본 */
       setSelect('mClass1', typeKo(p.propertyType || p.category));
-      setDeal(dealKo(p.dealKind));
+      setDeal(dk);
       setVal('buildingUse', p.buildingUse);
-      setVal('priceSale', p.dealPrice);
-      setVal('priceDeposit', p.deposit);
+      /* 소재지 */
+      fillAddress(p.address);
+      setSelectAdd('danji', p.buildingName);
+      setSelectAdd('dongPick', p.unitDong || p.dong);
+      setSelectAdd('hoPick', p.unitHo || p.ho);
+      /* 가격 — 매매가가 deposit 에 저장된 경우 보정, 매매면 보증금 칸 비움 */
+      setVal('priceSale', p.dealPrice != null ? p.dealPrice : (dk === '매매' ? p.deposit : null));
+      setVal('priceDeposit', dk === '매매' ? null : p.deposit);
       setVal('priceMonthly', p.monthlyRent);
+      /* 관리비 부과정보 */
+      setRadio('feeType', FEE_MODE[p.feeMode]);
+      setRadio('feeBase', FEE_STD[p.feeStandard]);
+      var feeSum = document.getElementById('feeSum');
+      if (feeSum && p.managementFee != null) feeSum.textContent = Number(p.managementFee).toLocaleString() + '만원';
+      /* 면적 / 층 */
       setVal('areaExclusive', p.exclusiveArea);
-      setVal('areaSupply', p.supplyArea);
+      setVal('areaSupply', p.contractArea);
       setVal('floor', p.floor);
-      setVal('floorTotal', p.floorTotal);
-      setVal('rooms', p.rooms);
-      setVal('baths', p.baths);
-      setVal('danji', p.buildingName);
-      setVal('dongPick', p.dong);
-      setVal('hoPick', p.ho);
+      setVal('floorTotal', p.maxFloor);
+      /* 방향 */
+      setSelectAdd('dir', p.direction);
+      /* 방 / 욕실 / 주차 */
+      setVal('rooms', p.roomCount);
+      setVal('baths', p.bathroomCount);
+      if (p.parkingAvailable) setRadio('parkable', /불가/.test(p.parkingAvailable) ? '불가능' : '가능');
+      setVal('parkTotal', p.totalParking);
+      /* 시설 */
+      setChecks(p.options);
+      /* 상세 */
+      setVal('feature', p.propertyFeature);
+      setVal('detail', p.propertyFeature);
+      /* 사진 */
+      fillPhotos(p.photos);
       closeLoad();
-      toast('매물 정보를 불러왔어요 — 소재지·면적 등은 확인 후 보완하세요.');
+      toast('매물 정보를 불러왔어요 — 소재지·관리비·사진 등은 확인 후 보완하세요.');
     }
     function openLoad(){ loadList(); document.getElementById('m-load').classList.add('show'); }
     function closeLoad(){ document.getElementById('m-load').classList.remove('show'); }

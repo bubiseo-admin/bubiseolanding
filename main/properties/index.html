@@ -78,6 +78,7 @@
     .pstatus.on{background:#EAF7EE;color:#16A34A;}
     .pstatus.off{background:#F2F4F6;color:var(--tert);}
     .pstatus.ready{background:#FFF4E5;color:#D97706;}
+    .pstatus.wait{background:var(--tint);color:var(--primary);}
 
     .emptybox{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:74px 24px;text-align:center;}
     .emptybox .ei{width:66px;height:66px;border-radius:20px;background:var(--soft);display:grid;place-items:center;margin:0 auto 18px;color:var(--tert);}
@@ -191,7 +192,7 @@
       { type:'아파트', deal:'매매', title:'수원역푸르지오자이 138동 1104호', addr:'경기 수원시 팔달구 매산로', areaEx:'84.9㎡', areaCommon:'112.3㎡', priceSale:'8억 5,000', deposit:'-', monthly:'-', fee:'15', status:'on' },
       { type:'아파트', deal:'전세', title:'영통자이 105동 801호', addr:'경기 수원시 영통구 봉영로', areaEx:'59.8㎡', areaCommon:'78.2㎡', priceSale:'-', deposit:'5억 5,000', monthly:'-', fee:'12', status:'on' },
       { type:'오피스텔', deal:'월세', title:'광교중흥S클래스 A동 2503호', addr:'경기 수원시 영통구 광교중앙로', areaEx:'33.1㎡', areaCommon:'47.2㎡', priceSale:'-', deposit:'1,000', monthly:'90', fee:'8', status:'ready' },
-      { type:'빌라·연립', deal:'전세', title:'행복빌라 302호', addr:'경기 수원시 권선구 권선로', areaEx:'45.2㎡', areaCommon:'58.0㎡', priceSale:'-', deposit:'2억 1,000', monthly:'-', fee:'5', status:'off' },
+      { type:'빌라·연립', deal:'전세', title:'행복빌라 302호', addr:'경기 수원시 권선구 권선로', areaEx:'45.2㎡', areaCommon:'58.0㎡', priceSale:'-', deposit:'2억 1,000', monthly:'-', fee:'5', status:'done' },
       { type:'상가', deal:'매매', title:'인계동 프라자 1층 102호', addr:'경기 수원시 팔달구 인계로', areaEx:'66.0㎡', areaCommon:'99.0㎡', priceSale:'12억', deposit:'-', monthly:'-', fee:'20', status:'on' }
     ];
 
@@ -201,11 +202,13 @@
     var DEAL_KO = { SALE:'매매', JEONSE:'전세', MONTHLY:'월세', WHOLE_LEASE:'통임대' };
     function typeKo(v){ return TYPE_KO[v] || v || '-'; }
     function dealKo(v){ return DEAL_KO[v] || v || '-'; }
+    /* 광고 상태 — 부비서 Property.status 는 매물 거래상태(활성/계약중/완료/종료)이며
+       광고 발송(CP사 연동)은 아직 미구현이므로 활성(ACTIVE) 매물은 "광고전" 으로 표시한다. */
     function statusInfo(s){
-      if (s === 'ACTIVE' || s === '광고중' || s === 'on') return { cls:'on', text:'광고중' };
       if (s === 'IN_CONTRACT' || s === '계약중' || s === 'ready') return { cls:'ready', text:'계약중' };
-      if (s === 'COMPLETED' || s === '거래완료') return { cls:'off', text:'거래완료' };
-      return { cls:'off', text:'노출종료' };
+      if (s === 'COMPLETED' || s === '거래완료' || s === 'done') return { cls:'off', text:'거래완료' };
+      if (s === 'TERMINATED' || s === '거래중지') return { cls:'off', text:'거래중지' };
+      return { cls:'wait', text:'광고전' };
     }
 
     var API = 'https://api.bubiseo.com';
@@ -217,18 +220,35 @@
       if (v >= 10000){ var eok = Math.floor(v / 10000); var rest = v % 10000; return eok + '억' + (rest ? ' ' + rest.toLocaleString() : ''); }
       return v.toLocaleString();
     }
+    function manOr(v){ return (v != null && v !== '') ? (fmtMan(v) || '-') : '-'; }
     function mapProp(p){
-      var dongho = (p.dong ? ' ' + p.dong + '동' : '') + (p.ho ? ' ' + p.ho + '호' : '');
+      var dk = dealKo(p.dealKind);
+      var dong = p.unitDong || p.dong;
+      var ho = p.unitHo || p.ho;
+      var dongho = (dong ? ' ' + dong + '동' : '') + (ho ? ' ' + ho + '호' : '');
+      /* 거래유형별로 해당 가격 칸만 채운다 — 매매인데 보증금 칸에 값이 뜨는 문제 차단.
+         일부 매물은 매매가가 deposit 에 저장돼 있어(부비서 데이터 호환) 매매는 dealPrice ?? deposit. */
+      var sale = '-', dep = '-', mon = '-';
+      if (dk === '매매') {
+        sale = manOr(p.dealPrice != null ? p.dealPrice : p.deposit);
+      } else if (dk === '전세') {
+        dep = manOr(p.deposit);
+      } else if (dk === '월세' || dk === '단기임대' || dk === '통임대') {
+        dep = manOr(p.deposit);
+        mon = manOr(p.monthlyRent);
+      } else {
+        sale = manOr(p.dealPrice); dep = manOr(p.deposit); mon = manOr(p.monthlyRent);
+      }
       return {
         type: typeKo(p.propertyType || p.category),
-        deal: dealKo(p.dealKind),
+        deal: dk,
         title: (p.buildingName || p.aptName || p.address || '주소 미입력') + dongho,
         addr: p.address || '',
         areaEx: p.exclusiveArea ? (p.exclusiveArea + '㎡') : '-',
         areaCommon: p.contractArea ? (p.contractArea + '㎡') : '-',
-        priceSale: p.dealPrice != null ? fmtMan(p.dealPrice) : '-',
-        deposit: p.deposit != null ? fmtMan(p.deposit) : '-',
-        monthly: p.monthlyRent != null ? fmtMan(p.monthlyRent) : '-',
+        priceSale: sale,
+        deposit: dep,
+        monthly: mon,
         fee: (p.managementFee != null && p.managementFee !== '') ? fmtMan(p.managementFee) : '-',
         status: p.status
       };
