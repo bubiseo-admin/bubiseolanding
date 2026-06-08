@@ -91,10 +91,12 @@
     .hero p{margin:9px 0 0;font-size:14.5px;font-weight:500;opacity:.84;}
     .hero .cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--primary);border-radius:15px;padding:14px 24px;font-size:15.5px;font-weight:800;box-shadow:0 12px 26px rgba(10,20,60,.22);transition:.16s;}
     .hero .cta:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(10,20,60,.28);}
-    .hero-stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px;}
-    .hs{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:15px 16px;backdrop-filter:blur(4px);}
-    .hs .l{font-size:12.5px;font-weight:600;opacity:.85;}
-    .hs .v{margin-top:8px;font-size:24px;font-weight:800;letter-spacing:-.8px;line-height:1;}
+    .hero-stats{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:30px;}
+    .hs{position:relative;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:15px 16px;backdrop-filter:blur(4px);transition:.16s;}
+    .hs:hover{background:rgba(255,255,255,.24);transform:translateY(-2px);}
+    .hs .l{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;opacity:.92;}
+    .hs .l .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 3px rgba(255,255,255,.14);}
+    .hs .v{margin-top:9px;font-size:24px;font-weight:800;letter-spacing:-.8px;line-height:1;}
     .hs .v small{font-size:13px;font-weight:700;opacity:.8;margin-left:2px;}
 
     .sec{margin-top:36px;}
@@ -113,16 +115,6 @@
     .qcard.main .qi{background:rgba(255,255,255,.2);color:#fff;}
     .qcard.main .ql{color:#fff;}
     .qcard .ql{font-size:13.5px;font-weight:700;color:var(--ink);}
-
-    /* stats */
-    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
-    .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 18px;transition:.16s;}
-    .stat:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
-    .stat .top{display:flex;align-items:center;gap:9px;}
-    .stat .si{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;}
-    .stat .lab{font-size:13.5px;font-weight:600;color:var(--sub);}
-    .stat .num{margin-top:16px;font-size:31px;font-weight:800;letter-spacing:-1.4px;line-height:1;}
-    .stat .num small{font-size:14px;font-weight:700;color:var(--tert);margin-left:3px;letter-spacing:0;}
 
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow-sm);}
 
@@ -163,9 +155,8 @@
     .foot{margin-top:48px;text-align:center;font-size:12.5px;color:var(--tert);font-weight:500;}
 
     @media (max-width:960px){
-      .hero-stats{grid-template-columns:repeat(2,1fr);}
+      .hero-stats{grid-template-columns:repeat(3,1fr);}
       .quick{grid-template-columns:repeat(3,1fr);}
-      .stats{grid-template-columns:repeat(2,1fr);}
       .prodgrid{grid-template-columns:1fr;}
       .two{grid-template-columns:1fr;}
       .menu{display:none;}
@@ -257,10 +248,11 @@
           <a class="cta" href="register/">＋ 광고 등록하기</a>
         </div>
         <div class="hero-stats">
-          <a class="hs" href="manage/#t0"><div class="l">진행중인 광고</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t2"><div class="l">미전송 광고</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t3"><div class="l">신고매물</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t4"><div class="l">동일주소</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t0"><div class="l"><span class="dot" style="background:#FFFFFF"></span>진행중인 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t2"><div class="l"><span class="dot" style="background:#FFD8A8"></span>미전송 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t4"><div class="l"><span class="dot" style="background:#A5D8FF"></span>동일주소</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t0-fail"><div class="l"><span class="dot" style="background:#FFC9C9"></span>확인실패</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t3"><div class="l"><span class="dot" style="background:#FFC9C9"></span>신고</div><div class="v">0<small>건</small></div></a>
         </div>
       </section>
 
@@ -274,18 +266,6 @@
           <a class="qcard" href="manage/#t3"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/></svg></span><span class="ql">신고매물</span></a>
           <a class="qcard" href="manage/#t4"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="ql">동일주소매물</span></a>
           <a class="qcard" href="registry/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="ql">등기부등본</span></a>
-        </div>
-      </section>
-
-      <!-- 광고 현황 -->
-      <section class="sec">
-        <div class="sec-h"><h2>광고 현황</h2><a class="more" href="manage/#t0">자세히 ›</a></div>
-        <div class="stats">
-          <div class="stat"><div class="top"><span class="si" style="background:#EEF0FE;color:var(--primary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span class="lab">진행중인 광고</span></div><div class="num gtext-grad">0<small>건</small></div></div>
-          <div class="stat"><div class="top"><span class="si" style="background:#FFF1E2;color:var(--orange)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></span><span class="lab">미전송 광고</span></div><div class="num" style="color:var(--orange)">0<small>건</small></div></div>
-          <div class="stat"><div class="top"><span class="si" style="background:#EAF0FF;color:var(--blue)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="lab">동일주소</span></div><div class="num">0<small>건</small></div></div>
-          <div class="stat"><div class="top"><span class="si" style="background:#FFEDEC;color:var(--red)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span><span class="lab">확인실패</span></div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
-          <div class="stat"><div class="top"><span class="si" style="background:#FFEDEC;color:var(--red)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22V4"/></svg></span><span class="lab">신고</span></div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
         </div>
       </section>
 
