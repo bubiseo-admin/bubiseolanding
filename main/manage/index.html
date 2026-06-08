@@ -350,7 +350,7 @@
           <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div>
           <div class="et" id="listEmptyT">등록된 매물이 없어요</div>
           <div class="es" id="listEmptyS">매물을 등록하면 여기에서 광고 상태를 한눈에 관리할 수 있어요.</div>
-          <a class="eb" href="#">매물 등록하기</a>
+          <a class="eb" id="listEmptyBtn" href="#">매물 등록하기</a>
         </div>
       </section>
 
@@ -716,6 +716,8 @@
         var su = ['매물을 등록하면 여기에서 광고 상태를 한눈에 관리할 수 있어요.','작성하다 멈춘 매물이 임시저장되면 여기에 모여요.','광고가 종료된 매물이 여기에 모여요.'];
         document.getElementById('listEmptyT').textContent = ti[i];
         document.getElementById('listEmptyS').textContent = su[i];
+        // 2026-06-08 — '매물 등록하기' 버튼은 등록 리스트(0)에만. 임시저장(1)/등록종료(2)는 숨김.
+        document.getElementById('listEmptyBtn').classList.toggle('hide', i !== 0);
       } else if (i === 3){
         document.getElementById('panel-report').classList.remove('hide');
       } else {
@@ -749,6 +751,26 @@
     }
     window.addEventListener('hashchange', applyHash);
     applyHash();
+  </script>
+  <script>
+    /* 계정칩·드롭다운 — QR 로그인 계정의 이름·상호명 표시 (/portal/me) */
+    (function(){
+      var t; try { t = localStorage.getItem('bbs_portal_token'); } catch (e) {}
+      if (!t) return;
+      fetch('https://api.bubiseo.com/portal/me', { headers: { Authorization: 'Bearer ' + t } })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          if (!d) return;
+          var biz = (d.realEstate && d.realEstate.businessName) || '';
+          var nm = (d.user && d.user.name) || '';
+          if (biz){
+            document.querySelectorAll('.acct-head b, .who b').forEach(function(el){ el.textContent = biz; });
+            document.querySelectorAll('.chip').forEach(function(c){ if (c.lastChild && c.lastChild.nodeType === 3) c.lastChild.textContent = biz; });
+          }
+          if (nm){ document.querySelectorAll('.acct-head span').forEach(function(el){ el.textContent = nm; }); }
+        })
+        .catch(function(){});
+    })();
   </script>
 </body>
 </html>

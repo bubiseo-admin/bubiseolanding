@@ -280,5 +280,25 @@
     render();
     loadReal();
   </script>
+  <script>
+    /* 계정칩·소제목 — QR 로그인 계정의 상호명 표시 (/portal/me) */
+    (function(){
+      var t; try { t = localStorage.getItem('bbs_portal_token'); } catch (e) {}
+      if (!t) return;
+      fetch('https://api.bubiseo.com/portal/me', { headers: { Authorization: 'Bearer ' + t } })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          if (!d) return;
+          var biz = (d.realEstate && d.realEstate.businessName) || '';
+          var nm = (d.user && d.user.name) || '';
+          if (biz){
+            document.querySelectorAll('.acct-head b, .who b').forEach(function(el){ el.textContent = biz; });
+            document.querySelectorAll('.chip').forEach(function(c){ if (c.lastChild && c.lastChild.nodeType === 3) c.lastChild.textContent = biz; });
+          }
+          if (nm){ document.querySelectorAll('.acct-head span').forEach(function(el){ el.textContent = nm; }); }
+        })
+        .catch(function(){});
+    })();
+  </script>
 </body>
 </html>
