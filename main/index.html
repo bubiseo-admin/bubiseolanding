@@ -9,126 +9,170 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --primary:#6155F5; --sky:#39AFFD; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
-      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#F2F4F6;
-      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA;
-      --blue:#3182F6; --green:#1EC800; --red:#FF5247; --orange:#FF8A00;
-      --shadow:0 6px 24px rgba(17,24,39,.05);
+      --primary:#6155F5; --primary-2:#7C6FFF; --sky:#39AFFD; --sky-2:#5BC0FF;
+      --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --grad-text:linear-gradient(120deg,#6155F5,#39AFFD);
+      --ink:#0F1525; --sub:#5A6473; --tert:#9099A6; --line:#EAEDF3;
+      --bg:#F3F5F9; --card:#FFFFFF; --soft:#F5F7FB;
+      --blue:#3182F6; --green:#12B886; --red:#FA5252; --orange:#FF922B;
+      --shadow-sm:0 2px 8px rgba(20,30,60,.05);
+      --shadow:0 12px 32px rgba(30,40,80,.07);
+      --shadow-lg:0 22px 56px rgba(40,50,90,.11);
+      --glow:0 16px 38px rgba(97,85,245,.30);
+      --rad:20px;
     }
     *{box-sizing:border-box;}
     html,body{margin:0;padding:0;}
-    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:-.2px;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:-.3px;}
+    body::before{content:'';position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(1100px 460px at 78% -180px, rgba(57,175,253,.14), transparent 62%),
+      radial-gradient(1000px 460px at 12% -160px, rgba(97,85,245,.16), transparent 60%),
+      var(--bg);}
     a{text-decoration:none;color:inherit;}
-    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+    .gtext-grad{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 
     /* ===== Top bar ===== */
-    header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);}
-    .nav{position:relative;display:flex;align-items:center;height:64px;}
-    .logo{font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;gap:0;cursor:pointer;}
-    .logo .sub{font-weight:900;color:var(--primary);}
-    .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+    header{position:sticky;top:0;z-index:100;background:rgba(248,250,253,.72);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid rgba(230,234,242,.7);}
+    .nav{position:relative;display:flex;align-items:center;height:66px;}
+    .logo{font-size:21px;font-weight:900;letter-spacing:-1px;display:flex;align-items:baseline;cursor:pointer;}
+    .logo .b{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo .sub{font-weight:800;color:var(--tert);font-size:13.5px;margin-left:7px;letter-spacing:-.3px;}
+    .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;}
     .menu .item{position:relative;}
-    .menu .item>a{display:block;padding:9px 16px;font-size:15.5px;font-weight:600;color:var(--sub);border-radius:10px;transition:.12s;}
-    .menu .item:hover>a{color:var(--ink);background:var(--soft);}
-    .drop{position:absolute;top:46px;left:50%;transform:translateX(-50%) translateY(-6px);min-width:188px;background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(17,24,39,.12);padding:8px;opacity:0;visibility:hidden;transition:.16s;}
+    .menu .item>a{display:block;padding:9px 16px;font-size:15px;font-weight:600;color:var(--sub);border-radius:11px;transition:.14s;}
+    .menu .item:hover>a{color:var(--ink);background:rgba(255,255,255,.9);box-shadow:var(--shadow-sm);}
+    .drop{position:absolute;top:48px;left:50%;transform:translateX(-50%) translateY(-6px);min-width:198px;background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow-lg);padding:8px;opacity:0;visibility:hidden;transition:.18s;}
     .menu .item:hover .drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
-    .drop a{display:block;padding:11px 13px;font-size:14.5px;font-weight:600;color:var(--sub);border-radius:10px;white-space:nowrap;}
+    .drop a{display:block;padding:11px 13px;font-size:14px;font-weight:600;color:var(--sub);border-radius:11px;white-space:nowrap;transition:.12s;}
     .drop a:hover{background:var(--soft);color:var(--primary);}
-    .navright{margin-left:auto;display:flex;align-items:center;gap:14px;}
-    .bell{width:22px;height:22px;color:var(--tert);}
-    .chip{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:700;color:var(--sub);}
-    .chip .av{width:28px;height:28px;border-radius:50%;background:#E8EBF0;display:grid;place-items:center;color:var(--tert);}
+    .navright{margin-left:auto;display:flex;align-items:center;gap:12px;}
+    .bell{width:21px;height:21px;color:var(--tert);}
+    .iconbtn{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.8);border:1px solid var(--line);transition:.14s;cursor:pointer;}
+    .iconbtn:hover{box-shadow:var(--shadow-sm);}
+    .chip{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:999px;padding:5px 15px 5px 5px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;transition:.14s;}
+    .chip:hover{box-shadow:var(--shadow-sm);}
+    .chip .av{width:30px;height:30px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:#fff;}
     .navitem{position:relative;display:flex;align-items:center;}
-    .navitem::after{content:'';position:absolute;top:100%;left:-12px;right:-12px;height:12px;}
+    .navitem::after{content:'';position:absolute;top:100%;left:-12px;right:-12px;height:14px;}
     .navtrig{display:flex;align-items:center;cursor:pointer;}
-    .rdrop{position:absolute;top:calc(100% + 12px);right:0;background:#fff;border-radius:16px;box-shadow:0 14px 40px rgba(17,24,39,.14);padding:10px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.16s;z-index:130;}
+    .rdrop{position:absolute;top:calc(100% + 12px);right:0;background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-lg);padding:10px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.18s;z-index:130;}
     .navitem:hover .rdrop{opacity:1;visibility:visible;transform:translateY(0);}
-    .rdrop-h{font-size:13px;font-weight:800;color:var(--tert);padding:8px 12px 6px;}
-    .rdrop.noti{width:300px;}
-    .noti-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;transition:.12s;}
+    .rdrop-h{font-size:12.5px;font-weight:800;color:var(--tert);padding:8px 12px 6px;letter-spacing:.2px;}
+    .rdrop.noti{width:312px;}
+    .noti-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:13px;transition:.12s;}
     .noti-row:hover{background:var(--soft);}
-    .noti-row .ni{width:38px;height:38px;border-radius:12px;background:#EEF0FE;color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .noti-row .ni{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
     .noti-row .nt{display:flex;flex-direction:column;gap:2px;min-width:0;}
     .noti-row .nt b{font-size:14px;font-weight:700;color:var(--ink);}
     .noti-row .nt span{font-size:12.5px;color:var(--tert);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .noti-foot{display:block;text-align:center;padding:11px;margin-top:4px;border-top:1px solid #F2F4F6;font-size:13px;font-weight:700;color:var(--primary);}
-    .rdrop.acct{width:240px;}
-    .acct-head{padding:10px 14px 13px;border-bottom:1px solid #F2F4F6;margin-bottom:6px;}
+    .noti-foot{display:block;text-align:center;padding:11px;margin-top:4px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--primary);}
+    .rdrop.acct{width:248px;}
+    .acct-head{padding:12px 14px 14px;border-bottom:1px solid var(--line);margin-bottom:6px;}
     .acct-head b{display:block;font-size:15px;font-weight:800;color:var(--ink);}
     .acct-head span{font-size:12.5px;color:var(--tert);font-weight:600;}
-    .acct-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:11px;font-size:14.5px;font-weight:600;color:var(--ink);transition:.12s;}
+    .acct-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:12px;font-size:14.5px;font-weight:600;color:var(--ink);transition:.12s;}
     .acct-row:hover{background:var(--soft);}
     .acct-row svg{color:var(--tert);flex-shrink:0;}
     .acct-row.logout{color:#F04452;}
     .acct-row.logout svg{color:#F04452;}
 
     /* ===== Content ===== */
-    main{padding:14px 0 90px;}
+    main{padding:28px 0 96px;}
 
-    /* greeting + small add button */
-    .greet{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:30px 4px 24px;}
-    .greet h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-1px;}
-    .greet p{margin:8px 0 0;font-size:15px;font-weight:500;color:var(--sub);}
-    .addbtn{flex:0 0 auto;background:var(--grad);color:#fff;border-radius:14px;padding:13px 22px;font-size:15px;font-weight:700;box-shadow:0 8px 22px rgba(97,85,245,.26);transition:.14s;}
-    .addbtn:hover{transform:translateY(-1px);}
+    /* hero */
+    .hero{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(125deg,#6457F6 0%,#5A7BFB 45%,#39AFFD 100%);box-shadow:var(--glow);padding:38px 38px 34px;color:#fff;}
+    .hero::before{content:'';position:absolute;width:360px;height:360px;right:-90px;top:-150px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 68%);}
+    .hero::after{content:'';position:absolute;width:260px;height:260px;left:36%;bottom:-170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);}
+    .hero-in{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .hero .ey{font-size:13px;font-weight:700;opacity:.82;letter-spacing:.2px;}
+    .hero h1{margin:9px 0 0;font-size:29px;font-weight:800;letter-spacing:-1.1px;line-height:1.25;}
+    .hero h1 .who b{font-weight:900;}
+    .hero p{margin:9px 0 0;font-size:14.5px;font-weight:500;opacity:.84;}
+    .hero .cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--primary);border-radius:15px;padding:14px 24px;font-size:15.5px;font-weight:800;box-shadow:0 12px 26px rgba(10,20,60,.22);transition:.16s;}
+    .hero .cta:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(10,20,60,.28);}
+    .hero-stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px;}
+    .hs{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:15px 16px;backdrop-filter:blur(4px);}
+    .hs .l{font-size:12.5px;font-weight:600;opacity:.85;}
+    .hs .v{margin-top:8px;font-size:24px;font-weight:800;letter-spacing:-.8px;line-height:1;}
+    .hs .v small{font-size:13px;font-weight:700;opacity:.8;margin-left:2px;}
 
-    .card{background:var(--card);border-radius:22px;box-shadow:var(--shadow);}
-    .sec{margin-top:34px;}
-    .sec h2{margin:0 0 16px;font-size:20px;font-weight:800;letter-spacing:-.6px;padding-left:4px;}
+    .sec{margin-top:36px;}
+    .sec-h{display:flex;align-items:center;justify-content:space-between;margin:0 0 16px;padding-left:2px;}
+    .sec-h h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.6px;}
+    .sec-h .more{font-size:13.5px;font-weight:700;color:var(--tert);transition:.12s;}
+    .sec-h .more:hover{color:var(--primary);}
 
-    /* quick (5) */
-    .quick{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
-    .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:20px 12px;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center;transition:.14s;}
-    .qcard:hover{transform:translateY(-2px);}
-    .qcard .qi{width:44px;height:44px;border-radius:13px;background:#EEF0FE;display:grid;place-items:center;color:var(--primary);}
-    .qcard.main .qi{background:var(--grad);color:#fff;}
-    .qcard .ql{font-size:14px;font-weight:700;color:var(--ink);}
+    /* quick actions */
+    .quick{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
+    .qcard{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);padding:22px 14px 18px;display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;transition:.16s;}
+    .qcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:transparent;}
+    .qcard .qi{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);display:grid;place-items:center;color:var(--primary);transition:.16s;}
+    .qcard:hover .qi{transform:scale(1.06);}
+    .qcard.main{background:var(--grad);border-color:transparent;box-shadow:var(--glow);}
+    .qcard.main .qi{background:rgba(255,255,255,.2);color:#fff;}
+    .qcard.main .ql{color:#fff;}
+    .qcard .ql{font-size:13.5px;font-weight:700;color:var(--ink);}
 
-    /* 광고 현황 (5 stats) */
-    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-    .stat{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:22px 20px;}
-    .stat .lab{font-size:14px;font-weight:600;color:var(--sub);}
-    .stat .num{margin-top:16px;font-size:32px;font-weight:800;letter-spacing:-1.2px;line-height:1;}
+    /* stats */
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+    .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 18px;transition:.16s;}
+    .stat:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+    .stat .top{display:flex;align-items:center;gap:9px;}
+    .stat .si{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;}
+    .stat .lab{font-size:13.5px;font-weight:600;color:var(--sub);}
+    .stat .num{margin-top:16px;font-size:31px;font-weight:800;letter-spacing:-1.4px;line-height:1;}
     .stat .num small{font-size:14px;font-weight:700;color:var(--tert);margin-left:3px;letter-spacing:0;}
 
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow-sm);}
+
     /* products */
-    .prod{padding:28px 28px;}
-    .prod .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
-    .prod .ph .pt{font-size:14px;font-weight:700;color:var(--tert);}
-    .btn{background:var(--primary);color:#fff;border:none;border-radius:13px;padding:11px 18px;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer;}
+    .prod{padding:26px 28px;}
+    .prod .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .prod .ph .pt{font-size:13.5px;font-weight:700;color:var(--tert);}
+    .btn{background:var(--grad);color:#fff;border:none;border-radius:13px;padding:11px 20px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(97,85,245,.24);transition:.14s;}
+    .btn:hover{transform:translateY(-1px);}
     .prodgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-    .pbox{background:var(--soft);border-radius:16px;padding:18px 18px;}
-    .pbox .pn{font-size:15px;font-weight:800;margin-bottom:14px;}
-    .pbox .pr{display:flex;justify-content:space-between;font-size:13.5px;color:var(--tert);padding:3px 0;}
-    .pbox .pr b{color:var(--sub);font-weight:800;}
+    .pbox{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:18px;}
+    .pbox .pn{font-size:14.5px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .pbox .pn .dot{width:8px;height:8px;border-radius:50%;background:var(--grad);}
+    .pbox .pr{display:flex;justify-content:space-between;font-size:13px;color:var(--tert);padding:4px 0;}
+    .pbox .pr b{color:var(--ink);font-weight:800;}
 
     /* bottom two col */
     .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-    .co{padding:28px 28px;}
+    .co{padding:26px 28px;}
     .co .nm{font-size:18px;font-weight:800;letter-spacing:-.5px;}
     .co .crow{display:flex;gap:14px;align-items:center;margin-top:20px;}
-    .co .cav{width:56px;height:56px;border-radius:16px;background:var(--soft);display:grid;place-items:center;color:var(--tert);flex:0 0 auto;}
+    .co .cav{width:58px;height:58px;border-radius:17px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:0 8px 18px rgba(97,85,245,.22);}
     .co .ci{font-size:14px;color:var(--sub);font-weight:600;line-height:1.7;}
     .co .meta{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:13.5px;color:var(--sub);line-height:1.9;}
     .co .links{display:flex;gap:10px;margin-top:16px;}
-    .co .links a{flex:1;background:var(--soft);border-radius:12px;padding:11px 0;text-align:center;font-size:14px;font-weight:700;color:var(--sub);transition:.12s;}
-    .co .links a:hover{color:var(--primary);}
+    .co .links a{flex:1;background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:12px 0;text-align:center;font-size:14px;font-weight:700;color:var(--sub);transition:.14s;}
+    .co .links a:hover{color:var(--primary);box-shadow:var(--shadow-sm);}
 
-    .help{padding:28px 28px;}
-    .help .nm{font-size:18px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
-    .hrow{display:flex;align-items:center;gap:14px;padding:15px 4px;border-radius:14px;transition:.12s;}
+    .help{padding:26px 28px;}
+    .help .nm{font-size:18px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;}
+    .hrow{display:flex;align-items:center;gap:14px;padding:15px 6px;border-radius:14px;transition:.12s;}
     .hrow:hover{background:var(--soft);}
     .hrow + .hrow{border-top:1px solid var(--line);}
-    .hrow .hi{width:40px;height:40px;border-radius:12px;background:#EEF0FE;display:grid;place-items:center;color:var(--primary);font-size:18px;flex:0 0 auto;}
+    .hrow .hi{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);display:grid;place-items:center;color:var(--primary);font-size:18px;flex:0 0 auto;}
     .hrow .ht{flex:1;font-size:15px;font-weight:700;}
     .hrow .hc{color:#C4CAD2;font-size:20px;}
 
-    .foot{margin-top:46px;text-align:center;font-size:12.5px;color:var(--tert);}
+    .foot{margin-top:48px;text-align:center;font-size:12.5px;color:var(--tert);font-weight:500;}
 
-    @media (max-width:920px){
-      .quick,.stats{grid-template-columns:repeat(2,1fr);}
+    @media (max-width:960px){
+      .hero-stats{grid-template-columns:repeat(2,1fr);}
+      .quick{grid-template-columns:repeat(3,1fr);}
+      .stats{grid-template-columns:repeat(2,1fr);}
+      .prodgrid{grid-template-columns:1fr;}
       .two{grid-template-columns:1fr;}
       .menu{display:none;}
+    }
+    @media (max-width:560px){
+      .quick{grid-template-columns:repeat(2,1fr);}
+      .hero h1{font-size:24px;}
     }
   </style>
   <script>
@@ -144,7 +188,7 @@
   <!-- ===== Top bar ===== -->
   <header>
     <div class="wrap nav">
-      <a class="logo" href="index.html">부비서<span class="sub">-광고관리페이지</span></a>
+      <a class="logo" href="index.html"><span class="b">부비서</span><span class="sub">광고관리</span></a>
       <nav class="menu">
         <div class="item">
           <a href="manage/#t0">통합관리</a>
@@ -176,7 +220,7 @@
       </nav>
       <div class="navright">
         <div class="navitem">
-          <div class="navtrig"><svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+          <div class="navtrig"><div class="iconbtn"><svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div></div>
           <div class="rdrop noti">
             <div class="rdrop-h">알림</div>
             <a class="noti-row" href="manage/#t0"><span class="ni"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></span><span class="nt"><b>등록 매물 광고 현황</b><span>진행 중인 광고 상태를 확인하세요</span></span></a>
@@ -186,7 +230,7 @@
           </div>
         </div>
         <div class="navitem">
-          <div class="navtrig"><div class="chip"><span class="av"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>저스트부동산중개법인</div></div>
+          <div class="navtrig"><div class="chip"><span class="av"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>저스트부동산중개법인</div></div>
           <div class="rdrop acct">
             <div class="acct-head"><b>저스트부동산중개법인</b><span>bubiseo0</span></div>
             <a class="acct-row" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>회원사 정보</a>
@@ -202,49 +246,61 @@
   <main>
     <div class="wrap">
 
-      <!-- greeting + small add button -->
-      <div class="greet">
-        <div class="gtext">
-          <h1>안녕하세요 👋 저스트부동산중개법인님.</h1>
-          <p>오늘도 좋은 하루 되세요.</p>
+      <!-- hero -->
+      <section class="hero">
+        <div class="hero-in">
+          <div>
+            <div class="ey">부동산 광고관리센터</div>
+            <h1>안녕하세요 👋<br/><span class="who"><b>저스트부동산중개법인</b></span>님</h1>
+            <p>오늘도 좋은 매물, 좋은 거래 되세요.</p>
+          </div>
+          <a class="cta" href="register/">＋ 광고 등록하기</a>
         </div>
-        <a class="addbtn" href="register/">매물 등록하기 ›</a>
-      </div>
+        <div class="hero-stats">
+          <a class="hs" href="manage/#t0"><div class="l">진행중인 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t2"><div class="l">미전송 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t3"><div class="l">신고매물</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t4"><div class="l">동일주소</div><div class="v">0<small>건</small></div></a>
+        </div>
+      </section>
 
-      <!-- quick: 전체광고관리 + 4 -->
-      <div class="quick">
-        <a class="qcard main" href="manage/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 14h5"/></svg></span><span class="ql">전체광고관리</span></a>
-        <a class="qcard" href="properties/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span><span class="ql">우리부동산매물목록</span></a>
-        <a class="qcard" href="manage/#t2"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg></span><span class="ql">등록종료</span></a>
-        <a class="qcard" href="manage/#t3"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/></svg></span><span class="ql">신고매물</span></a>
-        <a class="qcard" href="manage/#t4"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="ql">동일주소매물</span></a>
-        <a class="qcard" href="registry/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="ql">등기부등본관리</span></a>
-      </div>
-
-      <!-- 광고 현황 (5) -->
+      <!-- quick actions -->
       <section class="sec">
-        <h2>광고 현황</h2>
+        <div class="sec-h"><h2>빠른 메뉴</h2></div>
+        <div class="quick">
+          <a class="qcard main" href="manage/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 14h5"/></svg></span><span class="ql">전체광고관리</span></a>
+          <a class="qcard" href="properties/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span><span class="ql">우리부동산매물</span></a>
+          <a class="qcard" href="manage/#t2"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg></span><span class="ql">등록종료</span></a>
+          <a class="qcard" href="manage/#t3"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/></svg></span><span class="ql">신고매물</span></a>
+          <a class="qcard" href="manage/#t4"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="ql">동일주소매물</span></a>
+          <a class="qcard" href="registry/"><span class="qi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="ql">등기부등본</span></a>
+        </div>
+      </section>
+
+      <!-- 광고 현황 -->
+      <section class="sec">
+        <div class="sec-h"><h2>광고 현황</h2><a class="more" href="manage/#t0">자세히 ›</a></div>
         <div class="stats">
-          <div class="stat"><div class="lab">진행중인 광고</div><div class="num" style="color:var(--primary)">0<small>건</small></div></div>
-          <div class="stat"><div class="lab">미전송 광고</div><div class="num" style="color:var(--orange)">0<small>건</small></div></div>
-          <div class="stat"><div class="lab">동일주소</div><div class="num">0<small>건</small></div></div>
-          <div class="stat"><div class="lab">확인실패</div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
-          <div class="stat"><div class="lab">신고</div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
+          <div class="stat"><div class="top"><span class="si" style="background:#EEF0FE;color:var(--primary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span class="lab">진행중인 광고</span></div><div class="num gtext-grad">0<small>건</small></div></div>
+          <div class="stat"><div class="top"><span class="si" style="background:#FFF1E2;color:var(--orange)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></span><span class="lab">미전송 광고</span></div><div class="num" style="color:var(--orange)">0<small>건</small></div></div>
+          <div class="stat"><div class="top"><span class="si" style="background:#EAF0FF;color:var(--blue)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="lab">동일주소</span></div><div class="num">0<small>건</small></div></div>
+          <div class="stat"><div class="top"><span class="si" style="background:#FFEDEC;color:var(--red)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span><span class="lab">확인실패</span></div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
+          <div class="stat"><div class="top"><span class="si" style="background:#FFEDEC;color:var(--red)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22V4"/></svg></span><span class="lab">신고</span></div><div class="num" style="color:var(--red)">0<small>건</small></div></div>
         </div>
       </section>
 
       <!-- 보유 상품 현황 -->
       <section class="sec">
-        <h2>보유 상품 현황</h2>
+        <div class="sec-h"><h2>보유 상품 현황</h2></div>
         <div class="card prod">
           <div class="ph">
             <span class="pt">네이버 상품 · 쿠폰</span>
             <button class="btn">상품 구매하기</button>
           </div>
           <div class="prodgrid">
-            <div class="pbox"><div class="pn">네이버 등록권</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
-            <div class="pbox"><div class="pn">현장 확인</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
-            <div class="pbox"><div class="pn">쿠폰</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
+            <div class="pbox"><div class="pn"><span class="dot"></span>네이버 등록권</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
+            <div class="pbox"><div class="pn"><span class="dot"></span>현장 확인</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
+            <div class="pbox"><div class="pn"><span class="dot"></span>쿠폰</div><div class="pr"><span>유료</span><b>0/0</b></div><div class="pr"><span>프로모션</span><b>0/0</b></div></div>
           </div>
         </div>
       </section>
@@ -253,7 +309,7 @@
       <section class="sec">
         <div class="two">
           <div class="card co">
-            <div class="nm">저스트부동산중개법인</div>
+            <div class="nm gtext-grad">저스트부동산중개법인</div>
             <div class="crow">
               <span class="cav"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>
               <div class="ci">대표 · 장철호<br/>사업자 299-81-02645</div>
@@ -287,7 +343,7 @@
           var biz = (d.realEstate && d.realEstate.businessName) || '';
           var nm = (d.user && d.user.name) || '';
           if (biz){
-            document.querySelectorAll('.acct-head b, .who b').forEach(function(el){ el.textContent = biz; });
+            document.querySelectorAll('.acct-head b, .who b, .co .nm').forEach(function(el){ el.textContent = biz; });
             document.querySelectorAll('.chip').forEach(function(c){ if (c.lastChild && c.lastChild.nodeType === 3) c.lastChild.textContent = biz; });
           }
           if (nm){ document.querySelectorAll('.acct-head span').forEach(function(el){ el.textContent = nm; }); }
