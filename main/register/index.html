@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>부비서 광고관리페이지 — 매물 등록</title>
+  <title>부비서 광고관리페이지 — 광고 등록</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
@@ -158,7 +158,7 @@
 
   <main>
     <div class="wrap">
-      <div class="titlerow"><h1>매물 등록</h1></div>
+      <div class="titlerow"><h1>광고 등록</h1></div>
 
       <div class="layout">
         <div class="form">
@@ -184,7 +184,7 @@
             <div class="frow">
               <div class="flabel">매물 분류 <span class="req">*</span></div>
               <div class="ffield row">
-                <select class="sel w200" id="mClass1"><option>아파트</option><option>오피스텔</option><option>빌라·연립</option><option>단독·다가구</option><option>상가</option><option>사무실</option><option>토지</option></select>
+                <select class="sel w200" id="mClass1"><option>아파트</option><option>오피스텔</option><option>빌라(다세대)</option><option>빌라(다가구)</option><option>연립주택</option><option>단독주택</option><option>상가</option><option>사무실</option><option>건물&빌딩</option><option>공장</option><option>창고</option><option>토지</option></select>
                 <select class="sel w200" id="mClass2"><option>아파트</option><option>주상복합</option><option>도시형생활주택</option></select>
               </div>
             </div>
@@ -265,12 +265,21 @@
                 <label class="opt"><input type="radio" name="feeBase"> 기타</label>
               </div>
             </div>
+            <!-- 2026-06-08 [사용자 명시] 사용료 세부내역 — 관리비 바로 아래(자동입력)로 이동 -->
+            <div class="sec-h" style="margin-top:24px;">사용료 세부내역</div>
+            <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
+            <div id="feeList"></div>
+            <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
+            <div class="frow">
+              <div class="flabel">부과기준 기타</div>
+              <div class="ffield"><input class="inp full" placeholder="부과기준이 '기타'인 경우 직접 입력" /></div>
+            </div>
             <div class="sec-h" style="margin-top:24px;">매물 정보</div>
             <div class="infobox"><ul><li>정확한 정보를 입력해 주세요. 부정확한 정보 입력 시 과태료 부과 대상이 될 수 있습니다.</li><li>집합건물등기 : 전용면적 기준으로 검증 / 건물등기(개별등기 없음): 매물종류에 따라 전용·연면적 기준 검증</li><li>등기상 면적과 소수점까지 동일하게 기재 (0.1이라도 오차가 있을 시 검증 실패)</li></ul></div>
             <div class="frow">
-              <div class="flabel">해당층 / 해당동 총층 <span class="req">*</span></div>
+              <div class="flabel">해당층 / 총층 <span class="req">*</span></div>
               <div class="ffield">
-                <div class="row"><span class="suffix">해당층</span><input class="inp num w120" id="floor" placeholder="" /><span class="suffix">층</span><span class="suffix" style="margin-left:14px;">해당동 총층</span><input class="inp num w120" id="floorTotal" placeholder="" /><span class="suffix">층</span></div>
+                <div class="row"><span class="suffix">해당층</span><input class="inp num w120" id="floor" placeholder="" /><span class="suffix">층</span><span class="suffix" style="margin-left:14px;">총층</span><input class="inp num w120" id="floorTotal" placeholder="" /><span class="suffix">층</span></div>
                 <div class="fnote">· 해당층을 다르게 입력할 경우 허위매물로 신고될 수 있습니다.</div>
               </div>
             </div>
@@ -297,6 +306,15 @@
               <div class="flabel">세대당 / 총 주차대수</div>
               <div class="ffield row"><span class="suffix">세대당</span><input class="inp num w120" id="parkPer" /><span class="suffix">대 주차</span><span class="suffix" style="margin-left:14px;">총</span><input class="inp num w120" id="parkTotal" /><span class="suffix">대 주차</span></div>
             </div>
+            <!-- 2026-06-08 [사용자 명시] 입주정보 — 자동입력 정보로 이동 -->
+            <div class="frow">
+              <div class="flabel">입주정보 <span class="req">*</span></div>
+              <div class="ffield">
+                <div class="optrow"><label class="opt"><input type="radio" name="moveIn" checked> 즉시 입주</label></div>
+                <div class="row gap"><label class="opt"><input type="radio" name="moveIn"> </label><select class="sel w130"><option>년 선택</option></select><select class="sel w130"><option>월 선택</option></select><select class="sel w130"><option>일 선택</option></select><select class="sel w130"><option>초/중/하순</option></select><span class="suffix">이후 입주</span></div>
+                <label class="chk gap"><input type="checkbox"> 협의가능</label>
+              </div>
+            </div>
             <div class="sec-h" style="margin-top:24px;">시설 정보</div>
             <div class="frow">
               <div class="flabel">냉방시설</div>
@@ -305,7 +323,7 @@
             <div class="frow">
               <div class="flabel">생활시설</div>
               <div class="ffield">
-                <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 방/거실 전체</label><label class="chk"><input type="checkbox"> 침대</label><label class="chk"><input type="checkbox"> 책상</label><label class="chk"><input type="checkbox"> 옷장</label><label class="chk"><input type="checkbox"> 붙박이장</label><label class="chk"><input type="checkbox"> 신발장</label><label class="chk"><input type="checkbox"> 소파</label><label class="chk"><input type="checkbox"> TV</label></div>
+                <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 침대</label><label class="chk"><input type="checkbox"> 책상</label><label class="chk"><input type="checkbox"> 옷장</label><label class="chk"><input type="checkbox"> 붙박이장</label><label class="chk"><input type="checkbox"> 신발장</label><label class="chk"><input type="checkbox"> 소파</label><label class="chk"><input type="checkbox"> TV</label></div>
                 <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 욕실 전체</label><label class="chk"><input type="checkbox"> 샤워부스</label><label class="chk"><input type="checkbox"> 욕조</label><label class="chk"><input type="checkbox"> 비데</label><label class="chk"><input type="checkbox"> 세탁기</label><label class="chk"><input type="checkbox"> 건조기</label></div>
                 <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 주방 전체</label><label class="chk"><input type="checkbox"> 식탁</label><label class="chk"><input type="checkbox"> 냉장고</label><label class="chk"><input type="checkbox"> 싱크대</label><label class="chk"><input type="checkbox"> 식기세척기</label><label class="chk"><input type="checkbox"> 가스레인지</label><label class="chk"><input type="checkbox"> 인덕션레인지</label><label class="chk"><input type="checkbox"> 전자레인지</label><label class="chk"><input type="checkbox"> 가스오븐</label></div>
               </div>
@@ -359,14 +377,6 @@
                 <div class="fnote warn">· 융자금이 있는 매물은 융자금을 정확히 입력해주세요. 허위매물 신고시 경고처리됩니다.</div>
               </div>
             </div>
-            <div class="sec-h" style="margin-top:24px;">사용료 세부내역</div>
-            <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
-            <div id="feeList"></div>
-            <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
-            <div class="frow">
-              <div class="flabel">부과기준 기타</div>
-              <div class="ffield"><input class="inp full" placeholder="부과기준이 '기타'인 경우 직접 입력" /></div>
-            </div>
             <div class="sec-h" style="margin-top:24px;">기타 직접입력</div>
             <div class="frow">
               <div class="flabel">층노출 동의여부 <span class="req">*</span></div>
@@ -382,14 +392,6 @@
             <div class="frow">
               <div class="flabel">복층여부</div>
               <div class="ffield optrow"><label class="opt"><input type="radio" name="duplex" checked> 단층</label><label class="opt"><input type="radio" name="duplex"> 복층</label></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">입주정보 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="optrow"><label class="opt"><input type="radio" name="moveIn" checked> 즉시 입주</label></div>
-                <div class="row gap"><label class="opt"><input type="radio" name="moveIn"> </label><select class="sel w130"><option>년 선택</option></select><select class="sel w130"><option>월 선택</option></select><select class="sel w130"><option>일 선택</option></select><select class="sel w130"><option>초/중/하순</option></select><span class="suffix">이후 입주</span></div>
-                <label class="chk gap"><input type="checkbox"> 협의가능</label>
-              </div>
             </div>
           </section>
 
@@ -436,7 +438,7 @@
           <!-- 11. 약관 동의 -->
           <section class="seccard" id="s11">
             <div class="sec-h">약관 동의</div>
-            <label class="agree"><input type="checkbox" /> 매물 등록 약관에 모두 동의합니다.</label>
+            <label class="agree"><input type="checkbox" /> 광고 등록 약관에 모두 동의합니다.</label>
           </section>
         </div>
       </div>
@@ -446,7 +448,7 @@
   <div class="actbar"><div class="inner">
     <a class="btn-ghost" href="../properties/">목록</a>
     <button class="btn-line">임시저장</button>
-    <button class="btn-pri">매물등록</button>
+    <button class="btn-pri">광고등록</button>
   </div></div>
 
   <!-- 매물 정보 불러오기 모달 -->
@@ -499,7 +501,7 @@
     window.__loadRows = [];
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     /* 영문 enum → 한국어 (API 가 영문 enum 으로 내려줌) */
-    var TYPE_KO = { APARTMENT:'아파트', OFFICETEL:'오피스텔', VILLA:'빌라·연립', COMMERCIAL:'상가', HOUSE:'단독·다가구', LAND:'토지', BUILDING:'건물·빌딩' };
+    var TYPE_KO = { APARTMENT:'아파트', OFFICETEL:'오피스텔', VILLA:'빌라', COMMERCIAL:'상가', HOUSE:'단독주택', LAND:'토지', BUILDING:'건물&빌딩', FACTORY:'공장', WAREHOUSE:'창고' };
     var DEAL_KO = { SALE:'매매', JEONSE:'전세', MONTHLY:'월세', WHOLE_LEASE:'통임대' };
     function typeKo(v){ return TYPE_KO[v] || v || '-'; }
     function dealKo(v){ return DEAL_KO[v] || v || '-'; }
@@ -516,16 +518,22 @@
       if (!rows.length){ box.innerHTML = '<div class="msub">등록된 매물이 없습니다.</div>'; return; }
       box.innerHTML = rows.map(function(p, i){
         var title = (p.buildingName || p.aptName || p.address || '주소 미입력') + (p.dong ? ' ' + p.dong + '동' : '') + (p.ho ? ' ' + p.ho + '호' : '');
+        // 2026-06-08 [사용자 명시] 지번주소 크게, 도로명 작게.
+        var jibun = p.jibunAddress || p.address || '';
+        var road = (p.address && p.address !== jibun) ? p.address : '';
+        var addrHtml = '<div class="lp-addr">' + esc(jibun)
+          + (road ? '<span style="font-size:12px;color:var(--sub);margin-left:6px;">도로명 ' + esc(road) + '</span>' : '')
+          + '</div>';
         return '<div class="lprow" onclick="pickLoad(' + i + ')">'
           + '<div><div class="lp-tags"><span class="lp-tag">' + esc(typeKo(p.propertyType || p.category)) + '</span><span class="lp-tag deal">' + esc(dealKo(p.dealKind)) + '</span></div>'
-          + '<div class="lp-title">' + esc(title) + '</div><div class="lp-addr">' + esc(p.address || '') + '</div></div>'
+          + '<div class="lp-title">' + esc(title) + '</div>' + addrHtml + '</div>'
           + '<div class="lp-price">' + esc(priceText(p)) + '</div>'
           + '<button class="lp-pick" onclick="event.stopPropagation();pickLoad(' + i + ')">불러오기</button></div>';
       }).join('');
     }
     function setVal(id, v){ var el = document.getElementById(id); if (el && v != null && v !== '') el.value = v; }
     function setDeal(d){ if (!d) return; var r = document.querySelector('input[name="deal"][value="' + d + '"]'); if (r) r.checked = true; }
-    function setSelect(id, v){ var el = document.getElementById(id); if (!el || v == null) return; for (var i = 0; i < el.options.length; i++){ if (el.options[i].text === v){ el.selectedIndex = i; return; } } }
+    function setSelect(id, v){ var el = document.getElementById(id); if (!el || v == null) return; var i; for (i = 0; i < el.options.length; i++){ if (el.options[i].text === v){ el.selectedIndex = i; return; } } for (i = 0; i < el.options.length; i++){ if (el.options[i].text.indexOf(v) === 0){ el.selectedIndex = i; return; } } }
     /* select 에 해당 option 이 없으면 동적으로 추가 후 선택 (불러온 주소·동·호·단지·방향). */
     function setSelectAdd(id, v){
       if (v == null || v === '') return; v = String(v);
@@ -554,7 +562,17 @@
     }
     /* 주소 → 시/도·시군구·읍면동 분해 (없는 option 은 추가). */
     var SIDO_MAP = { '서울':'서울특별시','부산':'부산광역시','대구':'대구광역시','인천':'인천광역시','광주':'광주광역시','대전':'대전광역시','울산':'울산광역시','세종':'세종특별자치시','경기':'경기도','강원':'강원특별자치도','충북':'충청북도','충남':'충청남도','전북':'전북특별자치도','전남':'전라남도','경북':'경상북도','경남':'경상남도','제주':'제주특별자치도' };
-    function fillAddress(addr){
+    /* 주소 문자열에서 읍/면/동 토큰만 추출 (시/군/구 제외). 없으면 ''. */
+    function extractDong(parts){
+      for (var j = 1; j < parts.length; j++){
+        if (/[동읍면가]$/.test(parts[j]) && !/[시군구]$/.test(parts[j])) return parts[j];
+      }
+      return '';
+    }
+    /* 2026-06-08 [사용자 명시] 읍/면/동 자동입력 수정 — 도로명 주소엔 동이 없으므로
+       지번주소(jibun)에서 읍/면/동을 우선 추출해 채운다. */
+    function fillAddress(addr, jibun){
+      if (!addr && jibun) addr = jibun;
       if (!addr) return;
       var parts = String(addr).trim().split(/\s+/);
       if (!parts.length) return;
@@ -564,12 +582,14 @@
       var gu = [];
       for (var i = 1; i < parts.length; i++){ if (/[시군구]$/.test(parts[i])){ gu.push(parts[i]); } else if (gu.length){ break; } }
       if (gu.length) setSelectAdd('gugun', gu.join(' '));
-      for (var j = 1; j < parts.length; j++){ if (/[동읍면가]$/.test(parts[j]) && !/[시군구]$/.test(parts[j])){ setSelectAdd('dongSel', parts[j]); break; } }
+      var dong = extractDong(parts);
+      if (!dong && jibun) dong = extractDong(String(jibun).trim().split(/\s+/));
+      if (dong) setSelectAdd('dongSel', dong);
     }
     /* 사진: file input 엔 URL 을 넣을 수 없어 photobox 에 썸네일 미리보기로 표시. */
     function fillPhotos(photos){
       if (!photos || !photos.length) return;
-      var box = document.querySelector('#s7 .photobox'); if (!box) return;
+      var box = document.querySelector('.photobox'); if (!box) return;
       var old = box.querySelector('.ph-preview'); if (old) old.parentNode.removeChild(old);
       var wrap = document.createElement('div'); wrap.className = 'ph-preview';
       wrap.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;width:100%;';
@@ -589,8 +609,8 @@
       setSelect('mClass1', typeKo(p.propertyType || p.category));
       setDeal(dk);
       setVal('buildingUse', p.buildingUse);
-      /* 소재지 */
-      fillAddress(p.address);
+      /* 소재지 — 도로명+지번 함께 넘겨 읍/면/동 보강 */
+      fillAddress(p.address, p.jibunAddress);
       setSelectAdd('danji', p.buildingName);
       setSelectAdd('dongPick', p.unitDong || p.dong);
       setSelectAdd('hoPick', p.unitHo || p.ho);
@@ -617,10 +637,10 @@
       setVal('parkTotal', p.totalParking);
       /* 시설 */
       setChecks(p.options);
-      /* 상세 */
-      setVal('feature', p.propertyFeature);
+      /* 상세 — 2026-06-08 [사용자 명시] 매물특징=제목(featureTitle), 상세=내용(propertyFeature) */
+      setVal('feature', p.featureTitle || p.propertyFeature);
       setVal('detail', p.propertyFeature);
-      /* 사진 */
+      /* 사진 — 2026-06-08 [사용자 명시] 사진 불러오기 (현재 사진 안 옴) 수정 */
       fillPhotos(p.photos);
       closeLoad();
       toast('매물 정보를 불러왔어요 — 소재지·관리비·사진 등은 확인 후 보완하세요.');
