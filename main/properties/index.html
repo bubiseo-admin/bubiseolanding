@@ -61,11 +61,12 @@
     .count b{color:var(--primary);}
 
     /* property table */
-    .ptable{width:100%;background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border-collapse:collapse;}
-    .ptable thead th{background:var(--soft);font-size:13px;font-weight:700;color:var(--sub);text-align:left;padding:14px 18px;white-space:nowrap;}
+    .ptable-wrap{overflow-x:auto;border-radius:18px;box-shadow:var(--shadow);background:var(--card);}
+    .ptable{width:100%;min-width:1040px;background:var(--card);border-collapse:collapse;}
+    .ptable thead th{background:var(--soft);font-size:13px;font-weight:700;color:var(--sub);text-align:left;padding:13px 13px;white-space:nowrap;}
     .ptable thead th.center{text-align:center;}
     .ptable thead th.right{text-align:right;}
-    .ptable tbody td{padding:15px 18px;border-top:1px solid var(--line2);font-size:14px;color:var(--ink);vertical-align:middle;}
+    .ptable tbody td{padding:13px 13px;border-top:1px solid var(--line2);font-size:14px;color:var(--ink);vertical-align:middle;}
     .ptable tbody tr:hover{background:var(--soft);}
     .pt-chip{display:inline-block;font-size:12px;font-weight:800;padding:4px 10px;border-radius:8px;background:var(--tint);color:var(--primary);white-space:nowrap;}
     .pt-chip.deal{background:#EAF2FF;color:#3182F6;}
@@ -85,7 +86,6 @@
 
     @media (max-width:880px){
       .menu{display:none;}
-      .ptable{display:block;overflow-x:auto;}
     }
   </style>
   <script>
@@ -161,13 +161,17 @@
       </div>
 
       <div class="count">총 <b id="pcount">0</b>건</div>
-      <table class="ptable" id="ptable">
-        <thead><tr>
-          <th>매물종류</th><th>거래</th><th>매물정보</th>
-          <th class="center">전용면적</th><th class="right">가격</th><th class="center">광고상태</th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+      <div class="ptable-wrap">
+        <table class="ptable" id="ptable">
+          <thead><tr>
+            <th>매물종류</th><th>거래</th><th>매물정보</th>
+            <th class="center">전용면적</th><th class="center">공용면적</th>
+            <th class="right">매매가</th><th class="right">보증금</th><th class="right">월세</th><th class="right">관리비</th>
+            <th class="center">광고상태</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
       <div class="emptybox hide" id="empty">
         <div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div>
         <div class="et">조건에 맞는 매물이 없어요</div>
@@ -184,15 +188,25 @@
     var filterType = 'all';
 
     var SAMPLE = [
-      { type:'아파트', deal:'매매', title:'수원역푸르지오자이 138동 1104호', addr:'경기 수원시 팔달구 매산로', area:'84.9㎡ (25.6평)', price:'8억 5,000', status:'on' },
-      { type:'아파트', deal:'전세', title:'영통자이 105동 801호', addr:'경기 수원시 영통구 봉영로', area:'59.8㎡ (18.1평)', price:'5억 5,000', status:'on' },
-      { type:'오피스텔', deal:'월세', title:'광교중흥S클래스 A동 2503호', addr:'경기 수원시 영통구 광교중앙로', area:'33.1㎡ (10.0평)', price:'1,000 / 90', status:'ready' },
-      { type:'빌라·연립', deal:'전세', title:'행복빌라 302호', addr:'경기 수원시 권선구 권선로', area:'45.2㎡ (13.7평)', price:'2억 1,000', status:'off' },
-      { type:'상가', deal:'매매', title:'인계동 프라자 1층 102호', addr:'경기 수원시 팔달구 인계로', area:'66.0㎡ (20.0평)', price:'12억', status:'on' }
+      { type:'아파트', deal:'매매', title:'수원역푸르지오자이 138동 1104호', addr:'경기 수원시 팔달구 매산로', areaEx:'84.9㎡', areaCommon:'112.3㎡', priceSale:'8억 5,000', deposit:'-', monthly:'-', fee:'15', status:'on' },
+      { type:'아파트', deal:'전세', title:'영통자이 105동 801호', addr:'경기 수원시 영통구 봉영로', areaEx:'59.8㎡', areaCommon:'78.2㎡', priceSale:'-', deposit:'5억 5,000', monthly:'-', fee:'12', status:'on' },
+      { type:'오피스텔', deal:'월세', title:'광교중흥S클래스 A동 2503호', addr:'경기 수원시 영통구 광교중앙로', areaEx:'33.1㎡', areaCommon:'47.2㎡', priceSale:'-', deposit:'1,000', monthly:'90', fee:'8', status:'ready' },
+      { type:'빌라·연립', deal:'전세', title:'행복빌라 302호', addr:'경기 수원시 권선구 권선로', areaEx:'45.2㎡', areaCommon:'58.0㎡', priceSale:'-', deposit:'2억 1,000', monthly:'-', fee:'5', status:'off' },
+      { type:'상가', deal:'매매', title:'인계동 프라자 1층 102호', addr:'경기 수원시 팔달구 인계로', areaEx:'66.0㎡', areaCommon:'99.0㎡', priceSale:'12억', deposit:'-', monthly:'-', fee:'20', status:'on' }
     ];
 
     function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function statusLabel(s){ return s === 'on' ? '광고중' : (s === 'ready' ? '광고대기' : '노출종료'); }
+    /* 영문 enum → 한국어 매핑 (API 가 영문 enum 으로 내려줌). 이미 한국어면 그대로 통과. */
+    var TYPE_KO = { APARTMENT:'아파트', OFFICETEL:'오피스텔', VILLA:'빌라·연립', COMMERCIAL:'상가', HOUSE:'단독·다가구', LAND:'토지', BUILDING:'건물·빌딩' };
+    var DEAL_KO = { SALE:'매매', JEONSE:'전세', MONTHLY:'월세', WHOLE_LEASE:'통임대' };
+    function typeKo(v){ return TYPE_KO[v] || v || '-'; }
+    function dealKo(v){ return DEAL_KO[v] || v || '-'; }
+    function statusInfo(s){
+      if (s === 'ACTIVE' || s === '광고중' || s === 'on') return { cls:'on', text:'광고중' };
+      if (s === 'IN_CONTRACT' || s === '계약중' || s === 'ready') return { cls:'ready', text:'계약중' };
+      if (s === 'COMPLETED' || s === '거래완료') return { cls:'off', text:'거래완료' };
+      return { cls:'off', text:'노출종료' };
+    }
 
     var API = 'https://api.bubiseo.com';
     var DATA = SAMPLE.slice();
@@ -203,27 +217,20 @@
       if (v >= 10000){ var eok = Math.floor(v / 10000); var rest = v % 10000; return eok + '억' + (rest ? ' ' + rest.toLocaleString() : ''); }
       return v.toLocaleString();
     }
-    function priceOf(p){
-      var d = p.dealKind || '';
-      if (d === '전세') return fmtMan(p.deposit);
-      if (d === '월세' || d === '단기임대') return fmtMan(p.deposit) + ' / ' + fmtMan(p.monthlyRent);
-      return fmtMan(p.dealPrice != null ? p.dealPrice : p.deposit);
-    }
-    function mapStatusRaw(s){
-      if (s === '광고중' || s === 'ACTIVE' || s === 'on') return 'on';
-      if (s === '노출종료' || s === 'ENDED' || s === 'off') return 'off';
-      return 'ready';
-    }
     function mapProp(p){
       var dongho = (p.dong ? ' ' + p.dong + '동' : '') + (p.ho ? ' ' + p.ho + '호' : '');
       return {
-        type: p.propertyType || p.category || '-',
-        deal: p.dealKind || '-',
+        type: typeKo(p.propertyType || p.category),
+        deal: dealKo(p.dealKind),
         title: (p.buildingName || p.aptName || p.address || '주소 미입력') + dongho,
         addr: p.address || '',
-        area: p.exclusiveArea ? (p.exclusiveArea + '㎡') : '-',
-        price: priceOf(p) || '-',
-        status: mapStatusRaw(p.status)
+        areaEx: p.exclusiveArea ? (p.exclusiveArea + '㎡') : '-',
+        areaCommon: p.contractArea ? (p.contractArea + '㎡') : '-',
+        priceSale: p.dealPrice != null ? fmtMan(p.dealPrice) : '-',
+        deposit: p.deposit != null ? fmtMan(p.deposit) : '-',
+        monthly: p.monthlyRent != null ? fmtMan(p.monthlyRent) : '-',
+        fee: (p.managementFee != null && p.managementFee !== '') ? fmtMan(p.managementFee) : '-',
+        status: p.status
       };
     }
     function loadReal(){
@@ -266,13 +273,18 @@
       }
       table.classList.remove('hide'); empty.classList.add('hide');
       box.innerHTML = filtered.map(function(p){
+        var si = statusInfo(p.status);
         return '<tr>'
           + '<td><span class="pt-chip">' + esc(p.type) + '</span></td>'
           + '<td><span class="pt-chip deal">' + esc(p.deal) + '</span></td>'
           + '<td><div class="pt-title">' + esc(p.title) + '</div><div class="pt-addr">' + esc(p.addr) + '</div></td>'
-          + '<td class="pt-area" style="text-align:center;">' + esc(p.area) + '</td>'
-          + '<td class="pt-price" style="text-align:right;">' + esc(p.price) + '</td>'
-          + '<td style="text-align:center;"><span class="pstatus ' + p.status + '">' + statusLabel(p.status) + '</span></td>'
+          + '<td class="pt-area" style="text-align:center;">' + esc(p.areaEx) + '</td>'
+          + '<td class="pt-area" style="text-align:center;">' + esc(p.areaCommon) + '</td>'
+          + '<td class="pt-price" style="text-align:right;">' + esc(p.priceSale) + '</td>'
+          + '<td class="pt-price" style="text-align:right;">' + esc(p.deposit) + '</td>'
+          + '<td class="pt-price" style="text-align:right;">' + esc(p.monthly) + '</td>'
+          + '<td class="pt-area" style="text-align:right;">' + (p.fee === '-' ? '-' : esc(p.fee) + '만원') + '</td>'
+          + '<td style="text-align:center;"><span class="pstatus ' + si.cls + '">' + si.text + '</span></td>'
           + '</tr>';
       }).join('');
     }

@@ -549,9 +549,15 @@
     }
     window.__loadRows = [];
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    /* 영문 enum → 한국어 (API 가 영문 enum 으로 내려줌) */
+    var TYPE_KO = { APARTMENT:'아파트', OFFICETEL:'오피스텔', VILLA:'빌라·연립', COMMERCIAL:'상가', HOUSE:'단독·다가구', LAND:'토지', BUILDING:'건물·빌딩' };
+    var DEAL_KO = { SALE:'매매', JEONSE:'전세', MONTHLY:'월세', WHOLE_LEASE:'통임대' };
+    function typeKo(v){ return TYPE_KO[v] || v || '-'; }
+    function dealKo(v){ return DEAL_KO[v] || v || '-'; }
     function priceText(p){
-      if (p.dealKind === '전세') return man(p.deposit);
-      if (p.dealKind === '월세' || p.dealKind === '단기임대') return man(p.deposit) + '/' + man(p.monthlyRent);
+      var dk = dealKo(p.dealKind);
+      if (dk === '전세') return man(p.deposit);
+      if (dk === '월세' || dk === '단기임대') return man(p.deposit) + '/' + man(p.monthlyRent);
       return man(p.dealPrice != null ? p.dealPrice : p.deposit);
     }
     function man(v){ if (v == null || v === '' || isNaN(v)) return '-'; v = Number(v); if (v >= 10000){ var e = Math.floor(v/10000), r = v%10000; return e + '억' + (r ? ' ' + r.toLocaleString() : ''); } return v.toLocaleString(); }
@@ -562,7 +568,7 @@
       box.innerHTML = rows.map(function(p, i){
         var title = (p.buildingName || p.aptName || p.address || '주소 미입력') + (p.dong ? ' ' + p.dong + '동' : '') + (p.ho ? ' ' + p.ho + '호' : '');
         return '<div class="lprow" onclick="pickLoad(' + i + ')">'
-          + '<div><div class="lp-tags"><span class="lp-tag">' + esc(p.propertyType || p.category || '-') + '</span><span class="lp-tag deal">' + esc(p.dealKind || '-') + '</span></div>'
+          + '<div><div class="lp-tags"><span class="lp-tag">' + esc(typeKo(p.propertyType || p.category)) + '</span><span class="lp-tag deal">' + esc(dealKo(p.dealKind)) + '</span></div>'
           + '<div class="lp-title">' + esc(title) + '</div><div class="lp-addr">' + esc(p.address || '') + '</div></div>'
           + '<div class="lp-price">' + esc(priceText(p)) + '</div>'
           + '<button class="lp-pick" onclick="event.stopPropagation();pickLoad(' + i + ')">불러오기</button></div>';
@@ -573,8 +579,8 @@
     function setSelect(id, v){ var el = document.getElementById(id); if (!el || v == null) return; for (var i = 0; i < el.options.length; i++){ if (el.options[i].text === v){ el.selectedIndex = i; return; } } }
     function pickLoad(i){
       var p = window.__loadRows[i]; if (!p) return;
-      setSelect('mClass1', p.propertyType || p.category);
-      setDeal(p.dealKind);
+      setSelect('mClass1', typeKo(p.propertyType || p.category));
+      setDeal(dealKo(p.dealKind));
       setVal('buildingUse', p.buildingUse);
       setVal('priceSale', p.dealPrice);
       setVal('priceDeposit', p.deposit);
