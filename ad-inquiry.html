@@ -392,7 +392,10 @@
           amount: String(amount),
           orderName: orderName,
         });
-        window.location.href = '/pay-widget.html?' + params.toString();
+        // 2026-06-09 [사용자 명시] 페이지 전환 대신 팝업창으로 결제. 팝업 차단 시 페이지 전환 폴백.
+        const payUrl = '/pay-widget.html?' + params.toString();
+        const payPopup = window.open(payUrl, 'bubiseo_pay', 'popup=yes,width=480,height=780');
+        if (!payPopup) window.location.href = payUrl;
       });
     })();
   </script>
