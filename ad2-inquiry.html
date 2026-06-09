@@ -17,7 +17,8 @@
     :root {
       --pri: #6155F5;
       --pri2: #39AFFD;
-      --bg: #F9FAFB;
+      /* 2026-06-09 [사용자 명시] 페이지 배경 화이트 — ad-inquiry 와 동일. */
+      --bg: #FFFFFF;
       --card: #FFFFFF;
       --line: #E5E8EB;
       --text: #191F28;
@@ -56,10 +57,11 @@
       display: flex; align-items: center; justify-content: space-between;
       max-width: 720px; margin: 0 auto;
       padding: 12px 20px;
-      background: rgba(249,250,251,0.92);
-      backdrop-filter: blur(12px) saturate(140%);
-      -webkit-backdrop-filter: blur(12px) saturate(140%);
-      border-bottom: 1px solid rgba(0,0,0,0.04);
+      /* 2026-06-09 [사용자 명시] ad-inquiry main-nav 와 동일한 흰 배경 + blur. */
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid transparent;
     }
     .ad2-nav__brand { display: flex; align-items: center; gap: 8px; }
     .ad2-nav__brand img { width: 22px; height: 22px; border-radius: 6px; }
