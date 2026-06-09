@@ -83,8 +83,7 @@
     <!-- 2026-05-22 [사용자 명시] 베타 광고주 모집 + 가입 계정수 — 페이지 최상단 -->
     <!-- 2026-05-28 [사용자 명시] 대표계정 / 직원계정 제거 + 큰 가입 계정 카드 제거 — 부동산사무소 / 이용중인 중개사 2칸 1x2 로 단순화 -->
     <section class="adq__top">
-      <!-- 모드 배너 (베타 무료 / 런칭 보장가) -->
-      <div class="adq__sidebar-promo" data-ad-pricing-promo hidden></div>
+      <!-- 2026-06-03 [사용자 명시] 베타 광고주 모집 배너 제거. (accounts 산식은 아래 숨김 div로 유지) -->
 
       <!-- 2026-05-29 [사용자 명시] 부동산 사무소 / 현재 부비서 이용중인 중개사 카드 숨김.
            숫자 표시 부담·비교 가능성 차단. 가격 산식엔 그대로 사용 (display:none 만). -->
@@ -105,7 +104,7 @@
     <!-- 2026-05-22 [사용자 명시] 배너 광고 소개 — 노출 예시 이미지 3장 가로 -->
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">배너 광고
-        <span class="adq__banner-ad-note">(대시보드, 커뮤니티, 사내메신저 중복선택가능) <span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
+        <span class="adq__banner-ad-note">(대시보드, 커뮤니티, 사내메신저 중복선택가능)</span>
       </h2>
       <p class="adq__banner-ad-desc">앱 내 대시보드, 사내메신저, 커뮤니티에 배너로 노출됩니다.</p>
       <div class="adq__banner-ad-imgs">
@@ -117,9 +116,7 @@
 
     <!-- 2026-05-22 [사용자 명시] 네이티브 광고 소개 — 노출 예시 이미지 2장 가로 -->
     <section class="adq__banner-ad">
-      <h2 class="adq__banner-ad-title">네이티브 광고
-        <span class="adq__banner-ad-note"><span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
-      </h2>
+      <h2 class="adq__banner-ad-title">네이티브 광고</h2>
       <p class="adq__banner-ad-desc">앱 내 매물메뉴 + 매물지도 &gt; 목록 리스트에 매물처럼 등장합니다.</p>
       <div class="adq__banner-ad-imgs adq__banner-ad-imgs--two">
         <img src="ad-images/IMG_3237.jpg" alt="부비서 앱 네이티브 광고 노출 예시 — 매물 메뉴" loading="lazy" />
@@ -128,10 +125,10 @@
     </section>
 
     <!-- 2026-05-26 [사용자 명시] 홈 광고 소개 -->
-    <!-- 2026-05-28 [사용자 명시] 홈 광고 단가 표기 — 월 100만원 (취소선) + 무료이벤트중 배지 -->
+    <!-- 2026-06-03 [사용자 명시] 무료이벤트 종료 — 배지·취소선 제거, 월 100만원 정가 표시 -->
     <section class="adq__banner-ad">
       <h2 class="adq__banner-ad-title">홈 광고
-        <span class="adq__banner-ad-note"><s class="adq__price-strike">월 100만원</s> <span class="adq__free-badge">현재 무료이벤트중</span> <span class="adq__first-come-badge">선착순!</span></span>
+        <span class="adq__banner-ad-note">월 100만원</span>
       </h2>
       <p class="adq__banner-ad-desc">앱 시작 시 누구보다 먼저 등장합니다.</p>
       <div class="adq__banner-ad-imgs">
@@ -189,11 +186,8 @@
         </div>
       </div>
 
-      <!-- 2026-05-28 [사용자 명시] 결제 정책 하단 — 무료광고이벤트 버튼(왼) + 결제하기 버튼(오) -->
+      <!-- 2026-06-03 [사용자 명시] 무료광고이벤트 버튼 제거 — 결제하기만 -->
       <div class="adq__pay-cta-group">
-        <a class="adq__free-cta" href="products.html#ad-inquiry-section" aria-label="무료광고이벤트 신청 — 고객지원 03번 광고문의로 이동">
-          🎁 무료광고이벤트
-        </a>
         <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
           💳 결제하기
         </button>
@@ -274,10 +268,15 @@
       }
       function fmtKrw(n) { return (Number(n) || 0).toLocaleString('ko-KR'); }
 
-      // 2026-05-28 [사용자 명시] 홈 광고는 월 100만원 — 현재 선착순 무료이벤트중 (0원)
-      // 2026-05-28 [사용자 명시] 배너/네이티브도 선착순 무료이벤트 적용 — 정가 그대로 표시하되 결제 0원
-      var HOME_MONTHLY_REGULAR = 1000000;
-      var FREE_EVENT_ALL = true; // 배너+네이티브+홈 모두 무료이벤트
+      // 2026-06-03 [사용자 명시] 무료이벤트 종료 — 정상 결제.
+      //   홈 광고 = 월 100만원, 배너/네이티브 = 가입중개사수 × 1000원/월.
+      var HOME_MONTHLY = 1000000;
+
+      // 슬롯별 결제 금액 (표시·결제 동일 산식으로 통일).
+      function slotAmount(key, months, accountCount) {
+        if (key === 'home') return HOME_MONTHLY * months;
+        return accountCount * UNIT_PRICE_PER_ACCOUNT * months;
+      }
 
       function recalc() {
         var accountCount = readAccountCount();
@@ -296,29 +295,25 @@
           breakdownEl.innerHTML = '이용중인 중개사 정보를 불러오는 중입니다…';
           return;
         }
-        var perAccount = accountCount * UNIT_PRICE_PER_ACCOUNT;
-        // 2026-05-28 [사용자 명시] 합계금액은 '원래 가격' 기준으로 표시 (무료이벤트는 안내 배지로만)
-        var totalRegular = 0;
+        var total = 0;
         var lines = slots.map(function (s) {
+          var amt = slotAmount(s.key, months, accountCount);
+          total += amt;
           if (s.key === 'home') {
-            var homeRegular = HOME_MONTHLY_REGULAR * months;
-            totalRegular += homeRegular;
             return '<span class="adq__pay-line">' +
               '<span class="adq__pay-line-label">' + s.label + '</span>' +
               '<span class="adq__pay-line-value">' +
-              fmtKrw(HOME_MONTHLY_REGULAR) + '원 × ' + months + '개월 = <b>' + fmtKrw(homeRegular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
+              fmtKrw(HOME_MONTHLY) + '원 × ' + months + '개월 = <b>' + fmtKrw(amt) + '원</b>' +
               '</span></span>';
           }
-          var regular = perAccount * months;
-          totalRegular += regular;
           // 2026-05-29 [사용자 명시] 명수 노출 차단 — 슬롯 × 개월 + 합계만 표시.
           return '<span class="adq__pay-line">' +
             '<span class="adq__pay-line-label">' + s.label + '</span>' +
             '<span class="adq__pay-line-value">' +
-            months + '개월 = <b>' + fmtKrw(regular) + '원</b> <em class="adq__pay-event">현재 선착순 무료이벤트중</em>' +
+            months + '개월 = <b>' + fmtKrw(amt) + '원</b>' +
             '</span></span>';
         });
-        totalEl.textContent = fmtKrw(totalRegular);
+        totalEl.textContent = fmtKrw(total);
         breakdownEl.innerHTML = lines.join('');
       }
 
@@ -374,30 +369,21 @@
           alert('광고 슬롯(1개 이상)과 광고 기간을 선택해주세요.');
           return;
         }
-        // 2026-05-28 [사용자 명시] 모든 광고 슬롯이 선착순 무료이벤트중 — 결제 진행 불가, 무료광고이벤트 페이지로 안내
-        if (FREE_EVENT_ALL) {
-          var goInquiry = confirm('현재 모든 광고 슬롯이 선착순 무료이벤트 진행 중입니다.\n무료광고이벤트 신청 페이지(고객지원 03번 광고문의)로 이동하시겠습니까?');
-          if (goInquiry) {
-            window.location.href = 'products.html#ad-inquiry-section';
-          }
-          return;
-        }
+        // 2026-06-03 [사용자 명시] 무료이벤트 종료 — 표시금액 그대로 토스 결제위젯으로 진행.
         var accountCount = readAccountCount();
         var chargeableSlots = slots.filter(function (s) { return s.key !== 'home'; });
         if (chargeableSlots.length > 0 && !accountCount) {
           alert('이용중인 중개사 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
           return;
         }
-        var amount = chargeableSlots.length > 0
-          ? (accountCount * UNIT_PRICE_PER_ACCOUNT * chargeableSlots.length * months)
-          : 0;
-        if (amount === 0) {
-          alert('선택하신 슬롯은 현재 선착순 무료이벤트 진행 중입니다. 무료광고이벤트 버튼을 이용해주세요.');
+        var amount = slots.reduce(function (sum, s) {
+          return sum + slotAmount(s.key, months, accountCount);
+        }, 0);
+        if (amount <= 0) {
+          alert('결제 금액을 계산할 수 없습니다. 슬롯·기간을 다시 선택해주세요.');
           return;
         }
-        var slotLabels = slots.map(function (s) {
-          return s.key === 'home' ? (s.label + '(무료이벤트)') : s.label;
-        }).join(' + ');
+        var slotLabels = slots.map(function (s) { return s.label; }).join(' + ');
         var slotKeys = slots.map(function (s) { return s.key; }).join('+');
         // 2026-05-29 [사용자 명시] orderName 에서도 명수 노출 차단 — 슬롯 + 기간 + 합계만.
         var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (' + fmtKrw(amount) + '원)';
