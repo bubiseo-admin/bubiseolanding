@@ -5677,6 +5677,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   color: #191F28;
   letter-spacing: -1px;
   margin: 0 0 10px;
+  /* 2026-06-03 [사용자 명시] 배너/네이티브/홈 광고 제목 중앙정렬 */
+  text-align: center;
 }
 .adq__banner-ad-note {
   display: inline-block;
@@ -5692,6 +5694,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-weight: 600;
   text-decoration: line-through;
   text-decoration-thickness: 1.5px;
+}
+/* 2026-06-03 [사용자 명시] 50만원 특가할인중 — 블루 그라데이션 강조 */
+.adq__sale-hl {
+  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-weight: 800;
+  margin-left: 6px;
 }
 .adq__free-badge {
   display: inline-block;
@@ -5782,6 +5794,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: -0.3px;
   margin: 0 0 28px;
   line-height: 1.5;
+  /* 2026-06-03 [사용자 명시] 배너/네이티브/홈 광고 부제목 중앙정렬 */
+  text-align: center;
 }
 /* 2026-05-25 [사용자 명시] 광고 예시 이미지 — 폭만 고정, 원본 비율 그대로 (잘림 방지). */
 .adq__banner-ad-imgs {
