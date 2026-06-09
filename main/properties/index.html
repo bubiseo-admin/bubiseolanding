@@ -93,7 +93,35 @@
     /* 부동산관리센터 가드 — 포털 로그인 토큰 없으면 로그인으로. (로컬 file:// 미리보기는 통과) */
     (function(){
       if (location.protocol === 'file:') return;
-      try { if (!localStorage.getItem('bbs_portal_token')) location.replace('../login/'); } catch (e) {}
+      var LOGIN = '../login/';
+      try { if (localStorage.getItem('bbs_portal_token')) return; } catch (e) { return; }
+      // 2026-06-09 데스크톱 광고관리 임베드(iframe) SSO — 부모(데스크톱 앱) 세션 받아 2번째 QR 제거.
+      var embedded = false;
+      try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+      if (!embedded) { location.replace(LOGIN); return; }
+      try { document.documentElement.style.visibility = 'hidden'; } catch (e) {}
+      var settled = false;
+      function onPortalMsg(ev){
+        if (settled) return;
+        var d = ev.data;
+        if (d && d.source === 'bbs-desktop' && d.type === 'portal-token' && d.token){
+          settled = true;
+          try {
+            localStorage.setItem('bbs_portal_token', d.token);
+            if (d.user) localStorage.setItem('bbs_portal_user', typeof d.user === 'string' ? d.user : JSON.stringify(d.user));
+          } catch (e) {}
+          location.reload();
+        }
+      }
+      window.addEventListener('message', onPortalMsg);
+      var portalTries = 0;
+      (function askPortal(){
+        if (settled) return;
+        try { window.parent.postMessage({ source: 'bbs-portal-embed', type: 'request-token' }, '*'); } catch (e) {}
+        if (++portalTries < 10) { setTimeout(askPortal, 300); return; }
+        try { document.documentElement.style.visibility = ''; } catch (e) {}
+        location.replace(LOGIN);
+      })();
     })();
   </script>
 </head>
