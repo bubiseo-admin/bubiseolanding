@@ -11,18 +11,41 @@
     :root{
       --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
       --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB;
-      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE; --red:#F04452;
     }
     *{box-sizing:border-box;}
     html,body{margin:0;height:100%;}
     body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
     a{text-decoration:none;color:inherit;}
-    .box{width:100%;max-width:412px;background:var(--card);border-radius:24px;box-shadow:0 10px 40px rgba(17,24,39,.07);padding:40px 36px 34px;}
-    .logo{text-align:center;font-size:24px;font-weight:900;color:var(--primary);letter-spacing:-1px;display:flex;align-items:baseline;justify-content:center;gap:0;cursor:pointer;}
-    .logo .sub{font-weight:900;color:var(--primary);}
-    .tag{text-align:center;font-size:14px;color:var(--sub);font-weight:500;margin-top:10px;}
+    .box{width:100%;max-width:412px;background:var(--card);border:1px solid rgba(150,160,200,.14);border-radius:26px;box-shadow:0 24px 70px rgba(40,50,90,.12);padding:38px 34px 30px;}
+    .logo{text-align:center;font-size:25px;font-weight:900;letter-spacing:-1px;display:flex;align-items:baseline;justify-content:center;gap:0;cursor:pointer;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo .sub{font-weight:900;}
+    .tag{text-align:center;font-size:13.5px;color:var(--sub);font-weight:500;margin-top:9px;}
 
-    .qr-wrap{margin-top:26px;text-align:center;}
+    /* tab switcher */
+    .tabs{display:flex;gap:4px;background:var(--soft);border-radius:14px;padding:5px;margin-top:24px;}
+    .tab{flex:1;border:none;background:none;font-family:inherit;font-size:14px;font-weight:800;color:var(--tert);padding:11px 0;border-radius:10px;cursor:pointer;transition:.16s;letter-spacing:-.3px;}
+    .tab.on{background:#fff;color:var(--primary);box-shadow:0 4px 12px rgba(40,50,90,.1);}
+
+    .pane{margin-top:22px;}
+    .pane.hide{display:none;}
+
+    /* account login */
+    .field{margin-bottom:14px;}
+    .field>label{display:block;font-size:13px;font-weight:700;color:var(--sub);margin-bottom:7px;}
+    .field>input{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:13px;padding:14px 16px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
+    .field>input::placeholder{color:var(--tert);}
+    .field>input:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .err{display:none;font-size:13px;font-weight:700;color:var(--red);background:#FEECEC;border-radius:11px;padding:11px 13px;margin-bottom:13px;line-height:1.45;}
+    .err.show{display:block;}
+    .submit{display:block;width:100%;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 12px 28px rgba(97,85,245,.28);transition:.16s;}
+    .submit:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(97,85,245,.32);}
+    .submit:disabled{opacity:.6;cursor:default;transform:none;box-shadow:0 12px 28px rgba(97,85,245,.18);}
+    .hint{text-align:center;font-size:12.5px;color:var(--tert);font-weight:500;margin:16px 2px 0;line-height:1.5;}
+    .hint b{color:var(--sub);font-weight:700;}
+
+    /* qr login */
+    .qr-wrap{text-align:center;}
     #qrbox{width:188px;height:188px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:11px;display:flex;align-items:center;justify-content:center;}
     #qrbox img,#qrbox canvas{display:block;border-radius:6px;}
     .qr-fallback{font-size:13px;color:var(--tert);font-weight:600;padding:0 12px;line-height:1.5;}
@@ -34,7 +57,7 @@
     .qr-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulse 1.2s infinite;flex-shrink:0;}
     @keyframes pulse{0%,100%{opacity:.25;}50%{opacity:1;}}
 
-    .foot{text-align:center;margin-top:26px;font-size:12px;color:var(--tert);}
+    .foot{text-align:center;margin-top:24px;font-size:12px;color:var(--tert);}
   </style>
 </head>
 <body>
@@ -42,14 +65,37 @@
     <a class="logo" href="../">부비서<span class="sub">-광고관리페이지</span></a>
     <p class="tag">부동산관리센터 · 부비서 앱 계정으로 로그인</p>
 
-    <div class="qr-wrap">
-      <div id="qrbox"><div class="qr-fallback">QR 코드를 불러오는 중…</div></div>
-      <ul class="qr-steps">
-        <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
-        <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
-        <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
-      </ul>
-      <div class="qr-status"><span class="qr-dot"></span>앱 로그인 후 QR를 촬영해주세요.</div>
+    <div class="tabs">
+      <button class="tab on" type="button" data-tab="account" onclick="showTab('account')">앱 계정 로그인</button>
+      <button class="tab" type="button" data-tab="qr" onclick="showTab('qr')">QR 로그인</button>
+    </div>
+
+    <!-- 앱 계정(이메일+비밀번호) 로그인 -->
+    <form class="pane" id="pane-account" autocomplete="on" onsubmit="return submitLogin(event)">
+      <div class="field">
+        <label for="email">이메일</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="username" placeholder="부비서 앱 이메일" />
+      </div>
+      <div class="field">
+        <label for="password">비밀번호</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="비밀번호" />
+      </div>
+      <div class="err" id="loginErr"></div>
+      <button class="submit" id="loginBtn" type="submit">로그인</button>
+      <p class="hint">부비서 <b>앱과 동일한 계정</b>으로 로그인됩니다.</p>
+    </form>
+
+    <!-- QR 페어링 로그인 -->
+    <div class="pane hide" id="pane-qr">
+      <div class="qr-wrap">
+        <div id="qrbox"><div class="qr-fallback">QR 코드를 불러오는 중…</div></div>
+        <ul class="qr-steps">
+          <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
+          <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
+          <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
+        </ul>
+        <div class="qr-status"><span class="qr-dot"></span>앱 로그인 후 QR를 촬영해주세요.</div>
+      </div>
     </div>
 
     <div class="foot">부비서 — 공인중개사를 위한 부동산 IT 솔루션</div>
@@ -57,13 +103,74 @@
 
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
   <script>
-    // 2026-06-08 — 부동산관리센터 QR 페어링 로그인 (전용). 부비서 앱 기존 'QR 페어링' 스캐너 그대로 사용.
-    //   ① POST /pairing/init (clientType:'web') → pairingToken
-    //   ② QR 에 {token,clientId} JSON 렌더 (앱 스캐너가 token 파싱)
-    //   ③ 앱이 승인 → GET /pairing/:token/result 폴링 → portalToken 저장 → /main 진입
+    // 2026-06-09 [사용자 명시] 로그인 2종 — ① 앱 계정(이메일+비밀번호) ② QR 페어링.
+    //   모바일 브라우저는 자기 폰 QR 을 같은 폰 앱으로 촬영 불가 → 앱 계정 로그인 기본 노출.
     var API = 'https://api.bubiseo.com';
     var TOKEN_KEY = 'bbs_portal_token';
     var USER_KEY = 'bbs_portal_user';
+
+    /* ---------- 탭 전환 ---------- */
+    function showTab(which){
+      var tabs = document.querySelectorAll('.tab');
+      for (var i = 0; i < tabs.length; i++){
+        tabs[i].classList.toggle('on', tabs[i].getAttribute('data-tab') === which);
+      }
+      document.getElementById('pane-account').classList.toggle('hide', which !== 'account');
+      document.getElementById('pane-qr').classList.toggle('hide', which !== 'qr');
+      if (which === 'qr'){
+        if (!currentToken) initQR(); else ensurePoll();
+        var em = document.getElementById('email'); if (em) em.blur();
+      } else {
+        stopPoll(); // QR 탭 벗어나면 폴링 중단 (불필요 호출 방지)
+        var em2 = document.getElementById('email'); if (em2) em2.focus();
+      }
+    }
+
+    /* ---------- 앱 계정 로그인 ---------- */
+    function showErr(msg){
+      var el = document.getElementById('loginErr');
+      el.textContent = msg; el.classList.add('show');
+    }
+    function clearErr(){
+      var el = document.getElementById('loginErr');
+      el.textContent = ''; el.classList.remove('show');
+    }
+    function submitLogin(e){
+      if (e && e.preventDefault) e.preventDefault();
+      clearErr();
+      var email = (document.getElementById('email').value || '').trim();
+      var password = document.getElementById('password').value || '';
+      if (!email || !password){ showErr('이메일과 비밀번호를 입력해주세요.'); return false; }
+      var btn = document.getElementById('loginBtn');
+      btn.disabled = true; btn.textContent = '로그인 중…';
+      fetch(API + '/portal/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password })
+      })
+        .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+        .then(function(res){
+          if (res.ok && res.data && res.data.portalToken){
+            localStorage.setItem(TOKEN_KEY, res.data.portalToken);
+            if (res.data.user){ localStorage.setItem(USER_KEY, JSON.stringify(res.data.user)); }
+            btn.textContent = '로그인 완료!';
+            location.replace('../');
+          } else {
+            btn.disabled = false; btn.textContent = '로그인';
+            showErr((res.data && res.data.message) || '로그인에 실패했어요. 다시 시도해주세요.');
+          }
+        })
+        .catch(function(){
+          btn.disabled = false; btn.textContent = '로그인';
+          showErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.');
+        });
+      return false;
+    }
+
+    /* ---------- QR 페어링 로그인 ---------- */
+    //   ① POST /pairing/init (clientType:'web') → pairingToken
+    //   ② QR 에 {token,clientId} JSON 렌더 (앱 스캐너가 token 파싱)
+    //   ③ 앱이 승인 → GET /pairing/:token/result 폴링 → portalToken 저장 → /main 진입
     var webClientId = genId();
     var currentToken = null;
     var pollTimer = null;
@@ -72,13 +179,14 @@
       try { if (window.crypto && crypto.randomUUID) return 'web-' + crypto.randomUUID(); } catch (e) {}
       return 'web-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
     }
-
     function qrFail(msg){
       document.getElementById('qrbox').innerHTML = '<div class="qr-fallback">' + msg + '</div>';
     }
+    function stopPoll(){ if (pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
+    function ensurePoll(){ if (!pollTimer && currentToken) startPoll(); }
 
     function initQR(){
-      if (pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+      stopPoll();
       var box = document.getElementById('qrbox');
       box.innerHTML = '<div class="qr-fallback">QR 코드를 불러오는 중…</div>';
       fetch(API + '/pairing/init', {
@@ -104,21 +212,21 @@
     }
 
     function startPoll(){
-      if (pollTimer){ clearInterval(pollTimer); }
+      stopPoll();
       pollTimer = setInterval(function(){
         if (!currentToken){ return; }
         fetch(API + '/pairing/' + encodeURIComponent(currentToken) + '/result')
           .then(function(r){ return r.json(); })
           .then(function(d){
             if (d.status === 'APPROVED' && d.portalToken){
-              clearInterval(pollTimer); pollTimer = null;
+              stopPoll();
               localStorage.setItem(TOKEN_KEY, d.portalToken);
               if (d.user){ localStorage.setItem(USER_KEY, JSON.stringify(d.user)); }
               var st = document.querySelector('.qr-status');
               if (st){ st.innerHTML = '로그인 완료! 이동 중…'; }
               location.replace('../');
             } else if (d.status === 'EXPIRED' || d.status === 'REJECTED'){
-              clearInterval(pollTimer); pollTimer = null;
+              currentToken = null;
               initQR();
             }
           })
@@ -126,8 +234,15 @@
       }, 2000);
     }
 
-    if (document.readyState !== 'loading'){ initQR(); }
-    else { document.addEventListener('DOMContentLoaded', initQR); }
+    /* ---------- 초기 탭: 모바일=앱계정 / 데스크톱=QR ---------- */
+    function isMobileLike(){
+      try {
+        return window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(max-width: 760px)').matches;
+      } catch (e) { return false; }
+    }
+    function boot(){ showTab(isMobileLike() ? 'account' : 'qr'); }
+    if (document.readyState !== 'loading'){ boot(); }
+    else { document.addEventListener('DOMContentLoaded', boot); }
   </script>
 </body>
 </html>
