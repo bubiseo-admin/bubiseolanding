@@ -121,6 +121,8 @@
     const planType = (url.searchParams.get('plan') || 'banner').slice(0, 40);
     const amount = Math.max(100, parseInt(url.searchParams.get('amount') || '1000', 10) || 1000);
     const orderName = (url.searchParams.get('orderName') || '부비서 광고').slice(0, 100);
+    // 2026-06-09 [사용자 명시] 분양광고(ad2) — 연결된 PreSalePartnership id. 결제 완료 시 자동 노출용.
+    const presaleId = (url.searchParams.get('presaleId') || '').slice(0, 40);
 
     const elLoading = document.getElementById('payLoading');
     const elContent = document.getElementById('payContent');
@@ -169,7 +171,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'omit',
-          body: JSON.stringify({ orderId, orderName, amount, planType, customerKey }),
+          body: JSON.stringify({ orderId, orderName, amount, planType, customerKey, ...(presaleId ? { presaleId } : {}) }),
         });
         const j = await r.json();
         if (!r.ok) throw new Error(j.error || '주문 등록 실패');

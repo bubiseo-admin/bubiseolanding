@@ -900,24 +900,7 @@
             </div>
           </div>
 
-          <!-- 2026-05-28 [사용자 명시] 입금 안내(계좌 이미지 + 안내 + 입금완료 버튼) — 처음 hidden. [업로드] 클릭 시 노출 -->
-          <div id="payDepositSection" hidden>
-            <!-- 입금 계좌 (hana.png) -->
-            <div class="pay-account">
-              <img class="pay-account__img" id="payHanaImg" src="assets/hana.png" alt="입금 계좌 안내" />
-              <p class="pay-account__hint">이미지를 누르면 크게 볼 수 있어요</p>
-            </div>
-
-            <!-- 안내 문구 -->
-            <!-- 2026-06-03 [사용자 명시] 선착순 무료 이벤트 안내로 변경 -->
-            <div class="pay-notice">
-              <b>클릭하세요!</b> 선착순 무료 이벤트중입니다.<br/>
-              <strong class="pay-notice__highlight">(5분 이내 부동산들에게 광고가 노출됩니다.)</strong>
-            </div>
-
-            <!-- 입금완료 버튼 — 클릭 시 자동으로 form submit 트리거 -->
-            <button type="button" class="pay-confirm-btn" id="payConfirmBtn">입금완료</button>
-          </div>
+          <!-- 2026-06-09 [사용자 명시] 계좌이체 입금 안내(계좌 이미지 + 입금완료 버튼) 제거 — 토스 결제로 전환. -->
         </div>
       </section>
 
@@ -946,7 +929,7 @@
       </section>
 
       <div class="submit-bar">
-        <button type="submit" class="submit" id="submitBtn" disabled>업로드</button>
+        <button type="submit" class="submit" id="submitBtn" disabled>결제하기</button>
       </div>
     </form>
 
@@ -978,11 +961,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- 2026-05-25 [사용자 명시] 입금 계좌 이미지 lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="입금 계좌 크게 보기">
-    <button type="button" class="lightbox__close" id="lightboxClose" aria-label="닫기">✕</button>
-    <img id="lightboxImg" src="assets/hana.png" alt="입금 계좌 안내" />
-  </div>
+  <!-- 2026-06-09 [사용자 명시] 계좌 이미지 lightbox 제거 — 토스 결제 전환. -->
 
   <!-- 2026-05-25 [사용자 명시] 업로드 진행률 팝업 -->
   <div class="upmodal" id="upmodal" role="dialog" aria-modal="true" aria-labelledby="upmodalTitle">
@@ -1653,7 +1632,6 @@
       const payBasicRow = document.getElementById('payBasicRow');
       const payPremiumAmount = document.getElementById('payPremiumAmount');
       const payBasicAmount = document.getElementById('payBasicAmount');
-      const payConfirmBtn = document.getElementById('payConfirmBtn');
       const submitBtn = document.getElementById('submitBtn');
       const startInput = document.querySelector('input[name="startDate"]');
       const endInput = document.querySelector('input[name="endDate"]');
@@ -1744,7 +1722,7 @@
             </div>
             <p style="font-size:12px; color:var(--tertiary); text-align:center; line-height:1.6; margin:0 0 16px; word-break:keep-all;">
               위 날짜부터 프리미엄 노출이 시작됩니다.<br/>
-              예약하시면 입금완료 버튼이 활성화되고,<br/>
+              예약하시면 결제를 진행할 수 있고,<br/>
               광고 시작일이 자동 변경돼요.
             </p>
             <div style="display:flex; gap:8px;">
@@ -1860,7 +1838,7 @@
           endInput.value = endEl.value;
           recomputePay();
           resetPaymentGate(); // 입금완료 활성화 가능 상태로
-          toast(`예약됐어요. ${fixedStartPretty}부터 ${endEl.value}까지. 입금완료를 눌러주세요.`);
+          toast(`예약됐어요. ${fixedStartPretty}부터 ${endEl.value}까지. 결제하기를 눌러주세요.`);
           close();
         });
         overlay.addEventListener('click', (e) => {
@@ -1886,56 +1864,17 @@
       }
       consentAgreed.addEventListener('change', recomputeSubmitGate);
 
+      // 2026-06-09 [사용자 명시] 토스 전환 — 입금완료 버튼 제거. 호출처 호환 위해 함수는 유지(동의 게이트만 재계산).
       function resetPaymentGate() {
         paymentConfirmedClient = false;
-        payConfirmBtn.textContent = '입금완료';
-        payConfirmBtn.classList.remove('done');
         recomputeSubmitGate();
       }
-      payConfirmBtn.addEventListener('click', () => {
-        const months = calcMonths(startInput.value, endInput.value);
-        if (months <= 0) { toast('광고 기간을 먼저 선택해주세요.'); return; }
-        paymentConfirmedClient = !paymentConfirmedClient;
-        if (paymentConfirmedClient) {
-          payConfirmBtn.textContent = '✓ 입금완료됨';
-          payConfirmBtn.classList.add('done');
-        } else {
-          payConfirmBtn.textContent = '입금완료';
-          payConfirmBtn.classList.remove('done');
-        }
-        recomputeSubmitGate();
-        // 2026-05-28 [사용자 명시] 입금완료 클릭 = 백엔드 등록 트리거 (동의 OK 일 때).
-        if (paymentConfirmedClient && consentAgreed.checked) {
-          document.getElementById('ad2Form').requestSubmit();
-        }
-      });
-
-      // hana 이미지 lightbox
-      const lightbox = document.getElementById('lightbox');
-      document.getElementById('payHanaImg').addEventListener('click', () => {
-        lightbox.classList.add('show');
-      });
-      document.getElementById('lightboxClose').addEventListener('click', () => {
-        lightbox.classList.remove('show');
-      });
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) lightbox.classList.remove('show');
-      });
+      // 2026-06-09 [사용자 명시] 계좌이체 → 토스 전환 — 입금완료 버튼/계좌 lightbox 제거.
 
       // submit
       document.getElementById('ad2Form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        // 2026-05-28 [사용자 명시] [업로드] 1차 클릭 — 입금 안내 노출 후 return.
-        //   사용자 송금 → [입금완료] 클릭 시 paymentConfirmedClient=true + 자동 form submit 재호출 → 이 분기 통과.
-        if (!paymentConfirmedClient) {
-          const sec = document.getElementById('payDepositSection');
-          if (sec) {
-            sec.hidden = false;
-            sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-          toast('입금 후 입금완료 버튼을 눌러주세요.');
-          return;
-        }
+        // 2026-06-09 [사용자 명시] 계좌이체 → 토스 전환. 입금 게이트 제거 — 검증 후 등록 → 토스 결제 페이지로.
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         const form = e.target;
@@ -1953,8 +1892,6 @@
         if (payTier === 'premium' && badges.length !== BADGE_REQUIRED_PREMIUM) {
           toast('프리미엄 노출은 뱃지를 정확히 5개 입력해야 해요.'); btn.disabled = false; return;
         }
-        // 입금완료 게이트 — 클라이언트 측에서 한 번 더 확인.
-        if (!paymentConfirmedClient) { toast('결제 안내의 [입금완료] 버튼을 먼저 눌러주세요.'); btn.disabled = false; return; }
         // 2026-05-25 [사용자 명시] 개인정보 수집·이용 동의 (필수) 게이트.
         if (!consentAgreed.checked) { toast('개인정보 수집·이용에 동의해주세요.'); btn.disabled = false; return; }
         const phonesClean = phones.map((p) => p.trim()).filter(Boolean);
@@ -2040,7 +1977,25 @@
             const err = await r.json().catch(() => ({}));
             throw new Error(err?.message || '등록 실패');
           }
-          showSuccess();
+          // 2026-06-09 [사용자 명시] 등록 성공 → 토스 결제 페이지로 이동. 결제 완료 시 자동 노출.
+          const j = await r.json().catch(() => ({}));
+          const presaleId = j.id;
+          if (!presaleId) {
+            toast('등록은 됐으나 결제 연결에 실패했어요. 고객지원으로 문의해주세요.');
+            btn.disabled = false;
+            return;
+          }
+          const months = calcMonths(startDate, endDate);
+          const plan = payTier === 'premium' ? 'ad2_premium' : 'ad2_basic';
+          const tierLabel = payTier === 'premium' ? '프리미엄' : '기본';
+          const orderName = `분양광고 ${payload.title} ${tierLabel} ${months}개월`.slice(0, 100);
+          const params = new URLSearchParams({
+            plan,
+            amount: String(payload.chargedAmount),
+            orderName,
+            presaleId,
+          });
+          window.location.href = '/pay-widget.html?' + params.toString();
         } catch (err) {
           toast(err.message || '등록 실패');
           btn.disabled = false;
