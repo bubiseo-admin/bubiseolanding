@@ -96,6 +96,15 @@
     .bizbox .k{color:var(--tert);font-weight:600;}
     .bizbox .v{color:var(--ink);font-weight:700;}
 
+    /* 2026-06-09 [사용자 명시] 자동입력 정보 — 읽기전용 요약 표 (입력칸 X, 한눈에 보기) */
+    .autobox{background:var(--soft);border-radius:14px;padding:2px 22px;}
+    .autorow{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:13px 2px;border-top:1px solid var(--line2);align-items:center;}
+    .autobox .autorow:first-child{border-top:none;}
+    .autorow .k{color:var(--tert);font-weight:600;font-size:13.5px;}
+    .autorow .v{color:var(--ink);font-weight:700;font-size:14.5px;word-break:break-all;}
+    .autorow .v .sub{color:var(--sub);font-weight:600;font-size:13px;margin-left:8px;}
+    .autorow .v.empty{color:var(--tert);font-weight:600;}
+
     /* 사진 업로드 */
     .photobox{border:1.5px dashed var(--line);border-radius:16px;padding:36px;text-align:center;background:var(--soft);}
     .photobox .ph-ic{width:60px;height:60px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--tert);margin:0 auto 14px;}
@@ -212,99 +221,43 @@
           <!-- 2. 자동입력 정보 (매물 정보 불러오기로 채워짐) -->
           <section class="seccard" id="s2">
             <div class="sec-h">자동입력 정보<span class="right"><button class="loadbtn" onclick="openLoad()">매물 정보 불러오기</button></span></div>
-            <div class="infobox"><ul><li>아래 항목은 [매물 정보 불러오기] 로 자동 입력됩니다. 불러온 뒤 값을 확인·보완해 주세요.</li></ul></div>
-            <div class="frow">
-              <div class="flabel">매물 분류 <span class="req">*</span></div>
-              <div class="ffield row">
-                <select class="sel w200" id="mClass1"><option>아파트</option><option>오피스텔</option><option>빌라(다세대)</option><option>빌라(다가구)</option><option>연립주택</option><option>단독주택</option><option>상가</option><option>사무실</option><option>건물&빌딩</option><option>공장</option><option>창고</option><option>토지</option></select>
-                <select class="sel w200" id="mClass2"><option>아파트</option><option>주상복합</option><option>도시형생활주택</option></select>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">거래 종류 <span class="req">*</span></div>
-              <div class="ffield optrow" id="dealRow">
-                <label class="opt"><input type="radio" name="deal" value="매매" checked> 매매</label>
-                <label class="opt"><input type="radio" name="deal" value="전세"> 전세</label>
-                <label class="opt"><input type="radio" name="deal" value="월세"> 월세</label>
-                <label class="opt"><input type="radio" name="deal" value="단기임대"> 단기임대</label>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">소재지 <span class="req">*</span></div>
-              <div class="ffield row">
-                <select class="sel w160" id="sido"><option value="">시/도</option><option>서울특별시</option><option>경기도</option><option>인천광역시</option></select>
-                <select class="sel w160" id="gugun"><option value="">시/군/구</option><option>마포구</option><option>강남구</option><option>수원시 영통구</option></select>
-                <select class="sel w160" id="dongSel"><option value="">읍/면/동</option><option>성산동</option><option>역삼동</option></select>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">단지 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="row">
-                  <select class="sel w200" id="danji"><option value="">단지 선택</option></select>
-                  <span class="suffix" style="margin-left:8px;">즐겨찾기</span>
-                </div>
-                <div class="optrow gap">
-                  <label class="opt"><input type="radio" name="dongho" value="sel" checked> 동/호 선택</label>
-                  <label class="opt"><input type="radio" name="dongho" value="direct"> 동/호 직접입력</label>
-                </div>
-                <div class="row gap">
-                  <select class="sel w130" id="dongPick"><option value="">동 선택</option></select>
-                  <select class="sel w130" id="hoPick"><option value="">호 선택</option></select>
-                  <select class="sel w160" id="pyeong"><option value="">평형 선택</option></select>
-                </div>
-                <div class="fnote">· 선택된 면적이 등기와 동일한 면적인지 확인 후 등록해주시고 면적이 다를 경우 직접입력으로 등록하셔야 합니다.<br/>· 주소, 면적을 다르게 입력할 경우 허위매물로 신고될 수 있으니 꼭 동일하게 입력 바랍니다.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">건축물용도 <span class="req">*</span></div>
-              <div class="ffield">
-                <input class="inp full" id="buildingUse" placeholder="예) 공동주택(아파트), 제2종근린생활시설, 단독주택 등" />
-                <div class="fnote">· 건축물대장상의 용도를 입력해주세요.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">매매가 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="row"><input class="inp num w160" id="priceSale" placeholder="0" /><span class="suffix">만원 - 원</span></div>
-                <div class="fnote">· 가격정보는 최초 등록 가격에서 ±20% 내에서만 수정이 가능합니다. (단, 월세 매물은 제외)</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">현 보증금</div>
-              <div class="ffield row"><input class="inp num w160" id="priceDeposit" placeholder="0" /><span class="suffix">만원 - 원</span></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">현 월세</div>
-              <div class="ffield row"><input class="inp num w160" id="priceMonthly" placeholder="0" /><span class="suffix">만원 - 원</span></div>
+            <div class="infobox"><ul><li>[매물 정보 불러오기] 로 불러온 정보를 한눈에 확인하세요. 값을 바꾸려면 [매물 정보 불러오기] 를 다시 눌러 다른 매물을 선택하세요.</li></ul></div>
+            <div class="autobox">
+              <div class="autorow"><div class="k">매물 분류</div><div class="v empty" id="aClass">매물을 불러오면 표시됩니다</div></div>
+              <div class="autorow"><div class="k">거래 종류</div><div class="v empty" id="aDeal">-</div></div>
+              <div class="autorow"><div class="k">소재지</div><div class="v empty" id="aAddr">-</div></div>
+              <div class="autorow"><div class="k">단지 · 동/호</div><div class="v empty" id="aDanji">-</div></div>
+              <div class="autorow"><div class="k">건축물용도</div><div class="v empty" id="aUse">-</div></div>
+              <div class="autorow"><div class="k">매매가</div><div class="v empty" id="aPriceSale">-</div></div>
+              <div class="autorow"><div class="k">보증금</div><div class="v empty" id="aDeposit">-</div></div>
+              <div class="autorow"><div class="k">월세</div><div class="v empty" id="aMonthly">-</div></div>
             </div>
             <div class="sec-h" style="margin-top:24px;">관리비 부과정보 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b id="feeSum" style="color:var(--primary);">0원</b></span></div>
+            <!-- 2026-06-09 [사용자 명시] 모바일 매물추가와 1:1 — 부과방식(정액/기타/확인불가) + 10만원미만 + 공용(고정금액) + 항목별 토글 + 기준. 매물 불러오기 매핑 호환. -->
             <div class="frow">
               <div class="flabel">부과방식 <span class="req">*</span></div>
               <div class="ffield optrow">
-                <label class="opt"><input type="radio" name="feeType"> 정액관리비</label>
-                <label class="opt"><input type="radio" name="feeType"> 정액관리비 (세부내역 미고지한 경우)</label>
-                <label class="opt"><input type="radio" name="feeType"> 기타부과</label>
-                <label class="opt"><input type="radio" name="feeType"> 확인불가</label>
+                <label class="opt"><input type="radio" name="feeType" value="정액"> 정액 관리비</label>
+                <label class="opt"><input type="radio" name="feeType" value="기타"> 기타 부과</label>
+                <label class="opt"><input type="radio" name="feeType" value="확인불가"> 확인 불가</label>
               </div>
             </div>
             <div class="frow">
-              <div class="flabel">부과기준 <span class="req">*</span></div>
-              <div class="ffield optrow">
-                <label class="opt"><input type="radio" name="feeBase"> 직전 월 관리비</label>
-                <label class="opt"><input type="radio" name="feeBase"> 최근 3개월 평균</label>
-                <label class="opt"><input type="radio" name="feeBase"> 최근 1년 평균</label>
-                <label class="opt"><input type="radio" name="feeBase"> 기타</label>
-              </div>
+              <div class="flabel"></div>
+              <div class="ffield"><label class="chk"><input type="checkbox" id="feeBelow10"> 관리비 10만원 미만 혹은 중개 의뢰인이 세부내역을 제공하지 않음</label></div>
             </div>
-            <!-- 2026-06-08 [사용자 명시] 사용료 세부내역 — 관리비 바로 아래(자동입력)로 이동 -->
             <div class="sec-h" style="margin-top:24px;">사용료 세부내역</div>
-            <div class="infobox"><ul><li>세부내역에는 포함되지만 사용료가 없는 항목의 경우 [실비]로 등록 가능합니다.</li></ul></div>
+            <div class="infobox"><ul><li>모바일 매물추가와 동일한 항목·옵션 구조입니다. 공용은 고정 금액, 나머지 항목은 [쓴 만큼] 또는 [고정 금액]을 선택하세요.</li></ul></div>
+            <div class="feerow"><div class="l">공용 <span style="font-size:12px;color:var(--tert);font-weight:600;">고정 금액</span></div><div class="feeopts"><input class="inp num w160" id="feeCommon" placeholder="0" /><span class="suffix">만원</span></div></div>
             <div id="feeList"></div>
-            <div class="feerow"><div class="l">기타 관리비 <span class="req">*</span></div><div class="feeopts"><label class="opt"><input type="radio" name="etcFee"> 없음</label><label class="opt"><input type="radio" name="etcFee"> 있음</label></div></div>
-            <div class="frow">
-              <div class="flabel">부과기준 기타</div>
-              <div class="ffield"><input class="inp full" placeholder="부과기준이 '기타'인 경우 직접 입력" /></div>
+            <div class="frow" style="margin-top:8px;">
+              <div class="flabel">관리비 기준 <span class="req">*</span></div>
+              <div class="ffield optrow">
+                <label class="opt"><input type="radio" name="feeBase" value="직전월"> 직전 월</label>
+                <label class="opt"><input type="radio" name="feeBase" value="3개월"> 최근 3개월 평균</label>
+                <label class="opt"><input type="radio" name="feeBase" value="1년"> 최근 1년 평균</label>
+                <label class="opt"><input type="radio" name="feeBase" value="기타"> 기타 (직접입력)</label>
+              </div>
             </div>
             <div class="sec-h" style="margin-top:24px;">매물 정보</div>
             <div class="infobox"><ul><li>정확한 정보를 입력해 주세요. 부정확한 정보 입력 시 과태료 부과 대상이 될 수 있습니다.</li><li>집합건물등기 : 전용면적 기준으로 검증 / 건물등기(개별등기 없음): 매물종류에 따라 전용·연면적 기준 검증</li><li>등기상 면적과 소수점까지 동일하게 기재 (0.1이라도 오차가 있을 시 검증 실패)</li></ul></div>
@@ -498,15 +451,14 @@
     var API = 'https://api.bubiseo.com';
     var PORTAL_TOKEN_KEY = 'bbs_portal_token';
 
-    /* 사용료 세부내역 행 생성 */
+    /* 사용료 세부내역 행 생성 — 모바일 FEE_ITEMS 와 동일 (전기료·수도료·가스비·난방비·인터넷비·TV·기타).
+       항목별 [쓴 만큼/고정 금액], '기타'만 [없음] 추가 → 모바일 매물추가 구조 1:1 (불러오기 매핑 호환). */
     (function(){
-      var items = ['공용 관리비','전기료','수도료','가스사용료','난방비','인터넷사용료','TV사용료'];
-      document.getElementById('feeList').innerHTML = items.map(function(it, i){
-        return '<div class="feerow"><div class="l">' + it + ' <span class="req">*</span></div>'
-          + '<div class="feeopts"><label class="opt"><input type="radio" name="fee' + i + '"> 정액</label>'
-          + '<input class="inp num w120" placeholder="원" />'
-          + '<label class="opt"><input type="radio" name="fee' + i + '"> 실비</label>'
-          + (i === 0 ? '<input class="inp num w120" placeholder="원" />' : '') + '</div></div>';
+      var FEE_ITEMS = ['전기료','수도료','가스비','난방비','인터넷비','TV','기타'];
+      document.getElementById('feeList').innerHTML = FEE_ITEMS.map(function(it, i){
+        var opts = (it === '기타' ? ['없음','쓴 만큼','고정 금액'] : ['쓴 만큼','고정 금액']);
+        var optHtml = opts.map(function(o){ return '<label class="opt"><input type="radio" name="feeItem' + i + '"> ' + o + '</label>'; }).join('');
+        return '<div class="feerow"><div class="l">' + it + '</div><div class="feeopts">' + optHtml + '</div></div>';
       }).join('');
     })();
 
@@ -544,6 +496,9 @@
       return man(p.dealPrice != null ? p.dealPrice : p.deposit);
     }
     function man(v){ if (v == null || v === '' || isNaN(v)) return '-'; v = Number(v); if (v >= 10000){ var e = Math.floor(v/10000), r = v%10000; return e + '억' + (r ? ' ' + r.toLocaleString() : ''); } return v.toLocaleString(); }
+    /* 2026-06-09 [사용자 명시] 자동입력 읽기전용 표 셀 채우기 */
+    function manWon(v){ var t = man(v); return t === '-' ? '-' : t + '만원'; }
+    function setCell(id, v){ var el = document.getElementById(id); if (!el) return; var s = (v == null || v === '' || v === '-') ? '-' : String(v); el.textContent = s; el.classList.toggle('empty', s === '-'); }
     function renderLoad(rows){
       window.__loadRows = rows;
       var box = document.getElementById('loadList');
@@ -632,24 +587,25 @@
       });
       box.appendChild(wrap);
     }
-    var FEE_MODE = { '정액':'정액관리비', '기타':'기타부과', '확인불가':'확인불가' };
-    var FEE_STD = { '직전월':'직전 월', '3개월':'3개월', '1년':'1년', '기타':'기타' };
+    var FEE_MODE = { '정액':'정액 관리비', '기타':'기타 부과', '확인불가':'확인 불가' };
+    var FEE_STD = { '직전월':'직전 월', '3개월':'최근 3개월 평균', '1년':'최근 1년 평균', '기타':'기타 (직접입력)' };
     function pickLoad(i){
       var p = window.__loadRows[i]; if (!p) return;
       var dk = dealKo(p.dealKind);
-      /* 기본 */
-      setSelect('mClass1', typeKo(p.propertyType || p.category));
-      setDeal(dk);
-      setVal('buildingUse', p.buildingUse);
-      /* 소재지 — 도로명+지번 함께 넘겨 읍/면/동 보강 */
-      fillAddress(p.address, p.jibunAddress);
-      setSelectAdd('danji', p.buildingName);
-      setSelectAdd('dongPick', p.unitDong || p.dong);
-      setSelectAdd('hoPick', p.unitHo || p.ho);
-      /* 가격 — 매매가가 deposit 에 저장된 경우 보정, 매매면 보증금 칸 비움 */
-      setVal('priceSale', p.dealPrice != null ? p.dealPrice : (dk === '매매' ? p.deposit : null));
-      setVal('priceDeposit', dk === '매매' ? null : p.deposit);
-      setVal('priceMonthly', p.monthlyRent);
+      /* 자동입력 정보 — 읽기전용 요약 표 채우기 (2026-06-09 [사용자 명시]) */
+      setCell('aClass', typeKo(p.propertyType || p.category) + (p.subCategory ? ' · ' + p.subCategory : ''));
+      setCell('aDeal', dk);
+      setCell('aAddr', p.jibunAddress || p.address);
+      var danjiTxt = (p.buildingName || '');
+      var dongTxt = p.unitDong || p.dong, hoTxt = p.unitHo || p.ho;
+      if (dongTxt) danjiTxt += '  ' + dongTxt + '동';
+      if (hoTxt) danjiTxt += ' ' + hoTxt + '호';
+      setCell('aDanji', danjiTxt);
+      setCell('aUse', p.buildingUse);
+      var saleVal = p.dealPrice != null ? p.dealPrice : (dk === '매매' ? p.deposit : null);
+      setCell('aPriceSale', manWon(saleVal));
+      setCell('aDeposit', dk === '매매' ? '-' : manWon(p.deposit));
+      setCell('aMonthly', manWon(p.monthlyRent));
       /* 관리비 부과정보 */
       setRadio('feeType', FEE_MODE[p.feeMode]);
       setRadio('feeBase', FEE_STD[p.feeStandard]);
