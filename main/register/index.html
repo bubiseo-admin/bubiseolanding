@@ -220,8 +220,8 @@
 
           <!-- 2. 자동입력 정보 (매물 정보 불러오기로 채워짐) -->
           <section class="seccard" id="s2">
-            <div class="sec-h">자동입력 정보<span class="right"><button class="loadbtn" onclick="openLoad()">매물 정보 불러오기</button></span></div>
-            <div class="infobox"><ul><li>[매물 정보 불러오기] 로 불러온 정보를 한눈에 확인하세요. 값을 바꾸려면 [매물 정보 불러오기] 를 다시 눌러 다른 매물을 선택하세요.</li></ul></div>
+            <div class="sec-h">불러온 매물정보<span class="right"><button class="loadbtn" onclick="openLoad()">매물 정보 불러오기</button></span></div>
+            <div class="infobox"><ul><li>[매물 정보 불러오기] 로 불러온 매물 정보를 한눈에 확인하세요. 값을 바꾸려면 [매물 정보 불러오기] 를 다시 눌러 다른 매물을 선택하세요.</li></ul></div>
             <div class="autobox">
               <div class="autorow"><div class="k">매물 분류</div><div class="v empty" id="aClass">매물을 불러오면 표시됩니다</div></div>
               <div class="autorow"><div class="k">거래 종류</div><div class="v empty" id="aDeal">-</div></div>
@@ -231,123 +231,19 @@
               <div class="autorow"><div class="k">매매가</div><div class="v empty" id="aPriceSale">-</div></div>
               <div class="autorow"><div class="k">보증금</div><div class="v empty" id="aDeposit">-</div></div>
               <div class="autorow"><div class="k">월세</div><div class="v empty" id="aMonthly">-</div></div>
-            </div>
-            <div class="sec-h" style="margin-top:24px;">관리비 부과정보 <span class="right" style="font-size:14px;font-weight:700;color:var(--sub);">관리비 합계: <b id="feeSum" style="color:var(--primary);">0원</b></span></div>
-            <!-- 2026-06-09 [사용자 명시] 모바일 매물추가와 1:1 — 부과방식(정액/기타/확인불가) + 10만원미만 + 공용(고정금액) + 항목별 토글 + 기준. 매물 불러오기 매핑 호환. -->
-            <div class="frow">
-              <div class="flabel">부과방식 <span class="req">*</span></div>
-              <div class="ffield optrow">
-                <label class="opt"><input type="radio" name="feeType" value="정액"> 정액 관리비</label>
-                <label class="opt"><input type="radio" name="feeType" value="기타"> 기타 부과</label>
-                <label class="opt"><input type="radio" name="feeType" value="확인불가"> 확인 불가</label>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel"></div>
-              <div class="ffield"><label class="chk"><input type="checkbox" id="feeBelow10"> 관리비 10만원 미만 혹은 중개 의뢰인이 세부내역을 제공하지 않음</label></div>
-            </div>
-            <div class="sec-h" style="margin-top:24px;">사용료 세부내역</div>
-            <div class="infobox"><ul><li>모바일 매물추가와 동일한 항목·옵션 구조입니다. 공용은 고정 금액, 나머지 항목은 [쓴 만큼] 또는 [고정 금액]을 선택하세요.</li></ul></div>
-            <div class="feerow"><div class="l">공용 <span style="font-size:12px;color:var(--tert);font-weight:600;">고정 금액</span></div><div class="feeopts"><input class="inp num w160" id="feeCommon" placeholder="0" /><span class="suffix">만원</span></div></div>
-            <div id="feeList"></div>
-            <div class="frow" style="margin-top:8px;">
-              <div class="flabel">관리비 기준 <span class="req">*</span></div>
-              <div class="ffield optrow">
-                <label class="opt"><input type="radio" name="feeBase" value="직전월"> 직전 월</label>
-                <label class="opt"><input type="radio" name="feeBase" value="3개월"> 최근 3개월 평균</label>
-                <label class="opt"><input type="radio" name="feeBase" value="1년"> 최근 1년 평균</label>
-                <label class="opt"><input type="radio" name="feeBase" value="기타"> 기타 (직접입력)</label>
-              </div>
-            </div>
-            <div class="sec-h" style="margin-top:24px;">매물 정보</div>
-            <div class="infobox"><ul><li>정확한 정보를 입력해 주세요. 부정확한 정보 입력 시 과태료 부과 대상이 될 수 있습니다.</li><li>집합건물등기 : 전용면적 기준으로 검증 / 건물등기(개별등기 없음): 매물종류에 따라 전용·연면적 기준 검증</li><li>등기상 면적과 소수점까지 동일하게 기재 (0.1이라도 오차가 있을 시 검증 실패)</li></ul></div>
-            <div class="frow">
-              <div class="flabel">해당층 / 총층 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="row"><span class="suffix">해당층</span><input class="inp num w120" id="floor" placeholder="" /><span class="suffix">층</span><span class="suffix" style="margin-left:14px;">총층</span><input class="inp num w120" id="floorTotal" placeholder="" /><span class="suffix">층</span></div>
-                <div class="fnote">· 해당층을 다르게 입력할 경우 허위매물로 신고될 수 있습니다.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">전용 / 공급면적 <span class="req">*</span></div>
-              <div class="ffield row"><span class="suffix">전용</span><input class="inp num w120" id="areaExclusive" placeholder="" /><span class="suffix">㎡</span><span class="suffix" style="margin-left:14px;">공급</span><input class="inp num w120" id="areaSupply" placeholder="" /><span class="suffix">㎡</span></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">방향기준 / 방향 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="row"><select class="sel w130" id="dirBase"><option value="">선택</option><option>거실</option><option>안방</option><option>주실</option></select><span class="suffix">기준</span><select class="sel w130" id="dir"><option value="">선택</option><option>동</option><option>서</option><option>남</option><option>북</option><option>남동</option><option>남서</option><option>북동</option><option>북서</option></select><span class="suffix">방향</span></div>
-                <div class="fnote">· 개정 공인중개사법(20.08.21) 시행에 따라 방향기준(거실이나 안방등 주실의 방향) 및 방향 정보를 선택해주시기 바랍니다.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">방수 / 욕실수 <span class="req">*</span></div>
-              <div class="ffield row"><span class="suffix">방수</span><input class="inp num w90" id="rooms" /><span class="suffix">개</span><span class="suffix" style="margin-left:14px;">욕실수</span><input class="inp num w90" id="baths" /><span class="suffix">개</span></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">주차가능여부 <span class="req">*</span></div>
-              <div class="ffield optrow"><label class="opt"><input type="radio" name="parkable"> 주차 가능</label><label class="opt"><input type="radio" name="parkable"> 주차 불가능</label></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">세대당 / 총 주차대수</div>
-              <div class="ffield row"><span class="suffix">세대당</span><input class="inp num w120" id="parkPer" /><span class="suffix">대 주차</span><span class="suffix" style="margin-left:14px;">총</span><input class="inp num w120" id="parkTotal" /><span class="suffix">대 주차</span></div>
-            </div>
-            <!-- 2026-06-08 [사용자 명시] 입주정보 — 자동입력 정보로 이동 -->
-            <div class="frow">
-              <div class="flabel">입주정보 <span class="req">*</span></div>
-              <div class="ffield">
-                <div class="optrow"><label class="opt"><input type="radio" name="moveIn" checked> 즉시 입주</label></div>
-                <div class="row gap"><label class="opt"><input type="radio" name="moveIn"> </label><select class="sel w130"><option>년 선택</option></select><select class="sel w130"><option>월 선택</option></select><select class="sel w130"><option>일 선택</option></select><select class="sel w130"><option>초/중/하순</option></select><span class="suffix">이후 입주</span></div>
-                <label class="chk gap"><input type="checkbox"> 협의가능</label>
-              </div>
-            </div>
-            <div class="sec-h" style="margin-top:24px;">시설 정보</div>
-            <div class="frow">
-              <div class="flabel">냉방시설</div>
-              <div class="ffield chkgrid"><label class="chk"><input type="checkbox"> 냉방시설 전체</label><label class="chk"><input type="checkbox"> 벽걸이에어컨</label><label class="chk"><input type="checkbox"> 스탠드에어컨</label><label class="chk"><input type="checkbox"> 천장에어컨</label></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">생활시설</div>
-              <div class="ffield">
-                <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 침대</label><label class="chk"><input type="checkbox"> 책상</label><label class="chk"><input type="checkbox"> 옷장</label><label class="chk"><input type="checkbox"> 붙박이장</label><label class="chk"><input type="checkbox"> 신발장</label><label class="chk"><input type="checkbox"> 소파</label><label class="chk"><input type="checkbox"> TV</label></div>
-                <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 욕실 전체</label><label class="chk"><input type="checkbox"> 샤워부스</label><label class="chk"><input type="checkbox"> 욕조</label><label class="chk"><input type="checkbox"> 비데</label><label class="chk"><input type="checkbox"> 세탁기</label><label class="chk"><input type="checkbox"> 건조기</label></div>
-                <div class="chkgroup chkgrid"><label class="chk"><input type="checkbox"> 주방 전체</label><label class="chk"><input type="checkbox"> 식탁</label><label class="chk"><input type="checkbox"> 냉장고</label><label class="chk"><input type="checkbox"> 싱크대</label><label class="chk"><input type="checkbox"> 식기세척기</label><label class="chk"><input type="checkbox"> 가스레인지</label><label class="chk"><input type="checkbox"> 인덕션레인지</label><label class="chk"><input type="checkbox"> 전자레인지</label><label class="chk"><input type="checkbox"> 가스오븐</label></div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">보안시설</div>
-              <div class="ffield chkgrid"><label class="chk"><input type="checkbox"> 보안시설 전체</label><label class="chk"><input type="checkbox"> 경비원</label><label class="chk"><input type="checkbox"> 비디오폰</label><label class="chk"><input type="checkbox"> 인터폰</label><label class="chk"><input type="checkbox"> 카드키</label><label class="chk"><input type="checkbox"> CCTV</label><label class="chk"><input type="checkbox"> 사설경비</label><label class="chk"><input type="checkbox"> 현관보안</label><label class="chk"><input type="checkbox"> 방범창</label></div>
-            </div>
-            <div class="frow">
-              <div class="flabel">기타시설</div>
-              <div class="ffield chkgrid"><label class="chk"><input type="checkbox"> 기타시설 전체</label><label class="chk"><input type="checkbox"> 엘리베이터</label><label class="chk"><input type="checkbox"> 화재경보기</label><label class="chk"><input type="checkbox"> 베란다</label><label class="chk"><input type="checkbox"> 테라스</label><label class="chk"><input type="checkbox"> 마당</label><label class="chk"><input type="checkbox"> 무인택배함</label></div>
-            </div>
-            <div class="sec-h" style="margin-top:24px;">매물 상세정보</div>
-            <div class="frow">
-              <div class="flabel">매물특징</div>
-              <div class="ffield">
-                <input class="inp full" id="feature" maxlength="40" placeholder="" />
-                <div class="cnt"><span id="featCnt">0</span> / 40</div>
-                <div class="fnote">· 매물특징은 매물리스트에 노출됩니다.<br/>· 비표준계량단위인 '평','평형'등은 입력할 수 없습니다.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">상세정보</div>
-              <div class="ffield">
-                <textarea class="ta" id="detail" rows="7" maxlength="1000"></textarea>
-                <div class="cnt"><span id="detailCnt">0</span> / 1000 자</div>
-                <div class="fnote">· 매물 상세페이지에 노출됩니다.</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="flabel">사진정보</div>
-              <div class="ffield">
-                <div class="photobox">
-                  <div class="ph-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>
-                  <input type="file" id="photoFile" accept=".jpg,.jpeg,.png" multiple hidden />
-                  <button class="addph" onclick="document.getElementById('photoFile').click()">사진 추가 +</button>
-                </div>
-                <div class="fnote">· 첫번째 사진은 대표사진으로 노출됩니다. · 매물 사진의 가로 사이즈는 400pixel 이상만 가능하며 jpg/jpeg/png. · 1개 매물당 최대 20개, 총 30MB.</div>
-              </div>
+              <div class="autorow"><div class="k">관리비 부과방식</div><div class="v empty" id="aFeeMode">-</div></div>
+              <div class="autorow"><div class="k">관리비 부과기준</div><div class="v empty" id="aFeeStd">-</div></div>
+              <div class="autorow"><div class="k">관리비</div><div class="v empty" id="aFee">-</div></div>
+              <div class="autorow"><div class="k">해당층 / 총층</div><div class="v empty" id="aFloor">-</div></div>
+              <div class="autorow"><div class="k">전용 / 공급면적</div><div class="v empty" id="aArea">-</div></div>
+              <div class="autorow"><div class="k">방향</div><div class="v empty" id="aDir">-</div></div>
+              <div class="autorow"><div class="k">방수 / 욕실수</div><div class="v empty" id="aRooms">-</div></div>
+              <div class="autorow"><div class="k">주차</div><div class="v empty" id="aParking">-</div></div>
+              <div class="autorow"><div class="k">입주정보</div><div class="v empty" id="aMoveIn">-</div></div>
+              <div class="autorow"><div class="k">시설정보</div><div class="v empty" id="aFacility">-</div></div>
+              <div class="autorow"><div class="k">매물특징</div><div class="v empty" id="aFeature">-</div></div>
+              <div class="autorow"><div class="k">상세정보</div><div class="v empty" id="aDetail">-</div></div>
+              <div class="autorow"><div class="k">사진</div><div class="v empty" id="aPhotos">-</div></div>
             </div>
           </section>
 
@@ -451,20 +347,8 @@
     var API = 'https://api.bubiseo.com';
     var PORTAL_TOKEN_KEY = 'bbs_portal_token';
 
-    /* 사용료 세부내역 행 생성 — 모바일 FEE_ITEMS 와 동일 (전기료·수도료·가스비·난방비·인터넷비·TV·기타).
-       항목별 [쓴 만큼/고정 금액], '기타'만 [없음] 추가 → 모바일 매물추가 구조 1:1 (불러오기 매핑 호환). */
-    (function(){
-      var FEE_ITEMS = ['전기료','수도료','가스비','난방비','인터넷비','TV','기타'];
-      document.getElementById('feeList').innerHTML = FEE_ITEMS.map(function(it, i){
-        var opts = (it === '기타' ? ['없음','쓴 만큼','고정 금액'] : ['쓴 만큼','고정 금액']);
-        var optHtml = opts.map(function(o){ return '<label class="opt"><input type="radio" name="feeItem' + i + '"> ' + o + '</label>'; }).join('');
-        return '<div class="feerow"><div class="l">' + it + '</div><div class="feeopts">' + optHtml + '</div></div>';
-      }).join('');
-    })();
-
-    /* 글자수 카운터 */
-    function bindCnt(id, cntId){ var el = document.getElementById(id); var c = document.getElementById(cntId); if (el && c){ el.addEventListener('input', function(){ c.textContent = el.value.length; }); } }
-    bindCnt('feature', 'featCnt'); bindCnt('detail', 'detailCnt');
+    /* 2026-06-09 [사용자 명시] 광고등록 #s2 전체를 '불러온 매물정보' 읽기전용 표로 통합 →
+       사용료 세부내역 행 생성기 / 글자수 카운터(입력칸 제거)는 불필요해 삭제. */
 
     /* toast */
     function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2200); }
@@ -592,7 +476,7 @@
     function pickLoad(i){
       var p = window.__loadRows[i]; if (!p) return;
       var dk = dealKo(p.dealKind);
-      /* 자동입력 정보 — 읽기전용 요약 표 채우기 (2026-06-09 [사용자 명시]) */
+      /* 불러온 매물정보 — 전부 읽기전용 표 채우기 (2026-06-09 [사용자 명시]) */
       setCell('aClass', typeKo(p.propertyType || p.category) + (p.subCategory ? ' · ' + p.subCategory : ''));
       setCell('aDeal', dk);
       setCell('aAddr', p.jibunAddress || p.address);
@@ -606,32 +490,36 @@
       setCell('aPriceSale', manWon(saleVal));
       setCell('aDeposit', dk === '매매' ? '-' : manWon(p.deposit));
       setCell('aMonthly', manWon(p.monthlyRent));
-      /* 관리비 부과정보 */
-      setRadio('feeType', FEE_MODE[p.feeMode]);
-      setRadio('feeBase', FEE_STD[p.feeStandard]);
-      var feeSum = document.getElementById('feeSum');
-      if (feeSum && p.managementFee != null) feeSum.textContent = Number(p.managementFee).toLocaleString() + '만원';
-      /* 면적 / 층 */
-      setVal('areaExclusive', p.exclusiveArea);
-      setVal('areaSupply', p.contractArea);
-      setVal('floor', p.floor);
-      setVal('floorTotal', p.maxFloor);
-      /* 방향 */
-      setSelectAdd('dir', p.direction);
-      /* 방 / 욕실 / 주차 */
-      setVal('rooms', p.roomCount);
-      setVal('baths', p.bathroomCount);
-      if (p.parkingAvailable) setRadio('parkable', /불가/.test(p.parkingAvailable) ? '불가능' : '가능');
-      setVal('parkTotal', p.totalParking);
+      /* 관리비 */
+      setCell('aFeeMode', FEE_MODE[p.feeMode] || p.feeMode);
+      setCell('aFeeStd', FEE_STD[p.feeStandard] || p.feeStandard);
+      setCell('aFee', manWon(p.managementFee));
+      /* 매물 정보 */
+      setCell('aFloor', (p.floor != null && p.floor !== '' ? p.floor + '층' : '-') + ' / ' + (p.maxFloor != null && p.maxFloor !== '' ? p.maxFloor + '층' : '-'));
+      setCell('aArea', (p.exclusiveArea ? '전용 ' + p.exclusiveArea + '㎡' : '') + (p.contractArea ? (p.exclusiveArea ? ' / ' : '') + '공급 ' + p.contractArea + '㎡' : ''));
+      setCell('aDir', p.direction);
+      setCell('aRooms', (p.roomCount != null && p.roomCount !== '' ? '방 ' + p.roomCount + '개' : '-') + ' / ' + (p.bathroomCount != null && p.bathroomCount !== '' ? '욕실 ' + p.bathroomCount + '개' : '-'));
+      var parkTxt = p.parkingAvailable ? (/불가/.test(p.parkingAvailable) ? '불가능' : '가능') : '-';
+      if (p.totalParking) parkTxt += ' (총 ' + p.totalParking + '대)';
+      setCell('aParking', parkTxt);
+      setCell('aMoveIn', p.moveInType || p.availableFrom || p.moveInDate);
       /* 시설 */
-      setChecks(p.options);
-      /* 상세 — 2026-06-08 [사용자 명시] 매물특징=제목(featureTitle), 상세=내용(propertyFeature) */
-      setVal('feature', p.featureTitle || p.propertyFeature);
-      setVal('detail', p.propertyFeature);
-      /* 사진 — 2026-06-08 [사용자 명시] 사진 불러오기 (현재 사진 안 옴) 수정 */
-      fillPhotos(p.photos);
+      setCell('aFacility', (p.options && p.options.length) ? p.options.join(', ') : null);
+      /* 상세 — 매물특징=제목(featureTitle), 상세=내용(propertyFeature) */
+      setCell('aFeature', p.featureTitle || p.propertyFeature);
+      setCell('aDetail', p.propertyFeature);
+      /* 사진 — 썸네일 표시 */
+      var photoCell = document.getElementById('aPhotos');
+      if (photoCell){
+        if (p.photos && p.photos.length){
+          photoCell.classList.remove('empty');
+          photoCell.innerHTML = p.photos.slice(0, 12).map(function(u){
+            return '<img src="' + esc(u) + '" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line);margin:2px 6px 2px 0;" />';
+          }).join('');
+        } else { photoCell.classList.add('empty'); photoCell.textContent = '-'; }
+      }
       closeLoad();
-      toast('매물 정보를 불러왔어요 — 소재지·관리비·사진 등은 확인 후 보완하세요.');
+      toast('매물 정보를 불러왔어요.');
     }
     function openLoad(){ loadList(); document.getElementById('m-load').classList.add('show'); }
     function closeLoad(){ document.getElementById('m-load').classList.remove('show'); }
