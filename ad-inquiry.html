@@ -394,7 +394,7 @@
         });
         // 2026-06-09 [사용자 명시] 페이지 전환 대신 팝업창으로 결제. 팝업 차단 시 페이지 전환 폴백.
         const payUrl = '/pay-widget.html?' + params.toString();
-        const payPopup = window.open(payUrl, 'bubiseo_pay', 'popup=yes,width=480,height=780');
+        const payPopup = window.open(payUrl, 'bubiseo_pay', 'popup=yes,width=620,height=820');
         if (!payPopup) window.location.href = payUrl;
       });
     })();
