@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /mapadmin/
+Disallow: /cp/
 
 Sitemap: https://bubiseo.com/sitemap.xml
