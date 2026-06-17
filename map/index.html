@@ -88,10 +88,10 @@
     .pin-wrap { position: relative; width: 0; height: 0; }
     .pin-marker { position: absolute; left: -19px; top: -48px; width: 38px; height: 38px; z-index: 3; cursor: pointer; }
     .pin-bubble { position: relative; z-index: 1; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.28); display: flex; align-items: center; justify-content: center; }
-    .pin-bubble img { width: 34px; height: 34px; display: block; }
+    .pin-bubble img { width: 35px; height: 35px; display: block; }
     .pin-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%) rotate(45deg); width: 11px; height: 11px; background: #fff; border-right: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); }
     .pin-marker .pin-behind { position: absolute; left: 7px; top: -5px; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.2); z-index: 0; }
-    .pin-marker .pin-count { position: absolute; top: -6px; right: -6px; z-index: 2; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: #191F28; border: 2px solid #fff; color: #fff; font-size: 11px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+    .pin-marker .pin-count { position: absolute; top: -11px; right: -7px; z-index: 2; color: #191F28; font-size: 15px; font-weight: 900; line-height: 1; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 1px 2px #fff; }
     .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: normal; overflow-wrap: break-word; word-break: keep-all; line-height: 1.25; }
     .office-box .ob-sub { color: var(--sub); display: block; white-space: normal; overflow-wrap: break-word; word-break: keep-all; }
@@ -781,14 +781,14 @@
       if (it.cluster) {
         // 동일 좌표 N곳 → 말풍선 핀을 살짝 겹쳐 쌓고 코너에 작은 숫자 뱃지. 탭하면 옆에 팝오버 목록.
         var cm = document.createElement('div'); cm.className = 'pin-marker';
-        cm.innerHTML = '<div class="pin-behind"></div><div class="pin-bubble"><img src="home.png" alt=""></div><div class="pin-count">' + it.offices.length + '</div>';
+        cm.innerHTML = '<div class="pin-behind"></div><div class="pin-bubble"><img src="home.png?v=3" alt=""></div><div class="pin-count">' + it.offices.length + '</div>';
         (function(offs){ cm.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, cm); }; })(it.offices);
         wrap.appendChild(cm);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
         var marker = document.createElement('div'); marker.className = 'pin-marker';
-        marker.innerHTML = '<div class="pin-bubble"><img src="home.png" alt=""></div>';
+        marker.innerHTML = '<div class="pin-bubble"><img src="home.png?v=3" alt=""></div>';
         var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
         (function(id){ marker.onclick = function(e){ e.stopPropagation(); openSheet(id); }; box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
