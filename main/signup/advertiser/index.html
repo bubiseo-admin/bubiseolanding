@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 광고사/분양대행사 — 회원가입</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --red:#FF5247; --green:#1EC800;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.2px;padding:0 0 80px;}
+    a{text-decoration:none;color:inherit;}
+    .top{height:60px;display:flex;align-items:center;justify-content:center;background:#fff;border-bottom:1px solid var(--line2);}
+    .logo{font-size:20px;font-weight:900;color:var(--primary);display:flex;gap:0;align-items:baseline;cursor:pointer;}
+    .logo .sub{font-weight:900;color:var(--primary);}
+    .wrap{max-width:560px;margin:0 auto;padding:0 22px;}
+
+    /* stepper */
+    .steps{display:flex;align-items:center;justify-content:space-between;margin:34px 0 28px;}
+    .stp{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;position:relative;}
+    .stp::before{content:'';position:absolute;top:15px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0;}
+    .stp:first-child::before{display:none;}
+    .stp.done::before,.stp.on::before{background:var(--primary);}
+    .stp .c{width:32px;height:32px;border-radius:50%;background:var(--line);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800;position:relative;z-index:1;}
+    .stp.on .c{background:var(--grad);box-shadow:0 4px 12px rgba(97,85,245,.3);}
+    .stp.done .c{background:var(--primary);}
+    .stp .t{font-size:13px;font-weight:700;color:var(--tert);}
+    .stp.on .t,.stp.done .t{color:var(--ink);}
+
+    .card{background:var(--card);border-radius:22px;box-shadow:0 6px 24px rgba(17,24,39,.05);padding:32px 30px;}
+    h2{margin:0 0 6px;font-size:22px;font-weight:800;letter-spacing:-.6px;}
+    .lead{margin:0 0 24px;font-size:14.5px;color:var(--sub);font-weight:500;}
+
+    /* form */
+    label.lab{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:18px 0 8px;}
+    label.lab .req{color:var(--primary);margin-left:3px;}
+    .inp{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:14px 15px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
+    .inp::placeholder{color:var(--tert);}
+    .inp:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .row{display:flex;gap:8px;}
+    .row .inp{flex:1;}
+    .mini{flex:0 0 auto;background:#EEF0FE;color:var(--primary);border:none;border-radius:12px;padding:0 16px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;}
+    .hint{font-size:12.5px;margin-top:6px;font-weight:600;}
+    .hint.err{color:var(--red);} .hint.ok{color:var(--green);}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+    /* upload */
+    .upload{display:flex;align-items:center;gap:10px;background:var(--soft);border:1.5px dashed var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.14s;}
+    .upload:hover{border-color:var(--primary);}
+    .upload .ui{width:34px;height:34px;border-radius:9px;background:#EEF0FE;display:grid;place-items:center;color:var(--primary);flex:0 0 auto;}
+    .upload .un{font-size:14px;color:var(--tert);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .upload.has .un{color:var(--ink);font-weight:700;}
+    .upload input{display:none;}
+    .uhelp{font-size:12px;color:var(--tert);margin-top:6px;font-weight:500;}
+
+    /* radio / check */
+    .opts{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+    .opt{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--sub);font-weight:600;cursor:pointer;}
+    .opt input{width:18px;height:18px;accent-color:var(--primary);}
+    .optrow{display:flex;gap:22px;}
+
+    /* agree */
+    .agall{display:flex;align-items:center;gap:11px;background:var(--soft);border-radius:14px;padding:17px 18px;font-size:16px;font-weight:800;cursor:pointer;}
+    .agall input{width:21px;height:21px;accent-color:var(--primary);}
+    .aglist{margin-top:8px;}
+    .agitem{display:flex;align-items:center;gap:11px;padding:14px 18px;font-size:14.5px;color:var(--sub);font-weight:600;cursor:pointer;}
+    .agitem input{width:19px;height:19px;accent-color:var(--primary);}
+    .agitem .tag{font-size:12px;font-weight:800;color:var(--primary);margin-left:2px;}
+    .agitem .tag.opt{color:var(--tert);}
+    .agitem .view{margin-left:auto;font-size:13px;color:var(--tert);text-decoration:underline;}
+
+    /* buttons */
+    .btns{display:flex;gap:10px;margin-top:30px;}
+    .btn{flex:1;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;transition:.14s;}
+    .btn.prev{flex:0 0 38%;background:var(--soft);color:var(--sub);}
+    .btn.next{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(97,85,245,.24);}
+    .btn.next:hover{transform:translateY(-1px);}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+
+    /* done */
+    .done-box{text-align:center;padding:30px 10px 10px;}
+    .done-ic{width:78px;height:78px;border-radius:50%;background:var(--grad);display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 12px 30px rgba(97,85,245,.3);}
+    .done-box h2{font-size:24px;}
+    .done-box p{font-size:15px;color:var(--sub);margin-top:8px;line-height:1.6;}
+
+    .step-sec{display:none;}
+    .step-sec.on{display:block;}
+  </style>
+</head>
+<body>
+  <div class="top"><a class="logo" href="/">부비서<span class="sub">-광고사/분양대행사</span></a></div>
+
+  <div class="wrap">
+    <!-- stepper -->
+    <div class="steps">
+      <div class="stp on" data-i="1"><div class="c">1</div><div class="t">약관동의</div></div>
+      <div class="stp" data-i="2"><div class="c">2</div><div class="t">본인인증</div></div>
+      <div class="stp" data-i="3"><div class="c">3</div><div class="t">정보입력</div></div>
+      <div class="stp" data-i="4"><div class="c">4</div><div class="t">가입완료</div></div>
+    </div>
+
+    <!-- STEP 1 : 약관동의 -->
+    <section class="step-sec on" data-step="1">
+      <div class="card">
+        <h2>약관에 동의해주세요</h2>
+        <p class="lead">부비서 광고사/분양대행사 서비스 이용을 위한 약관입니다.</p>
+
+        <label class="agall"><input type="checkbox" id="agAll" onchange="agAll(this)"> 전체 동의합니다</label>
+        <div class="aglist">
+          <label class="agitem"><input type="checkbox" class="agi req"> 이용약관 동의<span class="tag">필수</span><span class="view">보기</span></label>
+          <label class="agitem"><input type="checkbox" class="agi req"> 개인정보 수집·이용 동의<span class="tag">필수</span><span class="view">보기</span></label>
+          <label class="agitem"><input type="checkbox" class="agi"> 마케팅 정보 수신 동의<span class="tag opt">선택</span><span class="view">보기</span></label>
+        </div>
+        <div class="btns"><button class="btn next" onclick="agreeNext()">다음</button></div>
+      </div>
+    </section>
+
+    <!-- STEP 2 : 본인인증 -->
+    <section class="step-sec" data-step="2">
+      <div class="card">
+        <h2>본인인증을 해주세요</h2>
+        <p class="lead">휴대폰 본인 명의로 인증해주세요.</p>
+
+        <label class="lab">이름 <span class="req">*</span></label>
+        <input class="inp" placeholder="홍길동" />
+        <label class="lab">휴대폰 번호 <span class="req">*</span></label>
+        <div class="row"><input class="inp" placeholder="01012345678" inputmode="numeric" /><button class="mini" onclick="sendCode()">인증번호 받기</button></div>
+        <label class="lab">인증번호 <span class="req">*</span></label>
+        <div class="row"><input class="inp" placeholder="6자리 입력" inputmode="numeric" /><button class="mini" onclick="alert('인증되었습니다 (데모)')">확인</button></div>
+
+        <div class="btns">
+          <button class="btn prev" onclick="prev()">이전</button>
+          <button class="btn next" onclick="next()">다음</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3 : 정보입력 -->
+    <section class="step-sec" data-step="3">
+      <div class="card">
+        <h2>정보를 입력해주세요</h2>
+        <p class="lead">중개사무소 정보와 서류를 등록해주세요.</p>
+
+        <label class="lab">아이디 <span class="req">*</span></label>
+        <div class="row"><input class="inp" placeholder="영문/숫자 4~20자" /><button class="mini" onclick="alert('사용 가능한 아이디입니다 (데모)')">중복확인</button></div>
+
+        <label class="lab">비밀번호 <span class="req">*</span></label>
+        <input class="inp" id="pw" type="password" placeholder="8자 이상" oninput="checkPw()" />
+        <label class="lab">비밀번호 확인 <span class="req">*</span></label>
+        <input class="inp" id="pw2" type="password" placeholder="비밀번호 재입력" oninput="checkPw()" />
+        <div class="hint" id="pwHint"></div>
+
+        <label class="lab">주소 <span class="req">*</span></label>
+        <div class="row"><input class="inp" id="addr" placeholder="주소 검색" readonly /><button class="mini" onclick="findAddr()">주소 검색</button></div>
+        <input class="inp" id="addr2" placeholder="상세주소 (동/호수 등)" style="margin-top:8px;" />
+
+        <label class="lab">이메일 <span class="req">*</span></label>
+        <input class="inp" type="email" placeholder="example@bubiseo.com" />
+
+        <label class="lab">중개업소명 <span class="req">*</span></label>
+        <input class="inp" placeholder="○○공인중개사사무소" />
+
+        <label class="lab">대표자 성명 <span class="req">*</span></label>
+        <input class="inp" placeholder="대표자 이름" />
+
+        <div class="grid2">
+          <div>
+            <label class="lab">중개사무소 등록번호 <span class="req">*</span></label>
+            <input class="inp" placeholder="00000-0000-00000" />
+          </div>
+          <div>
+            <label class="lab">사업자등록번호 <span class="req">*</span></label>
+            <input class="inp" placeholder="000-00-00000" />
+          </div>
+        </div>
+
+        <label class="lab">사업자등록증 첨부 <span class="req">*</span></label>
+        <label class="upload" id="up1" onclick="">
+          <span class="ui"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span>
+          <span class="un">파일 선택</span>
+          <input type="file" accept=".png,.jpg,.jpeg,.pdf" onchange="onFile(this,'up1')" />
+        </label>
+        <div class="uhelp">png · jpg · pdf 업로드 가능</div>
+
+        <label class="lab">중개사무소 등록증 첨부 <span class="req">*</span></label>
+        <label class="upload" id="up2">
+          <span class="ui"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span>
+          <span class="un">파일 선택</span>
+          <input type="file" accept=".png,.jpg,.jpeg,.pdf" onchange="onFile(this,'up2')" />
+        </label>
+        <div class="uhelp">png · jpg · pdf 업로드 가능</div>
+
+        <label class="lab">전화번호 노출방식 <span class="req">*</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="phoneShow" checked> 모두 노출 (휴대폰 + 전화)</label>
+          <label class="opt"><input type="radio" name="phoneShow"> 휴대폰 번호만 노출</label>
+          <label class="opt"><input type="radio" name="phoneShow"> 전화번호만 노출</label>
+        </div>
+
+        <label class="lab">정보 수신 동의 <span style="color:var(--tert);font-weight:600;">(선택)</span></label>
+        <div class="optrow">
+          <label class="opt"><input type="checkbox"> SMS 수신</label>
+          <label class="opt"><input type="checkbox"> 이메일 수신</label>
+        </div>
+
+        <div class="btns">
+          <button class="btn prev" onclick="prev()">이전</button>
+          <button class="btn next" onclick="next()">가입 완료</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4 : 가입완료 -->
+    <section class="step-sec" data-step="4">
+      <div class="card">
+        <div class="done-box">
+          <div class="done-ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <h2>회원가입이 완료되었어요</h2>
+          <p>제출하신 서류 확인 후 승인되면<br/>부비서 광고사/분양대행사 서비스를 이용하실 수 있어요.</p>
+          <div class="btns" style="margin-top:28px;"><button class="btn next" onclick="location.href='../../login/'">로그인하러 가기</button></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+    var step = 1;
+    function render(){
+      document.querySelectorAll('.step-sec').forEach(function(s){ s.classList.toggle('on', Number(s.dataset.step)===step); });
+      document.querySelectorAll('.stp').forEach(function(el){
+        var i = Number(el.dataset.i);
+        el.classList.remove('on','done');
+        if(i<step) el.classList.add('done');
+        else if(i===step) el.classList.add('on');
+        if(el.classList.contains('done')) el.querySelector('.c').textContent='✓';
+        else el.querySelector('.c').textContent=i;
+      });
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function next(){ if(step<4){ step++; render(); } }
+    function prev(){ if(step>1){ step--; render(); } }
+
+    function agAll(cb){ document.querySelectorAll('.agi').forEach(function(x){ x.checked=cb.checked; }); }
+    document.querySelectorAll('.agi').forEach(function(x){ x.addEventListener('change', function(){
+      var all = Array.prototype.every.call(document.querySelectorAll('.agi'), function(y){ return y.checked; });
+      document.getElementById('agAll').checked = all;
+    });});
+    function agreeNext(){
+      var ok = Array.prototype.every.call(document.querySelectorAll('.agi.req'), function(y){ return y.checked; });
+      if(!ok){ alert('필수 약관에 동의해주세요.'); return; }
+      next();
+    }
+
+    function checkPw(){
+      var a=document.getElementById('pw').value, b=document.getElementById('pw2').value, h=document.getElementById('pwHint');
+      if(!b){ h.textContent=''; h.className='hint'; return; }
+      if(a===b){ h.textContent='비밀번호가 일치합니다'; h.className='hint ok'; }
+      else{ h.textContent='비밀번호가 일치하지 않습니다'; h.className='hint err'; }
+    }
+
+    function onFile(input, boxId){
+      var box=document.getElementById(boxId), f=input.files[0];
+      if(f){ box.classList.add('has'); box.querySelector('.un').textContent=f.name; }
+    }
+
+    function sendCode(){ alert('인증번호를 발송했습니다 (데모)'); }
+
+    function findAddr(){
+      if(typeof daum==='undefined'||!daum.Postcode){ alert('주소 검색을 불러오지 못했습니다.'); return; }
+      new daum.Postcode({ oncomplete:function(data){
+        document.getElementById('addr').value = data.roadAddress || data.jibunAddress;
+        document.getElementById('addr2').focus();
+      }}).open();
+    }
+  </script>
+</body>
+</html>

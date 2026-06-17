@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 중개사무소 — 회원가입</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#6155F5; --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0FE; --red:#F04452; --green:#1EAE60;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.3px;padding:0 0 90px;}
+    a{text-decoration:none;color:inherit;}
+    .top{height:60px;display:flex;align-items:center;justify-content:center;background:#fff;border-bottom:1px solid var(--line2);position:sticky;top:0;z-index:30;}
+    .logo{font-size:20px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+    .wrap{max-width:540px;margin:0 auto;padding:0 22px;}
+
+    .tabs{display:flex;gap:5px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;margin:30px 0 22px;}
+    .tab{flex:1;border:none;background:none;font-family:inherit;font-size:15px;font-weight:800;color:var(--tert);padding:13px 0;border-radius:11px;cursor:pointer;transition:.16s;letter-spacing:-.3px;}
+    .tab.on{background:var(--grad);color:#fff;box-shadow:0 6px 16px rgba(97,85,245,.26);}
+
+    .pane{display:none;}
+    .pane.on{display:block;}
+    .card{background:var(--card);border-radius:22px;box-shadow:0 6px 24px rgba(17,24,39,.05);padding:30px 26px;}
+    h2{margin:0 0 5px;font-size:21px;font-weight:800;letter-spacing:-.6px;}
+    .lead{margin:0 0 14px;font-size:14px;color:var(--sub);font-weight:500;line-height:1.5;}
+
+    label.lab{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:20px 0 8px;}
+    label.lab .req{color:var(--primary);margin-left:3px;}
+    label.lab .optx{color:var(--tert);font-weight:600;font-size:12.5px;margin-left:5px;}
+    .inp{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:14px 15px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
+    .inp::placeholder{color:var(--tert);}
+    .inp:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .help{font-size:12.5px;color:var(--tert);margin-top:6px;font-weight:500;line-height:1.5;}
+    .hint{font-size:12.5px;margin-top:6px;font-weight:600;}
+    .hint.err{color:var(--red);} .hint.ok{color:var(--green);}
+
+    /* estate search */
+    .esfield{position:relative;}
+    .esdrop{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(40,50,90,.16);max-height:280px;overflow-y:auto;z-index:20;}
+    .esdrop.on{display:block;}
+    .esrow{padding:13px 16px;cursor:pointer;border-bottom:1px solid var(--line2);transition:.1s;}
+    .esrow:last-child{border-bottom:none;}
+    .esrow:hover{background:var(--tint);}
+    .esrow.muted{color:var(--tert);font-weight:600;font-size:13.5px;cursor:default;}
+    .esrow.muted:hover{background:none;}
+    .esn{font-size:14.5px;font-weight:800;color:var(--ink);}
+    .esn .eso{font-size:12.5px;font-weight:700;color:var(--primary);margin-left:6px;}
+    .esa{font-size:12.5px;color:var(--sub);font-weight:500;margin-top:3px;line-height:1.4;}
+    .essel{display:none;margin-top:2px;}
+    .essel.on{display:block;}
+    .esselc{display:flex;align-items:center;gap:12px;background:var(--tint);border:1.5px solid rgba(97,85,245,.25);border-radius:13px;padding:14px 16px;}
+    .esselc .esn{color:var(--primary);}
+    .eschg{margin-left:auto;flex:0 0 auto;background:#fff;color:var(--primary);border:1px solid rgba(97,85,245,.3);border-radius:9px;padding:7px 13px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;}
+
+    /* roster chips */
+    .roster{display:none;margin-top:10px;}
+    .roster.on{display:block;}
+    .rlab{font-size:12.5px;color:var(--tert);font-weight:600;margin-bottom:8px;}
+    .rchip{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 14px;margin:0 7px 7px 0;font-size:13.5px;font-weight:700;color:var(--sub);font-family:inherit;cursor:pointer;transition:.12s;}
+    .rchip:hover{border-color:var(--primary);color:var(--primary);background:#fff;}
+
+    /* license upload */
+    .upload{display:flex;align-items:center;gap:11px;background:var(--soft);border:1.5px dashed var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.14s;}
+    .upload:hover{border-color:var(--primary);}
+    .upload .ui{width:34px;height:34px;border-radius:9px;background:var(--tint);display:grid;place-items:center;color:var(--primary);flex:0 0 auto;}
+    .upload .un{font-size:14px;color:var(--tert);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .upload.has .un{color:var(--ink);font-weight:700;}
+    .upload input{display:none;}
+    .licstat{font-size:13px;font-weight:700;margin-top:8px;display:none;}
+    .licstat.load{display:block;color:var(--sub);} .licstat.ok{display:block;color:var(--green);} .licstat.err{display:block;color:var(--red);}
+
+    /* agreements */
+    .agall{display:flex;align-items:center;gap:11px;background:var(--soft);border-radius:14px;padding:16px 17px;font-size:15.5px;font-weight:800;cursor:pointer;margin-top:6px;}
+    .agall input{width:20px;height:20px;accent-color:var(--primary);}
+    .agitem{display:flex;align-items:center;gap:11px;padding:12px 17px;font-size:14px;color:var(--sub);font-weight:600;cursor:pointer;}
+    .agitem input{width:18px;height:18px;accent-color:var(--primary);}
+    .agitem .tg{font-size:11.5px;font-weight:800;color:var(--primary);margin-left:1px;}
+    .agitem .tg.o{color:var(--tert);}
+    .agitem .vw{margin-left:auto;font-size:12.5px;color:var(--tert);text-decoration:underline;}
+
+    .err{display:none;font-size:13.5px;font-weight:700;color:var(--red);background:#FEECEC;border-radius:12px;padding:12px 14px;margin-top:18px;line-height:1.5;}
+    .err.on{display:block;}
+
+    .submit{display:block;width:100%;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 12px 28px rgba(97,85,245,.26);transition:.16s;margin-top:24px;}
+    .submit:hover{transform:translateY(-1px);}
+    .submit:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none;}
+
+    /* done overlay */
+    .ov{display:none;position:fixed;inset:0;background:rgba(20,26,40,.5);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center;padding:24px;}
+    .ov.on{display:flex;}
+    .ovcard{background:#fff;border-radius:26px;max-width:420px;width:100%;padding:38px 30px 30px;text-align:center;box-shadow:0 30px 80px rgba(20,30,60,.3);}
+    .ovic{width:80px;height:80px;border-radius:50%;background:var(--grad);display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 14px 32px rgba(97,85,245,.3);}
+    .ovcard h3{margin:0 0 4px;font-size:22px;font-weight:800;}
+    .ovname{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:10px;}
+    .ovcard p{font-size:14.5px;color:var(--sub);font-weight:500;line-height:1.65;margin:0 0 24px;}
+    .ovbtns{display:flex;flex-direction:column;gap:9px;}
+    .ovb{display:block;width:100%;border-radius:13px;padding:15px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;border:none;}
+    .ovb.pri{background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(97,85,245,.24);}
+    .ovb.sec{background:var(--soft);color:var(--sub);}
+  </style>
+</head>
+<body>
+  <div class="top"><a class="logo" href="/">부비서</a></div>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab on" type="button" data-t="owner" onclick="showPane('owner')">대표자 회원가입</button>
+      <button class="tab" type="button" data-t="emp" onclick="showPane('emp')">직원 회원가입</button>
+    </div>
+
+    <!-- ===== 대표자 ===== -->
+    <section class="pane on" id="pane-owner">
+      <div class="card">
+        <h2>대표자(사무소장) 가입</h2>
+        <p class="lead">중개사무소를 검색해 선택하고, 대표자 정보와 사업자등록증을 등록하면 바로 가입돼요.</p>
+
+        <label class="lab">중개사무소 <span class="req">*</span></label>
+        <div id="oEsWrap">
+          <div class="esfield">
+            <input class="inp" id="oEstate" autocomplete="off" placeholder="상호명·대표자·주소·등록번호로 검색" />
+            <div class="esdrop" id="oEstateDrop"></div>
+          </div>
+          <div class="help">검색 후 본인 사무소를 선택해주세요. (2자 이상 입력)</div>
+        </div>
+        <div class="essel" id="oEstateSel"></div>
+
+        <label class="lab">상호명 <span class="req">*</span></label>
+        <input class="inp" id="oBiz" placeholder="중개사무소 선택 시 자동 입력" />
+
+        <label class="lab">대표자 성명 <span class="req">*</span></label>
+        <input class="inp" id="oName" placeholder="성명을 입력해주세요" />
+
+        <label class="lab">연락처 <span class="req">*</span></label>
+        <input class="inp" id="oPhone" inputmode="numeric" placeholder="010-0000-0000" oninput="this.value=fmtPhone(this.value)" />
+
+        <label class="lab">이메일 (로그인 아이디) <span class="req">*</span></label>
+        <input class="inp" id="oEmail" type="email" inputmode="email" autocomplete="email" placeholder="example@email.com" />
+
+        <label class="lab">비밀번호 <span class="req">*</span></label>
+        <input class="inp" id="oPw" type="password" autocomplete="new-password" placeholder="10자 이상" oninput="pwHint('o')" />
+        <div class="help">10자 이상 · 영문 · 숫자 · 특수문자를 모두 포함해주세요.</div>
+
+        <label class="lab">비밀번호 확인 <span class="req">*</span></label>
+        <input class="inp" id="oPw2" type="password" autocomplete="new-password" placeholder="비밀번호 다시 입력" oninput="pwHint('o')" />
+        <div class="hint" id="oPwHint"></div>
+
+        <label class="lab">사업자등록증(중개사무소 등록증) <span class="req">*</span></label>
+        <label class="upload" id="licBox">
+          <span class="ui"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span>
+          <span class="un" id="licName">사진 선택 (JPG · PNG)</span>
+          <input type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" onchange="onLicenseFile(this)" />
+        </label>
+        <div class="licstat" id="licStat"></div>
+        <div class="help">5MB 이하 이미지(JPG·PNG)만 업로드할 수 있어요.</div>
+
+        <label class="lab">나를 초대한 부동산 <span class="optx">(선택 · 동료 초대 이벤트)</span></label>
+        <div id="oInvWrap">
+          <div class="esfield">
+            <input class="inp" id="oInv" autocomplete="off" placeholder="초대한 부동산을 검색 (선택사항)" />
+            <div class="esdrop" id="oInvDrop"></div>
+          </div>
+        </div>
+        <div class="essel" id="oInvSel"></div>
+
+        <label class="lab" style="margin-bottom:0;">약관 동의 <span class="req">*</span></label>
+        <label class="agall"><input type="checkbox" id="oAgAll" onchange="agAll('o')"> 전체 동의합니다</label>
+        <label class="agitem"><input type="checkbox" class="o-ag o-req" data-k="age19" onchange="agSync('o')"> 만 19세 이상입니다<span class="tg">필수</span></label>
+        <label class="agitem"><input type="checkbox" class="o-ag o-req" data-k="tos" onchange="agSync('o')"> 서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/terms.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="o-ag o-req" data-k="privacy" onchange="agSync('o')"> 개인정보 처리방침 동의<span class="tg">필수</span><a class="vw" href="/privacy.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="o-ag o-req" data-k="location" onchange="agSync('o')"> 위치기반서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/location.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="o-ag" data-k="marketing" onchange="agSync('o')"> 마케팅 정보 수신 동의<span class="tg o">선택</span></label>
+
+        <div class="err" id="oErr"></div>
+        <button class="submit" id="oSubmit" type="button" onclick="submitOwner()">가입하기</button>
+      </div>
+    </section>
+
+    <!-- ===== 직원 ===== -->
+    <section class="pane" id="pane-emp">
+      <div class="card">
+        <h2>직원(소속 공인중개사·중개보조원) 가입</h2>
+        <p class="lead">소속될 중개사무소를 검색해 선택하고 정보를 입력하면, 대표자(사무소장)님 승인 후 이용할 수 있어요.</p>
+
+        <label class="lab">소속 중개사무소 <span class="req">*</span></label>
+        <div id="eEsWrap">
+          <div class="esfield">
+            <input class="inp" id="eEstate" autocomplete="off" placeholder="상호명·대표자·주소·등록번호로 검색" />
+            <div class="esdrop" id="eEstateDrop"></div>
+          </div>
+          <div class="help">검색 후 소속 사무소를 선택해주세요. (2자 이상 입력)</div>
+        </div>
+        <div class="essel" id="eEstateSel"></div>
+        <div class="roster" id="eRoster"></div>
+
+        <label class="lab">이름 <span class="req">*</span></label>
+        <input class="inp" id="eName" placeholder="이름을 입력해주세요" />
+
+        <label class="lab">연락처 <span class="req">*</span></label>
+        <input class="inp" id="ePhone" inputmode="numeric" placeholder="010-0000-0000" oninput="this.value=fmtPhone(this.value)" />
+
+        <label class="lab">이메일 (로그인 아이디) <span class="req">*</span></label>
+        <input class="inp" id="eEmail" type="email" inputmode="email" autocomplete="email" placeholder="example@email.com" />
+
+        <label class="lab">비밀번호 <span class="req">*</span></label>
+        <input class="inp" id="ePw" type="password" autocomplete="new-password" placeholder="10자 이상" oninput="pwHint('e')" />
+        <div class="help">10자 이상 · 영문 · 숫자 · 특수문자를 모두 포함해주세요.</div>
+
+        <label class="lab">비밀번호 확인 <span class="req">*</span></label>
+        <input class="inp" id="ePw2" type="password" autocomplete="new-password" placeholder="비밀번호 다시 입력" oninput="pwHint('e')" />
+        <div class="hint" id="ePwHint"></div>
+
+        <label class="lab" style="margin-bottom:0;">약관 동의 <span class="req">*</span></label>
+        <label class="agall"><input type="checkbox" id="eAgAll" onchange="agAll('e')"> 전체 동의합니다</label>
+        <label class="agitem"><input type="checkbox" class="e-ag e-req" data-k="age19" onchange="agSync('e')"> 만 19세 이상입니다<span class="tg">필수</span></label>
+        <label class="agitem"><input type="checkbox" class="e-ag e-req" data-k="tos" onchange="agSync('e')"> 서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/terms.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="e-ag e-req" data-k="privacy" onchange="agSync('e')"> 개인정보 처리방침 동의<span class="tg">필수</span><a class="vw" href="/privacy.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="e-ag e-req" data-k="location" onchange="agSync('e')"> 위치기반서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/location.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="e-ag" data-k="marketing" onchange="agSync('e')"> 마케팅 정보 수신 동의<span class="tg o">선택</span></label>
+
+        <div class="err" id="eErr"></div>
+        <button class="submit" id="eSubmit" type="button" onclick="submitEmp()">가입 신청하기</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- done overlay -->
+  <div class="ov" id="doneOv">
+    <div class="ovcard">
+      <div class="ovic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3 id="doneTitle">가입이 완료되었어요!</h3>
+      <div class="ovname" id="doneName"></div>
+      <p id="doneMsg"></p>
+      <div class="ovbtns">
+        <a class="ovb pri" href="/#dl">부비서 앱 다운로드</a>
+        <a class="ovb sec" href="../../login/index.html">로그인하러 가기</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 2026-06-17 [사용자 명시] 중개사무소 웹 회원가입 — 모바일 OwnerSignupScreen / EmployeeSignupScreen 1:1.
+    //   백엔드 /auth/signup (대표자) · /auth/signup/employee (직원). 검증 규칙·payload 모바일과 동일.
+    var API = 'https://api.bubiseo.com';
+
+    var PW_RE = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{10,}$/;
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var PHONE_RE = /^010-\d{4}-\d{4}$/;
+
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+    function fmtPhone(v){
+      var d=(v||'').replace(/\D/g,'').slice(0,11);
+      if(d.length<4) return d;
+      if(d.length<8) return d.slice(0,3)+'-'+d.slice(3);
+      return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7,11);
+    }
+
+    /* ---------- 탭 전환 ---------- */
+    function showPane(which){
+      var tabs=document.querySelectorAll('.tab');
+      for(var i=0;i<tabs.length;i++){ tabs[i].classList.toggle('on', tabs[i].getAttribute('data-t')===which); }
+      $('pane-owner').classList.toggle('on', which==='owner');
+      $('pane-emp').classList.toggle('on', which==='emp');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    /* ---------- 비밀번호 확인 ---------- */
+    function pwHint(p){
+      var a=$(p+'Pw').value, b=$(p+'Pw2').value, h=$(p+'PwHint');
+      if(!b){ h.textContent=''; h.className='hint'; return; }
+      if(a===b){ h.textContent='비밀번호가 일치합니다'; h.className='hint ok'; }
+      else{ h.textContent='비밀번호가 일치하지 않습니다'; h.className='hint err'; }
+    }
+
+    /* ---------- 약관 ---------- */
+    function agAll(p){
+      var on=$(p+'AgAll').checked;
+      document.querySelectorAll('.'+p+'-ag').forEach(function(x){ x.checked=on; });
+    }
+    function agSync(p){
+      var all=Array.prototype.every.call(document.querySelectorAll('.'+p+'-ag'),function(x){return x.checked;});
+      $(p+'AgAll').checked=all;
+    }
+    function allReq(p){
+      return Array.prototype.every.call(document.querySelectorAll('.'+p+'-req'),function(x){return x.checked;});
+    }
+
+    /* ---------- 에러 ---------- */
+    function showErr(id,msg){ var el=$(id); el.textContent=msg; el.classList.add('on'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+    function clearErr(id){ var el=$(id); el.textContent=''; el.classList.remove('on'); }
+
+    /* ---------- 부동산 검색 위젯 ---------- */
+    function setupEstateSearch(inputId, dropId, onSelect){
+      var input=$(inputId), drop=$(dropId), timer=null;
+      input.addEventListener('input',function(){
+        var q=input.value.trim();
+        if(timer) clearTimeout(timer);
+        if(q.length<2){ drop.classList.remove('on'); drop.innerHTML=''; return; }
+        timer=setTimeout(function(){ run(q); },250);
+      });
+      function run(q){
+        drop.innerHTML='<div class="esrow muted">검색 중…</div>'; drop.classList.add('on');
+        fetch(API+'/auth/realestate/search?q='+encodeURIComponent(q)+'&limit=20')
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            var rows=(d&&d.results)||[];
+            if(!rows.length){ drop.innerHTML='<div class="esrow muted">검색 결과가 없어요. 다른 검색어로 시도해주세요.</div>'; return; }
+            drop.innerHTML='';
+            rows.forEach(function(r){
+              var el=document.createElement('div'); el.className='esrow';
+              el.innerHTML='<div class="esn">'+esc(r.businessName)+(r.ownerName?'<span class="eso">'+esc(r.ownerName)+'</span>':'')+'</div><div class="esa">'+esc(r.address||'')+' · '+esc(r.registrationNumber)+'</div>';
+              el.onclick=function(){ onSelect(r); drop.classList.remove('on'); };
+              drop.appendChild(el);
+            });
+          })
+          .catch(function(){ drop.innerHTML='<div class="esrow muted">검색 오류예요. 다시 시도해주세요.</div>'; });
+      }
+      document.addEventListener('click',function(e){ if(e.target!==input && !drop.contains(e.target)) drop.classList.remove('on'); });
+    }
+    function estateCard(r, onChange){
+      return '<div class="esselc"><div style="min-width:0;"><div class="esn">'+esc(r.businessName)+'</div><div class="esa">'+esc(r.address||'')+' · '+esc(r.registrationNumber)+'</div></div><button type="button" class="eschg" onclick="'+onChange+'">변경</button></div>';
+    }
+
+    /* ---------- 대표자 부동산 ---------- */
+    var ownerEstate=null, inviterEstate=null;
+    function resetOwnerEstate(){ ownerEstate=null; $('oEstateSel').classList.remove('on'); $('oEstateSel').innerHTML=''; $('oEsWrap').style.display='block'; $('oEstate').value=''; $('oEstate').focus(); }
+    function resetInviter(){ inviterEstate=null; $('oInvSel').classList.remove('on'); $('oInvSel').innerHTML=''; $('oInvWrap').style.display='block'; $('oInv').value=''; }
+    setupEstateSearch('oEstate','oEstateDrop',function(r){
+      ownerEstate=r; $('oBiz').value=r.businessName||'';
+      $('oEsWrap').style.display='none';
+      $('oEstateSel').innerHTML=estateCard(r,'resetOwnerEstate()'); $('oEstateSel').classList.add('on');
+    });
+    setupEstateSearch('oInv','oInvDrop',function(r){
+      inviterEstate=r;
+      $('oInvWrap').style.display='none';
+      $('oInvSel').innerHTML=estateCard(r,'resetInviter()'); $('oInvSel').classList.add('on');
+    });
+
+    /* ---------- 직원 부동산 + 명부 ---------- */
+    var empEstate=null;
+    function resetEmpEstate(){ empEstate=null; $('eEstateSel').classList.remove('on'); $('eEstateSel').innerHTML=''; $('eRoster').classList.remove('on'); $('eRoster').innerHTML=''; $('eEsWrap').style.display='block'; $('eEstate').value=''; $('eEstate').focus(); }
+    setupEstateSearch('eEstate','eEstateDrop',function(r){
+      empEstate=r;
+      $('eEsWrap').style.display='none';
+      $('eEstateSel').innerHTML=estateCard(r,'resetEmpEstate()'); $('eEstateSel').classList.add('on');
+      loadRoster(r.registrationNumber);
+    });
+    function loadRoster(reg){
+      var wrap=$('eRoster'); wrap.innerHTML=''; wrap.classList.remove('on');
+      fetch(API+'/auth/realestate/'+encodeURIComponent(reg)+'/staff-roster')
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          var list=(d&&d.roster)||[];
+          if(!list.length) return;
+          var lab=document.createElement('div'); lab.className='rlab';
+          lab.textContent='명부에서 본인 이름을 선택하면 자동 입력돼요'+(d.baseDate?' (기준일 '+esc(d.baseDate)+')':'');
+          wrap.appendChild(lab);
+          list.forEach(function(p){
+            var c=document.createElement('button'); c.type='button'; c.className='rchip';
+            c.textContent=p.name+(p.jongbyeol?' · '+p.jongbyeol:'');
+            c.onclick=function(){ $('eName').value=p.name; };
+            wrap.appendChild(c);
+          });
+          wrap.classList.add('on');
+        })
+        .catch(function(){});
+    }
+
+    /* ---------- 사업자등록증 업로드 (presign → S3 PUT → SHA256) ---------- */
+    var license=null;
+    function onLicenseFile(input){
+      var f=input.files&&input.files[0];
+      if(!f) return;
+      var st=$('licStat');
+      if(f.size>5*1024*1024){ st.className='licstat err'; st.textContent='5MB 이하 이미지만 업로드할 수 있어요.'; input.value=''; license=null; return; }
+      var ct = (f.type==='image/png') ? 'image/png' : 'image/jpeg';
+      $('licBox').classList.add('has'); $('licName').textContent=f.name;
+      st.className='licstat load'; st.textContent='업로드 중…'; license=null;
+      fetch(API+'/auth/signup/business-license-presigned',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:f.name,contentType:ct})})
+        .then(function(r){ if(!r.ok) throw new Error('presign'); return r.json(); })
+        .then(function(pres){
+          return fetch(pres.uploadUrl,{method:'PUT',headers:{'Content-Type':ct},body:f})
+            .then(function(put){ if(!put.ok) throw new Error('s3-'+put.status); return hashFileBase64(f); })
+            .then(function(hash){ license={fileKey:pres.fileKey,hash:hash}; st.className='licstat ok'; st.textContent='✓ 업로드 완료'; });
+        })
+        .catch(function(){ st.className='licstat err'; st.textContent='업로드에 실패했어요. 잠시 후 다시 시도해주세요.'; license=null; });
+    }
+    // 모바일과 동일: 파일의 base64 문자열에 SHA-256 → hex 64자.
+    function hashFileBase64(f){
+      return new Promise(function(resolve,reject){
+        var rd=new FileReader();
+        rd.onload=function(){
+          var b64=String(rd.result).split(',')[1]||'';
+          crypto.subtle.digest('SHA-256', new TextEncoder().encode(b64)).then(function(buf){
+            resolve(Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join(''));
+          },reject);
+        };
+        rd.onerror=reject;
+        rd.readAsDataURL(f);
+      });
+    }
+
+    /* ---------- 완료 ---------- */
+    function showDone(type,name){
+      $('doneName').textContent=name+'님';
+      if(type==='owner'){
+        $('doneTitle').textContent='가입이 완료되었어요!';
+        $('doneMsg').innerHTML='이제 부비서 앱에서 바로 로그인할 수 있어요.<br/>아래에서 앱을 받아 시작해보세요.';
+      } else {
+        $('doneTitle').textContent='가입 신청이 접수되었어요!';
+        $('doneMsg').innerHTML='대표자(사무소장)님이 승인하면<br/>부비서 앱에서 로그인할 수 있어요.';
+      }
+      $('doneOv').classList.add('on');
+    }
+
+    /* ---------- 대표자 제출 ---------- */
+    function submitOwner(){
+      clearErr('oErr');
+      if(!ownerEstate) return showErr('oErr','중개사무소를 검색해서 선택해주세요.');
+      var biz=$('oBiz').value.trim(), name=$('oName').value.trim(), phone=$('oPhone').value.trim();
+      var email=$('oEmail').value.trim(), pw=$('oPw').value, pw2=$('oPw2').value;
+      if(biz.length<2) return showErr('oErr','상호명을 2자 이상 입력해주세요.');
+      if(name.length<2) return showErr('oErr','대표자 성명을 2자 이상 입력해주세요.');
+      if(!PHONE_RE.test(phone)) return showErr('oErr','연락처를 010-0000-0000 형식으로 입력해주세요.');
+      if(!EMAIL_RE.test(email)) return showErr('oErr','이메일 형식을 확인해주세요.');
+      if(!PW_RE.test(pw)) return showErr('oErr','비밀번호는 10자 이상이면서 영문·숫자·특수문자를 모두 포함해야 해요.');
+      if(pw!==pw2) return showErr('oErr','비밀번호가 일치하지 않아요.');
+      if(!license) return showErr('oErr','사업자등록증을 첨부해주세요. (업로드 완료까지 기다려주세요)');
+      if(!allReq('o')) return showErr('oErr','필수 약관에 모두 동의해주세요.');
+
+      var payload={
+        email:email, password:pw, name:name, phone:phone,
+        realEstateRegistrationNumber:ownerEstate.registrationNumber,
+        businessName:biz, address:ownerEstate.address,
+        businessLicenseFileKey:license.fileKey, businessLicenseHash:license.hash,
+        agreements:{age19:true,tos:true,privacy:true,location:true}
+      };
+      if(inviterEstate&&inviterEstate.id) payload.invitedByRealEstateId=inviterEstate.id;
+
+      var btn=$('oSubmit'); btn.disabled=true; btn.textContent='가입 중…';
+      fetch(API+'/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          if(res.ok){ showDone('owner',name); }
+          else { btn.disabled=false; btn.textContent='가입하기'; showErr('oErr',(res.data&&res.data.message)||'가입에 실패했어요. 입력값을 확인해주세요.'); }
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='가입하기'; showErr('oErr','네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    }
+
+    /* ---------- 직원 제출 ---------- */
+    function submitEmp(){
+      clearErr('eErr');
+      if(!empEstate) return showErr('eErr','소속 중개사무소를 검색해서 선택해주세요.');
+      var name=$('eName').value.trim(), phone=$('ePhone').value.trim();
+      var email=$('eEmail').value.trim(), pw=$('ePw').value, pw2=$('ePw2').value;
+      if(name.length<2) return showErr('eErr','이름을 2자 이상 입력해주세요.');
+      if(!PHONE_RE.test(phone)) return showErr('eErr','연락처를 010-0000-0000 형식으로 입력해주세요.');
+      if(!EMAIL_RE.test(email)) return showErr('eErr','이메일 형식을 확인해주세요.');
+      if(!PW_RE.test(pw)) return showErr('eErr','비밀번호는 10자 이상이면서 영문·숫자·특수문자를 모두 포함해야 해요.');
+      if(pw!==pw2) return showErr('eErr','비밀번호가 일치하지 않아요.');
+      if(!allReq('e')) return showErr('eErr','필수 약관에 모두 동의해주세요.');
+
+      var payload={
+        email:email, password:pw, name:name, phone:phone,
+        realEstateRegistrationNumber:empEstate.registrationNumber,
+        agreements:{age19:true,tos:true,privacy:true,location:true}
+      };
+      var btn=$('eSubmit'); btn.disabled=true; btn.textContent='가입 신청 중…';
+      fetch(API+'/auth/signup/employee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          if(res.ok){ showDone('emp',name); }
+          else { btn.disabled=false; btn.textContent='가입 신청하기'; showErr('eErr',(res.data&&res.data.message)||'가입 신청에 실패했어요. 입력값을 확인해주세요.'); }
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='가입 신청하기'; showErr('eErr','네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    }
+
+    /* 진입 시 ?tab=emp 지원 */
+    (function(){
+      var m=location.search.match(/tab=emp/);
+      if(m) showPane('emp');
+    })();
+  </script>
+</body>
+</html>
