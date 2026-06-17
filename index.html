@@ -210,6 +210,33 @@
   .sopt__ar{flex:0 0 auto; color:var(--ink3)}
   .smodal__foot{text-align:center; margin-top:13px; font-size:13.5px; color:var(--ink3); font-weight:600}
   .smodal__foot a{color:var(--ink); font-weight:800}
+  /* 로그인 모달 (블랙·모던) */
+  .lmtabs{display:flex; gap:5px; background:var(--bg2); border-radius:13px; padding:5px; margin-bottom:18px}
+  .lmtab{flex:1; border:none; background:none; font-family:inherit; font-size:14px; font-weight:800; color:var(--ink3); padding:11px 0; border-radius:9px; cursor:pointer; transition:.16s}
+  .lmtab.on{background:var(--ink); color:#fff}
+  .lmpane{display:none} .lmpane.on{display:block}
+  .lmfield{margin-bottom:12px}
+  .lmfield label{display:block; font-size:13px; font-weight:700; color:var(--ink2); margin-bottom:7px}
+  .lminp{width:100%; background:var(--bg2); border:1.5px solid transparent; border-radius:12px; padding:14px 15px; font-size:15px; font-family:inherit; color:var(--ink); transition:.14s}
+  .lminp::placeholder{color:var(--ink3)}
+  .lminp:focus{outline:none; border-color:var(--ink); background:#fff}
+  .lmerr{display:none; font-size:13px; font-weight:700; color:#E0322D; background:#FDECEC; border-radius:11px; padding:11px 13px; margin-bottom:12px; line-height:1.45}
+  .lmerr.on{display:block}
+  .lmbtn{display:block; width:100%; background:var(--ink); color:#fff; border:none; border-radius:13px; padding:15px; font-size:16px; font-weight:800; font-family:inherit; cursor:pointer; transition:.16s}
+  .lmbtn:hover{background:#000} .lmbtn:disabled{opacity:.55; cursor:default}
+  .lmhint{text-align:center; font-size:12.5px; color:var(--ink3); font-weight:600; margin:14px 2px 0; line-height:1.5}
+  .lmhint b{color:var(--ink2); font-weight:700}
+  .lmqr{text-align:center}
+  #lmQrbox{width:178px; height:178px; margin:0 auto; background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:10px; display:flex; align-items:center; justify-content:center}
+  #lmQrbox img,#lmQrbox canvas{display:block; border-radius:6px}
+  .lmqr-fallback{font-size:13px; color:var(--ink3); font-weight:600; padding:0 12px; line-height:1.5}
+  .lmqr-steps{margin:20px 4px 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; text-align:left}
+  .lmqr-steps li{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--ink2); font-weight:600}
+  .lmqr-steps .n{width:21px; height:21px; border-radius:50%; background:var(--bg3); color:var(--ink); display:grid; place-items:center; font-size:12px; font-weight:800; flex-shrink:0}
+  .lmqr-steps b{color:var(--ink); font-weight:700}
+  .lmqr-status{margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:var(--ink2); font-weight:700; background:var(--bg2); border-radius:11px; padding:11px}
+  .lmqr-dot{width:8px; height:8px; border-radius:50%; background:var(--ink); animation:lmpulse 1.2s infinite; flex-shrink:0}
+  @keyframes lmpulse{0%,100%{opacity:.25}50%{opacity:1}}
 </style>
 </head>
 <body>
@@ -221,7 +248,7 @@
     <a href="#top">홈</a><a href="#feat">기능</a><a href="#free">가격</a><a href="ad-inquiry.html">일반광고</a><a href="ad2-inquiry.html">분양광고</a><a href="products.html">고객지원</a>
   </nav>
   <div class="nav__cta">
-    <a class="btn btn--ghost" href="main/login/index.html">로그인</a>
+    <a class="btn btn--ghost" href="main/login/index.html" onclick="return openLogin(event)">로그인</a>
     <a class="btn btn--dark" href="main/signup/index.html" onclick="return openSignup(event)">회원가입</a>
   </div>
 </div></header>
@@ -395,6 +422,46 @@
   </div>
 </div></footer>
 
+  <!-- 로그인 모달 (블랙·모던) -->
+  <div class="smodal" id="loginModal" role="dialog" aria-modal="true" aria-label="로그인">
+    <div class="smodal__bd" onclick="closeLogin()"></div>
+    <div class="smodal__card">
+      <button class="smodal__x" type="button" aria-label="닫기" onclick="closeLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="smodal__brand">부비서</div>
+      <h3 class="smodal__title">로그인</h3>
+      <p class="smodal__sub">부비서 앱 계정으로 로그인하세요</p>
+
+      <div class="lmtabs">
+        <button class="lmtab on" type="button" data-lt="account" onclick="loginTab('account')">앱 계정 로그인</button>
+        <button class="lmtab" type="button" data-lt="qr" onclick="loginTab('qr')">QR 로그인</button>
+      </div>
+
+      <form class="lmpane on" id="lmPaneAccount" autocomplete="on" onsubmit="return lmSubmit(event)">
+        <div class="lmfield"><label for="lmEmail">이메일</label><input class="lminp" id="lmEmail" type="email" inputmode="email" autocomplete="username" placeholder="부비서 앱 이메일" /></div>
+        <div class="lmfield"><label for="lmPw">비밀번호</label><input class="lminp" id="lmPw" type="password" autocomplete="current-password" placeholder="비밀번호" /></div>
+        <div class="lmerr" id="lmErr"></div>
+        <button class="lmbtn" id="lmBtn" type="submit">로그인</button>
+        <p class="lmhint">부비서 <b>앱과 동일한 계정</b>으로 로그인됩니다.</p>
+      </form>
+
+      <div class="lmpane" id="lmPaneQr">
+        <div class="lmqr">
+          <div id="lmQrbox"><div class="lmqr-fallback">QR 코드를 불러오는 중…</div></div>
+          <ul class="lmqr-steps">
+            <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
+            <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
+            <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
+          </ul>
+          <div class="lmqr-status"><span class="lmqr-dot"></span>앱 로그인 후 QR를 촬영해주세요.</div>
+        </div>
+      </div>
+
+      <p class="smodal__foot">계정이 없으신가요? <a href="#" onclick="closeLogin();return openSignup(event)">회원가입</a></p>
+    </div>
+  </div>
+
   <!-- 회원가입 유형 선택 모달 (블랙·모던) -->
   <div class="smodal" id="signupModal" role="dialog" aria-modal="true" aria-label="회원가입 유형 선택">
     <div class="smodal__bd" onclick="closeSignup()"></div>
@@ -426,10 +493,72 @@
     // 2026-06-17 데스크톱(.dmg/.exe) 직접 다운로드 — 메인 페이지 이동·새 탭 없이 숨김 iframe 으로 받기.
     //   href 는 유지(우클릭 '다른 이름으로 저장'·JS 비활성 폴백). GitHub 릴리스 자산은
     //   content-disposition:attachment 라 iframe src 지정만으로 즉시 다운로드 시작됨.
+    // 로그인 모달 — 홈 로그인 버튼 클릭 시 중앙 모달(이메일/비번 + QR 페어링). 성공 시 /main/ 포털로 이동.
+    var LM_API='https://api.bubiseo.com', LM_TK='bbs_portal_token', LM_USR='bbs_portal_user';
+    var lmToken=null, lmPoll=null;
+    function lmGenId(){ try{ if(window.crypto&&crypto.randomUUID) return 'web-'+crypto.randomUUID(); }catch(e){} return 'web-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10); }
+    var lmClientId=lmGenId();
+    function lmIsMobile(){ try{ return window.matchMedia('(pointer:coarse)').matches||window.matchMedia('(max-width:760px)').matches; }catch(e){ return false; } }
+    function openLogin(e){ if(e&&e.preventDefault)e.preventDefault(); var m=document.getElementById('loginModal'); if(m){ m.classList.add('on'); document.body.style.overflow='hidden'; loginTab(lmIsMobile()?'account':'qr'); } return false; }
+    function closeLogin(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } lmStopPoll(); }
+    function loginTab(which){
+      var t=document.querySelectorAll('.lmtab'); for(var i=0;i<t.length;i++){ t[i].classList.toggle('on', t[i].getAttribute('data-lt')===which); }
+      document.getElementById('lmPaneAccount').classList.toggle('on', which==='account');
+      document.getElementById('lmPaneQr').classList.toggle('on', which==='qr');
+      if(which==='qr'){ if(!lmToken) lmInitQR(); else lmEnsurePoll(); } else { lmStopPoll(); }
+    }
+    function lmShowErr(msg){ var el=document.getElementById('lmErr'); el.textContent=msg; el.classList.add('on'); }
+    function lmClearErr(){ var el=document.getElementById('lmErr'); el.textContent=''; el.classList.remove('on'); }
+    function lmSubmit(e){
+      if(e&&e.preventDefault)e.preventDefault(); lmClearErr();
+      var email=(document.getElementById('lmEmail').value||'').trim(), pw=document.getElementById('lmPw').value||'';
+      if(!email||!pw){ lmShowErr('이메일과 비밀번호를 입력해주세요.'); return false; }
+      var btn=document.getElementById('lmBtn'); btn.disabled=true; btn.textContent='로그인 중…';
+      fetch(LM_API+'/portal/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.replace('/main/'); }
+          else { btn.disabled=false; btn.textContent='로그인'; lmShowErr((res.data&&res.data.message)||'로그인에 실패했어요. 다시 시도해주세요.'); }
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='로그인'; lmShowErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+      return false;
+    }
+    function lmStopPoll(){ if(lmPoll){ clearInterval(lmPoll); lmPoll=null; } }
+    function lmEnsurePoll(){ if(!lmPoll&&lmToken) lmStartPoll(); }
+    function lmQrFail(msg){ var b=document.getElementById('lmQrbox'); if(b) b.innerHTML='<div class="lmqr-fallback">'+msg+'</div>'; }
+    function lmLoadQRLib(cb){
+      if(typeof QRCode!=='undefined'){ cb(); return; }
+      var t=setInterval(function(){ if(typeof QRCode!=='undefined'){ clearInterval(t); cb(); } },120);
+      if(!window.__lmQrLoading){ window.__lmQrLoading=true; var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js'; s.onerror=function(){ clearInterval(t); lmQrFail('QR 코드를 불러오지 못했어요.<br/>새로고침해주세요.'); }; document.head.appendChild(s); }
+    }
+    function lmInitQR(){
+      lmStopPoll(); var box=document.getElementById('lmQrbox'); if(!box) return; box.innerHTML='<div class="lmqr-fallback">QR 코드를 불러오는 중…</div>';
+      fetch(LM_API+'/pairing/init',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({desktopClientId:lmClientId,desktopUserAgent:navigator.userAgent,clientType:'web'})})
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(!data||!data.pairingToken) throw new Error('no token');
+          lmToken=data.pairingToken;
+          lmLoadQRLib(function(){ box.innerHTML=''; new QRCode(box,{text:JSON.stringify({token:lmToken,clientId:lmClientId}),width:156,height:156,colorDark:'#111418',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); });
+          lmStartPoll();
+        })
+        .catch(function(){ lmQrFail('QR을 불러오지 못했어요.<br/>새로고침해주세요.'); });
+    }
+    function lmStartPoll(){
+      lmStopPoll();
+      lmPoll=setInterval(function(){
+        if(!lmToken) return;
+        fetch(LM_API+'/pairing/'+encodeURIComponent(lmToken)+'/result').then(function(r){ return r.json(); }).then(function(d){
+          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료! 이동 중…'; location.replace('/main/'); }
+          else if(d.status==='EXPIRED'||d.status==='REJECTED'){ lmToken=null; lmInitQR(); }
+        }).catch(function(){});
+      },2000);
+    }
+    if(/[?&]login=1/.test(location.search)){ openLogin(); }
+
     // 회원가입 유형 선택 — 홈 회원가입 버튼 클릭 시 중앙 모달. (?signup=1 진입 시 자동 오픈)
     function openSignup(e){ if(e&&e.preventDefault)e.preventDefault(); var m=document.getElementById('signupModal'); if(m){ m.classList.add('on'); document.body.style.overflow='hidden'; } return false; }
     function closeSignup(){ var m=document.getElementById('signupModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } }
-    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeSignup(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeSignup(); closeLogin(); } });
     if(/[?&]signup=1/.test(location.search)){ var _sm=document.getElementById('signupModal'); if(_sm){ _sm.classList.add('on'); document.body.style.overflow='hidden'; } }
 
     function bbsDownload(e, url){
