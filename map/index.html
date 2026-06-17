@@ -83,18 +83,16 @@
     .search-pin .sp-label { background: #6155F5; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; box-shadow: 0 3px 10px rgba(97,85,245,.5); white-space: nowrap; max-width: 170px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
     .search-pin .sp-dot { width: 14px; height: 14px; border-radius: 50%; background: #6155F5; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(97,85,245,.3), 0 2px 6px rgba(0,0,0,.4); }
     .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
-    /* 부동산 마커 (CustomOverlay) — home.png 아이콘을 담은 흰 말풍선 핀(아래 꼬리 = 실제 위치). 위에 상호명 라벨.
-       동일 좌표 2곳 이상은 말풍선을 살짝 겹쳐 쌓고 코너에 작은 숫자 뱃지 → 탭하면 옆에 팝오버 목록. */
+    /* 부동산 마커 (CustomOverlay) — home.png 아이콘 + 아래 작은 화살표(= 실제 위치). 위에 상호명 라벨.
+       동일 좌표 2곳 이상은 아이콘 코너에 블랙 숫자 → 탭하면 옆에 팝오버 목록. */
     .pin-wrap { position: relative; width: 0; height: 0; }
-    .pin-marker { position: absolute; left: -19px; top: -48px; width: 38px; height: 38px; z-index: 3; cursor: pointer; }
-    .pin-bubble { position: relative; z-index: 1; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.28); display: flex; align-items: center; justify-content: center; }
-    .pin-bubble img { width: 35px; height: 35px; display: block; }
-    .pin-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%) rotate(45deg); width: 11px; height: 11px; background: #fff; border-right: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); }
-    .pin-marker .pin-behind { position: absolute; left: 7px; top: -5px; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.2); z-index: 0; }
-    .pin-marker .pin-count { position: absolute; top: -11px; right: -7px; z-index: 2; color: #191F28; font-size: 15px; font-weight: 900; line-height: 1; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 1px 2px #fff; }
-    .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
-    .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: normal; overflow-wrap: break-word; word-break: keep-all; line-height: 1.25; }
-    .office-box .ob-sub { color: var(--sub); display: block; white-space: normal; overflow-wrap: break-word; word-break: keep-all; }
+    .pin-marker { position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; z-index: 3; cursor: pointer; }
+    .pin-ico { width: 30px; height: 30px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+    .pin-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid #3B82F6; margin-top: -1px; }
+    .pin-marker .pin-count { position: absolute; top: -7px; right: -7px; z-index: 2; color: #191F28; font-size: 15px; font-weight: 900; line-height: 1; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 1px 2px #fff; }
+    .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 11px; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; white-space: nowrap; }
+    .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: nowrap; }
+    .office-box .ob-sub { color: var(--sub); display: block; white-space: nowrap; }
     /* 묶음 목록 — 박스 바로 옆 팝오버 */
     .cluster-pop { position: fixed; z-index: 1100; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.28); width: 232px; max-height: 60vh; overflow-y: auto; padding: 6px; }
     .cp-head { font-size: 12px; font-weight: 800; color: var(--ink); padding: 6px 8px 8px; border-bottom: 1px solid #F0F2F5; }
@@ -113,10 +111,10 @@
     .pin-wrap.s-FAIL .office-box { background: var(--fail); border-color: var(--fail); }
     .pin-wrap.s-SIGNUP .office-box *, .pin-wrap.s-REVISIT .office-box *, .pin-wrap.s-FAIL .office-box * { color: #fff !important; }
     .pin-wrap.s-DELIVERED .office-box * { color: #4A3A00 !important; }
-    .pin-wrap.s-SIGNUP .pin-bubble { border-color: var(--signup); }
-    .pin-wrap.s-DELIVERED .pin-bubble { border-color: var(--delivered); }
-    .pin-wrap.s-REVISIT .pin-bubble { border-color: var(--revisit); }
-    .pin-wrap.s-FAIL .pin-bubble { border-color: var(--fail); }
+    .pin-wrap.s-SIGNUP .pin-arrow { border-top-color: var(--signup); }
+    .pin-wrap.s-DELIVERED .pin-arrow { border-top-color: var(--delivered); }
+    .pin-wrap.s-REVISIT .pin-arrow { border-top-color: var(--revisit); }
+    .pin-wrap.s-FAIL .pin-arrow { border-top-color: var(--fail); }
     /* ===== 중앙 모달 (부동산 상세) — 모바일 대시보드 디자인 (#F5F6F8 배경 · 흰 카드 · 소프트 그림자 0 5px 4px rgba(0,0,0,.08) · #191F28 텍스트 / #8B95A1 보조) ===== */
     #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(17,21,28,.45); opacity: 0; pointer-events: none; transition: opacity .2s; }
     #scrim.on { opacity: 1; pointer-events: auto; }
@@ -721,9 +719,7 @@
       overlays.forEach(function(o){ o.setMap(null); }); overlays = [];
     }
 
-    // 박스 상수 (픽셀)
-    var BOX_W = 150;
-    var CLUSTER_MIN = 2;            // 같은 좌표 2곳 이상이면 블랙 숫자 배지(N) (탭 → 옆 팝오버)
+    var CLUSTER_MIN = 2;            // 같은 좌표 2곳 이상이면 아이콘 코너 블랙 숫자 (탭 → 옆 팝오버)
 
     function renderAll() {
       if (!map) return;
@@ -768,28 +764,28 @@
       });
     }
 
-    // 박스를 점(실제 위치) 바로 위, 가로 중앙에 배치 (연결선 없음).
+    // 라벨을 점(실제 위치) 바로 위, 가로 중앙에 배치 (자동 폭, 한 줄). 줄바꿈 없이 박스가 가로로 늘어남.
     function positionBox(box) {
-      box.style.left = (-BOX_W / 2).toFixed(1) + 'px';
+      box.style.left = '0px';
       box.style.top = '0px';
-      box.style.transform = 'translateY(calc(-100% - 54px))';
+      box.style.transform = 'translate(-50%, calc(-100% - 46px))';
     }
 
     function createBoxOverlay(it) {
       var wrap = document.createElement('div');
       wrap.className = 'pin-wrap';
       if (it.cluster) {
-        // 동일 좌표 N곳 → 말풍선 핀을 살짝 겹쳐 쌓고 코너에 작은 숫자 뱃지. 탭하면 옆에 팝오버 목록.
+        // 동일 좌표 N곳 → 아이콘 + 화살표 + 코너에 블랙 숫자. 탭하면 옆에 팝오버 목록.
         var cm = document.createElement('div'); cm.className = 'pin-marker';
-        cm.innerHTML = '<div class="pin-behind"></div><div class="pin-bubble"><img src="home.png?v=3" alt=""></div><div class="pin-count">' + it.offices.length + '</div>';
+        cm.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><span class="pin-arrow"></span><div class="pin-count">' + it.offices.length + '</div>';
         (function(offs){ cm.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, cm); }; })(it.offices);
         wrap.appendChild(cm);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
         var marker = document.createElement('div'); marker.className = 'pin-marker';
-        marker.innerHTML = '<div class="pin-bubble"><img src="home.png?v=3" alt=""></div>';
-        var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
+        marker.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><span class="pin-arrow"></span>';
+        var box = document.createElement('div'); box.className = 'office-box';
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
         (function(id){ marker.onclick = function(e){ e.stopPropagation(); openSheet(id); }; box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
         wrap.appendChild(marker); wrap.appendChild(box);
