@@ -83,18 +83,18 @@
     .search-pin .sp-label { background: #6155F5; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; box-shadow: 0 3px 10px rgba(97,85,245,.5); white-space: nowrap; max-width: 170px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
     .search-pin .sp-dot { width: 14px; height: 14px; border-radius: 50%; background: #6155F5; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(97,85,245,.3), 0 2px 6px rgba(0,0,0,.4); }
     .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
-    /* 부동산 박스 (CustomOverlay) — 블랙 집(건물) 아이콘 마커(실제 위치) 바로 위에 라벨 박스. 연결선 없음.
-       동일 좌표 2곳 이상은 원형 숫자 배지(N) → 탭하면 옆에 팝오버 목록. */
+    /* 부동산 마커 (CustomOverlay) — home.png 아이콘을 담은 흰 말풍선 핀(아래 꼬리 = 실제 위치). 위에 상호명 라벨.
+       동일 좌표 2곳 이상은 말풍선을 살짝 겹쳐 쌓고 코너에 작은 숫자 뱃지 → 탭하면 옆에 팝오버 목록. */
     .pin-wrap { position: relative; width: 0; height: 0; }
-    .pin-icon { position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; border-radius: 50%; background: #191F28; border: 2.5px solid #fff; box-shadow: 0 3px 9px rgba(0,0,0,.45); z-index: 2; display: flex; align-items: center; justify-content: center; }
-    .pin-icon svg { width: 16px; height: 16px; display: block; }
+    .pin-marker { position: absolute; left: -19px; top: -48px; width: 38px; height: 38px; z-index: 3; cursor: pointer; }
+    .pin-bubble { position: relative; z-index: 1; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.28); display: flex; align-items: center; justify-content: center; }
+    .pin-bubble img { width: 26px; height: 26px; display: block; }
+    .pin-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%) rotate(45deg); width: 11px; height: 11px; background: #fff; border-right: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); }
+    .pin-marker .pin-behind { position: absolute; left: 7px; top: -5px; width: 38px; height: 38px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 4px 12px rgba(0,0,0,.2); z-index: 0; }
+    .pin-marker .pin-count { position: absolute; top: -6px; right: -6px; z-index: 2; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: #191F28; border: 2px solid #fff; color: #fff; font-size: 11px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
     .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .office-box .ob-sub { color: var(--sub); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    /* 동일 좌표 N곳 묶음 — 블랙 원형 숫자 배지 + 캡션 (탭 → 옆 팝오버) */
-    .cluster-badge { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; z-index: 4; }
-    .cluster-badge .cb-circle { min-width: 38px; height: 38px; padding: 0 9px; border-radius: 999px; background: #191F28; border: 2.5px solid #fff; box-shadow: 0 4px 14px rgba(0,0,0,.38); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; font-weight: 800; line-height: 1; }
-    .cluster-badge .cb-cap { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 800; color: #191F28; box-shadow: 0 2px 8px rgba(0,0,0,.2); white-space: nowrap; }
     /* 묶음 목록 — 박스 바로 옆 팝오버 */
     .cluster-pop { position: fixed; z-index: 1100; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.28); width: 232px; max-height: 60vh; overflow-y: auto; padding: 6px; }
     .cp-head { font-size: 12px; font-weight: 800; color: var(--ink); padding: 6px 8px 8px; border-bottom: 1px solid #F0F2F5; }
@@ -113,10 +113,10 @@
     .pin-wrap.s-FAIL .office-box { background: var(--fail); border-color: var(--fail); }
     .pin-wrap.s-SIGNUP .office-box *, .pin-wrap.s-REVISIT .office-box *, .pin-wrap.s-FAIL .office-box * { color: #fff !important; }
     .pin-wrap.s-DELIVERED .office-box * { color: #4A3A00 !important; }
-    .pin-wrap.s-SIGNUP .pin-icon { background: var(--signup); }
-    .pin-wrap.s-DELIVERED .pin-icon { background: var(--delivered); }
-    .pin-wrap.s-REVISIT .pin-icon { background: var(--revisit); }
-    .pin-wrap.s-FAIL .pin-icon { background: var(--fail); }
+    .pin-wrap.s-SIGNUP .pin-bubble { border-color: var(--signup); }
+    .pin-wrap.s-DELIVERED .pin-bubble { border-color: var(--delivered); }
+    .pin-wrap.s-REVISIT .pin-bubble { border-color: var(--revisit); }
+    .pin-wrap.s-FAIL .pin-bubble { border-color: var(--fail); }
     /* ===== 중앙 모달 (부동산 상세) — 모바일 대시보드 디자인 (#F5F6F8 배경 · 흰 카드 · 소프트 그림자 0 5px 4px rgba(0,0,0,.08) · #191F28 텍스트 / #8B95A1 보조) ===== */
     #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(17,21,28,.45); opacity: 0; pointer-events: none; transition: opacity .2s; }
     #scrim.on { opacity: 1; pointer-events: auto; }
@@ -771,27 +771,27 @@
     // 박스를 점(실제 위치) 바로 위, 가로 중앙에 배치 (연결선 없음).
     function positionBox(box) {
       box.style.left = (-BOX_W / 2).toFixed(1) + 'px';
-      box.style.top = (-(BOX_H + 20)).toFixed(1) + 'px';
+      box.style.top = (-(BOX_H + 54)).toFixed(1) + 'px';
     }
 
     function createBoxOverlay(it) {
       var wrap = document.createElement('div');
       wrap.className = 'pin-wrap';
       if (it.cluster) {
-        // 동일 좌표 N곳 → 원형 숫자 배지 + "N개의 추천 부동산" 캡션(이미지2). 탭하면 옆에 팝오버 목록.
-        var badge = document.createElement('div'); badge.className = 'cluster-badge';
-        badge.innerHTML = '<div class="cb-circle">' + it.offices.length + '</div><div class="cb-cap">' + it.offices.length + '개의 추천 부동산</div>';
-        (function(offs){ badge.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, badge); }; })(it.offices);
-        wrap.appendChild(badge);
+        // 동일 좌표 N곳 → 말풍선 핀을 살짝 겹쳐 쌓고 코너에 작은 숫자 뱃지. 탭하면 옆에 팝오버 목록.
+        var cm = document.createElement('div'); cm.className = 'pin-marker';
+        cm.innerHTML = '<div class="pin-behind"></div><div class="pin-bubble"><img src="home.png" alt=""></div><div class="pin-count">' + it.offices.length + '</div>';
+        (function(offs){ cm.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, cm); }; })(it.offices);
+        wrap.appendChild(cm);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
-        var icon = document.createElement('div'); icon.className = 'pin-icon';
-        icon.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5z"/></svg>';
+        var marker = document.createElement('div'); marker.className = 'pin-marker';
+        marker.innerHTML = '<div class="pin-bubble"><img src="home.png" alt=""></div>';
         var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
-        (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
-        wrap.appendChild(icon); wrap.appendChild(box);
+        (function(id){ marker.onclick = function(e){ e.stopPropagation(); openSheet(id); }; box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
+        wrap.appendChild(marker); wrap.appendChild(box);
         positionBox(box);
       }
       var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: it.cluster ? 4 : 3 });
