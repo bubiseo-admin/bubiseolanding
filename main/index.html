@@ -175,7 +175,7 @@
       // 2026-06-09 데스크톱 광고관리 임베드(iframe) SSO — 부모(데스크톱 앱) 세션 받아 2번째 QR 제거.
       var embedded = false;
       try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
-      if (!embedded) { location.replace(LOGIN); return; }
+      if (!embedded) { location.replace('/'); return; }
       try { document.documentElement.style.visibility = 'hidden'; } catch (e) {}
       var settled = false;
       function onPortalMsg(ev){

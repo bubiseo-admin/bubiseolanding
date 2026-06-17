@@ -237,6 +237,20 @@
   .lmqr-status{margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:var(--ink2); font-weight:700; background:var(--bg2); border-radius:11px; padding:11px}
   .lmqr-dot{width:8px; height:8px; border-radius:50%; background:var(--ink); animation:lmpulse 1.2s infinite; flex-shrink:0}
   @keyframes lmpulse{0%,100%{opacity:.25}50%{opacity:1}}
+  /* 로그인 후 프로필 칩 (중개사=아바타+이름+직급뱃지 / 광고·분양대행사=상호명+이름) */
+  .nav__profile{margin-left:auto; display:flex; align-items:center; position:relative}
+  .pchip{display:flex; align-items:center; gap:9px; background:var(--bg2); border:1px solid var(--line); border-radius:999px; padding:5px 13px 5px 5px; cursor:pointer; font-family:inherit; transition:.14s}
+  .pchip:hover{background:var(--bg3)}
+  .pchip__av{width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:800; flex:0 0 auto; overflow:hidden}
+  .pchip__av img{width:100%; height:100%; object-fit:cover}
+  .pchip__nm{font-size:14px; font-weight:800; color:var(--ink); letter-spacing:-.02em; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pchip__bdg{font-size:11px; font-weight:800; color:#fff; background:var(--ink); border-radius:6px; padding:2px 7px; flex:0 0 auto}
+  .pchip__biz{font-size:12.5px; font-weight:700; color:var(--ink3); max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pmenu{display:none; position:absolute; top:calc(100% + 8px); right:0; background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:0 16px 40px rgba(17,20,24,.14); padding:6px; min-width:170px; z-index:120}
+  .pmenu.on{display:block}
+  .pmenu .pmu{font-size:12px; color:var(--ink3); font-weight:700; padding:9px 13px 5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pmenu button{display:block; width:100%; text-align:left; background:none; border:none; font-family:inherit; font-size:14px; font-weight:700; color:var(--ink2); padding:11px 13px; border-radius:9px; cursor:pointer}
+  .pmenu button:hover{background:var(--bg2); color:var(--ink)}
 </style>
 </head>
 <body>
@@ -247,10 +261,11 @@
   <nav class="nav__menu">
     <a href="#top">홈</a><a href="#feat">기능</a><a href="#free">가격</a><a href="ad-inquiry.html">일반광고</a><a href="ad2-inquiry.html">분양광고</a><a href="products.html">고객지원</a>
   </nav>
-  <div class="nav__cta">
+  <div class="nav__cta" id="navCta">
     <a class="btn btn--ghost" href="main/login/index.html" onclick="return openLogin(event)">로그인</a>
     <a class="btn btn--dark" href="main/signup/index.html" onclick="return openSignup(event)">회원가입</a>
   </div>
+  <div class="nav__profile" id="navProfile" style="display:none"></div>
 </div></header>
 
 <!-- HERO -->
@@ -517,7 +532,7 @@
       fetch(LM_API+'/portal/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
         .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
         .then(function(res){
-          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.replace('/main/'); }
+          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; closeLogin(); authState(); }
           else { btn.disabled=false; btn.textContent='로그인'; lmShowErr((res.data&&res.data.message)||'로그인에 실패했어요. 다시 시도해주세요.'); }
         })
         .catch(function(){ btn.disabled=false; btn.textContent='로그인'; lmShowErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
@@ -548,7 +563,7 @@
       lmPoll=setInterval(function(){
         if(!lmToken) return;
         fetch(LM_API+'/pairing/'+encodeURIComponent(lmToken)+'/result').then(function(r){ return r.json(); }).then(function(d){
-          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료! 이동 중…'; location.replace('/main/'); }
+          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료!'; closeLogin(); authState(); }
           else if(d.status==='EXPIRED'||d.status==='REJECTED'){ lmToken=null; lmInitQR(); }
         }).catch(function(){});
       },2000);
@@ -560,6 +575,38 @@
     function closeSignup(){ var m=document.getElementById('signupModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } }
     document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeSignup(); closeLogin(); } });
     if(/[?&]signup=1/.test(location.search)){ var _sm=document.getElementById('signupModal'); if(_sm){ _sm.classList.add('on'); document.body.style.overflow='hidden'; } }
+
+    // 로그인 후 홈 헤더 프로필 칩 — /portal/me 로 이름·역할·상호명 조회.
+    function pEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function pRoleBadge(role){ return role==='OWNER'?'대표':(role==='EMPLOYEE'?'직원':(role==='ADMIN'?'관리자':'회원')); }
+    function authState(){
+      var t=localStorage.getItem('bbs_portal_token');
+      var cta=document.getElementById('navCta'), prof=document.getElementById('navProfile');
+      if(!cta||!prof) return;
+      if(!t){ cta.style.display=''; prof.style.display='none'; prof.innerHTML=''; return; }
+      fetch('https://api.bubiseo.com/portal/me',{headers:{Authorization:'Bearer '+t}})
+        .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+        .then(function(d){
+          var u=(d&&d.user)||{}, re=(d&&d.realEstate)||{};
+          var role=u.role||'', name=u.name||'', biz=(re&&re.businessName)||'';
+          var isBroker=(role==='OWNER'||role==='EMPLOYEE');
+          var html;
+          if(isBroker){
+            var ini=((name||'?').trim().charAt(0))||'?';
+            html='<button class="pchip" type="button" onclick="pToggle(event)"><span class="pchip__av">'+pEsc(ini)+'</span><span class="pchip__nm">'+pEsc(name)+'</span><span class="pchip__bdg">'+pRoleBadge(role)+'</span></button>';
+          } else {
+            var ini2=((biz||name||'?').trim().charAt(0))||'?';
+            html='<button class="pchip" type="button" onclick="pToggle(event)"><span class="pchip__av">'+pEsc(ini2)+'</span>'+(biz?'<span class="pchip__nm">'+pEsc(biz)+'</span>':'')+'<span class="pchip__biz">'+pEsc(name||u.email||'')+'</span></button>';
+          }
+          html+='<div class="pmenu" id="pmenu"><div class="pmu">'+pEsc(u.email||'')+'</div><button type="button" onclick="pLogout()">로그아웃</button></div>';
+          prof.innerHTML=html; prof.style.display='flex'; cta.style.display='none';
+        })
+        .catch(function(){ localStorage.removeItem('bbs_portal_token'); localStorage.removeItem('bbs_portal_user'); cta.style.display=''; prof.style.display='none'; prof.innerHTML=''; });
+    }
+    function pToggle(e){ if(e&&e.stopPropagation)e.stopPropagation(); var m=document.getElementById('pmenu'); if(m) m.classList.toggle('on'); }
+    function pLogout(){ localStorage.removeItem('bbs_portal_token'); localStorage.removeItem('bbs_portal_user'); authState(); }
+    document.addEventListener('click', function(){ var m=document.getElementById('pmenu'); if(m) m.classList.remove('on'); });
+    authState();
 
     function bbsDownload(e, url){
       if (e && e.preventDefault) e.preventDefault();
