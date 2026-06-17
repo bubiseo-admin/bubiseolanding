@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
   <title>부동산 영업 지도</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
   <style>
     :root {
       /* 박스 상태색 — 가입완료 초록 / 전달완료 파랑 / 재방문 노랑 / 실패 빨강 */
@@ -13,7 +15,7 @@
       --ink: #191F28; --sub: #6B7684; --line: #E5E8EB; --bg: #F2F4F6;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); background: #fff; }
+    html, body { margin: 0; height: 100%; font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); background: #fff; }
     /* 세이프에어리어(노치·홈바) 흰색 채움 */
     #safeBottom { position: fixed; bottom: 0; left: 0; right: 0; height: env(safe-area-inset-bottom); background: #fff; z-index: 9500; pointer-events: none; }
     /* 세이프에리어 포함 화면 꽉차게 */
@@ -81,18 +83,17 @@
     .search-pin .sp-label { background: #6155F5; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; box-shadow: 0 3px 10px rgba(97,85,245,.5); white-space: nowrap; max-width: 170px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
     .search-pin .sp-dot { width: 14px; height: 14px; border-radius: 50%; background: #6155F5; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(97,85,245,.3), 0 2px 6px rgba(0,0,0,.4); }
     .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2D7FF9; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(45,127,249,.3), 0 2px 6px rgba(0,0,0,.3); }
-    /* 부동산 박스 (CustomOverlay) — 점(실제 위치) 바로 위에 라벨 박스. 연결선 없음.
-       동일 좌표 2곳 이상은 "이 위치 N곳" 흰색 묶음 박스 → 탭하면 옆에 팝오버 목록. */
+    /* 부동산 박스 (CustomOverlay) — 블랙 점(실제 위치) 바로 위에 라벨 박스. 연결선 없음.
+       동일 좌표 2곳 이상은 블랙 원형 숫자 배지(N) → 탭하면 옆에 팝오버 목록. */
     .pin-wrap { position: relative; width: 0; height: 0; }
-    .pin-dot { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #6155F5; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.45); z-index: 2; }
+    .pin-dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: #191F28; border: 2.5px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.5); z-index: 2; }
     .office-box { position: absolute; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 9px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,.22); font-size: 11px; line-height: 1.3; text-align: center; cursor: pointer; z-index: 3; }
     .office-box b { font-size: 12px; display: block; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .office-box .ob-sub { color: var(--sub); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    /* 같은 좌표 N곳 묶음 박스 */
-    /* 동일 좌표 N곳 묶음 박스 — 흰 배경 */
-    .office-box.cluster-box { background: #fff; border-color: #6155F5; }
-    .office-box.cluster-box b { color: #6155F5; }
-    .office-box.cluster-box .ob-sub { color: var(--sub); }
+    /* 동일 좌표 N곳 묶음 — 블랙 원형 숫자 배지 + 캡션 (탭 → 옆 팝오버) */
+    .cluster-badge { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; z-index: 4; }
+    .cluster-badge .cb-circle { min-width: 38px; height: 38px; padding: 0 9px; border-radius: 999px; background: #191F28; border: 2.5px solid #fff; box-shadow: 0 4px 14px rgba(0,0,0,.38); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; font-weight: 800; line-height: 1; }
+    .cluster-badge .cb-cap { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 800; color: #191F28; box-shadow: 0 2px 8px rgba(0,0,0,.2); white-space: nowrap; }
     /* 묶음 목록 — 박스 바로 옆 팝오버 */
     .cluster-pop { position: fixed; z-index: 1100; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.28); width: 232px; max-height: 60vh; overflow-y: auto; padding: 6px; }
     .cp-head { font-size: 12px; font-weight: 800; color: var(--ink); padding: 6px 8px 8px; border-bottom: 1px solid #F0F2F5; }
@@ -115,43 +116,48 @@
     .pin-wrap.s-DELIVERED .pin-dot { background: var(--delivered); }
     .pin-wrap.s-REVISIT .pin-dot { background: var(--revisit); }
     .pin-wrap.s-FAIL .pin-dot { background: var(--fail); }
-    /* 바텀시트 */
-    #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .2s; }
+    /* ===== 중앙 모달 (부동산 상세) — 모바일 대시보드 디자인 (#F5F6F8 배경 · 흰 카드 · 소프트 그림자 0 5px 4px rgba(0,0,0,.08) · #191F28 텍스트 / #8B95A1 보조) ===== */
+    #scrim { position: fixed; inset: 0; z-index: 1000; background: rgba(17,21,28,.45); opacity: 0; pointer-events: none; transition: opacity .2s; }
     #scrim.on { opacity: 1; pointer-events: auto; }
-    #sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1001; background: #fff; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform .25s; max-height: 88vh; overflow-y: auto; padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
-    #sheet.on { transform: translateY(0); }
-    .sheet-grip { width: 40px; height: 4px; background: #D1D6DB; border-radius: 2px; margin: 10px auto 4px; }
-    .sheet-pad { padding: 8px 18px 0; }
-    .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-    .sheet-name { font-size: 20px; font-weight: 800; flex: 1; min-width: 0; }
+    #sheet { position: fixed; left: 50%; top: 50%; z-index: 1001; width: calc(100vw - 36px); max-width: 400px; max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #F5F6F8; border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,.32); transform: translate(-50%, -48%) scale(.96); opacity: 0; pointer-events: none; transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .18s; }
+    #sheet.on { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+    .sheet-x { position: absolute; top: 12px; right: 12px; z-index: 3; width: 30px; height: 30px; border: none; border-radius: 999px; background: #EDEFF2; color: #4E5968; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .sheet-x:active { background: #E2E5EA; }
+    .sheet-pad { padding: 20px 18px 22px; }
+    .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding-right: 34px; }
+    .sheet-name { font-size: 20px; font-weight: 800; color: #191F28; letter-spacing: -0.5px; flex: 1; min-width: 0; line-height: 1.3; }
     .sheet-actions { flex: 0 0 auto; display: flex; gap: 6px; }
-    .btn-memo { flex: 0 0 auto; border: 1.5px solid #C9CFFA; background: #EEF0FF; color: #4A40D0; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
-    .btn-reset { flex: 0 0 auto; border: 1.5px solid #F4C7C7; background: #FFF1F1; color: #D14343; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
-    .memo-box { margin-top: 10px; background: #FFF8E1; border: 1px solid #FFE9A8; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #5A4A1A; line-height: 1.5; white-space: pre-wrap; }
-    .memo-edit { width: 100%; margin-top: 10px; min-height: 72px; border: 1.5px solid #C9CFFA; border-radius: 12px; padding: 10px 12px; font-size: 14px; color: var(--ink); line-height: 1.5; resize: vertical; outline: none; box-sizing: border-box; font-family: inherit; }
-    .memo-actions { display: flex; gap: 8px; margin-top: 8px; }
-    .memo-cancel { flex: 1; height: 42px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--sub); font-size: 14px; font-weight: 700; cursor: pointer; }
-    .memo-save { flex: 1.6; height: 42px; border: none; border-radius: 12px; background: var(--blueGrad); color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
-    .sheet-meta { font-size: 13px; color: var(--sub); margin-top: 4px; line-height: 1.5; }
+    .btn-memo { flex: 0 0 auto; border: 1px solid #E5E8EB; background: #fff; color: #4E5968; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+    .btn-reset { flex: 0 0 auto; border: 1px solid #FAD4D4; background: #FFF4F4; color: #E03E3E; font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+    .memo-box { margin-top: 12px; background: #FFF8E1; border: 1px solid #FFE9A8; border-radius: 12px; padding: 11px 13px; font-size: 13px; color: #5A4A1A; line-height: 1.5; white-space: pre-wrap; }
+    .memo-edit { width: 100%; margin-top: 12px; min-height: 72px; border: 1px solid #E5E8EB; border-radius: 14px; padding: 12px 13px; font-size: 14px; color: var(--ink); line-height: 1.5; resize: vertical; outline: none; box-sizing: border-box; font-family: inherit; background: #fff; }
+    .memo-edit:focus { border-color: #6155F5; }
+    .memo-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .memo-cancel { flex: 1; height: 46px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: #8B95A1; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .memo-save { flex: 1.6; height: 46px; border: none; border-radius: 14px; background: var(--blueGrad); color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .sheet-meta { font-size: 13px; color: #8B95A1; margin-top: 8px; line-height: 1.6; }
     .sheet-meta a { color: #3B82F6; text-decoration: none; font-weight: 700; }
-    .badge { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; margin-top: 8px; color: #fff; }
-    /* 1행: 가입완료·전달완료 (파란 그라데이션) */
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 8px; }
-    .status-grid button { height: 50px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; border: none; background: var(--blueGrad); color: #fff; }
-    /* 2행: 길찾기(좌, 가입완료 크기) | 재방문·실패(우, 한 칸에 2개) */
-    .act-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 6px; }
-    .btn-route { height: 50px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; text-decoration: none; }
-    .sub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .sub2 button { height: 50px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; background: #fff; border: 1.5px solid var(--line); }
+    .badge { display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; margin-top: 10px; color: #fff; }
+    /* 1행: 가입완료·전달완료 (시그니처 그라데이션 — 주요 액션) */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 10px; }
+    .status-grid button { height: 52px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; border: none; background: var(--blueGrad); color: #fff; box-shadow: 0 6px 14px rgba(97,85,245,.26); }
+    .status-grid button:active { transform: scale(.97); }
+    /* 2행: 길찾기(좌) | 재방문·실패(우 한 칸에 2개) — 흰 카드 타일 (대시보드 톤) */
+    .act-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 6px; }
+    .btn-route { height: 52px; border: 1px solid #E5E8EB; border-radius: 14px; background: #fff; color: #191F28; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; text-decoration: none; box-shadow: 0 5px 4px rgba(0,0,0,.08); }
+    .btn-route:active { transform: scale(.97); }
+    .sub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .sub2 button { height: 52px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; background: #fff; border: 1px solid #E5E8EB; box-shadow: 0 5px 4px rgba(0,0,0,.08); }
+    .sub2 button:active { transform: scale(.97); }
     .sg-REVISIT { color: var(--revisit); }
     .sg-FAIL { color: var(--fail); }
-    .hist-title { font-size: 13px; font-weight: 800; color: var(--sub); margin: 14px 0 6px; }
-    .hist-item { border-top: 1px solid #F0F2F5; padding: 10px 0; font-size: 13px; }
+    .hist-title { font-size: 13px; font-weight: 800; color: #8B95A1; margin: 18px 0 8px; }
+    .hist-item { border-top: 1px solid #E5E8EB; padding: 11px 0; font-size: 13px; }
     .hist-item .hi-top { display: flex; justify-content: space-between; }
     .hist-item .hi-st { font-weight: 800; }
-    .hist-item .hi-time { color: var(--sub); font-size: 12px; }
+    .hist-item .hi-time { color: #8B95A1; font-size: 12px; }
     .hist-item .hi-photos { display: flex; gap: 6px; margin-top: 6px; }
-    .hist-item .hi-photos img { width: 54px; height: 54px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+    .hist-item .hi-photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
     .empty-hist { font-size: 13px; color: #B0B8C1; padding: 8px 0; }
     /* 액션 모달 (담당자/사진) */
     #modal, #geoAsk { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; padding: 22px; }
@@ -215,7 +221,7 @@
 
   <!-- 바텀시트 -->
   <div id="scrim"></div>
-  <div id="sheet"><div class="sheet-grip"></div><div id="sheetBody" class="sheet-pad"></div></div>
+  <div id="sheet"><button id="sheetClose" class="sheet-x" aria-label="닫기">✕</button><div id="sheetBody" class="sheet-pad"></div></div>
 
   <!-- 액션 모달 (담당자 → 사진) -->
   <div id="modal">
@@ -716,7 +722,7 @@
 
     // 박스 상수 (픽셀)
     var BOX_W = 124, BOX_H = 48;
-    var CLUSTER_MIN = 2;            // 같은 좌표 2곳 이상이면 "이 위치 N곳" 묶음 박스 (탭 → 옆 팝오버)
+    var CLUSTER_MIN = 2;            // 같은 좌표 2곳 이상이면 블랙 숫자 배지(N) (탭 → 옆 팝오버)
 
     function renderAll() {
       if (!map) return;
@@ -749,7 +755,7 @@
         var k = o.lat.toFixed(5) + ',' + o.lng.toFixed(5);
         (groups[k] = groups[k] || []).push(o);
       });
-      // 3) 그룹 → 1곳=단일 박스 / 2곳 이상="이 위치 N곳" 묶음 박스. 연결선·펼침·de-collision 없음.
+      // 3) 그룹 → 1곳=단일 박스 / 2곳 이상=블랙 숫자 배지(N). 연결선·펼침·de-collision 없음.
       Object.keys(groups).forEach(function(k){
         var g = groups[k];
         var ll = new kakao.maps.LatLng(g[0].lat, g[0].lng);
@@ -769,23 +775,24 @@
 
     function createBoxOverlay(it) {
       var wrap = document.createElement('div');
-      var dot = document.createElement('div'); dot.className = 'pin-dot';
-      var box = document.createElement('div'); box.style.width = BOX_W + 'px';
+      wrap.className = 'pin-wrap';
       if (it.cluster) {
-        wrap.className = 'pin-wrap';
-        box.className = 'office-box cluster-box';
-        box.innerHTML = '<b>이 위치 ' + it.offices.length + '곳</b><span class="ob-sub">탭하면 목록이 보여요!</span>';
-        (function(offs){ box.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, box); }; })(it.offices);
+        // 동일 좌표 N곳 → 블랙 원형 숫자 배지 + 캡션. 탭하면 옆에 팝오버 목록.
+        var badge = document.createElement('div'); badge.className = 'cluster-badge';
+        badge.innerHTML = '<div class="cb-circle">' + it.offices.length + '</div><div class="cb-cap">' + it.offices.length + '개 부동산</div>';
+        (function(offs){ badge.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, badge); }; })(it.offices);
+        wrap.appendChild(badge);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
-        box.className = 'office-box';
+        var dot = document.createElement('div'); dot.className = 'pin-dot';
+        var box = document.createElement('div'); box.className = 'office-box'; box.style.width = BOX_W + 'px';
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
         (function(id){ box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
+        wrap.appendChild(dot); wrap.appendChild(box);
+        positionBox(box);
       }
-      wrap.appendChild(dot); wrap.appendChild(box);
-      positionBox(box);
-      var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: 3 });
+      var ov = new kakao.maps.CustomOverlay({ position: it.ll, content: wrap, xAnchor: 0, yAnchor: 0, clickable: true, zIndex: it.cluster ? 4 : 3 });
       ov.setMap(map); overlays.push(ov);
     }
 
@@ -853,6 +860,7 @@
     }
     function closeSheet() { $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); sheetOfficeId = null; }
     $('scrim').onclick = closeSheet;
+    $('sheetClose').onclick = closeSheet;
 
     function renderSheet(o) {
       var addr = o.roadAddress || o.jibunAddress || '';
