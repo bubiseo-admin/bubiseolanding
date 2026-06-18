@@ -9,16 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --primary:#6155F5; --primary-2:#7C6FFF; --sky:#39AFFD; --sky-2:#5BC0FF;
-      --grad:linear-gradient(135deg,#6155F5 0%,#39AFFD 100%);
-      --grad-text:linear-gradient(120deg,#6155F5,#39AFFD);
+      --primary:#111418; --primary-2:#191F28; --sky:#39AFFD; --sky-2:#5BC0FF;
+      --grad:linear-gradient(135deg,#2563EB 0%,#39AFFD 100%);
+      --grad-text:linear-gradient(120deg,#2563EB,#39AFFD);
       --ink:#111418; --sub:#4E5968; --tert:#8B95A1; --line:#E5E8EB;
       --bg:#FFFFFF; --card:#FFFFFF; --soft:#F7F8FA;
-      --blue:#3182F6; --green:#12B886; --red:#FA5252; --orange:#FF922B;
       --shadow-sm:0 2px 8px rgba(20,30,60,.05);
       --shadow:0 12px 32px rgba(30,40,80,.07);
       --shadow-lg:0 22px 56px rgba(40,50,90,.11);
-      --glow:0 16px 38px rgba(97,85,245,.30);
+      --glow:0 14px 32px rgba(17,20,24,.13);
       --rad:20px;
     }
     *{box-sizing:border-box;}
@@ -27,13 +26,13 @@
     body::before{content:'';position:fixed;inset:0;z-index:-1;background:var(--bg);}
     a{text-decoration:none;color:inherit;}
     .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
-    .gtext-grad{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .gtext-grad{color:var(--ink);}
 
     /* ===== Top bar ===== */
     header{position:sticky;top:0;z-index:100;background:rgba(248,250,253,.72);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid rgba(230,234,242,.7);}
     .nav{position:relative;display:flex;align-items:center;height:66px;}
     .logo{font-size:21px;font-weight:900;letter-spacing:-1px;display:flex;align-items:baseline;cursor:pointer;}
-    .logo .b{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo .b{color:var(--ink);}
     .logo .sub{font-weight:800;color:var(--tert);font-size:13.5px;margin-left:7px;letter-spacing:-.3px;}
     .menu{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;}
     .menu .item{position:relative;}
@@ -59,7 +58,7 @@
     .rdrop.noti{width:312px;}
     .noti-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:13px;transition:.12s;}
     .noti-row:hover{background:var(--soft);}
-    .noti-row .ni{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
+    .noti-row .ni{width:40px;height:40px;border-radius:13px;background:var(--soft);color:var(--primary);display:grid;place-items:center;flex-shrink:0;}
     .noti-row .nt{display:flex;flex-direction:column;gap:2px;min-width:0;}
     .noti-row .nt b{font-size:14px;font-weight:700;color:var(--ink);}
     .noti-row .nt span{font-size:12.5px;color:var(--tert);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -71,8 +70,8 @@
     .acct-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:12px;font-size:14.5px;font-weight:600;color:var(--ink);transition:.12s;}
     .acct-row:hover{background:var(--soft);}
     .acct-row svg{color:var(--tert);flex-shrink:0;}
-    .acct-row.logout{color:#F04452;}
-    .acct-row.logout svg{color:#F04452;}
+    .acct-row.logout{color:var(--sub);}
+    .acct-row.logout svg{color:var(--sub);}
 
     /* ===== Content ===== */
     main{padding:28px 0 96px;}
@@ -80,11 +79,11 @@
     /* hero */
     .hero{position:relative;overflow:hidden;border-radius:28px;background:var(--soft);border:1px solid var(--line);box-shadow:var(--shadow);padding:38px 38px 34px;color:var(--ink);}
     .hero-in{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-    .hero .ey{font-size:13px;font-weight:800;color:var(--primary);letter-spacing:.2px;}
+    .hero .ey{font-size:13px;font-weight:800;color:var(--sub);letter-spacing:.2px;}
     .hero h1{margin:9px 0 0;font-size:29px;font-weight:800;letter-spacing:-1.1px;line-height:1.25;}
-    .hero h1 .who b{font-weight:900;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .hero h1 .who b{font-weight:900;color:var(--ink);}
     .hero p{margin:9px 0 0;font-size:14.5px;font-weight:500;color:var(--sub);}
-    .hero .cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;border-radius:15px;padding:14px 24px;font-size:15.5px;font-weight:800;box-shadow:var(--glow);transition:.16s;}
+    .hero .cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:15px;padding:14px 24px;font-size:15.5px;font-weight:800;box-shadow:var(--glow);transition:.16s;}
     .hero .cta:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(10,20,60,.28);}
     .hero-stats{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:30px;}
     .hs{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow-sm);transition:.16s;}
@@ -104,9 +103,9 @@
     .quick{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
     .qcard{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);padding:22px 14px 18px;display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;transition:.16s;}
     .qcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:transparent;}
-    .qcard .qi{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);display:grid;place-items:center;color:var(--primary);transition:.16s;}
+    .qcard .qi{width:48px;height:48px;border-radius:15px;background:var(--soft);display:grid;place-items:center;color:var(--primary);transition:.16s;}
     .qcard:hover .qi{transform:scale(1.06);}
-    .qcard.main{background:var(--grad);border-color:transparent;box-shadow:var(--glow);}
+    .qcard.main{background:var(--ink);border-color:transparent;box-shadow:var(--glow);}
     .qcard.main .qi{background:rgba(255,255,255,.2);color:#fff;}
     .qcard.main .ql{color:#fff;}
     .qcard .ql{font-size:13.5px;font-weight:700;color:var(--ink);}
@@ -117,7 +116,7 @@
     .prod{padding:26px 28px;}
     .prod .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
     .prod .ph .pt{font-size:13.5px;font-weight:700;color:var(--tert);}
-    .btn{background:var(--grad);color:#fff;border:none;border-radius:13px;padding:11px 20px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(97,85,245,.24);transition:.14s;}
+    .btn{background:var(--ink);color:#fff;border:none;border-radius:13px;padding:11px 20px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(17,20,24,.16);transition:.14s;}
     .btn:hover{transform:translateY(-1px);}
     .prodgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
     .pbox{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:18px;}
@@ -131,7 +130,7 @@
     .co{padding:26px 28px;}
     .co .nm{font-size:18px;font-weight:800;letter-spacing:-.5px;}
     .co .crow{display:flex;gap:14px;align-items:center;margin-top:20px;}
-    .co .cav{width:58px;height:58px;border-radius:17px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:0 8px 18px rgba(97,85,245,.22);}
+    .co .cav{width:58px;height:58px;border-radius:17px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:0 8px 18px rgba(17,20,24,.12);}
     .co .ci{font-size:14px;color:var(--sub);font-weight:600;line-height:1.7;}
     .co .meta{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:13.5px;color:var(--sub);line-height:1.9;}
     .co .links{display:flex;gap:10px;margin-top:16px;}
@@ -143,7 +142,7 @@
     .hrow{display:flex;align-items:center;gap:14px;padding:15px 6px;border-radius:14px;transition:.12s;}
     .hrow:hover{background:var(--soft);}
     .hrow + .hrow{border-top:1px solid var(--line);}
-    .hrow .hi{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#EEF0FE,#E6F4FF);display:grid;place-items:center;color:var(--primary);font-size:18px;flex:0 0 auto;}
+    .hrow .hi{width:42px;height:42px;border-radius:13px;background:var(--soft);display:grid;place-items:center;color:var(--primary);font-size:18px;flex:0 0 auto;}
     .hrow .ht{flex:1;font-size:15px;font-weight:700;}
     .hrow .hc{color:#C4CAD2;font-size:20px;}
 
@@ -284,11 +283,11 @@
           <a class="cta" href="register/">＋ 광고 등록하기</a>
         </div>
         <div class="hero-stats">
-          <a class="hs" href="manage/#t0"><div class="l"><span class="dot" style="background:#12B886"></span>진행중인 광고</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t2"><div class="l"><span class="dot" style="background:#FF922B"></span>미전송 광고</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t4"><div class="l"><span class="dot" style="background:#3182F6"></span>동일주소</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t0-fail"><div class="l"><span class="dot" style="background:#FA5252"></span>확인실패</div><div class="v">0<small>건</small></div></a>
-          <a class="hs" href="manage/#t3"><div class="l"><span class="dot" style="background:#FA5252"></span>신고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t0"><div class="l"><span class="dot" style="background:#191F28"></span>진행중인 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t2"><div class="l"><span class="dot" style="background:#191F28"></span>미전송 광고</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t4"><div class="l"><span class="dot" style="background:#191F28"></span>동일주소</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t0-fail"><div class="l"><span class="dot" style="background:#191F28"></span>확인실패</div><div class="v">0<small>건</small></div></a>
+          <a class="hs" href="manage/#t3"><div class="l"><span class="dot" style="background:#191F28"></span>신고</div><div class="v">0<small>건</small></div></a>
         </div>
       </section>
 
