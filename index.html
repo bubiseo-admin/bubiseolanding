@@ -449,8 +449,8 @@
       <p class="smodal__sub">부비서 앱 계정으로 로그인하세요</p>
 
       <div class="lmtabs">
-        <button class="lmtab on" type="button" data-lt="account" onclick="loginTab('account')">앱 계정 로그인</button>
-        <button class="lmtab" type="button" data-lt="qr" onclick="loginTab('qr')">QR 로그인</button>
+        <button class="lmtab on" type="button" data-lt="account" onclick="loginTab('account')">광고,대행사 로그인</button>
+        <button class="lmtab" type="button" data-lt="qr" onclick="loginTab('qr')">중개사 로그인</button>
       </div>
 
       <form class="lmpane on" id="lmPaneAccount" autocomplete="on" onsubmit="return lmSubmit(event)">
@@ -532,7 +532,7 @@
       fetch(LM_API+'/portal/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
         .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
         .then(function(res){
-          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; closeLogin(); authState(); }
+          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.href='/'; }
           else { btn.disabled=false; btn.textContent='로그인'; lmShowErr((res.data&&res.data.message)||'로그인에 실패했어요. 다시 시도해주세요.'); }
         })
         .catch(function(){ btn.disabled=false; btn.textContent='로그인'; lmShowErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
@@ -563,7 +563,7 @@
       lmPoll=setInterval(function(){
         if(!lmToken) return;
         fetch(LM_API+'/pairing/'+encodeURIComponent(lmToken)+'/result').then(function(r){ return r.json(); }).then(function(d){
-          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료!'; closeLogin(); authState(); }
+          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료!'; location.href='/main/'; }
           else if(d.status==='EXPIRED'||d.status==='REJECTED'){ lmToken=null; lmInitQR(); }
         }).catch(function(){});
       },2000);
