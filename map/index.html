@@ -791,14 +791,14 @@
       if (it.cluster) {
         // 동일 좌표 N곳 → 아이콘 + 화살표 + 코너에 블랙 숫자. 탭하면 옆에 팝오버 목록.
         var cm = document.createElement('div'); cm.className = 'pin-marker';
-        cm.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><svg class="pin-arrow" width="15" height="12" viewBox="0 0 15 12" aria-hidden="true"><path d="M7.5 11 L1 2 L14 2 Z" fill="url(#pinGrad)" stroke="url(#pinGrad)" stroke-width="1.6" stroke-linejoin="round"/></svg><div class="pin-count">' + it.offices.length + '</div>';
+        cm.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><svg class="pin-arrow" width="11" height="9" viewBox="0 0 15 12" aria-hidden="true"><path d="M7.5 11 L1 2 L14 2 Z" fill="url(#pinGrad)" stroke="url(#pinGrad)" stroke-width="1.6" stroke-linejoin="round"/></svg><div class="pin-count">' + it.offices.length + '</div>';
         (function(offs){ cm.onclick = function(e){ e.stopPropagation(); openClusterPopover(offs, cm); }; })(it.offices);
         wrap.appendChild(cm);
       } else {
         var o = it.o;
         wrap.className = 'pin-wrap' + (o.status ? ' s-' + o.status : '');
         var marker = document.createElement('div'); marker.className = 'pin-marker';
-        marker.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><svg class="pin-arrow" width="15" height="12" viewBox="0 0 15 12" aria-hidden="true"><path d="M7.5 11 L1 2 L14 2 Z" fill="url(#pinGrad)" stroke="url(#pinGrad)" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+        marker.innerHTML = '<img class="pin-ico" src="home.png?v=3" alt=""><svg class="pin-arrow" width="11" height="9" viewBox="0 0 15 12" aria-hidden="true"><path d="M7.5 11 L1 2 L14 2 Z" fill="url(#pinGrad)" stroke="url(#pinGrad)" stroke-width="1.6" stroke-linejoin="round"/></svg>';
         var box = document.createElement('div'); box.className = 'office-box';
         box.innerHTML = '<b>' + esc(o.name) + '</b>' + (o.ownerName ? '<span class="ob-sub">' + esc(o.ownerName) + '</span>' : '');
         (function(id){ marker.onclick = function(e){ e.stopPropagation(); openSheet(id); }; box.onclick = function(e){ e.stopPropagation(); openSheet(id); }; })(o.id);
