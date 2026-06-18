@@ -171,6 +171,16 @@
     (function(){
       if (location.protocol === 'file:') return;
       var LOGIN = 'login/';
+      // 2026-06-18 데스크톱 임베드 SSO — iframe URL 프래그먼트(#bbst=토큰)로 받은 포털 토큰 즉시 저장.
+      //   postMessage 핸드셰이크 race 제거: 데스크톱이 토큰을 URL 에 실어 주면 로드 즉시 로그인 상태 →
+      //   광고관리에서 별도 로그인 없이 포털 바로 표시(데스크톱 로그인=앱 사용자 증명).
+      try {
+        var _bm = (location.hash || '').match(/[#&]bbst=([^&]+)/);
+        if (_bm && _bm[1]) {
+          localStorage.setItem('bbs_portal_token', decodeURIComponent(_bm[1]));
+          try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+        }
+      } catch (e) {}
       try { if (localStorage.getItem('bbs_portal_token')) return; } catch (e) { return; }
       // 2026-06-09 데스크톱 광고관리 임베드(iframe) SSO — 부모(데스크톱 앱) 세션 받아 2번째 QR 제거.
       var embedded = false;
