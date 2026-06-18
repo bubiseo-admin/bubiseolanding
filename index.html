@@ -598,7 +598,7 @@
             var ini2=((biz||name||'?').trim().charAt(0))||'?';
             html='<button class="pchip" type="button" onclick="pToggle(event)"><span class="pchip__av">'+pEsc(ini2)+'</span>'+(biz?'<span class="pchip__nm">'+pEsc(biz)+'</span>':'')+'<span class="pchip__biz">'+pEsc(name||u.email||'')+'</span></button>';
           }
-          html+='<div class="pmenu" id="pmenu"><div class="pmu">'+pEsc(u.email||'')+'</div><button type="button" onclick="pLogout()">로그아웃</button></div>';
+          html+='<div class="pmenu" id="pmenu"><div class="pmu">'+pEsc(u.email||'')+'</div><button type="button" onclick="location.href=\'/main/\'">광고관리센터</button><button type="button" onclick="pLogout()">로그아웃</button></div>';
           prof.innerHTML=html; prof.style.display='flex'; cta.style.display='none';
         })
         .catch(function(){ localStorage.removeItem('bbs_portal_token'); localStorage.removeItem('bbs_portal_user'); cta.style.display=''; prof.style.display='none'; prof.innerHTML=''; });
