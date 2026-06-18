@@ -477,6 +477,20 @@
     </div>
   </div>
 
+  <!-- 중개사 계정이 '광고,대행사 로그인'(이메일) 탭으로 로그인 시 — QR 로그인 안내 팝업 (로그인 모달 위, z-index 300) -->
+  <div class="smodal" id="qrGuideModal" style="z-index:300" role="dialog" aria-modal="true" aria-label="QR 로그인 안내">
+    <div class="smodal__bd" onclick="closeQrGuide()"></div>
+    <div class="smodal__card" style="max-width:360px; text-align:center">
+      <button class="smodal__x" type="button" aria-label="닫기" onclick="closeQrGuide()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div style="font-size:42px; line-height:1; margin:6px 0 2px">📱</div>
+      <h3 class="smodal__title" style="margin:10px 0 6px">QR로 로그인해주세요!</h3>
+      <p class="smodal__sub" style="margin:0 0 22px">중개사 계정은 <b>중개사 로그인(QR)</b> 으로 로그인해야 해요.<br/>부비서 앱에서 QR을 스캔해 주세요.</p>
+      <button class="lmbtn" type="button" onclick="qrGuideGoQr()">중개사 로그인(QR)으로</button>
+    </div>
+  </div>
+
   <!-- 회원가입 유형 선택 모달 (블랙·모던) -->
   <div class="smodal" id="signupModal" role="dialog" aria-modal="true" aria-label="회원가입 유형 선택">
     <div class="smodal__bd" onclick="closeSignup()"></div>
@@ -516,6 +530,9 @@
     function lmIsMobile(){ try{ return window.matchMedia('(pointer:coarse)').matches||window.matchMedia('(max-width:760px)').matches; }catch(e){ return false; } }
     function openLogin(e){ if(e&&e.preventDefault)e.preventDefault(); var m=document.getElementById('loginModal'); if(m){ m.classList.add('on'); document.body.style.overflow='hidden'; loginTab(lmIsMobile()?'account':'qr'); } return false; }
     function closeLogin(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } lmStopPoll(); }
+    function showQrGuide(){ var m=document.getElementById('qrGuideModal'); if(m) m.classList.add('on'); }
+    function closeQrGuide(){ var m=document.getElementById('qrGuideModal'); if(m) m.classList.remove('on'); }
+    function qrGuideGoQr(){ closeQrGuide(); loginTab('qr'); }
     function loginTab(which){
       var t=document.querySelectorAll('.lmtab'); for(var i=0;i<t.length;i++){ t[i].classList.toggle('on', t[i].getAttribute('data-lt')===which); }
       document.getElementById('lmPaneAccount').classList.toggle('on', which==='account');
@@ -532,7 +549,7 @@
       fetch(LM_API+'/portal/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
         .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
         .then(function(res){
-          if(res.ok&&res.data&&res.data.portalToken){ localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.href='/'; }
+          if(res.ok&&res.data&&res.data.portalToken){ var _role=(res.data.user&&res.data.user.role)||''; if(_role==='OWNER'||_role==='EMPLOYEE'){ btn.disabled=false; btn.textContent='로그인'; showQrGuide(); return; } localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.href='/'; }
           else { btn.disabled=false; btn.textContent='로그인'; lmShowErr((res.data&&res.data.message)||'로그인에 실패했어요. 다시 시도해주세요.'); }
         })
         .catch(function(){ btn.disabled=false; btn.textContent='로그인'; lmShowErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
