@@ -175,7 +175,10 @@
       // 2026-06-09 데스크톱 광고관리 임베드(iframe) SSO — 부모(데스크톱 앱) 세션 받아 2번째 QR 제거.
       var embedded = false;
       try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
-      if (!embedded) { location.replace('/'); return; }
+      // 2026-06-18 임베드 미감지 시 루트('/') 대신 포털 로그인('login/')으로.
+      //   데스크톱 광고관리가 임베드 판정 실패해도 bubiseo.com 홈으로 튕기지 않고
+      //   광고포털 로그인이 떠서 진입 가능(직접접근 차단 의도는 로그인 게이트로 유지).
+      if (!embedded) { location.replace(LOGIN); return; }
       try { document.documentElement.style.visibility = 'hidden'; } catch (e) {}
       var settled = false;
       function onPortalMsg(ev){
