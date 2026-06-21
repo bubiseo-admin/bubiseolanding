@@ -125,6 +125,7 @@
   .chap p{margin:16px 0 0; font-size:17px; color:var(--ink2); font-weight:500; max-width:430px; line-height:1.62}
   .chap .line{margin-top:22px; height:2px; width:0; background:var(--ink); transition:width .6s}
   .chap.on .line{width:64px}
+  .chap__shot{display:none}
 
   /* GALLERY (변형 컷) — 기능별 추가 화면 */
   .gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:42px 28px; margin-top:38px}
@@ -206,9 +207,11 @@
     .story__steps{padding:0}
     .chap{min-height:auto; opacity:1; padding:30px 0; border-top:1px solid var(--line2)}
     .price{grid-template-columns:1fr} .nav__menu{display:none} .sec{padding:64px 0}
-    /* 모바일: 스크롤리텔링 대신 각 챕터 폰 따로 노출이 어려우니 sticky 해제 + 첫 화면 고정 */
-    .story__phone .shot:not(.on){opacity:1; position:relative; inset:auto}
+    /* 모바일: sticky 스크롤리텔링 대신 각 챕터에 해당 스크린샷을 인라인으로 노출 */
     .story__phone{display:none}
+    .chap__shot{display:block; width:100%; max-width:264px; margin:22px auto 2px; aspect-ratio:1206/2491; object-fit:cover; object-position:top; border:2px solid var(--ink); border-radius:30px; box-shadow:0 16px 40px rgba(11,13,16,.14); background:#fff}
+    .dl__row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .store{justify-content:center; padding:14px 12px}
   }
   @media(prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -345,13 +348,13 @@
       </div>
     </div>
     <div class="story__steps">
-      <div class="chap on" data-i="0"><div class="n">01 · 매물관리</div><h3>주소 한 줄이면<br>매물이 완성됩니다</h3><p>도로명 주소만 입력하면 면적·층·실거래가까지 자동으로. 사진과 함께 한눈에 정리돼요.</p><div class="line"></div></div>
-      <div class="chap" data-i="1"><div class="n">02 · 계약 · 확인설명서</div><h3>복잡한 서류,<br>단 10분이면 끝</h3><p>소재지만 입력하면 건축물대장·토지정보가 자동으로. 계약서와 법정 확인설명서를 빠르고 정확하게.</p><div class="line"></div></div>
-      <div class="chap" data-i="2"><div class="n">03 · 고객관리</div><h3>통화가 끝나면<br>고객이 자동 정리</h3><p>"방금 누구였나요?" 한 번 누르면 고객으로 등록. 관심 매물·메모·연락 시점까지 한 곳에.</p><div class="line"></div></div>
-      <div class="chap" data-i="3"><div class="n">04 · 일정관리</div><h3>계약일·잔금일을<br>놓치지 않게</h3><p>계약·잔금·나의 일정을 한 캘린더에. 통화 메모에 적은 약속도 자동으로 일정이 돼요.</p><div class="line"></div></div>
-      <div class="chap" data-i="4"><div class="n">05 · 분양파트너</div><h3>전국 분양현장을<br>한눈에</h3><p>빌라·오피스텔·아파트 분양 현장을 지도와 목록으로. MGM 수수료 기회까지 놓치지 마세요.</p><div class="line"></div></div>
-      <div class="chap" data-i="5"><div class="n">06 · 공동중개</div><h3>전국 중개사와<br>실시간 협업</h3><p>매물·부동산·대화를 한곳에서. 다른 사무소와 매물을 공유하고 공동중개로 거래를 키워요.</p><div class="line"></div></div>
-      <div class="chap" data-i="6"><div class="n">07 · 직원 · 급여 관리</div><h3>직원도 급여도<br>한 앱에서</h3><p>급여관리·직원관리·공제증서까지. 대표님 사무소 운영을 부비서 하나로.</p><div class="line"></div></div>
+      <div class="chap on" data-i="0"><div class="n">01 · 매물관리</div><h3>주소 한 줄이면<br>매물이 완성됩니다</h3><p>도로명 주소만 입력하면 면적·층·실거래가까지 자동으로. 사진과 함께 한눈에 정리돼요.</p><img class="chap__shot" src="screenshot/2.jpeg" alt="매물관리 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="1"><div class="n">02 · 계약 · 확인설명서</div><h3>복잡한 서류,<br>단 10분이면 끝</h3><p>소재지만 입력하면 건축물대장·토지정보가 자동으로. 계약서와 법정 확인설명서를 빠르고 정확하게.</p><img class="chap__shot" src="screenshot/3.jpeg" alt="계약·확인설명서 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="2"><div class="n">03 · 고객관리</div><h3>통화가 끝나면<br>고객이 자동 정리</h3><p>"방금 누구였나요?" 한 번 누르면 고객으로 등록. 관심 매물·메모·연락 시점까지 한 곳에.</p><img class="chap__shot" src="screenshot/4.jpeg" alt="고객관리 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="3"><div class="n">04 · 일정관리</div><h3>계약일·잔금일을<br>놓치지 않게</h3><p>계약·잔금·나의 일정을 한 캘린더에. 통화 메모에 적은 약속도 자동으로 일정이 돼요.</p><img class="chap__shot" src="screenshot/5.jpeg" alt="일정관리 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="4"><div class="n">05 · 분양파트너</div><h3>전국 분양현장을<br>한눈에</h3><p>빌라·오피스텔·아파트 분양 현장을 지도와 목록으로. MGM 수수료 기회까지 놓치지 마세요.</p><img class="chap__shot" src="screenshot/6.jpeg" alt="분양파트너 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="5"><div class="n">06 · 공동중개</div><h3>전국 중개사와<br>실시간 협업</h3><p>매물·부동산·대화를 한곳에서. 다른 사무소와 매물을 공유하고 공동중개로 거래를 키워요.</p><img class="chap__shot" src="screenshot/7.jpeg" alt="공동중개 화면" loading="lazy" /><div class="line"></div></div>
+      <div class="chap" data-i="6"><div class="n">07 · 직원 · 급여 관리</div><h3>직원도 급여도<br>한 앱에서</h3><p>급여관리·직원관리·공제증서까지. 대표님 사무소 운영을 부비서 하나로.</p><img class="chap__shot" src="screenshot/8.jpeg" alt="직원·급여 관리 화면" loading="lazy" /><div class="line"></div></div>
     </div>
   </div>
 </div></section>
