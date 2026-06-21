@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
+  <script>/* 웹 세션 24h 만료: portalToken(iat) 경과 시 로컬 정리 → 게이트가 재로그인 유도. 데스크톱 임베드 제외. */(function(){try{if(window.self!==window.top)return;}catch(e){return;}try{var k='bbs_portal_token',t=localStorage.getItem(k);if(t){var b=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';var p=JSON.parse(atob(b));if(!p||!p.iat||(Date.now()/1000-p.iat)>=86400){localStorage.removeItem(k);localStorage.removeItem('bbs_portal_user');}}}catch(e){try{localStorage.removeItem('bbs_portal_token');localStorage.removeItem('bbs_portal_user');}catch(_){}}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
   <title>부비서 광고관리페이지 — 전체 광고관리</title>
