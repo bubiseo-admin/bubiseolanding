@@ -1,0 +1,732 @@
+<!doctype html>
+<!--
+  부비서 — 회사 대표 홈페이지 (메인) · 2026-06 리디자인 (토스풍 + 아웃라인 플랫 일러스트)
+  제품 상세는 ./app.html. 고객지원 폼은 ./products.html.
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-13VB1SM23V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-13VB1SM23V');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>부비서 - 공인중개사 필수 업무관리 앱 | 100% 무료 부동산 CRM</title>
+  <meta name="description" content="공인중개사를 위한 부동산 IT 솔루션 부비서. 주소 한 줄 매물 자동 채움, 단 10분 계약서·확인설명서 작성, 사내 메신저, 공동중개·커뮤니티·분양파트너까지 모바일·데스크톱 완벽 동기화. 100% 무료." />
+  <meta name="keywords" content="부비서, 부비서 어플, 공인중개사 앱, 부동산 CRM, 매물관리 프로그램, 부동산 계약서 작성, 확인설명서" />
+  <link rel="canonical" href="https://bubiseo.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="부비서" />
+  <meta property="og:title" content="부비서 - 공인중개사 필수 업무관리 앱" />
+  <meta property="og:description" content="엑셀·메모장은 끝! 매물·고객·계약 관리 솔루션 부비서로 가볍게 일하세요. 100% 무료." />
+  <meta property="og:image" content="https://bubiseo.com/assets/logo.png" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="1024" />
+  <meta property="og:url" content="https://bubiseo.com/" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="부비서 - 공인중개사 필수 업무관리 앱" />
+  <meta name="twitter:description" content="엑셀·메모장은 끝! 매물·고객·계약 관리 솔루션 부비서로 가볍게 일하세요." />
+  <meta name="twitter:image" content="https://bubiseo.com/assets/logo.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "부비서",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "iOS, Android, Windows, macOS",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+    "url": "https://bubiseo.com/",
+    "description": "공인중개사를 위한 부동산 IT 솔루션. 매물·고객·계약·일정·확인설명서 관리.",
+    "publisher": { "@type": "Organization", "name": "부비서", "url": "https://bubiseo.com/" }
+  }
+  </script>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --ink:#111418; --ink2:#4E5968; --ink3:#8B95A1;
+    --line:#E5E8EB; --line2:#F2F4F6;
+    --bg:#FFFFFF; --bg2:#F7F8FA; --bg3:#EEF0F3;
+    --r:18px; --rs:12px; --wrap:1200px;
+    --lav:#EEF0FF; --lav-ink:#3A36C4;
+    --sky:#E9F2FF; --sky-ink:#1E62C9;
+    --mint:#E5F7EF; --mint-ink:#0A7A55;
+    --peach:#FFF0E6; --peach-ink:#BF4E1B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif; color:var(--ink);
+    background:var(--bg); -webkit-font-smoothing:antialiased; line-height:1.55; word-break:keep-all}
+  .wrap{max-width:var(--wrap); margin:0 auto; padding:0 32px}
+  a{color:inherit; text-decoration:none}
+  .ill svg{display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.7;
+    stroke-linecap:round; stroke-linejoin:round}
+  .pic svg{display:block; fill:currentColor; stroke:none; height:22px; width:auto}
+
+  /* NAV */
+  .nav{position:sticky; top:0; z-index:50; background:rgba(255,255,255,.86);
+    backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--line2)}
+  .nav__in{display:flex; align-items:center; gap:28px; height:66px}
+  .brand{display:flex; align-items:center; gap:9px; font-weight:800; font-size:20px; letter-spacing:-.03em}
+  .brand img{width:28px; height:28px; border-radius:7px; object-fit:contain}
+  .nav__menu{display:flex; gap:26px; margin-left:6px; font-size:15px; color:var(--ink2); font-weight:600}
+  .nav__menu a:hover{color:var(--ink)}
+  .nav__cta{margin-left:auto; display:flex; gap:8px; align-items:center}
+  .btn{display:inline-flex; align-items:center; gap:7px; font-family:inherit; font-weight:700;
+    font-size:15px; border-radius:12px; padding:11px 18px; border:1px solid transparent; cursor:pointer; letter-spacing:-.01em}
+  .btn--ghost{background:var(--bg3); color:var(--ink)}
+  .btn--ghost:hover{background:#E3E6EA}
+  .btn--dark{background:var(--ink); color:#fff}
+  .btn--dark:hover{background:#000}
+  .btn--lg{padding:16px 28px; font-size:16.5px; border-radius:14px}
+
+  /* HERO — full width, left aligned */
+  .hero{background:var(--bg2); border-bottom:1px solid var(--line)}
+  .hero__grid{display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center;
+    padding:76px 0 80px}
+  .eyebrow{display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:700;
+    color:var(--ink); background:#fff; border:1px solid var(--line); padding:7px 14px; border-radius:999px}
+  .hero h1{margin:20px 0 0; font-size:clamp(24px,3.3vw,44px); letter-spacing:-.04em; line-height:1.18}
+  .hero h1 .l1{display:block; font-weight:600; color:var(--ink2)}
+  .hero h1 .l2{display:block; white-space:nowrap}
+  .hero h1 .em{font-weight:800; color:var(--ink)}
+  .hero h1 .thin{font-weight:600; color:var(--ink)}
+  .hero p.sub{margin:22px 0 0; max-width:460px; font-size:18px; color:var(--ink2); font-weight:500}
+  .hero__cta{margin:30px 0 0; display:flex; gap:10px; flex-wrap:wrap}
+
+  /* hero right — download cards 2x2 */
+  .dlcards{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .dlcard{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:16px 18px;
+    display:flex; align-items:center; gap:13px; transition:transform .16s ease, box-shadow .16s ease}
+  .dlcard:hover{transform:translateY(-3px); box-shadow:0 10px 26px rgba(17,20,24,.08); border-color:var(--ink3)}
+  .dlcard .pic{color:var(--ink); flex:0 0 auto; display:flex; align-items:center}
+  .dlcard .pic svg{height:26px; width:auto}
+  .dlcard .txt{flex:1; display:flex; flex-direction:column; line-height:1.25; min-width:0}
+  .dlcard .txt b{font-size:16px; font-weight:800; letter-spacing:-.02em}
+  .dlcard .txt span{font-size:12.5px; color:var(--ink3); font-weight:600}
+  .dlcard .go{flex:0 0 auto; font-size:18px; color:var(--ink3); font-weight:700}
+
+  /* SECTION */
+  .sec{padding:96px 0}
+  .sec--alt{background:var(--bg2)}
+  .sec__head{max-width:720px; margin:0 0 44px}
+  .sec__head .ko{font-size:14px; font-weight:800; color:var(--ink); letter-spacing:-.01em}
+  .sec__head h2{margin:12px 0 0; font-size:clamp(28px,3.6vw,42px); font-weight:800; letter-spacing:-.035em; line-height:1.25}
+  .sec__head p{margin:14px 0 0; font-size:17px; color:var(--ink2); font-weight:500}
+
+  /* FEATURE 8 outlined cards */
+  .feat{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:26px 22px;
+    transition:transform .16s ease, box-shadow .16s ease}
+  .card:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(17,20,24,.07); border-color:var(--ink3)}
+  .card .ill{width:76px; height:58px; color:var(--ink); margin-bottom:18px}
+  .card h3{font-size:18px; font-weight:800; letter-spacing:-.02em}
+  .card p{margin-top:7px; font-size:14px; color:var(--ink2); font-weight:500; line-height:1.55}
+
+  /* WORKFLOW flat color */
+  .flow{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+  .fcard{border-radius:20px; padding:26px 24px; min-height:286px; display:flex; flex-direction:column}
+  .fcard .ill{width:100%; height:116px; margin:4px 0 18px}
+  .fcard .ill svg{stroke-width:2}
+  .fcard .tag{font-size:12.5px; font-weight:800; opacity:.8}
+  .fcard h3{margin-top:8px; font-size:19px; font-weight:800; letter-spacing:-.025em; line-height:1.3}
+  .fcard p{margin-top:9px; font-size:14px; font-weight:500; opacity:.82; line-height:1.55}
+  .fcard--lav{background:var(--lav); color:var(--lav-ink)}
+  .fcard--sky{background:var(--sky); color:var(--sky-ink)}
+  .fcard--mint{background:var(--mint); color:var(--mint-ink)}
+  .fcard--peach{background:var(--peach); color:var(--peach-ink)}
+
+  /* FREE */
+  .price{display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:860px}
+  .pcard{background:#fff; border:1px solid var(--line); border-radius:22px; padding:32px}
+  .pcard__h{display:flex; align-items:baseline; justify-content:space-between}
+  .pcard__h b{font-size:19px; font-weight:800}
+  .pcard__h span{font-size:13px; color:var(--ink3); font-weight:600}
+  .pcard__price{margin:16px 0 2px; font-size:42px; font-weight:800; letter-spacing:-.04em; color:var(--ink)}
+  .pcard__note{font-size:14px; color:var(--ink3); font-weight:600}
+  .pcard ul{margin-top:20px; list-style:none; display:flex; flex-direction:column; gap:11px}
+  .pcard li{display:flex; gap:10px; font-size:15px; color:var(--ink2); font-weight:500}
+  .pcard li .ck{color:var(--ink); flex:0 0 auto; margin-top:1px; width:18px; height:18px}
+
+  /* DOWNLOAD CTA */
+  .dl{background:#0C0F14; color:#fff; border-radius:28px; padding:66px 32px; text-align:center}
+  .dl h2{font-size:clamp(28px,3.6vw,42px); font-weight:800; letter-spacing:-.035em; line-height:1.3}
+  .dl p{margin:14px auto 0; color:#AEB5C0; font-size:16px; font-weight:500}
+  .dl__row{margin:32px 0 0; display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+  .store{display:inline-flex; align-items:center; gap:10px; background:#fff; color:#111418;
+    border-radius:14px; padding:14px 22px; font-weight:800; font-size:15px}
+  .store .pic{color:#111418; display:flex}
+  .store .pic svg{height:20px; width:auto}
+  .store--ghost{background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.18)}
+  .store--ghost .pic{color:#fff}
+
+  /* FOOTER */
+  .ft{padding:56px 0 64px; color:var(--ink2); font-size:14px}
+  .ft__top{display:flex; gap:40px; flex-wrap:wrap; justify-content:space-between; padding-bottom:28px; border-bottom:1px solid var(--line)}
+  .ft__cols{display:flex; gap:56px; flex-wrap:wrap}
+  .ft h5{font-size:13px; color:var(--ink3); font-weight:700; margin-bottom:12px}
+  .ft__cols a{display:block; color:var(--ink2); font-weight:600; margin-bottom:9px; font-size:14px}
+  .ft__biz{margin-top:24px; color:var(--ink3); font-size:13px; line-height:1.9}
+
+  @media(max-width:1000px){ .feat,.flow{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:860px){
+    .hero__grid{grid-template-columns:1fr; gap:36px; padding:54px 0 60px}
+    .price{grid-template-columns:1fr}
+    .nav__menu{display:none}
+    .sec{padding:64px 0}
+  }
+  @media(max-width:620px){ .feat,.flow{grid-template-columns:1fr} }
+
+  /* 회원가입 유형 선택 모달 (블랙·모던) */
+  .smodal{position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center; padding:20px}
+  .smodal.on{display:flex}
+  .smodal__bd{position:absolute; inset:0; background:rgba(17,20,24,.55); backdrop-filter:blur(4px)}
+  .smodal__card{position:relative; width:100%; max-width:430px; background:#fff; border-radius:22px;
+    box-shadow:0 30px 80px rgba(17,20,24,.30); padding:32px 26px 24px; animation:smpop .22s ease}
+  @keyframes smpop{from{opacity:0; transform:translateY(12px) scale(.98)} to{opacity:1; transform:none}}
+  .smodal__x{position:absolute; top:15px; right:15px; width:34px; height:34px; border:none; background:var(--bg2);
+    border-radius:10px; color:var(--ink3); cursor:pointer; display:grid; place-items:center; transition:.14s}
+  .smodal__x:hover{background:var(--bg3); color:var(--ink)}
+  .smodal__brand{text-align:center; font-size:17px; font-weight:900; color:var(--ink); letter-spacing:-.04em}
+  .smodal__title{text-align:center; font-size:21px; font-weight:800; color:var(--ink); letter-spacing:-.03em; margin:14px 0 4px}
+  .smodal__sub{text-align:center; font-size:14px; color:var(--ink3); font-weight:600; margin:0 0 22px}
+  .sopt{display:flex; align-items:center; gap:14px; width:100%; background:#fff; border:1px solid var(--line);
+    border-radius:15px; padding:15px 16px; margin-bottom:11px; cursor:pointer; transition:.16s; text-align:left}
+  .sopt:hover{border-color:var(--ink); box-shadow:0 8px 22px rgba(17,20,24,.09); transform:translateY(-1px)}
+  .sopt__ic{width:46px; height:46px; border-radius:13px; flex:0 0 auto; display:grid; place-items:center}
+  .sopt__ic--dark{background:var(--ink); color:#fff}
+  .sopt__ic--soft{background:var(--bg3); color:var(--ink)}
+  .sopt__tx{flex:1; min-width:0; display:flex; flex-direction:column}
+  .sopt__tt{font-size:16px; font-weight:800; color:var(--ink); letter-spacing:-.02em}
+  .sopt__ds{font-size:13px; color:var(--ink3); font-weight:600; margin-top:3px}
+  .sopt__ar{flex:0 0 auto; color:var(--ink3)}
+  .smodal__foot{text-align:center; margin-top:13px; font-size:13.5px; color:var(--ink3); font-weight:600}
+  .smodal__foot a{color:var(--ink); font-weight:800}
+  /* 로그인 모달 (블랙·모던) */
+  .lmtabs{display:flex; gap:5px; background:var(--bg2); border-radius:13px; padding:5px; margin-bottom:18px}
+  .lmtab{flex:1; border:none; background:none; font-family:inherit; font-size:14px; font-weight:800; color:var(--ink3); padding:11px 0; border-radius:9px; cursor:pointer; transition:.16s}
+  .lmtab.on{background:var(--ink); color:#fff}
+  .lmpane{display:none} .lmpane.on{display:block}
+  .lmfield{margin-bottom:12px}
+  .lmfield label{display:block; font-size:13px; font-weight:700; color:var(--ink2); margin-bottom:7px}
+  .lminp{width:100%; background:var(--bg2); border:1.5px solid transparent; border-radius:12px; padding:14px 15px; font-size:15px; font-family:inherit; color:var(--ink); transition:.14s}
+  .lminp::placeholder{color:var(--ink3)}
+  .lminp:focus{outline:none; border-color:var(--ink); background:#fff}
+  .lmerr{display:none; font-size:13px; font-weight:700; color:#E0322D; background:#FDECEC; border-radius:11px; padding:11px 13px; margin-bottom:12px; line-height:1.45}
+  .lmerr.on{display:block}
+  .lmbtn{display:block; width:100%; background:var(--ink); color:#fff; border:none; border-radius:13px; padding:15px; font-size:16px; font-weight:800; font-family:inherit; cursor:pointer; transition:.16s}
+  .lmbtn:hover{background:#000} .lmbtn:disabled{opacity:.55; cursor:default}
+  .lmhint{text-align:center; font-size:12.5px; color:var(--ink3); font-weight:600; margin:14px 2px 0; line-height:1.5}
+  .lmhint b{color:var(--ink2); font-weight:700}
+  .lmqr{text-align:center}
+  #lmQrbox{width:178px; height:178px; margin:0 auto; background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:10px; display:flex; align-items:center; justify-content:center}
+  #lmQrbox img,#lmQrbox canvas{display:block; border-radius:6px}
+  .lmqr-fallback{font-size:13px; color:var(--ink3); font-weight:600; padding:0 12px; line-height:1.5}
+  .lmqr-steps{margin:20px 4px 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; text-align:left}
+  .lmqr-steps li{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--ink2); font-weight:600}
+  .lmqr-steps .n{width:21px; height:21px; border-radius:50%; background:var(--bg3); color:var(--ink); display:grid; place-items:center; font-size:12px; font-weight:800; flex-shrink:0}
+  .lmqr-steps b{color:var(--ink); font-weight:700}
+  .lmqr-status{margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:var(--ink2); font-weight:700; background:var(--bg2); border-radius:11px; padding:11px}
+  .lmqr-dot{width:8px; height:8px; border-radius:50%; background:var(--ink); animation:lmpulse 1.2s infinite; flex-shrink:0}
+  @keyframes lmpulse{0%,100%{opacity:.25}50%{opacity:1}}
+  /* 로그인 후 프로필 칩 (중개사=아바타+이름+직급뱃지 / 광고·분양대행사=상호명+이름) */
+  .nav__profile{margin-left:auto; display:flex; align-items:center; position:relative}
+  .pchip{display:flex; align-items:center; gap:9px; background:var(--bg2); border:1px solid var(--line); border-radius:999px; padding:5px 13px 5px 5px; cursor:pointer; font-family:inherit; transition:.14s}
+  .pchip:hover{background:var(--bg3)}
+  .pchip__av{width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:800; flex:0 0 auto; overflow:hidden}
+  .pchip__av img{width:100%; height:100%; object-fit:cover}
+  .pchip__nm{font-size:14px; font-weight:800; color:var(--ink); letter-spacing:-.02em; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pchip__bdg{font-size:11px; font-weight:800; color:#fff; background:var(--ink); border-radius:6px; padding:2px 7px; flex:0 0 auto}
+  .pchip__biz{font-size:12.5px; font-weight:700; color:var(--ink3); max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pmenu{display:none; position:absolute; top:calc(100% + 8px); right:0; background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:0 16px 40px rgba(17,20,24,.14); padding:6px; min-width:170px; z-index:120}
+  .pmenu.on{display:block}
+  .pmenu .pmu{font-size:12px; color:var(--ink3); font-weight:700; padding:9px 13px 5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pmenu button{display:block; width:100%; text-align:left; background:none; border:none; font-family:inherit; font-size:14px; font-weight:700; color:var(--ink2); padding:11px 13px; border-radius:9px; cursor:pointer}
+  .pmenu button:hover{background:var(--bg2); color:var(--ink)}
+
+  /* ===== v2 업그레이드 (블랙라인+화이트 유지) — 폰 목업 · 스크린샷 쇼케이스 · 모션 ===== */
+  @view-transition{ navigation:auto }
+  .hero h1{font-size:clamp(30px,4.4vw,54px)}
+  .phone{position:relative; flex:0 0 auto; width:264px; aspect-ratio:1206/2491; background:#fff;
+    border:2.5px solid var(--ink); border-radius:42px; padding:8px;
+    box-shadow:0 26px 60px rgba(17,20,24,.16), 0 4px 14px rgba(17,20,24,.06)}
+  .phone::before{content:''; position:absolute; z-index:2; top:13px; left:50%; transform:translateX(-50%);
+    width:92px; height:7px; background:var(--ink); border-radius:99px}
+  .phone img{width:100%; height:100%; object-fit:cover; border-radius:34px; display:block}
+  .heroviz{position:relative; display:flex; justify-content:center; align-items:center; min-height:540px}
+  .heroviz .phone{animation:floaty 6s ease-in-out infinite}
+  .heroviz .phone--back{position:absolute; right:5%; top:11%; width:214px; transform:rotate(7deg); opacity:.97; z-index:1; animation-delay:.9s}
+  .heroviz .phone--front{position:relative; z-index:3; transform:rotate(-3deg)}
+  @keyframes floaty{0%,100%{translate:0 0}50%{translate:0 -13px}}
+  .show{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; padding:64px 0}
+  .show + .show{border-top:1px solid var(--line2)}
+  .show__viz{display:flex; justify-content:center}
+  .show--rev .show__viz{order:2}
+  .show__k{font-size:13px; font-weight:800; color:var(--ink3); letter-spacing:.02em}
+  .show h3{margin:10px 0 0; font-size:clamp(23px,3vw,33px); font-weight:800; letter-spacing:-.035em; line-height:1.26}
+  .show p{margin:14px 0 0; font-size:16.5px; color:var(--ink2); font-weight:500; max-width:440px; line-height:1.62}
+  .trust{display:flex; gap:8px 16px; flex-wrap:wrap; align-items:center; margin-top:30px}
+  .trust__i{display:flex; align-items:center; gap:7px; font-size:14px; font-weight:700; color:var(--ink2)}
+  .trust__i b{color:var(--ink); font-weight:800}
+  .trust__sep{width:1px; height:14px; background:var(--line)}
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1; transform:none}
+  .reveal[data-d="1"]{transition-delay:.08s} .reveal[data-d="2"]{transition-delay:.16s} .reveal[data-d="3"]{transition-delay:.24s}
+  @media(prefers-reduced-motion:reduce){ .reveal{opacity:1; transform:none; transition:none} .heroviz .phone{animation:none} html{scroll-behavior:auto} }
+  @media(max-width:860px){ .heroviz{min-height:auto; margin-top:4px} .heroviz .phone--back{display:none} .heroviz .phone--front{transform:none} .show{grid-template-columns:1fr; gap:28px; padding:44px 0} .show--rev .show__viz{order:0} }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav"><div class="wrap nav__in">
+  <a class="brand" href="/"><img src="assets/logo.png" alt="부비서" />부비서</a>
+  <nav class="nav__menu">
+    <a href="#top">홈</a><a href="#feat">기능</a><a href="#free">가격</a><a href="ad-inquiry.html">일반광고</a><a href="ad2-inquiry.html">분양광고</a><a href="products.html">고객지원</a>
+  </nav>
+  <div class="nav__cta" id="navCta">
+    <a class="btn btn--ghost" href="main/login/index.html" onclick="return openLogin(event)">로그인</a>
+    <a class="btn btn--dark" href="main/signup/index.html" onclick="return openSignup(event)">회원가입</a>
+  </div>
+  <div class="nav__profile" id="navProfile" style="display:none"></div>
+</div></header>
+
+<!-- HERO -->
+<section class="hero" id="top"><div class="wrap"><div class="hero__grid">
+  <div class="reveal">
+    <span class="eyebrow">공인중개사 업무관리 · 100% 무료</span>
+    <h1>
+      <span class="l1">훨씬 편해진</span>
+      <span class="l2"><span class="em">부동산 업무를</span> <span class="thin">경험해보세요</span></span>
+    </h1>
+    <p class="sub">매물·계약·고객·일정·확인설명서까지. 모바일과 데스크톱에서 실시간으로, 전부 무료로.</p>
+    <div class="hero__cta">
+      <a class="btn btn--dark btn--lg" href="#dl">앱 다운로드</a>
+      <a class="btn btn--ghost btn--lg" href="#feat">기능 둘러보기</a>
+    </div>
+    <div class="trust">
+      <span class="trust__i"><b>iOS · Android · Win · Mac</b></span>
+      <span class="trust__sep"></span>
+      <span class="trust__i"><b>실시간</b> 동기화</span>
+      <span class="trust__sep"></span>
+      <span class="trust__i"><b>100%</b> 무료</span>
+    </div>
+  </div>
+
+  <div class="heroviz reveal" data-d="1">
+    <div class="phone phone--back"><img src="assets/screenshots/매물1.jpg" alt="부비서 매물관리 화면" loading="lazy" /></div>
+    <div class="phone phone--front"><img src="assets/screenshots/home1.jpg" alt="부비서 홈 대시보드 화면" /></div>
+  </div>
+
+  <div class="dlcards" style="display:none">
+    <a class="dlcard" href="https://play.google.com/store/apps/details?id=com.bubiseo.app" target="_blank" rel="noopener">
+      <span class="pic"><svg viewBox="0 0 576 512"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48 47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a301.25 301.25 0 0 0-246.56 0L116.18 64.46a10 10 0 1 0-17.27 10l47.94 83C64.53 202.22 8.24 285.55 0 384h576c-8.24-98.45-64.54-181.78-146.85-226.55"/></svg></span>
+      <span class="txt"><b>Android</b><span>Google Play · 모바일</span></span><span class="go">→</span>
+    </a>
+    <a class="dlcard" href="https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/v1.3.1/Bubiseo-Setup-1.3.1.exe" onclick="return bbsDownload(event,this.href)">
+      <span class="pic"><svg viewBox="0 0 448 512"><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg></span>
+      <span class="txt"><b>Windows</b><span>데스크톱</span></span><span class="go">→</span>
+    </a>
+    <a class="dlcard" href="https://apps.apple.com/kr/app/%EB%B6%80%EB%B9%84%EC%84%9C/id6765894424" target="_blank" rel="noopener">
+      <span class="pic"><svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></span>
+      <span class="txt"><b>iOS</b><span>App Store · 모바일</span></span><span class="go">→</span>
+    </a>
+    <a class="dlcard" href="https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/v1.3.1/Bubiseo-1.3.1-universal.dmg" onclick="return bbsDownload(event,this.href)">
+      <span class="pic"><svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></span>
+      <span class="txt"><b>Mac</b><span>데스크톱 · macOS</span></span><span class="go">→</span>
+    </a>
+  </div>
+</div></div></section>
+
+<!-- FEATURES 8 -->
+<section class="sec" id="feat"><div class="wrap">
+  <div class="sec__head reveal">
+    <div class="ko">핵심 기능</div>
+    <h2>중개 업무에 필요한 전부,<br>한 앱 안에 정리됩니다.</h2>
+    <p>엑셀과 메모장, 흩어진 단톡방은 이제 그만. 부비서 하나로 모읍니다.</p>
+  </div>
+  <div class="feat">
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><path d="M10 52V22l16-9 16 9v30"/><path d="M42 52V30l14 8v14"/><path d="M5 52h66"/><path d="M18 28v0M18 36v0M26 28v0M26 36v0M34 28v0M34 36v0M48 40v0M48 46v0"/></svg></div>
+      <h3>매물관리</h3><p>주소 한 줄이면 면적·층·실거래가까지 자동으로 채움.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><circle cx="29" cy="21" r="8.5"/><path d="M15 50a14 14 0 0 1 28 0"/><circle cx="55" cy="24" r="7"/><path d="M50 50a11 11 0 0 1 18-9"/></svg></div>
+      <h3>고객관리</h3><p>통화 후 자동 매칭. 메모·관심매물·일정을 한 곳에.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><rect x="22" y="6" width="32" height="46" rx="4"/><path d="M29 17h18M29 25h18"/><path d="M29 38c4-3 7 3 11 0" stroke-width="1.9"/></svg></div>
+      <h3>계약서</h3><p>복잡하던 계약서를 훨씬 간편하게, 단 10분 완성.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><rect x="16" y="8" width="30" height="42" rx="4"/><path d="M23 20h16M23 28h11"/><circle cx="46" cy="40" r="9"/><path d="M52.5 46.5L60 54" stroke-width="1.9"/></svg></div>
+      <h3>확인설명서 작성</h3><p>법정 확인설명서도 빠르고 간편하게 작성.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><rect x="8" y="12" width="36" height="26" rx="7"/><path d="M19 38l-3 7 10-7"/><rect x="38" y="26" width="30" height="22" rx="6"/><path d="M57 48l3 6-8-6"/></svg></div>
+      <h3>사내메신저</h3><p>직원과 실시간 채팅으로 빠르게 소통.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><path d="M10 52V28l13-8 13 8v24"/><path d="M44 52V34l13 8v10"/><path d="M5 52h66"/><path d="M27 40h22" stroke-dasharray="3 4"/></svg></div>
+      <h3>공동중개시스템</h3><p>전국 중개사와 매물·계약서를 실시간 공유.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><circle cx="22" cy="20" r="7"/><circle cx="54" cy="20" r="7"/><circle cx="38" cy="42" r="7"/><path d="M28 23l6 14M48 23l-6 14M29 20h18"/></svg></div>
+      <h3>커뮤니티</h3><p>전국 공인중개사와 정보·노하우를 나눠요.</p>
+    </article>
+    <article class="card">
+      <div class="ill"><svg viewBox="0 0 76 58"><path d="M10 52V24l14-9 14 9v28"/><path d="M5 52h40"/><path d="M44 24h16l8 8-13 13-11-11z"/><circle cx="55" cy="35" r="2.4"/></svg></div>
+      <h3>분양파트너채널</h3><p>분양 현장과 중개사를 잇는 전용 채널.</p>
+    </article>
+  </div>
+</div></section>
+
+<!-- 실제 화면 스크린샷 쇼케이스 (v2) -->
+<section class="sec" id="screens"><div class="wrap">
+  <div class="sec__head reveal">
+    <div class="ko">실제 화면</div>
+    <h2>말보다 화면으로.<br>부비서는 이렇게 생겼습니다.</h2>
+    <p>손그림이 아니라 진짜 앱 화면입니다. 깔끔하게, 한 손에.</p>
+  </div>
+  <div class="show reveal">
+    <div class="show__viz"><div class="phone" style="transform:rotate(-2.5deg)"><img src="assets/screenshots/매물1.jpg" alt="매물관리 화면" loading="lazy" /></div></div>
+    <div class="show__tx">
+      <div class="show__k">매물관리</div>
+      <h3>주소 한 줄이면<br>매물이 완성됩니다</h3>
+      <p>도로명 주소만 입력하면 면적·층·실거래가까지 자동으로. 사진과 함께 한눈에 정리돼요.</p>
+    </div>
+  </div>
+  <div class="show show--rev reveal">
+    <div class="show__viz"><div class="phone" style="transform:rotate(2.5deg)"><img src="assets/screenshots/고객1.jpg" alt="고객관리 화면" loading="lazy" /></div></div>
+    <div class="show__tx">
+      <div class="show__k">고객관리</div>
+      <h3>통화가 끝나면<br>고객이 자동 정리</h3>
+      <p>"방금 누구였나요?" 한 번 누르면 고객으로 등록. 관심 매물·메모·일정까지 한 곳에.</p>
+    </div>
+  </div>
+  <div class="show reveal">
+    <div class="show__viz"><div class="phone" style="transform:rotate(-2.5deg)"><img src="assets/screenshots/계약1.jpg" alt="계약·확인설명서 화면" loading="lazy" /></div></div>
+    <div class="show__tx">
+      <div class="show__k">계약 · 확인설명서</div>
+      <h3>복잡한 서류,<br>단 10분이면 끝</h3>
+      <p>계약서와 법정 확인설명서를 빠르고 정확하게. 잔금일·D-day까지 자동으로 챙겨줘요.</p>
+    </div>
+  </div>
+  <div class="show show--rev reveal">
+    <div class="show__viz"><div class="phone" style="transform:rotate(2.5deg)"><img src="assets/screenshots/사내대화1.jpg" alt="사내메신저 화면" loading="lazy" /></div></div>
+    <div class="show__tx">
+      <div class="show__k">사내메신저 · 공동중개</div>
+      <h3>직원과도, 전국 중개사와도<br>실시간으로</h3>
+      <p>사무실 단톡방은 이제 그만. 매물·계약서를 채팅으로 바로 공유하고 협업해요.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- WORKFLOW -->
+<section class="sec sec--alt" id="flow"><div class="wrap">
+  <div class="sec__head reveal">
+    <div class="ko">이렇게 일해요</div>
+    <h2>복잡한 중개 업무가<br>단순해집니다.</h2>
+  </div>
+  <div class="flow">
+    <article class="fcard fcard--lav">
+      <div class="ill"><svg viewBox="0 0 200 140" stroke="currentColor"><rect x="24" y="40" width="152" height="32" rx="16"/><circle cx="46" cy="56" r="6.5"/><path d="M60 56h66"/><circle cx="116" cy="98" r="20"/><path d="M116 88v20M106 98h20" stroke-width="2.3"/><path d="M131 113l15 15" stroke-width="2.3"/></svg></div>
+      <div class="tag">STEP 1</div><h3>주소만 입력</h3>
+      <p>도로명 주소 한 줄이면 면적·층·실거래가가 자동으로 채워집니다.</p>
+    </article>
+    <article class="fcard fcard--sky">
+      <div class="ill"><svg viewBox="0 0 200 140" stroke="currentColor"><rect x="40" y="22" width="68" height="98" rx="13"/><path d="M62 32h24"/><circle cx="74" cy="108" r="4.5"/><rect x="116" y="36" width="50" height="40" rx="12"/><path d="M130 76l-4 12 14-12"/><path d="M134 50a7 7 0 1 1 9 6.5c-2.2 1.5-3.3 3.2-3.3 5.5M140.5 69v.4" stroke-width="2.2"/></svg></div>
+      <div class="tag">STEP 2</div><h3>방금 전 통화, 고객인가요?</h3>
+      <p>통화가 끝나면 "방금 누구였나요?" 알림이 떠요. 한 번 누르면 고객으로 자동 정리됩니다.</p>
+    </article>
+    <article class="fcard fcard--mint">
+      <div class="ill"><svg viewBox="0 0 200 140" stroke="currentColor"><rect x="44" y="18" width="76" height="100" rx="8"/><path d="M58 42h48M58 58h48M58 74h28"/><circle cx="142" cy="96" r="23"/><path d="M142 83v13l9 6" stroke-width="2.3"/></svg></div>
+      <div class="tag">STEP 3</div><h3>계약서·확인설명서, 단 10분</h3>
+      <p>복잡하던 서류 작성이 훨씬 간편해졌어요. 단 10분이면 끝.</p>
+    </article>
+    <article class="fcard fcard--peach">
+      <div class="ill"><svg viewBox="0 0 200 140" stroke="currentColor"><rect x="30" y="34" width="82" height="54" rx="6"/><rect x="118" y="54" width="48" height="60" rx="8"/><path d="M71 88v12M52 100h38"/><path d="M92 48a24 24 0 0 1 38 0M130 76a24 24 0 0 1-38 0" stroke-width="2" stroke-dasharray="3 5"/></svg></div>
+      <div class="tag">STEP 4</div><h3>어디서나 실시간 동기화</h3>
+      <p>사무실 PC에서 쓰고 현장 모바일에서 이어서. 같은 데이터로.</p>
+    </article>
+  </div>
+</div></section>
+
+<!-- FREE -->
+<section class="sec" id="free"><div class="wrap">
+  <div class="sec__head reveal">
+    <div class="ko">요금</div>
+    <h2>결제해야 쓰는 줄 알았죠?<br>전부 무료입니다.</h2>
+    <p>대표님도, 직원분도 모두. 부담 없이 시작하세요.</p>
+  </div>
+  <div class="price">
+    <article class="pcard">
+      <div class="pcard__h"><b>모바일 앱</b><span>iOS · Android</span></div>
+      <div class="pcard__price">무료</div><div class="pcard__note">대표 · 직원 모두</div>
+      <ul>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>매물·고객·계약·일정 관리</li>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>계약서·확인설명서 작성</li>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>공동중개·사내메신저·커뮤니티</li>
+      </ul>
+    </article>
+    <article class="pcard">
+      <div class="pcard__h"><b>데스크톱 앱</b><span>macOS · Windows</span></div>
+      <div class="pcard__price">무료</div><div class="pcard__note">대표 · 직원 모두</div>
+      <ul>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>큰 화면에서 매물·계약 작성</li>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>모바일과 실시간 동기화</li>
+        <li><span class="ck ill"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></span>직원 · 권한 · 급여 관리</li>
+      </ul>
+    </article>
+  </div>
+</div></section>
+
+<!-- DOWNLOAD CTA -->
+<section class="sec sec--alt" id="dl"><div class="wrap">
+  <div class="dl">
+    <h2>지금 부비서로 가볍게 일하세요.</h2>
+    <p>검색부터 계약까지, 네 가지 플랫폼 어디서나.</p>
+    <div class="dl__row">
+      <a class="store" href="https://apps.apple.com/kr/app/%EB%B6%80%EB%B9%84%EC%84%9C/id6765894424" target="_blank" rel="noopener"><span class="pic"><svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></span>App Store</a>
+      <a class="store" href="https://play.google.com/store/apps/details?id=com.bubiseo.app" target="_blank" rel="noopener"><span class="pic"><svg viewBox="0 0 576 512"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48 47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a301.25 301.25 0 0 0-246.56 0L116.18 64.46a10 10 0 1 0-17.27 10l47.94 83C64.53 202.22 8.24 285.55 0 384h576c-8.24-98.45-64.54-181.78-146.85-226.55"/></svg></span>Google Play</a>
+      <a class="store store--ghost" href="https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/v1.3.1/Bubiseo-1.3.1-universal.dmg" onclick="return bbsDownload(event,this.href)"><span class="pic"><svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></span>Mac</a>
+      <a class="store store--ghost" href="https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/v1.3.1/Bubiseo-Setup-1.3.1.exe" onclick="return bbsDownload(event,this.href)"><span class="pic"><svg viewBox="0 0 448 512"><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg></span>Windows</a>
+    </div>
+  </div>
+</div></section>
+
+<!-- FOOTER -->
+<footer class="ft"><div class="wrap">
+  <div class="ft__top">
+    <a class="brand" href="/"><img src="assets/logo.png" alt="부비서" />부비서</a>
+    <div class="ft__cols">
+      <div><h5>제품</h5><a href="#feat">기능</a><a href="#free">가격</a><a href="#dl">다운로드</a></div>
+      <div><h5>회사</h5><a href="products.html">고객 지원</a><a href="ad-inquiry.html">광고 문의</a><a href="delete-account.html">계정 삭제 요청</a></div>
+      <div><h5>약관·정책</h5><a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a><a href="location.html">위치기반 약관</a><a href="licenses.html">오픈소스 라이선스</a></div>
+    </div>
+  </div>
+  <div class="ft__biz">
+    상호 : 부비서 · 대표자 : 이현우 · 사업자등록번호 : 574-06-03306<br>
+    사업장 주소 : 경기도 양주시 옥정동 891-1, 라피아노스위첸3단지<br>
+    연락처 : <a href="tel:+821095655505">010-9565-5505</a> · 이메일 : <a href="mailto:admin@bubiseo.com">admin@bubiseo.com</a> · 결제대행 : 토스페이먼츠(주)<br>
+    © 2026 Bubiseo. All rights reserved. · bubiseo.com
+  </div>
+</div></footer>
+
+  <!-- 로그인 모달 (블랙·모던) -->
+  <div class="smodal" id="loginModal" role="dialog" aria-modal="true" aria-label="로그인">
+    <div class="smodal__bd" onclick="closeLogin()"></div>
+    <div class="smodal__card">
+      <button class="smodal__x" type="button" aria-label="닫기" onclick="closeLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="smodal__brand">부비서</div>
+      <h3 class="smodal__title">로그인</h3>
+      <p class="smodal__sub">부비서 앱 계정으로 로그인하세요</p>
+
+      <div class="lmtabs">
+        <button class="lmtab on" type="button" data-lt="account" onclick="loginTab('account')">광고,대행사 로그인</button>
+        <button class="lmtab" type="button" data-lt="qr" onclick="loginTab('qr')">중개사 로그인</button>
+      </div>
+
+      <form class="lmpane on" id="lmPaneAccount" autocomplete="on" onsubmit="return lmSubmit(event)">
+        <div class="lmfield"><label for="lmEmail">이메일</label><input class="lminp" id="lmEmail" type="email" inputmode="email" autocomplete="username" placeholder="부비서 앱 이메일" /></div>
+        <div class="lmfield"><label for="lmPw">비밀번호</label><input class="lminp" id="lmPw" type="password" autocomplete="current-password" placeholder="비밀번호" /></div>
+        <div class="lmerr" id="lmErr"></div>
+        <button class="lmbtn" id="lmBtn" type="submit">로그인</button>
+        <p class="lmhint">부비서 <b>앱과 동일한 계정</b>으로 로그인됩니다.</p>
+      </form>
+
+      <div class="lmpane" id="lmPaneQr">
+        <div class="lmqr">
+          <div id="lmQrbox"><div class="lmqr-fallback">QR 코드를 불러오는 중…</div></div>
+          <ul class="lmqr-steps">
+            <li><span class="n">1</span><span>부비서 <b>앱</b>을 실행하세요</span></li>
+            <li><span class="n">2</span><span><b>설정 › QR 페어링</b>을 여세요</span></li>
+            <li><span class="n">3</span><span>위 <b>QR 코드를 스캔</b>하세요</span></li>
+          </ul>
+          <div class="lmqr-status"><span class="lmqr-dot"></span>앱 로그인 후 QR를 촬영해주세요.</div>
+        </div>
+      </div>
+
+      <p class="smodal__foot">계정이 없으신가요? <a href="#" onclick="closeLogin();return openSignup(event)">회원가입</a></p>
+    </div>
+  </div>
+
+  <!-- 중개사 계정이 '광고,대행사 로그인'(이메일) 탭으로 로그인 시 — QR 로그인 안내 팝업 (로그인 모달 위, z-index 300) -->
+  <div class="smodal" id="qrGuideModal" style="z-index:300" role="dialog" aria-modal="true" aria-label="QR 로그인 안내">
+    <div class="smodal__bd" onclick="closeQrGuide()"></div>
+    <div class="smodal__card" style="max-width:360px; text-align:center">
+      <button class="smodal__x" type="button" aria-label="닫기" onclick="closeQrGuide()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div style="font-size:42px; line-height:1; margin:6px 0 2px">📱</div>
+      <h3 class="smodal__title" style="margin:10px 0 6px">QR로 로그인해주세요!</h3>
+      <p class="smodal__sub" style="margin:0 0 22px">중개사 계정은 <b>중개사 로그인(QR)</b> 으로 로그인해야 해요.<br/>부비서 앱에서 QR을 스캔해 주세요.</p>
+      <button class="lmbtn" type="button" onclick="qrGuideGoQr()">중개사 로그인(QR)으로</button>
+    </div>
+  </div>
+
+  <!-- 회원가입 유형 선택 모달 (블랙·모던) -->
+  <div class="smodal" id="signupModal" role="dialog" aria-modal="true" aria-label="회원가입 유형 선택">
+    <div class="smodal__bd" onclick="closeSignup()"></div>
+    <div class="smodal__card">
+      <button class="smodal__x" type="button" aria-label="닫기" onclick="closeSignup()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="smodal__brand">부비서</div>
+      <h3 class="smodal__title">어떤 회원가입을 하시나요?</h3>
+      <p class="smodal__sub">가입 유형을 선택해주세요.</p>
+
+      <a class="sopt" href="main/signup/broker/index.html">
+        <span class="sopt__ic sopt__ic--dark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span>
+        <span class="sopt__tx"><span class="sopt__tt">중개사무소 회원가입</span><span class="sopt__ds">중개사무소, 소속직원</span></span>
+        <span class="sopt__ar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+      </a>
+
+      <a class="sopt" href="main/signup/advertiser/index.html">
+        <span class="sopt__ic sopt__ic--soft"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3zM11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span>
+        <span class="sopt__tx"><span class="sopt__tt">광고사·분양대행사 회원가입</span><span class="sopt__ds">광고, 분양 현장을 등록하는 업체</span></span>
+        <span class="sopt__ar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+      </a>
+
+      <p class="smodal__foot">이미 계정이 있으신가요? <a href="main/login/index.html">로그인</a></p>
+    </div>
+  </div>
+
+  <script>
+    // 2026-06-17 데스크톱(.dmg/.exe) 직접 다운로드 — 메인 페이지 이동·새 탭 없이 숨김 iframe 으로 받기.
+    //   href 는 유지(우클릭 '다른 이름으로 저장'·JS 비활성 폴백). GitHub 릴리스 자산은
+    //   content-disposition:attachment 라 iframe src 지정만으로 즉시 다운로드 시작됨.
+    // 로그인 모달 — 홈 로그인 버튼 클릭 시 중앙 모달(이메일/비번 + QR 페어링). 성공 시 /main/ 포털로 이동.
+    var LM_API='https://api.bubiseo.com', LM_TK='bbs_portal_token', LM_USR='bbs_portal_user';
+    var lmToken=null, lmPoll=null;
+    function lmGenId(){ try{ if(window.crypto&&crypto.randomUUID) return 'web-'+crypto.randomUUID(); }catch(e){} return 'web-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10); }
+    var lmClientId=lmGenId();
+    function lmIsMobile(){ try{ return window.matchMedia('(pointer:coarse)').matches||window.matchMedia('(max-width:760px)').matches; }catch(e){ return false; } }
+    function openLogin(e){ if(e&&e.preventDefault)e.preventDefault(); var m=document.getElementById('loginModal'); if(m){ m.classList.add('on'); document.body.style.overflow='hidden'; loginTab(lmIsMobile()?'account':'qr'); } return false; }
+    function closeLogin(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } lmStopPoll(); }
+    function showQrGuide(){ var m=document.getElementById('qrGuideModal'); if(m) m.classList.add('on'); }
+    function closeQrGuide(){ var m=document.getElementById('qrGuideModal'); if(m) m.classList.remove('on'); }
+    function qrGuideGoQr(){ closeQrGuide(); loginTab('qr'); }
+    function loginTab(which){
+      var t=document.querySelectorAll('.lmtab'); for(var i=0;i<t.length;i++){ t[i].classList.toggle('on', t[i].getAttribute('data-lt')===which); }
+      document.getElementById('lmPaneAccount').classList.toggle('on', which==='account');
+      document.getElementById('lmPaneQr').classList.toggle('on', which==='qr');
+      if(which==='qr'){ if(!lmToken) lmInitQR(); else lmEnsurePoll(); } else { lmStopPoll(); }
+    }
+    function lmShowErr(msg){ var el=document.getElementById('lmErr'); el.textContent=msg; el.classList.add('on'); }
+    function lmClearErr(){ var el=document.getElementById('lmErr'); el.textContent=''; el.classList.remove('on'); }
+    function lmSubmit(e){
+      if(e&&e.preventDefault)e.preventDefault(); lmClearErr();
+      var email=(document.getElementById('lmEmail').value||'').trim(), pw=document.getElementById('lmPw').value||'';
+      if(!email||!pw){ lmShowErr('이메일과 비밀번호를 입력해주세요.'); return false; }
+      var btn=document.getElementById('lmBtn'); btn.disabled=true; btn.textContent='로그인 중…';
+      fetch(LM_API+'/portal/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          if(res.ok&&res.data&&res.data.portalToken){ var _role=(res.data.user&&res.data.user.role)||''; if(_role==='OWNER'||_role==='EMPLOYEE'){ btn.disabled=false; btn.textContent='로그인'; showQrGuide(); return; } localStorage.setItem(LM_TK,res.data.portalToken); if(res.data.user) localStorage.setItem(LM_USR,JSON.stringify(res.data.user)); btn.textContent='로그인 완료!'; location.href='/'; }
+          else { btn.disabled=false; btn.textContent='로그인'; lmShowErr((res.data&&res.data.message)||'로그인에 실패했어요. 다시 시도해주세요.'); }
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='로그인'; lmShowErr('네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+      return false;
+    }
+    function lmStopPoll(){ if(lmPoll){ clearInterval(lmPoll); lmPoll=null; } }
+    function lmEnsurePoll(){ if(!lmPoll&&lmToken) lmStartPoll(); }
+    function lmQrFail(msg){ var b=document.getElementById('lmQrbox'); if(b) b.innerHTML='<div class="lmqr-fallback">'+msg+'</div>'; }
+    function lmLoadQRLib(cb){
+      if(typeof QRCode!=='undefined'){ cb(); return; }
+      var t=setInterval(function(){ if(typeof QRCode!=='undefined'){ clearInterval(t); cb(); } },120);
+      if(!window.__lmQrLoading){ window.__lmQrLoading=true; var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js'; s.onerror=function(){ clearInterval(t); lmQrFail('QR 코드를 불러오지 못했어요.<br/>새로고침해주세요.'); }; document.head.appendChild(s); }
+    }
+    function lmInitQR(){
+      lmStopPoll(); var box=document.getElementById('lmQrbox'); if(!box) return; box.innerHTML='<div class="lmqr-fallback">QR 코드를 불러오는 중…</div>';
+      fetch(LM_API+'/pairing/init',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({desktopClientId:lmClientId,desktopUserAgent:navigator.userAgent,clientType:'web'})})
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(!data||!data.pairingToken) throw new Error('no token');
+          lmToken=data.pairingToken;
+          lmLoadQRLib(function(){ box.innerHTML=''; new QRCode(box,{text:JSON.stringify({token:lmToken,clientId:lmClientId}),width:156,height:156,colorDark:'#111418',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); });
+          lmStartPoll();
+        })
+        .catch(function(){ lmQrFail('QR을 불러오지 못했어요.<br/>새로고침해주세요.'); });
+    }
+    function lmStartPoll(){
+      lmStopPoll();
+      lmPoll=setInterval(function(){
+        if(!lmToken) return;
+        fetch(LM_API+'/pairing/'+encodeURIComponent(lmToken)+'/result').then(function(r){ return r.json(); }).then(function(d){
+          if(d.status==='APPROVED'&&d.portalToken){ lmStopPoll(); localStorage.setItem(LM_TK,d.portalToken); if(d.user) localStorage.setItem(LM_USR,JSON.stringify(d.user)); var st=document.querySelector('.lmqr-status'); if(st) st.innerHTML='로그인 완료!'; location.href='/main/'; }
+          else if(d.status==='EXPIRED'||d.status==='REJECTED'){ lmToken=null; lmInitQR(); }
+        }).catch(function(){});
+      },2000);
+    }
+    if(/[?&]login=1/.test(location.search)){ openLogin(); }
+
+    // 회원가입 유형 선택 — 홈 회원가입 버튼 클릭 시 중앙 모달. (?signup=1 진입 시 자동 오픈)
+    function openSignup(e){ if(e&&e.preventDefault)e.preventDefault(); var m=document.getElementById('signupModal'); if(m){ m.classList.add('on'); document.body.style.overflow='hidden'; } return false; }
+    function closeSignup(){ var m=document.getElementById('signupModal'); if(m){ m.classList.remove('on'); document.body.style.overflow=''; } }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeSignup(); closeLogin(); } });
+    if(/[?&]signup=1/.test(location.search)){ var _sm=document.getElementById('signupModal'); if(_sm){ _sm.classList.add('on'); document.body.style.overflow='hidden'; } }
+
+    // 로그인 후 홈 헤더 프로필 칩 — /portal/me 로 이름·역할·상호명 조회.
+    function pEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function pRoleBadge(role){ return role==='OWNER'?'대표':(role==='EMPLOYEE'?'직원':(role==='ADMIN'?'관리자':'회원')); }
+    function authState(){
+      var t=localStorage.getItem('bbs_portal_token');
+      var cta=document.getElementById('navCta'), prof=document.getElementById('navProfile');
+      if(!cta||!prof) return;
+      if(!t){ cta.style.display=''; prof.style.display='none'; prof.innerHTML=''; return; }
+      fetch('https://api.bubiseo.com/portal/me',{headers:{Authorization:'Bearer '+t}})
+        .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+        .then(function(d){
+          var u=(d&&d.user)||{}, re=(d&&d.realEstate)||{};
+          var role=u.role||'', name=u.name||'', biz=(re&&re.businessName)||'';
+          var isBroker=(role==='OWNER'||role==='EMPLOYEE');
+          var html;
+          if(isBroker){
+            var ini=((name||'?').trim().charAt(0))||'?';
+            html='<button class="pchip" type="button" onclick="pToggle(event)"><span class="pchip__av">'+pEsc(ini)+'</span><span class="pchip__nm">'+pEsc(name)+'</span><span class="pchip__bdg">'+pRoleBadge(role)+'</span></button>';
+          } else {
+            var ini2=((biz||name||'?').trim().charAt(0))||'?';
+            html='<button class="pchip" type="button" onclick="pToggle(event)"><span class="pchip__av">'+pEsc(ini2)+'</span>'+(biz?'<span class="pchip__nm">'+pEsc(biz)+'</span>':'')+'<span class="pchip__biz">'+pEsc(name||u.email||'')+'</span></button>';
+          }
+          html+='<div class="pmenu" id="pmenu"><div class="pmu">'+pEsc(u.email||'')+'</div><button type="button" onclick="location.href=\'/main/\'">광고관리센터</button><button type="button" onclick="pLogout()">로그아웃</button></div>';
+          prof.innerHTML=html; prof.style.display='flex'; cta.style.display='none';
+        })
+        .catch(function(){ localStorage.removeItem('bbs_portal_token'); localStorage.removeItem('bbs_portal_user'); cta.style.display=''; prof.style.display='none'; prof.innerHTML=''; });
+    }
+    function pToggle(e){ if(e&&e.stopPropagation)e.stopPropagation(); var m=document.getElementById('pmenu'); if(m) m.classList.toggle('on'); }
+    function pLogout(){ localStorage.removeItem('bbs_portal_token'); localStorage.removeItem('bbs_portal_user'); authState(); }
+    document.addEventListener('click', function(){ var m=document.getElementById('pmenu'); if(m) m.classList.remove('on'); });
+    authState();
+
+    function bbsDownload(e, url){
+      if (e && e.preventDefault) e.preventDefault();
+      var f = document.getElementById('bbs-dlframe');
+      if (!f){ f = document.createElement('iframe'); f.id = 'bbs-dlframe'; f.style.cssText = 'position:absolute;left:-9999px;width:0;height:0;border:0'; document.body.appendChild(f); }
+      f.src = url;
+      return false;
+    }
+
+    // v2 — 스크롤 진입 모션 (reduced-motion 존중 · IntersectionObserver 미지원 폴백)
+    (function(){
+      var els=document.querySelectorAll('.reveal');
+      if(!els.length) return;
+      if((window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)||!('IntersectionObserver' in window)){
+        els.forEach(function(e){ e.classList.add('in'); }); return;
+      }
+      var io=new IntersectionObserver(function(en){ en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } }); },{threshold:.12, rootMargin:'0px 0px -7% 0px'});
+      els.forEach(function(e){ io.observe(e); });
+    })();
+  </script>
+</body>
+</html>
