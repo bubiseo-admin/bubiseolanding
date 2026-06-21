@@ -6,3 +6,4 @@ node_modules/
 
 # 콜론(:) 들어간 임시 스크린샷 — ASCII-safe 한 ad-preview-*.jpg 로 복사·사용
 assets/IMAGE 2026-05-19 14*.jpg
+screenshot/*.PNG

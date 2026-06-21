@@ -126,6 +126,16 @@
   .chap .line{margin-top:22px; height:2px; width:0; background:var(--ink); transition:width .6s}
   .chap.on .line{width:64px}
 
+  /* GALLERY (변형 컷) — 기능별 추가 화면 */
+  .gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:42px 28px; margin-top:38px}
+  .gcard{display:flex; flex-direction:column; align-items:center; text-align:center}
+  .gcard .gtag{margin-bottom:16px; font-size:12px; font-weight:900; letter-spacing:.04em; color:var(--ink2); background:var(--bg3); padding:5px 13px; border-radius:999px}
+  .gallery .phone{width:100%; max-width:212px; border-width:2px; border-radius:34px; box-shadow:0 18px 44px rgba(11,13,16,.13), 0 4px 12px rgba(11,13,16,.05)}
+  .gallery .phone::before{width:34%; height:5px; top:10px}
+  .gcard figcaption{margin-top:18px; font-size:15.5px; font-weight:600; color:var(--ink2); line-height:1.55; max-width:230px}
+  @media (max-width:860px){ .gallery{grid-template-columns:repeat(2,1fr); gap:34px 20px} }
+  @media (max-width:520px){ .gallery{gap:26px 14px} .gallery .phone{max-width:150px} .gcard figcaption{font-size:13px; margin-top:13px} .gcard .gtag{margin-bottom:12px; font-size:11px} }
+
   /* 선 그리기 (draw-on) — 검은 아웃라인이 그려짐 */
   .ill svg{display:block; width:100%; height:100%; fill:none; stroke:var(--ink); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
   .draw svg path,.draw svg circle,.draw svg rect,.draw svg line{stroke-dasharray:640; stroke-dashoffset:640; transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)}
@@ -301,7 +311,7 @@
   </div>
   <div class="hero__viz">
     <span class="ring"></span><span class="ring ring2"></span>
-    <div class="phone hphone" id="hphone"><img src="screenshot/1.PNG" alt="부비서 홈 대시보드" /></div>
+    <div class="phone hphone" id="hphone"><img src="screenshot/1.jpeg" alt="부비서 홈 대시보드" /></div>
   </div>
 </div></div>
   <div class="scrollcue"><span>SCROLL</span><span class="bar"></span></div>
@@ -325,13 +335,13 @@
   <div class="story__grid">
     <div class="story__stick">
       <div class="phone story__phone" id="storyPhone">
-        <div class="shot on" data-i="0"><img src="screenshot/2.PNG" alt="매물관리" /></div>
-        <div class="shot" data-i="1"><img src="screenshot/3.PNG" alt="계약·확인설명서" loading="lazy" /></div>
-        <div class="shot" data-i="2"><img src="screenshot/4.PNG" alt="고객관리" loading="lazy" /></div>
-        <div class="shot" data-i="3"><img src="screenshot/5.PNG" alt="일정관리" loading="lazy" /></div>
-        <div class="shot" data-i="4"><img src="screenshot/6.PNG" alt="분양파트너" loading="lazy" /></div>
-        <div class="shot" data-i="5"><img src="screenshot/7.PNG" alt="공동중개" loading="lazy" /></div>
-        <div class="shot" data-i="6"><img src="screenshot/8.PNG" alt="직원·급여 관리" loading="lazy" /></div>
+        <div class="shot on" data-i="0"><img src="screenshot/2.jpeg" alt="매물관리" /></div>
+        <div class="shot" data-i="1"><img src="screenshot/3.jpeg" alt="계약·확인설명서" loading="lazy" /></div>
+        <div class="shot" data-i="2"><img src="screenshot/4.jpeg" alt="고객관리" loading="lazy" /></div>
+        <div class="shot" data-i="3"><img src="screenshot/5.jpeg" alt="일정관리" loading="lazy" /></div>
+        <div class="shot" data-i="4"><img src="screenshot/6.jpeg" alt="분양파트너" loading="lazy" /></div>
+        <div class="shot" data-i="5"><img src="screenshot/7.jpeg" alt="공동중개" loading="lazy" /></div>
+        <div class="shot" data-i="6"><img src="screenshot/8.jpeg" alt="직원·급여 관리" loading="lazy" /></div>
       </div>
     </div>
     <div class="story__steps">
@@ -343,6 +353,23 @@
       <div class="chap" data-i="5"><div class="n">06 · 공동중개</div><h3>전국 중개사와<br>실시간 협업</h3><p>매물·부동산·대화를 한곳에서. 다른 사무소와 매물을 공유하고 공동중개로 거래를 키워요.</p><div class="line"></div></div>
       <div class="chap" data-i="6"><div class="n">07 · 직원 · 급여 관리</div><h3>직원도 급여도<br>한 앱에서</h3><p>급여관리·직원관리·공제증서까지. 대표님 사무소 운영을 부비서 하나로.</p><div class="line"></div></div>
     </div>
+  </div>
+</div></section>
+
+<!-- GALLERY (변형 컷 — 기능별 추가 화면) -->
+<section class="sec" id="gallery"><div class="wrap">
+  <div class="sec__head rv">
+    <div class="ko">더 많은 화면</div>
+    <h2>구석구석,<br>이런 화면도 있어요.</h2>
+    <p>등록부터 상세, 지도, AI 자동 등록까지. 실제 앱의 다양한 화면을 미리 만나보세요.</p>
+  </div>
+  <div class="gallery">
+    <figure class="gcard rv"><span class="gtag">매물</span><div class="phone"><img src="screenshot/2-1.jpeg" alt="매물 상세 화면" loading="lazy" /></div><figcaption>매물 상세 — 사진·시설·임대인 정보를 한눈에</figcaption></figure>
+    <figure class="gcard rv" data-d="1"><span class="gtag">매물</span><div class="phone"><img src="screenshot/2-2.jpeg" alt="매물 등록 화면" loading="lazy" /></div><figcaption>매물 등록 — 12가지 종류 중 선택</figcaption></figure>
+    <figure class="gcard rv" data-d="2"><span class="gtag">매물</span><div class="phone"><img src="screenshot/2-3.jpeg" alt="매물 지도 화면" loading="lazy" /></div><figcaption>매물 지도 — 마커로 위치 확인</figcaption></figure>
+    <figure class="gcard rv"><span class="gtag">계약</span><div class="phone"><img src="screenshot/3-1.jpeg" alt="계약 목록 화면" loading="lazy" /></div><figcaption>계약 목록 — 계약·확인설명서 상태별 정리</figcaption></figure>
+    <figure class="gcard rv" data-d="1"><span class="gtag">고객</span><div class="phone"><img src="screenshot/4-1.jpeg" alt="고객 상세 화면" loading="lazy" /></div><figcaption>고객 상세 — 관심매물·통화이력·메모</figcaption></figure>
+    <figure class="gcard rv" data-d="2"><span class="gtag">일정</span><div class="phone"><img src="screenshot/5-1.jpeg" alt="일정 등록 화면" loading="lazy" /></div><figcaption>일정 등록 — 한 줄 말하면 AI가 등록</figcaption></figure>
   </div>
 </div></section>
 
