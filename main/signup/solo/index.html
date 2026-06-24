@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>부비서 개인업무용 — 회원가입</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#111418; --grad:#111418;
+      --ink:#191F28; --sub:#6B7684; --tert:#8B95A1; --line:#E5E8EB; --line2:#F2F4F6;
+      --bg:#F2F4F6; --card:#FFFFFF; --soft:#F7F8FA; --tint:#EEF0F3; --red:#F04452; --green:#1EAE60;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:#16191f;color:var(--ink);letter-spacing:-.3px;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 56px;}
+    a{text-decoration:none;color:inherit;}
+    .closebtn{position:fixed;top:18px;right:18px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.13);color:#fff;display:grid;place-items:center;z-index:60;transition:.15s;}
+    .closebtn:hover{background:rgba(255,255,255,.26);}
+    .mhead{text-align:center;margin-bottom:16px;}
+    .mhead .brand{font-size:19px;font-weight:900;color:var(--ink);letter-spacing:-.04em;}
+    .wrap{width:100%;max-width:560px;background:#fff;border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.45);padding:24px 24px 30px;}
+
+    .card{background:none;box-shadow:none;padding:2px;border-radius:0;}
+    h2{margin:0 0 5px;font-size:21px;font-weight:800;letter-spacing:-.6px;}
+    .lead{margin:0 0 14px;font-size:14px;color:var(--sub);font-weight:500;line-height:1.5;}
+
+    label.lab{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:20px 0 8px;}
+    label.lab .req{color:var(--primary);margin-left:3px;}
+    label.lab .optx{color:var(--tert);font-weight:600;font-size:12.5px;margin-left:5px;}
+    .inp{width:100%;background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:14px 15px;font-size:15px;font-family:inherit;color:var(--ink);transition:.14s;}
+    .inp::placeholder{color:var(--tert);}
+    .inp:focus{outline:none;border-color:var(--primary);background:#fff;}
+    .help{font-size:12.5px;color:var(--tert);margin-top:6px;font-weight:500;line-height:1.5;}
+    .hint{font-size:12.5px;margin-top:6px;font-weight:600;}
+    .hint.err{color:var(--red);} .hint.ok{color:var(--green);}
+
+    /* estate search */
+    .esfield{position:relative;}
+    .esdrop{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(40,50,90,.16);max-height:280px;overflow-y:auto;z-index:20;}
+    .esdrop.on{display:block;}
+    .esrow{padding:13px 16px;cursor:pointer;border-bottom:1px solid var(--line2);transition:.1s;}
+    .esrow:last-child{border-bottom:none;}
+    .esrow:hover{background:var(--tint);}
+    .esrow.muted{color:var(--tert);font-weight:600;font-size:13.5px;cursor:default;}
+    .esrow.muted:hover{background:none;}
+    .esn{font-size:14.5px;font-weight:800;color:var(--ink);}
+    .esn .eso{font-size:12.5px;font-weight:700;color:var(--primary);margin-left:6px;}
+    .esa{font-size:12.5px;color:var(--sub);font-weight:500;margin-top:3px;line-height:1.4;}
+    .essel{display:none;margin-top:2px;}
+    .essel.on{display:block;}
+    .esselc{display:flex;align-items:center;gap:12px;background:var(--tint);border:1.5px solid rgba(17,20,24,.25);border-radius:13px;padding:14px 16px;}
+    .esselc .esn{color:var(--primary);}
+    .eschg{margin-left:auto;flex:0 0 auto;background:#fff;color:var(--primary);border:1px solid rgba(17,20,24,.3);border-radius:9px;padding:7px 13px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;}
+
+    /* owner-registered block notice */
+    .ownreg{display:none;margin-top:14px;background:#FEECEC;border:1px solid #F8C9C9;border-radius:14px;padding:16px 17px;}
+    .ownreg.on{display:block;}
+    .ownreg h4{margin:0 0 6px;font-size:14.5px;font-weight:800;color:var(--red);}
+    .ownreg p{margin:0;font-size:13px;color:var(--sub);font-weight:600;line-height:1.6;}
+    .ownreg a.go{display:inline-block;margin-top:12px;background:var(--grad);color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:800;}
+
+    /* solo notice + acknowledge */
+    .solonote{display:none;margin-top:14px;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 17px;}
+    .solonote.on{display:block;}
+    .solonote .nt{font-size:13.5px;color:var(--sub);font-weight:600;line-height:1.65;}
+    .solonote .nt b{color:var(--primary);font-weight:800;}
+    .solonote .ack{display:flex;align-items:flex-start;gap:11px;margin-top:13px;padding-top:13px;border-top:1px solid var(--line);font-size:14px;font-weight:800;color:var(--ink);cursor:pointer;line-height:1.45;}
+    .solonote .ack input{width:20px;height:20px;accent-color:var(--primary);flex:0 0 auto;margin-top:1px;}
+
+    /* solo fields gate (hidden until ack + not owner-registered) */
+    .sgate{display:none;}
+    .sgate.on{display:block;}
+
+    /* roster chips */
+    .roster{display:none;margin-top:10px;}
+    .roster.on{display:block;}
+    .rlab{font-size:12.5px;color:var(--tert);font-weight:600;margin-bottom:8px;}
+    .rchip{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 14px;margin:0 7px 7px 0;font-size:13.5px;font-weight:700;color:var(--sub);font-family:inherit;cursor:pointer;transition:.12s;}
+    .rchip:hover{border-color:var(--primary);color:var(--primary);background:#fff;}
+
+    /* license type segment */
+    .seg{display:flex;gap:8px;}
+    .segb{flex:1;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:14px 12px;font-size:14px;font-weight:800;color:var(--sub);font-family:inherit;cursor:pointer;transition:.14s;text-align:center;line-height:1.35;}
+    .segb.on{background:var(--grad);color:#fff;border-color:var(--grad);box-shadow:0 8px 20px rgba(17,20,24,.22);}
+
+    /* license upload */
+    .upload{display:flex;align-items:center;gap:11px;background:var(--soft);border:1.5px dashed var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.14s;}
+    .upload:hover{border-color:var(--primary);}
+    .upload .ui{width:34px;height:34px;border-radius:9px;background:var(--tint);display:grid;place-items:center;color:var(--primary);flex:0 0 auto;}
+    .upload .un{font-size:14px;color:var(--tert);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .upload.has .un{color:var(--ink);font-weight:700;}
+    .upload input{display:none;}
+    .licstat{font-size:13px;font-weight:700;margin-top:8px;display:none;}
+    .licstat.load{display:block;color:var(--sub);} .licstat.ok{display:block;color:var(--green);} .licstat.err{display:block;color:var(--red);}
+
+    /* agreements */
+    .agall{display:flex;align-items:center;gap:11px;background:var(--soft);border-radius:14px;padding:16px 17px;font-size:15.5px;font-weight:800;cursor:pointer;margin-top:6px;}
+    .agall input{width:20px;height:20px;accent-color:var(--primary);}
+    .agitem{display:flex;align-items:center;gap:11px;padding:12px 17px;font-size:14px;color:var(--sub);font-weight:600;cursor:pointer;}
+    .agitem input{width:18px;height:18px;accent-color:var(--primary);}
+    .agitem .tg{font-size:11.5px;font-weight:800;color:var(--primary);margin-left:1px;}
+    .agitem .tg.o{color:var(--tert);}
+    .agitem .vw{margin-left:auto;font-size:12.5px;color:var(--tert);text-decoration:underline;}
+
+    .err{display:none;font-size:13.5px;font-weight:700;color:var(--red);background:#FEECEC;border-radius:12px;padding:12px 14px;margin-top:18px;line-height:1.5;}
+    .err.on{display:block;}
+
+    .submit{display:block;width:100%;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 12px 28px rgba(17,20,24,.26);transition:.16s;margin-top:24px;}
+    .submit:hover{transform:translateY(-1px);}
+    .submit:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none;}
+
+    /* done overlay */
+    .ov{display:none;position:fixed;inset:0;background:rgba(20,26,40,.5);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center;padding:24px;}
+    .ov.on{display:flex;}
+    .ovcard{background:#fff;border-radius:26px;max-width:420px;width:100%;padding:38px 30px 30px;text-align:center;box-shadow:0 30px 80px rgba(20,30,60,.3);}
+    .ovic{width:80px;height:80px;border-radius:50%;background:var(--grad);display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 14px 32px rgba(17,20,24,.3);}
+    .ovcard h3{margin:0 0 4px;font-size:22px;font-weight:800;}
+    .ovname{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:10px;}
+    .ovcard p{font-size:14.5px;color:var(--sub);font-weight:500;line-height:1.65;margin:0 0 24px;}
+    .ovbtns{display:flex;flex-direction:column;gap:9px;}
+    .ovb{display:block;width:100%;border-radius:13px;padding:15px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;border:none;}
+    .ovb.pri{background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(17,20,24,.24);}
+    .ovb.sec{background:var(--soft);color:var(--sub);}
+  </style>
+</head>
+<body>
+  <a class="closebtn" href="/" aria-label="닫기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></a>
+
+  <div class="wrap">
+    <div class="mhead"><a class="brand" href="/">부비서</a></div>
+
+    <section class="card">
+      <h2>개인업무용 가입</h2>
+      <p class="lead">대표님(사무소장)이 아직 가입하지 않았어도, 혼자 먼저 부비서를 시작할 수 있어요. 소속될 중개사무소를 검색해 선택하면 됩니다.</p>
+
+      <label class="lab">소속 중개사무소 <span class="req">*</span></label>
+      <div id="sEsWrap">
+        <div class="esfield">
+          <input class="inp" id="sEstate" autocomplete="off" placeholder="상호명·대표자·주소·등록번호로 검색" />
+          <div class="esdrop" id="sEstateDrop"></div>
+        </div>
+        <div class="help">검색 후 소속 사무소를 선택해주세요. (2자 이상 입력)</div>
+      </div>
+      <div class="essel" id="sEstateSel"></div>
+
+      <!-- 대표 이미 가입됨 → 직원 회원가입 안내 (제출 차단) -->
+      <div class="ownreg" id="sOwnReg">
+        <h4>이미 부비서를 이용중인 부동산이에요</h4>
+        <p>이 중개사무소는 대표님이 이미 가입을 마쳤어요. 개인업무용 대신 <b>직원(소속 공인중개사·중개보조원) 회원가입</b>으로 진행해주세요.</p>
+        <a class="go" href="../broker/index.html?tab=emp">직원 회원가입으로 가기 →</a>
+      </div>
+
+      <!-- 미가입 → 안내 + 확인 체크박스 -->
+      <div class="solonote" id="sNote">
+        <div class="nt">나중에 <b>대표자가 가입하면 매물·계약서·확인설명서가 공유돼요!</b> 지금은 개인업무용으로 먼저 시작하고, 대표님이 합류하면 자동으로 같은 사무소로 연결됩니다.</div>
+        <label class="ack"><input type="checkbox" id="sAck" onchange="syncGate()"> 위 내용을 확인했습니다</label>
+      </div>
+
+      <!-- 본인 정보 (확인 체크 + 미가입 시에만 노출) -->
+      <div class="sgate" id="sGate">
+        <div class="roster" id="sRoster"></div>
+
+        <label class="lab">이름 <span class="req">*</span></label>
+        <input class="inp" id="sName" placeholder="이름을 입력해주세요" />
+
+        <label class="lab">연락처 <span class="req">*</span></label>
+        <input class="inp" id="sPhone" inputmode="numeric" placeholder="010-0000-0000" oninput="this.value=fmtPhone(this.value)" />
+
+        <label class="lab">이메일 (로그인 아이디) <span class="req">*</span></label>
+        <input class="inp" id="sEmail" type="email" inputmode="email" autocomplete="email" placeholder="example@email.com" />
+
+        <label class="lab">비밀번호 <span class="req">*</span></label>
+        <input class="inp" id="sPw" type="password" autocomplete="new-password" placeholder="10자 이상" oninput="pwHint()" />
+        <div class="help">10자 이상 · 영문 · 숫자 · 특수문자를 모두 포함해주세요.</div>
+
+        <label class="lab">비밀번호 확인 <span class="req">*</span></label>
+        <input class="inp" id="sPw2" type="password" autocomplete="new-password" placeholder="비밀번호 다시 입력" oninput="pwHint()" />
+        <div class="hint" id="sPwHint"></div>
+
+        <label class="lab">자격 증빙 <span class="req">*</span></label>
+        <div class="seg" id="sLicType">
+          <button type="button" class="segb on" data-v="공인중개사" onclick="setLicType('공인중개사')">공인중개사<br>자격증</button>
+          <button type="button" class="segb" data-v="중개보조원" onclick="setLicType('중개보조원')">중개보조원<br>실무교육 수료증</button>
+        </div>
+
+        <label class="lab" id="sLicLabel">공인중개사 자격증 <span class="req">*</span></label>
+        <label class="upload" id="licBox">
+          <span class="ui"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span>
+          <span class="un" id="licName">사진 선택 (JPG · PNG)</span>
+          <input type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" onchange="onLicenseFile(this)" />
+        </label>
+        <div class="licstat" id="licStat"></div>
+        <div class="help">5MB 이하 이미지(JPG·PNG)만 업로드할 수 있어요.</div>
+
+        <label class="lab" style="margin-bottom:0;">약관 동의 <span class="req">*</span></label>
+        <label class="agall"><input type="checkbox" id="sAgAll" onchange="agAll()"> 전체 동의합니다</label>
+        <label class="agitem"><input type="checkbox" class="s-ag s-req" data-k="age19" onchange="agSync()"> 만 19세 이상입니다<span class="tg">필수</span></label>
+        <label class="agitem"><input type="checkbox" class="s-ag s-req" data-k="tos" onchange="agSync()"> 서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/terms.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="s-ag s-req" data-k="privacy" onchange="agSync()"> 개인정보 처리방침 동의<span class="tg">필수</span><a class="vw" href="/privacy.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="s-ag s-req" data-k="location" onchange="agSync()"> 위치기반서비스 이용약관 동의<span class="tg">필수</span><a class="vw" href="/location.html" target="_blank" rel="noopener">보기</a></label>
+        <label class="agitem"><input type="checkbox" class="s-ag" data-k="marketing" onchange="agSync()"> 마케팅 정보 수신 동의<span class="tg o">선택</span></label>
+
+        <div class="err" id="sErr"></div>
+        <button class="submit" id="sSubmit" type="button" onclick="submitSolo()">가입하기</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- done overlay -->
+  <div class="ov" id="doneOv">
+    <div class="ovcard">
+      <div class="ovic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3 id="doneTitle">가입이 완료되었어요!</h3>
+      <div class="ovname" id="doneName"></div>
+      <p id="doneMsg"></p>
+      <div class="ovbtns">
+        <a class="ovb pri" href="/#dl">부비서 앱 다운로드</a>
+        <a class="ovb sec" href="../../login/index.html">로그인하러 가기</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 2026-06-24 [사용자 명시] 개인업무용(SOLO) 웹 회원가입 — 대표 미가입 사무소에 직원이 혼자 먼저 가입.
+    //   백엔드 /auth/signup/solo. presign /auth/signup/solo-license-presigned (prefix solo-license/).
+    //   검증 규칙·해시 방식은 broker(중개사무소) 페이지와 동일.
+    var API = 'https://api.bubiseo.com';
+
+    var PW_RE = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{10,}$/;
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var PHONE_RE = /^010-\d{4}-\d{4}$/;
+
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+    function fmtPhone(v){
+      var d=(v||'').replace(/\D/g,'').slice(0,11);
+      if(d.length<4) return d;
+      if(d.length<8) return d.slice(0,3)+'-'+d.slice(3);
+      return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7,11);
+    }
+
+    /* ---------- 비밀번호 확인 ---------- */
+    function pwHint(){
+      var a=$('sPw').value, b=$('sPw2').value, h=$('sPwHint');
+      if(!b){ h.textContent=''; h.className='hint'; return; }
+      if(a===b){ h.textContent='비밀번호가 일치합니다'; h.className='hint ok'; }
+      else{ h.textContent='비밀번호가 일치하지 않습니다'; h.className='hint err'; }
+    }
+
+    /* ---------- 약관 ---------- */
+    function agAll(){
+      var on=$('sAgAll').checked;
+      document.querySelectorAll('.s-ag').forEach(function(x){ x.checked=on; });
+    }
+    function agSync(){
+      var all=Array.prototype.every.call(document.querySelectorAll('.s-ag'),function(x){return x.checked;});
+      $('sAgAll').checked=all;
+    }
+    function allReq(){
+      return Array.prototype.every.call(document.querySelectorAll('.s-req'),function(x){return x.checked;});
+    }
+
+    /* ---------- 에러 ---------- */
+    function showErr(id,msg){ var el=$(id); el.textContent=msg; el.classList.add('on'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+    function clearErr(id){ var el=$(id); el.textContent=''; el.classList.remove('on'); }
+
+    /* ---------- 자격 증빙 종류 ---------- */
+    var licType='공인중개사';
+    function setLicType(v){
+      licType=v;
+      document.querySelectorAll('#sLicType .segb').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v')===v); });
+      $('sLicLabel').innerHTML=(v==='공인중개사'?'공인중개사 자격증':'중개보조원 실무교육 수료증')+' <span class="req">*</span>';
+    }
+
+    /* ---------- 게이트 (확인 체크 + 대표 미가입 시에만 본인정보 노출) ---------- */
+    function syncGate(){
+      var show = $('sAck').checked && !soloOwnerRegistered && !!soloEstate;
+      $('sGate').classList.toggle('on', show);
+    }
+
+    /* ---------- 부동산 검색 위젯 ---------- */
+    function setupEstateSearch(inputId, dropId, onSelect){
+      var input=$(inputId), drop=$(dropId), timer=null;
+      input.addEventListener('input',function(){
+        var q=input.value.trim();
+        if(timer) clearTimeout(timer);
+        if(q.length<2){ drop.classList.remove('on'); drop.innerHTML=''; return; }
+        timer=setTimeout(function(){ run(q); },250);
+      });
+      function run(q){
+        drop.innerHTML='<div class="esrow muted">검색 중…</div>'; drop.classList.add('on');
+        fetch(API+'/auth/realestate/search?q='+encodeURIComponent(q)+'&limit=20')
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            var rows=(d&&d.results)||[];
+            if(!rows.length){ drop.innerHTML='<div class="esrow muted">검색 결과가 없어요. 다른 검색어로 시도해주세요.</div>'; return; }
+            drop.innerHTML='';
+            rows.forEach(function(r){
+              var el=document.createElement('div'); el.className='esrow';
+              el.innerHTML='<div class="esn">'+esc(r.businessName)+(r.ownerName?'<span class="eso">'+esc(r.ownerName)+'</span>':'')+'</div><div class="esa">'+esc(r.address||'')+' · '+esc(r.registrationNumber)+'</div>';
+              el.onclick=function(){ onSelect(r); drop.classList.remove('on'); };
+              drop.appendChild(el);
+            });
+          })
+          .catch(function(){ drop.innerHTML='<div class="esrow muted">검색 오류예요. 다시 시도해주세요.</div>'; });
+      }
+      document.addEventListener('click',function(e){ if(e.target!==input && !drop.contains(e.target)) drop.classList.remove('on'); });
+    }
+    function estateCard(r, onChange){
+      return '<div class="esselc"><div style="min-width:0;"><div class="esn">'+esc(r.businessName)+'</div><div class="esa">'+esc(r.address||'')+' · '+esc(r.registrationNumber)+'</div></div><button type="button" class="eschg" onclick="'+onChange+'">변경</button></div>';
+    }
+
+    /* ---------- 부동산 선택 + 명부 + 대표가입 여부 ---------- */
+    var soloEstate=null, soloOwnerRegistered=false;
+    function resetEstate(){
+      soloEstate=null; soloOwnerRegistered=false;
+      $('sEstateSel').classList.remove('on'); $('sEstateSel').innerHTML='';
+      $('sOwnReg').classList.remove('on');
+      $('sNote').classList.remove('on');
+      $('sGate').classList.remove('on');
+      $('sRoster').classList.remove('on'); $('sRoster').innerHTML='';
+      $('sAck').checked=false;
+      $('sEsWrap').style.display='block'; $('sEstate').value=''; $('sEstate').focus();
+    }
+    setupEstateSearch('sEstate','sEstateDrop',function(r){
+      soloEstate=r;
+      $('sEsWrap').style.display='none';
+      $('sEstateSel').innerHTML=estateCard(r,'resetEstate()'); $('sEstateSel').classList.add('on');
+      loadRoster(r.registrationNumber);
+    });
+    function loadRoster(reg){
+      var wrap=$('sRoster'); wrap.innerHTML=''; wrap.classList.remove('on');
+      $('sOwnReg').classList.remove('on'); $('sNote').classList.remove('on'); $('sGate').classList.remove('on');
+      soloOwnerRegistered=false;
+      fetch(API+'/auth/realestate/'+encodeURIComponent(reg)+'/staff-roster')
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          soloOwnerRegistered = !!(d && d.ownerRegistered);
+          if(soloOwnerRegistered){
+            // 대표 이미 가입 → 직원 회원가입 안내, 제출 차단
+            $('sOwnReg').classList.add('on');
+            return;
+          }
+          // 미가입 → 안내 + 확인 체크박스 노출
+          $('sNote').classList.add('on');
+          var list=(d&&d.roster)||[];
+          if(list.length){
+            var lab=document.createElement('div'); lab.className='rlab';
+            lab.textContent='명부에서 본인 이름을 선택하면 자동 입력돼요'+(d.baseDate?' (기준일 '+esc(d.baseDate)+')':'');
+            wrap.appendChild(lab);
+            list.forEach(function(p){
+              var c=document.createElement('button'); c.type='button'; c.className='rchip';
+              c.textContent=p.name+(p.jongbyeol?' · '+p.jongbyeol:'');
+              c.onclick=function(){ $('sName').value=p.name; };
+              wrap.appendChild(c);
+            });
+            wrap.classList.add('on');
+          }
+          syncGate();
+        })
+        .catch(function(){
+          // 명부 조회 실패해도 가입은 진행 가능 (안내 노출)
+          $('sNote').classList.add('on');
+        });
+    }
+
+    /* ---------- 자격 증빙 업로드 (presign → S3 PUT → SHA256) ---------- */
+    var license=null;
+    function onLicenseFile(input){
+      var f=input.files&&input.files[0];
+      if(!f) return;
+      var st=$('licStat');
+      if(f.size>5*1024*1024){ st.className='licstat err'; st.textContent='5MB 이하 이미지만 업로드할 수 있어요.'; input.value=''; license=null; return; }
+      var ct = (f.type==='image/png') ? 'image/png' : 'image/jpeg';
+      $('licBox').classList.add('has'); $('licName').textContent=f.name;
+      st.className='licstat load'; st.textContent='업로드 중…'; license=null;
+      fetch(API+'/auth/signup/solo-license-presigned',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:f.name,contentType:ct})})
+        .then(function(r){ if(!r.ok) throw new Error('presign'); return r.json(); })
+        .then(function(pres){
+          return fetch(pres.uploadUrl,{method:'PUT',headers:{'Content-Type':ct},body:f})
+            .then(function(put){ if(!put.ok) throw new Error('s3-'+put.status); return hashFileBase64(f); })
+            .then(function(hash){ license={fileKey:pres.fileKey,hash:hash}; st.className='licstat ok'; st.textContent='✓ 업로드 완료'; });
+        })
+        .catch(function(){ st.className='licstat err'; st.textContent='업로드에 실패했어요. 잠시 후 다시 시도해주세요.'; license=null; });
+    }
+    // broker 와 동일: 파일의 base64 문자열에 SHA-256 → hex 64자.
+    function hashFileBase64(f){
+      return new Promise(function(resolve,reject){
+        var rd=new FileReader();
+        rd.onload=function(){
+          var b64=String(rd.result).split(',')[1]||'';
+          crypto.subtle.digest('SHA-256', new TextEncoder().encode(b64)).then(function(buf){
+            resolve(Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join(''));
+          },reject);
+        };
+        rd.onerror=reject;
+        rd.readAsDataURL(f);
+      });
+    }
+
+    /* ---------- 완료 ---------- */
+    function showDone(name){
+      $('doneName').textContent=name+'님';
+      $('doneTitle').textContent='가입이 완료되었어요!';
+      $('doneMsg').innerHTML='이제 부비서 앱에서 바로 로그인할 수 있어요.<br/>아래에서 앱을 받아 시작해보세요.';
+      $('doneOv').classList.add('on');
+    }
+
+    /* ---------- 제출 ---------- */
+    function submitSolo(){
+      clearErr('sErr');
+      if(!soloEstate) return showErr('sErr','중개사무소를 검색해서 선택해주세요.');
+      if(soloOwnerRegistered) return showErr('sErr','이미 대표가 가입한 부동산이에요. 직원 회원가입으로 진행해주세요.');
+      if(!$('sAck').checked) return showErr('sErr','안내 내용을 확인 후 체크해주세요.');
+      var name=$('sName').value.trim(), phone=$('sPhone').value.trim();
+      var email=$('sEmail').value.trim(), pw=$('sPw').value, pw2=$('sPw2').value;
+      if(name.length<2) return showErr('sErr','이름을 2자 이상 입력해주세요.');
+      if(!PHONE_RE.test(phone)) return showErr('sErr','연락처를 010-0000-0000 형식으로 입력해주세요.');
+      if(!EMAIL_RE.test(email)) return showErr('sErr','이메일 형식을 확인해주세요.');
+      if(!PW_RE.test(pw)) return showErr('sErr','비밀번호는 10자 이상이면서 영문·숫자·특수문자를 모두 포함해야 해요.');
+      if(pw!==pw2) return showErr('sErr','비밀번호가 일치하지 않아요.');
+      if(!license) return showErr('sErr','자격 증빙(자격증·수료증)을 첨부해주세요. (업로드 완료까지 기다려주세요)');
+      if(!allReq()) return showErr('sErr','필수 약관에 모두 동의해주세요.');
+
+      var payload={
+        email:email, password:pw, name:name, phone:phone,
+        realEstateRegistrationNumber:soloEstate.registrationNumber,
+        soloLicenseFileKey:license.fileKey, soloLicenseHash:license.hash,
+        soloLicenseType:licType,
+        agreements:{age19:true,tos:true,privacy:true,location:true}
+      };
+
+      var btn=$('sSubmit'); btn.disabled=true; btn.textContent='가입 중…';
+      fetch(API+'/auth/signup/solo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){ return r.json().then(function(d){ return {status:r.status,ok:r.ok,data:d}; }); })
+        .then(function(res){
+          if(res.ok){ showDone(name); return; }
+          btn.disabled=false; btn.textContent='가입하기';
+          if(res.status===409){
+            // 대표가 이미 가입한 부동산 → 직원 회원가입으로 진행 안내
+            soloOwnerRegistered=true;
+            $('sNote').classList.remove('on'); $('sGate').classList.remove('on');
+            $('sOwnReg').classList.add('on');
+            showErr('sErr','이미 대표가 가입한 부동산이에요. 직원 회원가입으로 진행해주세요.');
+            return;
+          }
+          showErr('sErr',(res.data&&res.data.message)||'가입에 실패했어요. 입력값을 확인해주세요.');
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='가입하기'; showErr('sErr','네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    }
+  </script>
+</body>
+</html>
