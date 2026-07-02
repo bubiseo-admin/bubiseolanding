@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>부비서</title>
+  <style>
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Segoe UI',sans-serif; background:#fff; color:#191F28; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .box { text-align:center; padding:32px; }
+    .t { font-size:20px; font-weight:800; letter-spacing:-0.5px; }
+    .d { font-size:14px; color:#8B95A1; margin-top:8px; line-height:1.5; }
+    a.btn { display:inline-block; margin-top:20px; padding:13px 26px; border-radius:12px; background:#191F28; color:#fff; text-decoration:none; font-weight:700; font-size:14px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="t">부비서 앱에서 열고 있어요…</div>
+    <div class="d">앱이 설치되어 있지 않다면<br/>아래 버튼으로 부비서를 만나보세요.</div>
+    <a class="btn" href="/">부비서 알아보기</a>
+  </div>
+  <script>
+    // /p/:id 딥링크 — 앱 설치 시 bubiseo:// 스킴으로 매물상세를 연다. 미설치면 이 페이지(안내) 유지.
+    (function () {
+      var m = location.pathname.match(/^\/p\/([A-Za-z0-9_-]+)/);
+      if (m) {
+        setTimeout(function () { location.href = 'bubiseo://p/' + m[1]; }, 60);
+      }
+    })();
+  </script>
+</body>
+</html>
