@@ -3,28 +3,136 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta property="og:title" content="부비서 — 매물 보기" />
+  <meta property="og:description" content="부비서 앱에서 이 매물의 모든 정보를 확인해보세요." />
   <title>부비서</title>
   <style>
-    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Segoe UI',sans-serif; background:#fff; color:#191F28; display:flex; align-items:center; justify-content:center; min-height:100vh; }
-    .box { text-align:center; padding:32px; }
-    .t { font-size:20px; font-weight:800; letter-spacing:-0.5px; }
-    .d { font-size:14px; color:#8B95A1; margin-top:8px; line-height:1.5; }
-    a.btn { display:inline-block; margin-top:20px; padding:13px 26px; border-radius:12px; background:#191F28; color:#fff; text-decoration:none; font-weight:700; font-size:14px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif; background: #F7F8FA; color: #191F28; min-height: 100vh; }
+    .wrap { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #fff; display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 8px; padding: 16px 20px; }
+    .brand b { font-size: 17px; letter-spacing: -0.5px; }
+    .photo { width: 100%; aspect-ratio: 4/3; background: #F2F4F6; object-fit: cover; display: block; }
+    .photo-empty { width: 100%; aspect-ratio: 4/3; background: #F2F4F6; display: flex; align-items: center; justify-content: center; color: #B0B8C1; font-size: 14px; }
+    .thumbs { display: flex; gap: 6px; padding: 8px 20px 0; overflow-x: auto; }
+    .thumbs img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex: none; }
+    .body { padding: 18px 20px 28px; flex: 1; }
+    .chips { display: flex; gap: 6px; margin-bottom: 10px; }
+    .chip { font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: #F4F1FB; color: #6B5CA8; }
+    .chip.dark { background: #191F28; color: #fff; }
+    .price { font-size: 26px; font-weight: 900; letter-spacing: -0.8px; margin: 2px 0 14px; }
+    .rows { border-top: 1px solid #F2F4F6; }
+    .row { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #F2F4F6; font-size: 14px; }
+    .row .k { color: #8B95A1; flex: none; }
+    .row .v { font-weight: 600; text-align: right; }
+    .cta { display: block; text-align: center; margin: 22px 0 10px; padding: 15px; border-radius: 14px; background: linear-gradient(90deg, #D4CBF0, #E6E1F8); color: #191F28; font-size: 15px; font-weight: 800; text-decoration: none; letter-spacing: -0.3px; }
+    .sub { display: block; text-align: center; padding: 13px; border-radius: 14px; background: #191F28; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; margin-bottom: 8px; }
+    .hint { text-align: center; font-size: 12px; color: #B0B8C1; margin-top: 8px; line-height: 1.5; }
+    .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; gap: 10px; }
+    .center .t { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; }
+    .center .d { font-size: 14px; color: #8B95A1; line-height: 1.6; }
+    .spinner { width: 28px; height: 28px; border: 3px solid #F2F4F6; border-top-color: #C9BCEE; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="box">
-    <div class="t">부비서 앱에서 열고 있어요…</div>
-    <div class="d">앱이 설치되어 있지 않다면<br/>아래 버튼으로 부비서를 만나보세요.</div>
-    <a class="btn" href="/">부비서 알아보기</a>
+  <div class="wrap" id="app">
+    <div class="center" id="loading">
+      <div class="spinner"></div>
+      <div class="d">매물 정보를 불러오고 있어요…</div>
+    </div>
   </div>
   <script>
-    // /p/:id 딥링크 — 앱 설치 시 bubiseo:// 스킴으로 매물상세를 연다. 미설치면 이 페이지(안내) 유지.
     (function () {
+      var API = 'https://api.bubiseo.com';
       var m = location.pathname.match(/^\/p\/([A-Za-z0-9_-]+)/);
-      if (m) {
-        setTimeout(function () { location.href = 'bubiseo://p/' + m[1]; }, 60);
+      var app = document.getElementById('app');
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
       }
+      // 만원 → "3억 5,000만" / "8,000만"
+      function man(v) {
+        if (v == null || isNaN(v)) return null;
+        v = Number(v);
+        var eok = Math.floor(v / 10000), rest = v % 10000, out = '';
+        if (eok > 0) out += eok + '억';
+        if (rest > 0) out += (out ? ' ' : '') + rest.toLocaleString('ko-KR') + '만';
+        return out || '0';
+      }
+      var DEAL_KR = { SALE: '매매', JEONSE: '전세', MONTHLY: '월세', WHOLE_LEASE: '통임대' };
+      var TYPE_KR = {
+        APARTMENT: '아파트', OFFICETEL: '오피스텔', VILLA: '빌라', HOUSE: '단독주택',
+        LAND: '토지', BUILDING: '빌딩', COMMERCIAL: '상업용', FACTORY: '공장', WAREHOUSE: '창고'
+      };
+      function priceText(p) {
+        if (p.dealKind === 'SALE') return '매매 ' + (man(p.dealPrice) || '-');
+        if (p.dealKind === 'JEONSE') return '전세 ' + (man(p.deposit) || '-');
+        if (p.dealKind === 'MONTHLY' || p.dealKind === 'WHOLE_LEASE')
+          return (DEAL_KR[p.dealKind] || '월세') + ' ' + (man(p.deposit) || '-') + ' / ' + (man(p.monthlyRent) || '-');
+        return man(p.dealPrice) || man(p.deposit) || '-';
+      }
+
+      function renderFallback(title, desc) {
+        app.innerHTML =
+          '<div class="center">' +
+          '<div class="t">' + esc(title) + '</div>' +
+          '<div class="d">' + desc + '</div>' +
+          '<a class="cta" style="min-width:220px" href="/">부비서 알아보기</a>' +
+          '</div>';
+      }
+
+      function render(p, id) {
+        var photos = Array.isArray(p.photos) ? p.photos : [];
+        var deep = 'bubiseo://p/' + id;
+        var typeLabel = p.commercialSubType || TYPE_KR[p.propertyType] || p.propertyType || '매물';
+        var rows = [
+          ['거래유형', DEAL_KR[p.dealKind] || p.dealKind || '-'],
+          ['매물유형', typeLabel],
+          ['가격', priceText(p)],
+          ['관리비', p.managementFee != null ? man(p.managementFee) + '원' : '없음'],
+          ['담당 중개사', p.isLandlord ? '임대인 직접등록' : (p.agentName || '-')],
+          ['부동산', p.realEstateName || '-']
+        ];
+        var html = '';
+        html += '<div class="brand"><b>부비서</b></div>';
+        html += photos.length
+          ? '<img class="photo" src="' + esc(photos[0]) + '" alt="매물 사진" />'
+          : '<div class="photo-empty">등록된 사진이 없어요</div>';
+        if (photos.length > 1) {
+          html += '<div class="thumbs">' + photos.slice(1, 6).map(function (u) {
+            return '<img src="' + esc(u) + '" alt="" />';
+          }).join('') + '</div>';
+        }
+        html += '<div class="body">';
+        html += '<div class="chips"><span class="chip dark">' + esc(DEAL_KR[p.dealKind] || '') + '</span><span class="chip">' + esc(typeLabel) + '</span></div>';
+        html += '<div class="price">' + esc(priceText(p)) + '</div>';
+        html += '<div class="rows">' + rows.map(function (r) {
+          return '<div class="row"><span class="k">' + esc(r[0]) + '</span><span class="v">' + esc(r[1]) + '</span></div>';
+        }).join('') + '</div>';
+        html += '<a class="cta" href="' + deep + '">부비서 앱에서 자세히 보기</a>';
+        html += '<a class="sub" href="https://apps.apple.com/kr/app/id6765894424">App Store에서 받기</a>';
+        html += '<a class="sub" style="background:#3E4652" href="https://play.google.com/store/apps/details?id=com.bubiseo.app">Google Play에서 받기</a>';
+        html += '<div class="hint">앱이 설치되어 있으면 위 버튼으로 바로 열려요.</div>';
+        html += '</div>';
+        app.innerHTML = html;
+        // 앱 설치 시 자동 열기 시도(무설치면 이 페이지 유지).
+        setTimeout(function () { location.href = deep; }, 400);
+      }
+
+      if (!m) {
+        renderFallback('페이지를 찾을 수 없어요', '주소가 정확한지 확인해주세요.');
+        return;
+      }
+      var id = m[1];
+      fetch(API + '/properties/public/' + encodeURIComponent(id))
+        .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+        .then(function (p) { render(p, id); })
+        .catch(function () {
+          renderFallback('지금은 볼 수 없는 매물이에요', '비공개로 전환되었거나 삭제된 매물일 수 있어요.<br/>부비서 앱에서 더 많은 매물을 만나보세요.');
+        });
     })();
   </script>
 </body>
