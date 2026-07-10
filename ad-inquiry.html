@@ -387,10 +387,12 @@
         var slotKeys = slots.map(function (s) { return s.key; }).join('+');
         // 2026-05-29 [사용자 명시] orderName 에서도 명수 노출 차단 — 슬롯 + 기간 + 합계만.
         var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (' + fmtKrw(amount) + '원)';
+        // 2026-07-10 [사용자 명시] months 전달 — 서버가 (슬롯 × 개월수 × 단가) 로 정가를 재계산해 금액 조작을 차단한다.
         var params = new URLSearchParams({
           plan: slotKeys,
           amount: String(amount),
           orderName: orderName,
+          months: String(months),
         });
         // 2026-06-09 [사용자 명시] 페이지 전환 대신 팝업창으로 결제. 팝업 차단 시 페이지 전환 폴백.
         const payUrl = '/pay-widget.html?' + params.toString();

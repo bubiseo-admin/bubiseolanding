@@ -123,6 +123,9 @@
     const orderName = (url.searchParams.get('orderName') || '부비서 광고').slice(0, 100);
     // 2026-06-09 [사용자 명시] 분양광고(ad2) — 연결된 PreSalePartnership id. 결제 완료 시 자동 노출용.
     const presaleId = (url.searchParams.get('presaleId') || '').slice(0, 40);
+    // 2026-07-10 [사용자 명시] 일반광고 결제 금액 서버 검증 — 서버가 (슬롯 × 개월수 × 단가) 로 정가를 재계산한다.
+    //   클라이언트는 '무엇을(슬롯·개월수)' 만 고르고, '얼마인지' 는 서버가 정한다. 분양광고는 presaleId 로 판별.
+    const months = parseInt(url.searchParams.get('months') || '', 10) || 0;
 
     const elLoading = document.getElementById('payLoading');
     const elContent = document.getElementById('payContent');
@@ -171,7 +174,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'omit',
-          body: JSON.stringify({ orderId, orderName, amount, planType, customerKey, ...(presaleId ? { presaleId } : {}) }),
+          body: JSON.stringify({ orderId, orderName, amount, planType, customerKey, ...(presaleId ? { presaleId } : {}), ...(months ? { months } : {}) }),
         });
         const j = await r.json();
         if (!r.ok) throw new Error(j.error || '주문 등록 실패');
