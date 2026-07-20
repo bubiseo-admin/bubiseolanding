@@ -624,7 +624,7 @@
             <input class="input" type="date" name="startDate" required />
           </div>
           <div class="field">
-            <label class="label">광고 종료일 <span style="color:var(--error)">*</span></label>
+            <label class="label">광고 종료일 (최장 3개월) <span style="color:var(--error)">*</span></label>
             <input class="input" type="date" name="endDate" required />
           </div>
         </div>
@@ -1604,6 +1604,21 @@
       // 프리미엄 선택 시 즉시 백엔드에서 활성 슬롯(최대 5) 체크 → full 이면 대기 예약 모달.
       const PRICE_NORMAL = 10000;
       const PRICE_PREMIUM = 30000;
+      // 2026-07-21 [사용자 명시] 모든 광고 게재 기간 최장 3개월 (토스페이먼츠 입점 정책).
+      //   서버 utils/adPeriod.ts 의 '달력 3개월' 규칙과 1:1 동일해야 함 — 바꾸면 양쪽 다.
+      const MAX_AD_MONTHS = 3;
+      function maxEndYmdFor(startYmd) {
+        if (!startYmd) return '';
+        const d = new Date(startYmd + 'T00:00:00');
+        if (Number.isNaN(d.getTime())) return '';
+        d.setMonth(d.getMonth() + MAX_AD_MONTHS);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+      function isPeriodOverLimit(sYmd, eYmd) {
+        if (!sYmd || !eYmd) return false;
+        const maxE = maxEndYmdFor(sYmd);
+        return maxE !== '' && eYmd > maxE; // YYYY-MM-DD 문자열 비교
+      }
       let payTier = 'basic'; // 'basic' | 'premium'
       let paymentConfirmedClient = false;
       let premiumReservedFrom = null; // 대기 예약된 시작일 (YYYY-MM-DD), 있으면 startDate 자동 변경
@@ -1627,21 +1642,33 @@
         return Math.max(1, Math.round(ms / (30 * 24 * 60 * 60 * 1000)));
       }
       function recomputePay() {
-        const months = calcMonths(startInput.value, endInput.value);
+        const over = isPeriodOverLimit(startInput.value, endInput.value);
+        const months = over ? 0 : calcMonths(startInput.value, endInput.value);
         const isPremium = payTier === 'premium';
         const isBasic = payTier === 'basic';
         const premiumAmt = isPremium ? months * PRICE_PREMIUM : 0;
         const basicAmt = isBasic ? months * PRICE_NORMAL : 0;
         const total = premiumAmt + basicAmt;
-        payMonthsText.textContent = months > 0 ? `${months}개월` : '광고 시작/종료일을 선택해주세요';
+        payMonthsText.textContent = over
+          ? `광고 기간은 최장 ${MAX_AD_MONTHS}개월이에요 — 종료일을 다시 선택해주세요`
+          : months > 0 ? `${months}개월` : '광고 시작/종료일을 선택해주세요';
         payPremiumRow.style.display = isPremium ? '' : 'none';
         payBasicRow.style.display = isBasic ? '' : 'none';
         payPremiumAmount.textContent = `${premiumAmt.toLocaleString('ko-KR')}원`;
         payBasicAmount.textContent = `${basicAmt.toLocaleString('ko-KR')}원`;
         payTotalText.textContent = `${total.toLocaleString('ko-KR')}원`;
       }
-      startInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
-      endInput.addEventListener('change', () => { recomputePay(); resetPaymentGate(); });
+      // 시작일 변경 → 종료일 선택 가능 범위(max)를 3개월 뒤로 갱신, 이미 초과면 자동 보정.
+      function syncEndLimit() {
+        const maxE = maxEndYmdFor(startInput.value);
+        if (maxE) endInput.max = maxE; else endInput.removeAttribute('max');
+        if (isPeriodOverLimit(startInput.value, endInput.value)) {
+          endInput.value = maxE;
+          toast(`광고 기간은 최장 ${MAX_AD_MONTHS}개월 — 종료일을 ${maxE}로 조정했어요.`);
+        }
+      }
+      startInput.addEventListener('change', () => { syncEndLimit(); recomputePay(); resetPaymentGate(); });
+      endInput.addEventListener('change', () => { syncEndLimit(); recomputePay(); resetPaymentGate(); });
 
       payBasic.addEventListener('change', (e) => {
         if (!e.target.checked) return;
@@ -1768,7 +1795,7 @@
             </div>
 
             <label for="premReserveEnd" style="display:block; font-size:12px; font-weight:700; color:var(--sub); margin-bottom:6px;">광고 종료일</label>
-            <input type="date" id="premReserveEnd" value="${defaultEndYmd}" min="${minEndYmd}" style="width:100%; max-width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:16px; outline:none; margin-bottom:14px; box-sizing:border-box; -webkit-appearance:none; appearance:none;" />
+            <input type="date" id="premReserveEnd" value="${defaultEndYmd}" min="${minEndYmd}" max="${maxEndYmdFor(fixedStartYmd)}" style="width:100%; max-width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:16px; outline:none; margin-bottom:14px; box-sizing:border-box; -webkit-appearance:none; appearance:none;" />
 
             <div style="background:rgba(97,85,245,0.06); border:1px solid rgba(97,85,245,0.18); border-radius:10px; padding:12px 14px; margin-bottom:18px;">
               <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
@@ -1814,6 +1841,10 @@
           if (!endEl.value) { alert('종료일을 선택해주세요.'); return; }
           if (new Date(endEl.value) <= new Date(fixedStartYmd)) {
             alert('종료일은 시작일 이후여야 합니다.');
+            return;
+          }
+          if (isPeriodOverLimit(fixedStartYmd, endEl.value)) {
+            alert(`광고 기간은 최장 ${MAX_AD_MONTHS}개월입니다. 종료일을 다시 선택해주세요.`);
             return;
           }
           // 본 폼의 시작일/종료일 즉시 갱신
@@ -1866,6 +1897,7 @@
         const endDate = form.endDate.value;
         if (!startDate || !endDate) { toast('광고 기간을 입력해주세요.'); btn.disabled = false; return; }
         if (new Date(endDate) < new Date(startDate)) { toast('종료일이 시작일보다 빠릅니다.'); btn.disabled = false; return; }
+        if (isPeriodOverLimit(startDate, endDate)) { toast(`광고 기간은 최장 ${MAX_AD_MONTHS}개월입니다. 종료일을 다시 선택해주세요.`); btn.disabled = false; return; }
         // 2026-05-25 [사용자 명시] 라디오 — 항상 둘 중 하나 선택. 안전 가드만.
         if (payTier !== 'basic' && payTier !== 'premium') { toast('프리미엄 또는 기본 노출 중 하나는 선택해주세요.'); btn.disabled = false; return; }
         // 2026-05-25 [사용자 명시] 뱃지 한도/요구 검증.
