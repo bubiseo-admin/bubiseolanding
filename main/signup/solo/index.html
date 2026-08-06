@@ -124,6 +124,18 @@
     .ovb{display:block;width:100%;border-radius:13px;padding:15px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;border:none;}
     .ovb.pri{background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(17,20,24,.24);}
     .ovb.sec{background:var(--soft);color:var(--sub);}
+
+    /* 휴대폰 본인인증 (2026-08-06 가입 필수) */
+    .pvrow{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
+    .pvbtn{border:0;border-radius:10px;background:#111418;color:#fff;font-weight:700;font-size:13px;padding:9px 14px;cursor:pointer}
+    .pvbtn:disabled{opacity:.5;cursor:default}
+    .pvcode{display:none;align-items:center;gap:8px;margin-top:8px}
+    .pvcode.on{display:flex}
+    .pvinp{flex:1;margin:0 !important}
+    .pvtimer{font-size:13px;font-weight:700;color:#111418;min-width:44px;font-variant-numeric:tabular-nums;text-align:right}
+    .pvok{display:none;align-items:center;gap:4px;color:#12B76A;font-weight:700;font-size:13.5px}
+    .pvok.on{display:inline-flex}
+    .pvedit{border:0;background:none;color:#8B95A1;font-size:12.5px;text-decoration:underline;cursor:pointer;padding:4px}
   </style>
 </head>
 <body>
@@ -168,6 +180,17 @@
 
         <label class="lab">연락처 <span class="req">*</span></label>
         <input class="inp" id="sPhone" inputmode="numeric" placeholder="010-0000-0000" oninput="this.value=fmtPhone(this.value)" />
+        <div class="pvrow">
+          <button type="button" class="pvbtn" id="sPvBtn" onclick="pvSend('s')">인증번호 받기</button>
+          <span class="pvok" id="sPvOk">✓ 본인인증 완료</span>
+          <button type="button" class="pvedit" id="sPvEdit" style="display:none" onclick="pvReset('s')">변경</button>
+        </div>
+        <div class="pvcode" id="sPvBox">
+          <input class="inp pvinp" id="sPvCode" inputmode="numeric" maxlength="6" placeholder="인증번호 6자리"
+                 oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" />
+          <button type="button" class="pvbtn" id="sPvConfirm" onclick="pvVerify('s')">확인</button>
+          <span class="pvtimer" id="sPvTimer"></span>
+        </div>
 
         <label class="lab">이메일 (로그인 아이디) <span class="req">*</span></label>
         <input class="inp" id="sEmail" type="email" inputmode="email" autocomplete="email" placeholder="example@email.com" />
@@ -409,6 +432,56 @@
       $('doneOv').classList.add('on');
     }
 
+    /* ---------- 휴대폰 본인인증 (2026-08-06 가입 필수) ---------- */
+    var PV={s:{id:null,left:0,t:null}};
+    function pvSend(p){
+      var phone=$(p+'Phone').value.trim();
+      if(!PHONE_RE.test(phone)) return showErr(p+'Err','연락처를 010-0000-0000 형식으로 먼저 입력해주세요.');
+      clearErr(p+'Err');
+      var btn=$(p+'PvBtn'); btn.disabled=true; btn.textContent='발송 중…';
+      fetch(API+'/auth/phone/signup/request-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone})})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          btn.disabled=false;
+          if(!res.ok){ btn.textContent='인증번호 받기'; return showErr(p+'Err',(res.data&&res.data.message)||'인증번호 발송에 실패했어요.'); }
+          btn.textContent='재전송';
+          $(p+'PvBox').classList.add('on'); $(p+'PvCode').value=''; $(p+'PvCode').focus();
+          pvTick(p,(res.data&&res.data.expiresInSec)||180);
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='인증번호 받기'; showErr(p+'Err','네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    }
+    function pvTick(p,sec){
+      var st=PV[p]; st.left=sec; clearInterval(st.t);
+      var el=$(p+'PvTimer');
+      function render(){ var m=Math.floor(st.left/60), s=String(st.left%60); if(s.length<2)s='0'+s; el.textContent=st.left>0?(m+':'+s):'시간 만료'; }
+      render();
+      st.t=setInterval(function(){ st.left--; if(st.left<=0){ clearInterval(st.t); st.left=0; } render(); },1000);
+    }
+    function pvVerify(p){
+      var phone=$(p+'Phone').value.trim(), code=$(p+'PvCode').value.trim();
+      if(code.length!==6) return showErr(p+'Err','인증번호 6자리를 입력해주세요.');
+      clearErr(p+'Err');
+      var btn=$(p+'PvConfirm'); btn.disabled=true; btn.textContent='확인 중…';
+      fetch(API+'/auth/phone/signup/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone,code:code})})
+        .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+        .then(function(res){
+          btn.disabled=false; btn.textContent='확인';
+          if(!res.ok) return showErr(p+'Err',(res.data&&res.data.message)||'인증번호가 올바르지 않아요.');
+          var st=PV[p]; st.id=res.data.verificationId; clearInterval(st.t);
+          $(p+'PvBox').classList.remove('on'); $(p+'PvBtn').style.display='none';
+          $(p+'PvOk').classList.add('on'); $(p+'PvEdit').style.display='';
+          $(p+'Phone').readOnly=true;
+        })
+        .catch(function(){ btn.disabled=false; btn.textContent='확인'; showErr(p+'Err','네트워크 오류예요. 잠시 후 다시 시도해주세요.'); });
+    }
+    function pvReset(p){
+      var st=PV[p]; st.id=null; clearInterval(st.t);
+      $(p+'PvOk').classList.remove('on'); $(p+'PvEdit').style.display='none';
+      $(p+'PvBtn').style.display=''; $(p+'PvBtn').textContent='인증번호 받기'; $(p+'PvBtn').disabled=false;
+      $(p+'PvBox').classList.remove('on'); $(p+'PvTimer').textContent='';
+      $(p+'Phone').readOnly=false;
+    }
+
     /* ---------- 제출 ---------- */
     function submitSolo(){
       clearErr('sErr');
@@ -419,6 +492,7 @@
       var email=$('sEmail').value.trim(), pw=$('sPw').value, pw2=$('sPw2').value;
       if(name.length<2) return showErr('sErr','이름을 2자 이상 입력해주세요.');
       if(!PHONE_RE.test(phone)) return showErr('sErr','연락처를 010-0000-0000 형식으로 입력해주세요.');
+      if(!PV.s.id) return showErr('sErr','휴대폰 본인인증을 완료해주세요.');
       if(!EMAIL_RE.test(email)) return showErr('sErr','이메일 형식을 확인해주세요.');
       if(!PW_RE.test(pw)) return showErr('sErr','비밀번호는 10자 이상이면서 영문·숫자·특수문자를 모두 포함해야 해요.');
       if(pw!==pw2) return showErr('sErr','비밀번호가 일치하지 않아요.');
@@ -427,6 +501,7 @@
 
       var payload={
         email:email, password:pw, name:name, phone:phone,
+        phoneVerificationId:PV.s.id,
         realEstateRegistrationNumber:soloEstate.registrationNumber,
         soloLicenseFileKey:license.fileKey, soloLicenseHash:license.hash,
         soloLicenseType:licType,
