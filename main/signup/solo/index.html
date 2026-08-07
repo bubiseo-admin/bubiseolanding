@@ -180,6 +180,18 @@
 
         <label class="lab">연락처 <span class="req">*</span></label>
         <input class="inp" id="sPhone" inputmode="numeric" placeholder="010-0000-0000" oninput="this.value=fmtPhone(this.value)" />
+        <label class="lab">생년월일·통신사 <span class="req">*</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="inp" id="sBirth6" inputmode="numeric" maxlength="6" placeholder="생년월일 6자리" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" style="flex:2" />
+          <span style="color:#8b95a1;font-weight:700">&ndash;</span>
+          <input class="inp" id="sGender1" inputmode="numeric" maxlength="1" placeholder="0" oninput="this.value=this.value.replace(/[^1-8]/g,'').slice(0,1)" style="flex:0 0 56px;text-align:center" />
+          <span style="color:#c4cad3;font-size:12px;letter-spacing:2px">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</span>
+        </div>
+        <select class="inp" id="sCarrier" style="margin-top:8px">
+          <option value="">통신사 선택</option>
+          <option>SKT</option><option>KT</option><option>LG U+</option>
+          <option>알뜰폰(SKT)</option><option>알뜰폰(KT)</option><option>알뜰폰(LG)</option>
+        </select>
         <div class="pvrow">
           <button type="button" class="pvbtn" id="sPvBtn" onclick="pvSend('s')">인증번호 받기</button>
           <span class="pvok" id="sPvOk">✓ 본인인증 완료</span>
@@ -437,9 +449,16 @@
     function pvSend(p){
       var phone=$(p+'Phone').value.trim();
       if(!PHONE_RE.test(phone)) return showErr(p+'Err','연락처를 010-0000-0000 형식으로 먼저 입력해주세요.');
+      /* 2026-08-08 등록증 본인 대조용 신원 정보 — 서버가 인증 레코드에 저장 */
+      var nm=$(p+'Name').value.trim();
+      var b6=$(p+'Birth6').value.trim(), g1=$(p+'Gender1').value.trim(), cr=$(p+'Carrier').value;
+      if(nm.length<2) return showErr(p+'Err','성명을 먼저 입력해주세요.');
+      if(!/^\d{6}$/.test(b6)) return showErr(p+'Err','생년월일 6자리를 입력해주세요.');
+      if(!/^[1-8]$/.test(g1)) return showErr(p+'Err','주민등록번호 뒤 첫 자리를 입력해주세요.');
+      if(!cr) return showErr(p+'Err','통신사를 선택해주세요.');
       clearErr(p+'Err');
       var btn=$(p+'PvBtn'); btn.disabled=true; btn.textContent='발송 중…';
-      fetch(API+'/auth/phone/signup/request-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone})})
+      fetch(API+'/auth/phone/signup/request-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone,name:nm,birth6:b6,gender1:g1,carrier:cr})})
         .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
         .then(function(res){
           btn.disabled=false;
