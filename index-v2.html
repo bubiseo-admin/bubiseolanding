@@ -291,12 +291,11 @@
 <header class="nav" id="nav"><div class="wrap nav__in">
   <a class="brand" href="/"><img src="assets/logo.png" alt="부비서" />부비서</a>
   <nav class="nav__menu">
-    <a href="#story">화면</a><a href="#feat">기능</a><a href="#free">가격</a><a href="ad-inquiry.html">일반광고</a><a href="ad2-inquiry.html">분양광고</a><a href="products.html">고객지원</a>
+    <!-- 2026-09-28 [사용자 명시] 일반광고·분양광고 메뉴 숨김 (페이지는 주소로만 접근) -->
+    <a href="#story">화면</a><a href="#feat">기능</a><a href="#free">가격</a><a href="products.html">고객지원</a>
   </nav>
-  <div class="nav__cta" id="navCta">
-    <a class="btn btn--ghost" href="main/login/index.html" onclick="return openLogin(event)">로그인</a>
-    <a class="btn btn--dark" href="main/signup/index.html" onclick="return openSignup(event)">회원가입</a>
-  </div>
+  <!-- 2026-09-28 [사용자 명시] 로그인·회원가입 버튼 숨김 — 로그인 상태면 프로필 칩(navProfile)만 뜬다 -->
+  <div class="nav__cta" id="navCta"></div>
   <div class="nav__profile" id="navProfile" style="display:none"></div>
 </div></header>
 
