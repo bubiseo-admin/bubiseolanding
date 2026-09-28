@@ -689,5 +689,45 @@
     chaps.forEach(function(c){ io.observe(c); });
   })();
 </script>
+  <script>
+    // 2026-09-28 데스크톱 다운로드 링크 자동 최신화 — GitHub 최신 릴리스의 설치 파일(.exe/.dmg)로 href 교체.
+    //   릴리스마다 이 파일을 고치지 않아도 됨. 조회 실패(요청 제한 60회/시간·오프라인) 시 적어 둔 주소 그대로 —
+    //   예전 버전을 받아도 첫 실행 때 앱이 자동 업데이트한다. 결과는 30분 캐시(같은 사무실 IP 요청 제한 대비).
+    (function(){
+      var BASE = 'https://github.com/bubiseo-admin/bubiseo-desktop-releases/releases/download/';
+      var API = 'https://api.github.com/repos/bubiseo-admin/bubiseo-desktop-releases/releases/latest';
+      var KEY = 'bbs_desktop_latest', TTL = 30 * 60 * 1000;
+      var links = document.querySelectorAll('a[href^="' + BASE + '"]');
+      if (!links.length) return;
+      function apply(win, mac){
+        for (var i = 0; i < links.length; i++){
+          var h = links[i].getAttribute('href') || '';
+          if (win && /\.exe$/.test(h)) links[i].setAttribute('href', win);
+          else if (mac && /\.dmg$/.test(h)) links[i].setAttribute('href', mac);
+        }
+      }
+      try {
+        var c = JSON.parse(localStorage.getItem(KEY) || 'null');
+        if (c && Date.now() - c.t < TTL) { apply(c.win, c.mac); return; }
+      } catch (e) {}
+      if (!window.fetch) return;
+      fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(rel){
+          if (!rel || !rel.assets) return;
+          var win = null, mac = null;
+          for (var i = 0; i < rel.assets.length; i++){
+            var u = rel.assets[i] && rel.assets[i].browser_download_url;
+            if (typeof u !== 'string' || u.indexOf(BASE) !== 0) continue;
+            if (/\/Bubiseo-Setup-[\d.]+\.exe$/.test(u)) win = u;
+            else if (/\/Bubiseo-[\d.]+-universal\.dmg$/.test(u)) mac = u;
+          }
+          if (!win && !mac) return;
+          apply(win, mac);
+          try { localStorage.setItem(KEY, JSON.stringify({ win: win, mac: mac, t: Date.now() })); } catch (e) {}
+        })
+        .catch(function(){});
+    })();
+  </script>
 </body>
 </html>
