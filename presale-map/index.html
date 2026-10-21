@@ -233,7 +233,7 @@
     try { token = localStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
 
     // 로그인 안 되어 있으면 광고주 포털로 돌려보냄 (이 페이지는 로그인 회원 전용).
-    if (!token) { location.replace('../ad2-inquiry.html'); return; }
+    if (!token) { location.replace('../index.html'); return; }
 
     var PRESALE_CATEGORY_LABEL = {
       APARTMENT:'아파트', OFFICETEL:'오피스텔', KNOWLEDGE_INDUSTRY_CENTER:'지식산업센터',
@@ -279,7 +279,7 @@
         fetch(API + '/presale-partnerships').then(function(r){return r.json();}).catch(function(){return null;}),
         fetch(API + '/advertiser/my-presale-ids', { headers:{ 'Authorization':'Bearer '+token } })
           .then(function(r){ if(r.status===401){ throw new Error('expired'); } return r.json(); })
-          .catch(function(e){ if(e&&e.message==='expired'){ try{localStorage.removeItem(TOKEN_KEY);}catch(x){} location.replace('../ad2-inquiry.html'); } return null; })
+          .catch(function(e){ if(e&&e.message==='expired'){ try{localStorage.removeItem(TOKEN_KEY);}catch(x){} location.replace('../index.html'); } return null; })
       ]).then(function(res){
         var list = res[0];
         var items = Array.isArray(list) ? list : (list && Array.isArray(list.items) ? list.items : []);
@@ -311,7 +311,7 @@
       if (!myAds.length) {
         var c = document.createElement('div');
         c.className = 'mine-chip';
-        c.innerHTML = '아직 등록한 광고가 없어요 · ad2-inquiry에서 등록';
+        c.innerHTML = '아직 등록한 광고가 없어요';
         bar.appendChild(c);
         return;
       }
@@ -593,7 +593,7 @@
     }
 
     // 돌아가기
-    $('backBtn').onclick = function(){ location.href = '../ad2-inquiry.html'; };
+    $('backBtn').onclick = function(){ location.href = '../index.html'; };
 
     // ── 일일 중앙 팝업 (하루 1회, 다시 안 보기) ──
     function todayKey(){

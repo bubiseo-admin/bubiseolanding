@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260603a" />
+  <link rel="stylesheet" href="style.css?v=20261021a" />
 </head>
 <body class="body--main body--ad-inquiry">
 
@@ -39,7 +39,6 @@
       <a href="app.html">기능</a>
       <a href="index.html#pricing">무료</a>
       <a href="ad-inquiry.html" class="is-active" aria-current="page">일반광고</a>
-      <a href="ad2-inquiry.html">분양광고</a>
     </nav>
     <nav class="main-nav__support" aria-label="지원 메뉴">
       <!-- 2026-05-22 [사용자 명시] 광고 효과 통계 새로고침 버튼 — 고객 지원 왼쪽 -->
@@ -157,40 +156,10 @@
       <p class="adq__notice-foot" data-ad-stats-updated>—</p>
     </section>
 
-    <!-- 2026-05-29 [사용자 명시] 결제 정책 섹션 제거. -->
+    <!-- 2026-10-21 [사용자 명시] 온라인 광고비 결제 종료 — 광고비는 별도 협의, 문의 폼(products.html)으로 안내 -->
     <section class="adq__pricing">
-      <!-- 2026-05-28 [사용자 명시] 결제하기 버튼 위 — 광고 슬롯(중복 선택) + 광고 기간(단일) + 합계 -->
-      <div class="adq__pay-picker">
-        <div class="adq__pay-picker-group">
-          <span class="adq__pay-picker-label">광고 슬롯 <span class="adq__pay-picker-label-sub">(중복 선택 가능)</span></span>
-          <div class="adq__pay-picker-chips" role="group" aria-label="광고 슬롯 선택 (다중)">
-            <button type="button" class="adq__pay-chip is-active" data-slot="banner" data-slot-label="배너 광고" role="checkbox" aria-checked="true">배너 광고</button>
-            <button type="button" class="adq__pay-chip" data-slot="native" data-slot-label="네이티브 광고" role="checkbox" aria-checked="false">네이티브 광고</button>
-            <button type="button" class="adq__pay-chip" data-slot="home" data-slot-label="홈 광고" role="checkbox" aria-checked="false">홈 광고</button>
-          </div>
-        </div>
-
-        <div class="adq__pay-picker-group">
-          <span class="adq__pay-picker-label">광고 기간 (최장 3개월)</span>
-          <div class="adq__pay-picker-chips" role="radiogroup" aria-label="광고 기간 선택">
-            <button type="button" class="adq__pay-chip is-active" data-months="1" role="radio" aria-checked="true">1개월</button>
-            <button type="button" class="adq__pay-chip" data-months="2" role="radio" aria-checked="false">2개월</button>
-            <button type="button" class="adq__pay-chip" data-months="3" role="radio" aria-checked="false">3개월</button>
-          </div>
-        </div>
-
-        <div class="adq__pay-picker-summary">
-          <span class="adq__pay-picker-summary-label">총 결제 금액</span>
-          <span class="adq__pay-picker-summary-amount"><b id="adqPayTotal">—</b>원</span>
-          <span class="adq__pay-picker-summary-sub" id="adqPayBreakdown">광고 시작 전 정보를 모두 선택해주세요</span>
-        </div>
-      </div>
-
-      <!-- 2026-06-03 [사용자 명시] 무료광고이벤트 버튼 제거 — 결제하기만 -->
-      <div class="adq__pay-cta-group">
-        <button type="button" class="adq__pay-cta" id="adqPayCta" aria-label="결제하기">
-          💳 결제하기
-        </button>
+      <div class="adq__inquiry-cta-group">
+        <a class="adq__inquiry-cta" href="products.html#ad-inquiry-section">광고 문의하기</a>
       </div>
     </section>
 
@@ -229,7 +198,6 @@
         <p>상호 : 부비서 · 대표자 : 이현우 · 사업자등록번호 : 574-06-03306</p>
         <p>사업장 주소 : 경기도 양주시 옥정동 891-1, 라피아노스위첸3단지</p>
         <p>연락처 : <a href="tel:16602496">1660-2496</a> · 이메일 : <a href="mailto:admin@bubiseo.com">admin@bubiseo.com</a></p>
-        <p>결제대행 : 토스페이먼츠(주)</p>
       </div>
       <div class="main-footer__bottom">
         <span>© 2026 Bubiseo. All rights reserved.</span>
@@ -239,167 +207,5 @@
   </footer>
 
   <script src="script.js?v=20260528f"></script>
-
-  <!-- 2026-05-28 [사용자 명시] 슬롯+개월 선택 → 합계 자동 계산 → 결제하기 버튼 amount 동적 -->
-  <script>
-    (function () {
-      var btn = document.getElementById('adqPayCta');
-      if (!btn) return;
-      var UNIT_PRICE_PER_ACCOUNT = 1000;
-      var totalEl = document.getElementById('adqPayTotal');
-      var breakdownEl = document.getElementById('adqPayBreakdown');
-      var slotChips = document.querySelectorAll('.adq__pay-chip[data-slot]');
-      var monthChips = document.querySelectorAll('.adq__pay-chip[data-months]');
-
-      function readAccountCount() {
-        var el = document.querySelector('[data-ad-pricing-accounts]');
-        var txt = (el && el.textContent || '').replace(/[^0-9]/g, '');
-        return parseInt(txt, 10) || 0;
-      }
-      function activeSlots() {
-        return Array.prototype.slice.call(document.querySelectorAll('.adq__pay-chip[data-slot].is-active'))
-          .map(function (el) {
-            return { key: el.getAttribute('data-slot'), label: el.getAttribute('data-slot-label') };
-          });
-      }
-      function activeMonths() {
-        var el = document.querySelector('.adq__pay-chip[data-months].is-active');
-        return el ? parseInt(el.getAttribute('data-months'), 10) : 0;
-      }
-      function fmtKrw(n) { return (Number(n) || 0).toLocaleString('ko-KR'); }
-
-      // 2026-06-03 [사용자 명시] 무료이벤트 종료 — 정상 결제.
-      //   홈 광고 = 월 100만원, 배너/네이티브 = 가입중개사수 × 1000원/월.
-      var HOME_MONTHLY = 1000000;
-
-      // 슬롯별 결제 금액 (표시·결제 동일 산식으로 통일).
-      function slotAmount(key, months, accountCount) {
-        if (key === 'home') return HOME_MONTHLY * months;
-        return accountCount * UNIT_PRICE_PER_ACCOUNT * months;
-      }
-
-      function recalc() {
-        var accountCount = readAccountCount();
-        var months = activeMonths();
-        var slots = activeSlots();
-        if (!months || slots.length === 0) {
-          totalEl.textContent = '—';
-          breakdownEl.innerHTML = slots.length === 0
-            ? '광고 슬롯을 1개 이상 선택해주세요'
-            : '광고 기간을 선택해주세요';
-          return;
-        }
-        var hasChargeable = slots.some(function (s) { return s.key !== 'home'; });
-        if (hasChargeable && !accountCount) {
-          totalEl.textContent = '—';
-          breakdownEl.innerHTML = '이용중인 중개사 정보를 불러오는 중입니다…';
-          return;
-        }
-        var total = 0;
-        var lines = slots.map(function (s) {
-          var amt = slotAmount(s.key, months, accountCount);
-          total += amt;
-          if (s.key === 'home') {
-            return '<span class="adq__pay-line">' +
-              '<span class="adq__pay-line-label">' + s.label + '</span>' +
-              '<span class="adq__pay-line-value">' +
-              fmtKrw(HOME_MONTHLY) + '원 × ' + months + '개월 = <b>' + fmtKrw(amt) + '원</b>' +
-              '</span></span>';
-          }
-          // 2026-05-29 [사용자 명시] 명수 노출 차단 — 슬롯 × 개월 + 합계만 표시.
-          return '<span class="adq__pay-line">' +
-            '<span class="adq__pay-line-label">' + s.label + '</span>' +
-            '<span class="adq__pay-line-value">' +
-            months + '개월 = <b>' + fmtKrw(amt) + '원</b>' +
-            '</span></span>';
-        });
-        totalEl.textContent = fmtKrw(total);
-        breakdownEl.innerHTML = lines.join('');
-      }
-
-      // 2026-05-28 [사용자 명시] 슬롯은 중복(다중) 선택 — 자기 칩만 토글. 최소 1개 강제(완전 비활성 금지).
-      function bindMulti(list) {
-        list.forEach(function (chip) {
-          chip.addEventListener('click', function () {
-            var nowActive = chip.classList.contains('is-active');
-            // 마지막 1개를 끌 수 없게 — 활성 1개일 때 그 칩 끄기 시도면 무시.
-            if (nowActive) {
-              var stillActive = Array.prototype.filter.call(list, function (c) { return c.classList.contains('is-active'); });
-              if (stillActive.length <= 1) return;
-              chip.classList.remove('is-active');
-              chip.setAttribute('aria-checked', 'false');
-            } else {
-              chip.classList.add('is-active');
-              chip.setAttribute('aria-checked', 'true');
-            }
-            recalc();
-          });
-        });
-      }
-      // 기간은 단일 선택(라디오) 유지.
-      function bindRadio(list) {
-        list.forEach(function (chip) {
-          chip.addEventListener('click', function () {
-            list.forEach(function (c) {
-              c.classList.remove('is-active');
-              c.setAttribute('aria-checked', 'false');
-            });
-            chip.classList.add('is-active');
-            chip.setAttribute('aria-checked', 'true');
-            recalc();
-          });
-        });
-      }
-      bindMulti(slotChips);
-      bindRadio(monthChips);
-
-      // 가입계정수 fetch 완료 시점 (loadAdPricing 응답 후) 합계 갱신 — script.js 가 다 채운 직후 recalc.
-      // MutationObserver 로 data-ad-pricing-accounts 텍스트 변경 감지.
-      var accountsEl = document.querySelector('[data-ad-pricing-accounts]');
-      if (accountsEl) {
-        var observer = new MutationObserver(recalc);
-        observer.observe(accountsEl, { childList: true, characterData: true, subtree: true });
-      }
-      recalc();
-
-      btn.addEventListener('click', function () {
-        var slots = activeSlots();
-        var months = activeMonths();
-        if (slots.length === 0 || !months) {
-          alert('광고 슬롯(1개 이상)과 광고 기간을 선택해주세요.');
-          return;
-        }
-        // 2026-06-03 [사용자 명시] 무료이벤트 종료 — 표시금액 그대로 토스 결제위젯으로 진행.
-        var accountCount = readAccountCount();
-        var chargeableSlots = slots.filter(function (s) { return s.key !== 'home'; });
-        if (chargeableSlots.length > 0 && !accountCount) {
-          alert('이용중인 중개사 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-          return;
-        }
-        var amount = slots.reduce(function (sum, s) {
-          return sum + slotAmount(s.key, months, accountCount);
-        }, 0);
-        if (amount <= 0) {
-          alert('결제 금액을 계산할 수 없습니다. 슬롯·기간을 다시 선택해주세요.');
-          return;
-        }
-        var slotLabels = slots.map(function (s) { return s.label; }).join(' + ');
-        var slotKeys = slots.map(function (s) { return s.key; }).join('+');
-        // 2026-05-29 [사용자 명시] orderName 에서도 명수 노출 차단 — 슬롯 + 기간 + 합계만.
-        var orderName = '부비서 ' + slotLabels + ' ' + months + '개월 (' + fmtKrw(amount) + '원)';
-        // 2026-07-10 [사용자 명시] months 전달 — 서버가 (슬롯 × 개월수 × 단가) 로 정가를 재계산해 금액 조작을 차단한다.
-        var params = new URLSearchParams({
-          plan: slotKeys,
-          amount: String(amount),
-          orderName: orderName,
-          months: String(months),
-        });
-        // 2026-06-09 [사용자 명시] 페이지 전환 대신 팝업창으로 결제. 팝업 차단 시 페이지 전환 폴백.
-        const payUrl = '/pay-widget.html?' + params.toString();
-        const payPopup = window.open(payUrl, 'bubiseo_pay', 'popup=yes,width=620,height=820');
-        if (!payPopup) window.location.href = payUrl;
-      });
-    })();
-  </script>
 </body>
 </html>

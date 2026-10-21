@@ -5472,188 +5472,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 /* =================================================================
-   AD-INQUIRY 결제할 광고 선택 + 결제하기 (2026-05-20 [사용자 명시])
-   광고주가 단가·통계 확인 후 결제할 슬롯 다중 선택 → 합계 → 결제하기.
-   토스페이먼츠 결제링크는 추후 도입 (현재 승인 대기).
-   ================================================================= */
-.adq__checkout {
-  margin-top: 40px;
-  padding: 32px clamp(20px, 3.5vw, 40px);
-  background: #ffffff;
-  border: 1px solid #ECEEF1;
-  border-radius: 20px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-.adq__checkout-head { margin-bottom: 22px; }
-.adq__checkout-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: #F8F9FB;
-  border: 1px solid #ECEEF1;
-  font-size: 12px;
-  font-weight: 700;
-  color: #191F28;
-  margin-bottom: 12px;
-}
-.adq__checkout-title {
-  font-size: clamp(20px, 2.6vw, 26px);
-  font-weight: 900;
-  letter-spacing: -0.025em;
-  color: var(--near-black);
-  margin: 0 0 8px;
-  word-break: keep-all;
-}
-.adq__checkout-sub {
-  font-size: 13.5px;
-  color: var(--gray-500);
-  line-height: 1.6;
-  margin: 0;
-  word-break: keep-all;
-}
-.adq__checkout-sub strong { font-weight: 700; color: #191F28; }
-
-.adq__checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
-}
-.adq__checkout-loading {
-  grid-column: 1 / -1;
-  padding: 28px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--gray-500);
-  background: #F8F9FB;
-  border-radius: 12px;
-}
-.adq__checkout-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 18px;
-  border: 1px solid #ECEEF1;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-}
-.adq__checkout-card:hover { border-color: #C9CCD1; }
-.adq__checkout-card:has(.adq__checkout-check:checked) {
-  border-color: rgba(91, 127, 255, 0.55);
-  background: rgba(91, 127, 255, 0.05);
-  box-shadow: 0 8px 20px -14px rgba(91, 127, 255, 0.4);
-}
-.adq__checkout-check {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  accent-color: #5B7FFF;
-  cursor: pointer;
-}
-.adq__checkout-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 0;
-}
-.adq__checkout-card-name {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: #191F28;
-  letter-spacing: -0.02em;
-}
-.adq__checkout-card-meta {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--brand);
-  letter-spacing: 0.04em;
-}
-.adq__checkout-card-price {
-  font-size: 13px;
-  font-weight: 800;
-  color: #191F28;
-  white-space: nowrap;
-  letter-spacing: -0.02em;
-}
-.adq__checkout-card-price.is-free {
-  background: var(--grad-violet);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.adq__checkout-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 18px;
-  padding: 16px 20px;
-  background: #F8F9FB;
-  border-radius: 14px;
-}
-.adq__checkout-summary-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gray-500);
-}
-.adq__checkout-summary-label strong { color: #191F28; font-weight: 800; }
-.adq__checkout-summary-total {
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-  background: var(--grad-violet);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.adq__checkout-actions {
-  margin-top: 18px;
-  display: flex;
-}
-.adq__checkout-btn {
-  flex: 1;
-  padding: 16px 28px;
-  background: var(--grad-violet);
-  color: #ffffff;
-  border: none;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-family: 'Pretendard', sans-serif;
-  cursor: pointer;
-  box-shadow: 0 12px 28px -14px rgba(124, 58, 237, 0.45);
-  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
-}
-.adq__checkout-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 36px -14px rgba(124, 58, 237, 0.55);
-}
-.adq__checkout-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-.adq__checkout-notice {
-  margin: 14px 0 0;
-  padding: 14px 16px;
-  background: rgba(91, 127, 255, 0.08);
-  border-radius: 12px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #4257D6;
-  line-height: 1.6;
-  letter-spacing: -0.01em;
-}
-
-/* =================================================================
    AD-INQUIRY 재구성 (2026-05-22) — 상단 베타/계정수 + 배너 광고 소개
    ================================================================= */
 
@@ -5742,51 +5560,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .adq__free-badge, .adq__first-come-badge { font-size: 12px; padding: 2px 8px; }
 }
 
-/* 2026-05-28 [사용자 명시] 광고 슬롯 중복 선택 시 항목별 금액 표시 (브레이크다운 라인) */
-.adq__pay-line {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 6px 0;
-  border-top: 1px dashed #E5E8EB;
-}
-.adq__pay-line:first-child { border-top: none; padding-top: 0; }
-.adq__pay-line-label {
-  font-size: 13px;
-  font-weight: 800;
-  color: #191F28;
-  letter-spacing: -0.3px;
-}
-.adq__pay-line-value {
-  font-size: 12px;
-  font-weight: 500;
-  color: #4E5968;
-  letter-spacing: -0.2px;
-  line-height: 1.5;
-}
-.adq__pay-line-value b {
-  font-weight: 800;
-  color: #191F28;
-}
-.adq__pay-strike {
-  color: #8B95A1;
-  text-decoration: line-through;
-  text-decoration-thickness: 1.2px;
-  font-weight: 600;
-}
-.adq__pay-event {
-  display: inline-block;
-  padding: 1px 6px;
-  margin: 0 2px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-  color: #FFFFFF;
-  font-size: 11px;
-  font-weight: 800;
-  font-style: normal;
-  letter-spacing: -0.2px;
-  vertical-align: middle;
-}
 .adq__banner-ad-desc {
   font-size: 16px;
   font-weight: 600;
@@ -5926,120 +5699,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   line-height: 1.45;
 }
 
-/* 2026-05-28 [사용자 명시] 토스 스타일 — 광고 슬롯 + 광고 기간 선택 picker */
-.adq__pay-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
-  padding: 24px 20px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  border: 1px solid #F2F4F6;
-  box-shadow: 0 4px 16px rgba(15,20,30,0.04);
-}
-.adq__pay-picker-group { display: flex; flex-direction: column; gap: 12px; }
-.adq__pay-picker-label {
-  font-size: 15px;
-  font-weight: 800;
-  color: #191F28;
-  letter-spacing: -0.02em;
-}
-.adq__pay-picker-label-sub {
-  margin-left: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #8B95A1;
-  letter-spacing: -0.01em;
-}
-.adq__pay-picker-chips {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.adq__pay-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 12px;
-  border: 1.5px solid #E5E8EB;
-  background: #FFFFFF;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #4E5968;
-  cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
-  letter-spacing: -0.02em;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  min-height: 52px;
-  text-align: center;
-}
-.adq__pay-chip:hover { border-color: #C5CDD2; color: #191F28; }
-.adq__pay-chip:active { transform: scale(0.97); }
-.adq__pay-chip.is-active {
-  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-  color: #FFFFFF;
-  border-color: transparent;
-  box-shadow: 0 8px 20px rgba(97,85,245,0.28);
-  font-weight: 800;
-}
-
-/* 합계 박스 — 토스 표준: 큰 가격, 라벨 위/금액 아래 정렬 */
-.adq__pay-picker-summary {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  padding: 20px 22px;
-  background: linear-gradient(135deg, rgba(97,85,245,0.04) 0%, rgba(57,175,253,0.04) 100%);
-  border: 1px solid rgba(97,85,245,0.08);
-  border-radius: 16px;
-}
-.adq__pay-picker-summary-label {
-  align-self: flex-start;
-  font-size: 13px;
-  font-weight: 700;
-  color: #6E7680;
-  letter-spacing: -0.02em;
-}
-.adq__pay-picker-summary-amount {
-  font-size: 14px;
-  font-weight: 700;
-  color: #8B95A1;
-  letter-spacing: -0.01em;
-  margin-top: 4px;
-}
-.adq__pay-picker-summary-amount b {
-  background: linear-gradient(135deg, #6155F5 0%, #39AFFD 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 34px;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  margin-right: 3px;
-  line-height: 1.1;
-}
-.adq__pay-picker-summary-sub {
-  align-self: flex-start;
-  margin-top: 6px;
-  font-size: 12px;
-  color: #8B95A1;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-@media (max-width: 480px) {
-  .adq__pay-picker { padding: 20px 16px; gap: 18px; }
-  .adq__pay-chip { padding: 14px 8px; font-size: 13px; min-height: 48px; }
-  .adq__pay-picker-summary { padding: 18px 18px; }
-  .adq__pay-picker-summary-amount b { font-size: 28px; }
-}
-
-/* 결제 정책 박스 하단 — 결제하기 버튼 (시그니처 그라데이션 풀 폭) */
-.adq__pay-cta {
+/* 광고 문의하기 버튼 (시그니처 그라데이션 풀 폭) — 문의 폼 링크 */
+.adq__inquiry-cta {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6054,21 +5715,22 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.01em;
+  text-decoration: none;
   cursor: pointer;
   box-shadow: 0 8px 24px rgba(97,85,245,0.28);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.adq__pay-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(97,85,245,0.34); }
-.adq__pay-cta:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(97,85,245,0.24); }
+.adq__inquiry-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(97,85,245,0.34); color: #ffffff; }
+.adq__inquiry-cta:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(97,85,245,0.24); }
 
-/* 2026-05-28 [사용자 명시] 결제 버튼 좌측 — 무료광고이벤트 버튼 (주황 그라데, 동일 사이즈) */
-.adq__pay-cta-group {
+/* 문의 버튼 그룹 */
+.adq__inquiry-cta-group {
   display: flex;
   gap: 10px;
   margin-top: 14px;
   width: 100%;
 }
-.adq__pay-cta-group .adq__pay-cta { margin-top: 0; }
+.adq__inquiry-cta-group .adq__inquiry-cta { margin-top: 0; }
 .adq__free-cta {
   display: flex;
   align-items: center;
@@ -6092,6 +5754,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .adq__free-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(247,147,30,0.34); color: #FFFFFF; }
 .adq__free-cta:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(247,147,30,0.24); }
 @media (max-width: 480px) {
-  .adq__pay-cta-group { flex-direction: column; gap: 8px; }
-  .adq__free-cta, .adq__pay-cta-group .adq__pay-cta { font-size: 15px; padding: 14px 16px; }
+  .adq__inquiry-cta-group { flex-direction: column; gap: 8px; }
+  .adq__free-cta, .adq__inquiry-cta-group .adq__inquiry-cta { font-size: 15px; padding: 14px 16px; }
 }
