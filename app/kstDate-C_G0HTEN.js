@@ -1,0 +1,1 @@
+function S(){return r(new Date().toISOString())}function r(t){if(!t)return"";const e=typeof t=="string"?new Date(t):t;if(Number.isNaN(e.getTime()))return"";const n=e.getTime()+324e5;return new Date(n).toISOString().slice(0,10)}export{S as t};
