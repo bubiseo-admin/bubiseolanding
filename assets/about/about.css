@@ -130,7 +130,6 @@ body.about main, body.about footer { word-break: keep-all; }
 .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-bottom: 36px; }
 .duo figure { margin: 0; }
 .duo img { width: 100%; border-radius: 14px; background: #fff; box-shadow: 0 20px 50px -24px rgba(17, 24, 39, .35); }
-.duo figcaption { margin-top: 12px; font-size: 14px; font-weight: 500; color: var(--muted); text-align: center; }
 @media (min-width: 1025px) {
   .tile--side .tile__art { margin-top: -150px; }
   .tile--side .shot { margin-left: 46%; }
