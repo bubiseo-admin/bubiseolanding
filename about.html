@@ -246,7 +246,7 @@
               <li><em>기능</em><span>기본 기능 + 직원관리 · 고객관리 · 메신저 · 근무시간 설정 · 부동산자료자동화</span></li>
               <li><em>해지</em><span>언제든 위약금 없이 자동결제 해지</span></li>
             </ul>
-            <a class="btn btn--grad" href="/?pro_trial=1#/pro" data-trial-open>1개월 무료사용</a>
+            <a class="btn btn--grad" href="/?from=about#/quick-signup">1개월 무료사용</a>
           </article>
         </div>
         <p class="plans__foot">프로멤버십 1년은 첫 1개월을 무료로 사용할 수 있으며, 무료체험은 사무소당 1회 제공됩니다. 무료 기간에 해지하면 결제되지 않고, 해지하지 않으면 무료 기간이 끝나는 날 1년 이용료 77,000원(부가가치세 포함)이 자동결제됩니다.<br />결제는 웹(bubiseo.com)에서만 진행하며, 앱 안에서는 결제하지 않습니다. 결제일부터 7일 이내에 취소하시면 전액 환불됩니다. 자세한 기준은 <a href="refund.html">환불정책</a>을 확인해 주세요.<br />프로멤버십 기간이 끝나도 저장한 자료는 지우지 않습니다.</p>
@@ -274,17 +274,6 @@
     </section>
   </main>
 
-  <div class="modal" id="trial-modal" hidden>
-    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="trial-title" aria-describedby="trial-desc">
-      <h2 class="modal__title" id="trial-title">1개월 무료로 사용해 보세요</h2>
-      <p class="modal__desc" id="trial-desc">1개월 뒤에 취소 요청이 없으면 1년 이용료 77,000원(부가가치세 포함)이 자동결제됩니다. 무료 기간에 해지하면 결제되지 않습니다.</p>
-      <div class="modal__btns">
-        <button type="button" class="btn btn--line" data-trial-close>취소</button>
-        <a class="btn btn--grad" href="/?pro_trial=1#/pro">확인</a>
-      </div>
-    </div>
-  </div>
-
   <footer class="legal-foot">
     <nav class="about-foot__links" aria-label="문서">
       <a href="pricing.html">이용안내·요금</a>
@@ -298,27 +287,5 @@
     <p>© 2026 주식회사 에그. All rights reserved.</p>
   </footer>
 
-  <script>
-    (function () {
-      var modal = document.getElementById('trial-modal');
-      var lastFocus = null;
-      function open(e) {
-        e.preventDefault();
-        lastFocus = document.activeElement;
-        modal.hidden = false;
-        document.body.style.overflow = 'hidden';
-        modal.querySelector('.btn--grad').focus();
-      }
-      function close() {
-        modal.hidden = true;
-        document.body.style.overflow = '';
-        if (lastFocus) lastFocus.focus();
-      }
-      document.querySelectorAll('[data-trial-open]').forEach(function (el) { el.addEventListener('click', open); });
-      modal.querySelector('[data-trial-close]').addEventListener('click', close);
-      modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
-    })();
-  </script>
 </body>
 </html>
