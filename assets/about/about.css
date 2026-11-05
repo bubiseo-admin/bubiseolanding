@@ -103,7 +103,7 @@ body.about main, body.about footer { word-break: keep-all; }
 
 /* 폰 목업 */
 .phone {
-  width: 250px; margin: 0 auto -120px; border-radius: 40px; padding: 10px;
+  width: 250px; margin: 0 auto -60px; border-radius: 40px; padding: 10px;
   background: #0f172a; box-shadow: 0 30px 60px -20px rgba(17,24,39,.45);
 }
 .phone img { border-radius: 31px; width: 100%; }
@@ -253,7 +253,7 @@ body.about main, body.about footer { word-break: keep-all; }
   .tile p { font-size: 15px; }
   .tile p br, .hero__list p br, .sub br { display: none; }
   .shot { margin-right: -24px; margin-left: 8%; }
-  .phone { width: 210px; margin-bottom: -90px; }
+  .phone { width: 210px; margin-bottom: -50px; }
   .mini-cards { grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 24px; }
   .mini { padding: 16px; }
   .bars { height: 150px; padding-bottom: 24px; gap: 10px; }
