@@ -1,0 +1,1 @@
+const A={APARTMENT:"아파트",OFFICETEL:"오피스텔",VILLA:"빌라",COMMERCIAL:"상가",HOUSE:"단독주택",LAND:"토지",BUILDING:"건물&빌딩",FACTORY:"공장",WAREHOUSE:"창고"},r=(L,n)=>{if(L!=="VILLA")return A[L];const E=(n||"").trim();return E.includes("다세대")?"빌라(다세대)":E.includes("다가구")?"빌라(다가구)":E.includes("연립")?"연립주택":"빌라"},e={SALE:"매매",JEONSE:"전세",MONTHLY:"월세",WHOLE_LEASE:"사글세"};export{e as D,A as P,r};
