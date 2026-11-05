@@ -12,90 +12,287 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>서비스 소개 — 부비서 | 부동산 중개사무소 업무 비서</title>
-  <meta name="description" content="부비서는 부동산 중개사무소를 위한 업무 앱입니다. 매물·고객·일정 관리, 계약서 작성, 중개대상물 확인·설명서 자동 입력, 사내 메신저를 모바일 앱과 웹에서 실시간으로 함께 씁니다." />
+  <meta name="description" content="부비서는 부동산 중개사무소를 위한 업무 서비스입니다. 매물·매물지도, 계약서·확인설명서, 일정, 실거래가·청약홈을 무료로 쓰고, 고객관리·메신저·직원관리·부동산자료자동화는 프로멤버십으로 더합니다. 웹·데스크톱·모바일 앱이 같은 자료를 함께 씁니다." />
   <link rel="canonical" href="https://bubiseo.com/about.html" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="부비서" />
   <meta property="og:title" content="부비서 — 부동산 중개사무소 업무 비서" />
-  <meta property="og:description" content="매물·고객·일정 관리, 계약서 작성, 확인설명서 자동 입력을 모바일 앱과 웹에서 함께." />
+  <meta property="og:description" content="매물·계약서·확인설명서·일정을 무료로, 웹과 모바일 앱에서 같은 자료로 함께 씁니다." />
   <meta property="og:url" content="https://bubiseo.com/about.html" />
   <meta property="og:image" content="https://bubiseo.com/assets/welcome-og.png" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="legal.css" />
-  <style>
-    .about-lead { font-size: 18px; color: #4e5968; margin-bottom: 8px; }
-    .about-cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 8px; }
-    .about-cta a {
-      display: inline-flex; align-items: center; height: 44px; padding: 0 18px;
-      border-radius: 10px; border: 1px solid #d1d6db; color: #191f28 !important;
-      font-size: 15px; font-weight: 600;
-    }
-    .about-cta a.primary { background: #191f28; border-color: #191f28; color: #fff !important; }
-    .about-cta a:hover { text-decoration: none; }
-  </style>
+  <link rel="stylesheet" href="assets/about/about.css" />
 </head>
-<body>
+<body class="about">
   <header class="legal-nav">
     <a class="legal-nav__brand" href="/" aria-label="부비서 홈">
       <img src="assets/logo.png" alt="" />
       <span>부비서</span>
     </a>
-    <a class="legal-nav__back" href="/">로그인</a>
+    <nav class="about-nav__links" aria-label="주요 링크">
+      <a class="about-nav__hide-sm" href="#core">기능</a>
+      <a href="pricing.html">요금</a>
+      <a class="about-nav__cta" href="/">로그인</a>
+    </nav>
   </header>
 
-  <main class="legal">
-    <h1>부비서 — 부동산 중개사무소 업무 비서</h1>
-    <p class="about-lead">매물·고객·일정부터 계약서와 중개대상물 확인·설명서까지, 중개사무소의 하루 업무를 한곳에서 처리합니다.</p>
-    <p>휴대폰 앱과 웹(bubiseo.com)이 실시간으로 연동되어 현장에서는 휴대폰으로, 사무실에서는 PC로 같은 자료를 이어서 씁니다.</p>
-    <div class="about-cta">
-      <a class="primary" href="/">bubiseo.com 에서 시작하기</a>
-      <a href="https://apps.apple.com/kr/app/id6765894424" target="_blank" rel="noopener">App Store</a>
-      <a href="https://play.google.com/store/apps/details?id=com.bubiseo.app" target="_blank" rel="noopener">Google Play</a>
-    </div>
+  <main>
+    <!-- 1. 첫 화면 -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero__card">
+          <div class="hero__text">
+            <h1 class="h-xl">중개사무소의 하루,<br />부비서 하나로.</h1>
+            <a class="more" href="#core">자세히 보기</a>
+            <ul class="hero__list">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+                <div>
+                  <b>매물부터 계약까지 한곳에서</b>
+                  <p>매물 등록, 계약서 작성, 확인설명서와 일정을<br />한 화면에서 이어서 처리합니다.</p>
+                </div>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="13" height="10" rx="1.5"/><path d="M6 18h6"/><rect x="16.5" y="8" width="5" height="12" rx="1.2"/></svg>
+                <div>
+                  <b>현장은 휴대폰, 사무실은 PC</b>
+                  <p>모바일 앱과 웹·데스크톱이 같은 자료를<br />실시간으로 함께 씁니다.</p>
+                </div>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 8.2 7.5 9.5 4.3-1.3 7.5-5 7.5-9.5V6z"/><path d="m8.8 12 2.3 2.3 4.2-4.6"/></svg>
+                <div>
+                  <b>기본 기능은 무료</b>
+                  <p>매물·계약서·확인설명서·일정·실거래가는<br />가입만 하면 바로 쓸 수 있습니다.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="hero__visual">
+            <div class="hero__shot">
+              <img src="assets/about/dashboard.webp" width="1600" height="1000" alt="부비서 웹 홈 화면 — 오늘 업무, 계약서, 최근 등록 매물" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <h2>주요 기능</h2>
+    <!-- 2. 핵심 기능 -->
+    <section class="core" id="core">
+      <div class="wrap">
+        <div class="core__head">
+          <span class="eyebrow">우선 핵심부터.</span>
+          <h2 class="h-xl">중개 업무에 꼭 필요한 것을<br />먼저 담았습니다.</h2>
+        </div>
 
-    <h3>매물 관리</h3>
-    <p>아파트·빌라·오피스텔·상가·사무실·토지 등 매물을 사진과 함께 등록하고, 거래 조건·상태별로 목록에서 찾아봅니다.</p>
+        <div class="bento">
+          <article class="tile span-7">
+            <h3>매물 관리와 매물지도</h3>
+            <p>아파트부터 상가·토지까지 매물을 등록하고,<br />지도 위에서 가격과 위치를 한눈에 확인합니다.</p>
+            <a class="more" href="/">자세히 보기</a>
+            <div class="tile__art">
+              <div class="shot"><img src="assets/about/map.webp" width="1400" height="1050" alt="매물지도 화면 — 목록과 지도 위 매물 가격 표시" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h3>매물 지도와 실거래가</h3>
-    <p>등록한 매물을 지도 위에서 한눈에 보고, 주변 실거래가를 함께 확인합니다.</p>
+          <article class="tile span-5">
+            <h3>어디서든 같은 자료</h3>
+            <p>휴대폰에서 등록한 매물이 사무실 PC에 바로.<br />모바일 앱·웹·데스크톱이 실시간으로 이어집니다.</p>
+            <div class="devices"><span>iPhone</span><span>Android</span><span>웹</span><span>데스크톱</span></div>
+            <div class="tile__art">
+              <div class="phone"><img src="assets/about/mobile-home.webp" width="720" height="1460" alt="부비서 모바일 홈 화면" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h3>계약서 작성</h3>
-    <p>매매·전세·월세 계약서를 단계별로 작성하고 바로 인쇄하거나 PDF로 저장합니다.</p>
+          <article class="tile span-5">
+            <h3>계약서·확인설명서 작성</h3>
+            <p>매매·전세·월세 계약서를 단계별로 쓰면<br />확인설명서 공통 항목이 자동으로 채워집니다.</p>
+            <a class="more" href="/">자세히 보기</a>
+            <div class="tile__art">
+              <div class="pills">
+                <span class="pill pill--a">매매</span>
+                <span class="pill pill--b">전세</span>
+                <span class="pill pill--c">월세</span>
+                <span class="pill pill--d">확인설명서 자동 입력</span>
+                <span class="pill pill--e">PDF 저장·인쇄</span>
+              </div>
+              <div class="shot"><img src="assets/about/contracts.webp" width="1000" height="600" alt="계약서 목록 화면 — 계약 상태와 잔금일" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h3>중개대상물 확인·설명서 자동 입력</h3>
-    <p>계약서를 작성하면 확인설명서의 공통 항목이 자동으로 채워집니다. 주소만으로 토지·건물 정보, 토지이용계획과 공법상 제한, 입지조건, 비선호시설까지 불러오고, 직접 고친 내용은 그대로 둡니다.</p>
+          <article class="tile span-7">
+            <h3>일정과 오늘 업무</h3>
+            <p>현장 안내·계약·잔금 일정을 달력으로 관리하고,<br />홈 화면에서 오늘 할 일과 다가오는 잔금을 확인합니다.</p>
+            <a class="more" href="/">자세히 보기</a>
+            <div class="tile__art">
+              <div class="shot"><img src="assets/about/schedule.webp" width="1400" height="817" alt="일정 달력 화면" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h3>고객 관리</h3>
-    <p>매수·매도·임대·임차 고객과 상담 내용을 기록하고, 통화가 끝나면 고객 등록 여부를 바로 확인할 수 있습니다(모바일 앱).</p>
+          <article class="tile span-4">
+            <h3>실거래가·청약홈</h3>
+            <p>우리 동네 실거래가와 청약 공고를<br />홈 화면에서 바로 확인합니다.</p>
+            <a class="more" href="/">자세히 보기</a>
+            <div class="tile__art">
+              <div class="bars" aria-hidden="true">
+                <span style="height:34%"></span><span style="height:46%"></span><span style="height:42%"></span><span style="height:60%"></span><span style="height:72%"></span><span style="height:88%"></span>
+              </div>
+            </div>
+          </article>
 
-    <h3>일정</h3>
-    <p>현장 안내·계약·잔금 일정을 달력으로 관리하고 알림을 받습니다.</p>
+          <article class="tile span-4">
+            <h3>고객관리<span class="pro-badge">프로</span></h3>
+            <p>고객과 상담 단계를 기록하고, 계약서·일정에<br />고객을 연결해 놓치지 않습니다.</p>
+            <a class="more" href="pricing.html">자세히 보기</a>
+            <div class="tile__art">
+              <div class="shot"><img src="assets/about/customers.webp" width="1000" height="678" alt="고객관리 화면 — 고객 목록과 상세 정보" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h3>사내 메신저</h3>
-    <p>대표와 소속 중개사가 사무소 안에서 실시간으로 대화하고 자료를 나눕니다.</p>
+          <article class="tile span-4">
+            <h3>부동산자료자동화<span class="pro-badge">프로</span></h3>
+            <p>주소 한 줄이면 공공 자료를 모아<br />브리핑 자료(PDF·공유 링크)를 만듭니다.</p>
+            <a class="more" href="pricing.html">자세히 보기</a>
+            <div class="tile__art">
+              <div class="shot"><img src="assets/about/briefing.webp" width="1000" height="625" alt="부동산자료자동화 화면 — 주소 입력창" loading="lazy" /></div>
+            </div>
+          </article>
 
-    <h2>이용 안내</h2>
-    <ul>
-      <li>부비서는 <b>주식회사 에그</b>가 운영합니다.</li>
-      <li>부동산 중개사무소와 소속 중개사가 이용할 수 있으며, 사무소 대표자가 먼저 가입해야 합니다.</li>
-      <li>모바일 앱과 웹에서 무료로 가입할 수 있습니다.</li>
-      <li>문의: <a href="mailto:hey.egg.cs@gmail.com">hey.egg.cs@gmail.com</a> · 1660-2496</li>
-    </ul>
+          <article class="tile span-12">
+            <h3>직원관리·근무시간·사내 메신저<span class="pro-badge">프로</span></h3>
+            <p>소속 중개사의 권한과 급여, 출퇴근 시간을 한곳에서 정하고<br />사무소 전원이 메신저로 바로 이야기합니다.</p>
+            <a class="more" href="pricing.html">자세히 보기</a>
+            <div class="tile__art">
+              <div class="mini-cards">
+                <div class="mini">
+                  <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6"/><path d="M18 14.3c1.4.7 2.3 2.4 2.5 4.7"/></svg></i>
+                  <b>직원 권한</b><small>직원별로 볼 수 있는 자료를 정합니다.</small>
+                </div>
+                <div class="mini">
+                  <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h3"/></svg></i>
+                  <b>급여 설정</b><small>직원 급여 기준을 한곳에 정리합니다.</small>
+                </div>
+                <div class="mini">
+                  <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></i>
+                  <b>근무시간</b><small>출퇴근 시간과 출퇴근 알림을 설정합니다.</small>
+                </div>
+                <div class="mini">
+                  <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/><path d="M8 10h8"/></svg></i>
+                  <b>사내 메신저</b><small>대표와 직원이 실시간으로 대화합니다.</small>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <h2>관련 문서</h2>
-    <ul>
-      <li><a href="terms.html">이용약관</a></li>
-      <li><a href="privacy.html">개인정보처리방침</a></li>
-      <li><a href="location.html">위치기반서비스 이용약관</a></li>
-    </ul>
+    <!-- 3. 규모별 추천 -->
+    <section class="scale">
+      <div class="wrap">
+        <span class="eyebrow">규모별 추천.</span>
+        <h2 class="h-lg">사무소 규모에 맞게<br />시작해 보세요.</h2>
+        <p class="sub">무료로 시작하고, 함께 일하는 사람이 늘면 프로멤버십을 더하세요.</p>
+        <div class="scale__grid">
+          <article class="rec">
+            <span class="tag">혼자 운영하는 사무소</span>
+            <h3>매물·계약서·일정은<br />무료로 충분합니다</h3>
+            <a class="more" href="/">자세히 보기</a>
+            <span class="rec__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg></span>
+          </article>
+          <article class="rec">
+            <span class="tag">소속 중개사가 있는 사무소</span>
+            <h3>직원 가입 승인으로<br />같은 자료를 함께 씁니다</h3>
+            <a class="more" href="/">자세히 보기</a>
+            <span class="rec__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6"/><path d="M18 14.3c1.4.7 2.3 2.4 2.5 4.7"/></svg></span>
+          </article>
+          <article class="rec">
+            <span class="tag">팀으로 일하는 사무소</span>
+            <h3>고객·메신저·근무시간까지<br />프로멤버십으로 한 번에</h3>
+            <a class="more" href="pricing.html">자세히 보기</a>
+            <span class="rec__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/><path d="M4 20h16"/></svg></span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 서비스 유형 -->
+    <section class="plans" id="plans">
+      <div class="wrap">
+        <span class="eyebrow">서비스 유형.</span>
+        <h2 class="h-lg">필요한 만큼만<br />골라서 쓰세요.</h2>
+        <div class="plans__grid">
+          <article class="plan">
+            <div class="plan__name">기본</div>
+            <div class="plan__price">0원</div>
+            <div class="plan__note">가입만 하면 바로 이용</div>
+            <ul class="chips">
+              <li><em>기능</em><span>매물 관리 · 매물지도 · 계약서 · 확인설명서</span></li>
+              <li><em>업무</em><span>일정 · 실거래가 · 청약홈 · 직원 가입 승인</span></li>
+              <li><em>이용</em><span>모바일 앱 · 웹 · 데스크톱</span></li>
+            </ul>
+            <a class="btn btn--line" href="/">무료로 시작하기</a>
+          </article>
+          <article class="plan plan--best">
+            <div class="plan__name">&#9733; 프로멤버십 1년</div>
+            <div class="plan__price">77,000원<small>/ 년</small></div>
+            <div class="plan__note">월 약 6,417원 · 부가가치세 포함</div>
+            <ul class="chips">
+              <li><em>단위</em><span>사무소 단위 가입 · 직원 모두 함께 이용</span></li>
+              <li><em>기능</em><span>기본 기능 + 직원관리 · 고객관리 · 메신저 · 근무시간 설정 · 부동산자료자동화</span></li>
+              <li><em>결제</em><span>웹(bubiseo.com)에서 대표님 계정으로</span></li>
+            </ul>
+            <a class="btn btn--grad" href="pricing.html">요금 자세히 보기</a>
+          </article>
+          <article class="plan">
+            <div class="plan__name">프로멤버십 1개월</div>
+            <div class="plan__price">9,900원<small>/ 월</small></div>
+            <div class="plan__note">부가가치세 포함</div>
+            <ul class="chips">
+              <li><em>단위</em><span>사무소 단위 가입 · 직원 모두 함께 이용</span></li>
+              <li><em>기능</em><span>기본 기능 + 프로멤버십 전용 기능 5가지</span></li>
+              <li><em>해지</em><span>언제든 위약금 없이 자동결제 해지</span></li>
+            </ul>
+            <a class="btn btn--line" href="pricing.html">요금 자세히 보기</a>
+          </article>
+        </div>
+        <p class="plans__foot">결제는 웹(bubiseo.com)에서만 진행하며, 앱 안에서는 결제하지 않습니다. 결제일부터 7일 이내에 취소하시면 전액 환불됩니다. 자세한 기준은 <a href="refund.html">환불정책</a>을 확인해 주세요.<br />프로멤버십 기간이 끝나도 저장한 자료는 지우지 않습니다.</p>
+      </div>
+    </section>
+
+    <!-- 5. 마무리 -->
+    <section class="cta">
+      <div class="wrap">
+        <div class="cta__band">
+          <span class="bubble bubble--1" aria-hidden="true"></span>
+          <span class="bubble bubble--2" aria-hidden="true"></span>
+          <span class="bubble bubble--3" aria-hidden="true"></span>
+          <span class="bubble bubble--4" aria-hidden="true"></span>
+          <h2 class="cta__title"><span>오늘 업무부터</span><b>부비서와 함께 시작해 보세요</b></h2>
+          <div class="cta__btns">
+            <a class="btn btn--grad" href="/">웹에서 무료로 시작하기</a>
+            <a class="btn btn--outline" href="pricing.html">요금 안내 보기</a>
+          </div>
+          <p class="cta__stores">모바일 앱
+            <a href="https://apps.apple.com/kr/app/id6765894424" target="_blank" rel="noopener">App Store</a>·<a href="https://play.google.com/store/apps/details?id=com.bubiseo.app" target="_blank" rel="noopener">Google Play</a>
+          </p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="legal-foot">
+    <nav class="about-foot__links" aria-label="문서">
+      <a href="pricing.html">이용안내·요금</a>
+      <a href="terms.html">이용약관</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="refund.html">환불정책</a>
+      <a href="location.html">위치기반서비스 이용약관</a>
+    </nav>
     <p class="legal-foot__biz">상호 주식회사 에그 · 서비스명 부비서 · 대표이사 이현우 · 사업자등록번호 170-81-04207 · 통신판매업 신고 제2026-경기양주-2861호</p>
-    <p class="legal-foot__biz">주소 경기도 양주시 옥정로 222 스카이타워 10층 38호 · 고객센터 1660-2496 · 이메일 hey.egg.cs@gmail.com</p>
+    <p class="legal-foot__biz">주소 경기도 양주시 옥정로 222 스카이타워 10층 38호 · 고객센터 1660-2496 (평일 10:00 ~ 17:00) · 이메일 hey.egg.cs@gmail.com</p>
     <p>© 2026 주식회사 에그. All rights reserved.</p>
   </footer>
 </body>
