@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <!-- Google Analytics (GA4) — 방문자 통계 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-13VB1SM23V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-13VB1SM23V');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>이용안내 · 요금 — 부비서</title>
+  <meta name="description" content="부비서 이용안내와 요금 — 기본 서비스 무료, 프로멤버십 1개월 9,900원·1년 77,000원(부가세 포함)" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="legal.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header class="legal-nav">
+    <a class="legal-nav__brand" href="index.html" aria-label="부비서 홈">
+      <img src="assets/logo.png" alt="" />
+      <span>부비서</span>
+    </a>
+    <a class="legal-nav__back" href="index.html">← 홈으로</a>
+  </header>
+
+  <main class="legal" id="content">
+    <p class="legal__loading">불러오는 중...</p>
+  </main>
+
+  <footer class="legal-foot">
+    <p class="legal-foot__biz">상호 주식회사 에그 · 서비스명 부비서 · 대표이사 이현우 · 사업자등록번호 170-81-04207 · 통신판매업 신고 제2026-경기양주-2861호</p>
+    <p class="legal-foot__biz">주소 경기도 양주시 옥정로 222 스카이타워 10층 38호 · 고객센터 1660-2496 · 이메일 hey.egg.cs@gmail.com</p>
+    <p>© 2026 주식회사 에그. All rights reserved.</p>
+  </footer>
+
+  <script>
+    fetch('pricing.md').then(r => r.text()).then(md => {
+      document.getElementById('content').innerHTML = marked.parse(md);
+    }).catch(e => {
+      document.getElementById('content').innerHTML = '<p>이용안내를 불러오지 못했습니다.</p>';
+    });
+  </script>
+</body>
+</html>
