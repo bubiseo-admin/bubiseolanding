@@ -1,0 +1,1 @@
+import{W as e,r as n}from"./index-VQsr3CLN.js";const a=e((t,r)=>({slot:null,owners:[],setSlot:o=>{r().slot!==o&&t({slot:o})},claim:o=>t({owners:[...r().owners.filter(s=>s!==o),o]}),release:o=>t({owners:r().owners.filter(s=>s!==o)})})),c=t=>t[0]??null,w=n.createContext(!0);export{w as B,c as o,a as u};

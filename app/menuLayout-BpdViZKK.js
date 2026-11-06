@@ -1,1 +1,0 @@
-import{W as r}from"./index-Cqf14WrQ.js";const o="bubiseo.menuMode";function n(t){try{return localStorage.getItem(t)}catch{return null}}function a(t,e){try{localStorage.setItem(t,e)}catch{}}const c=t=>t==="top"?"top":"side",s=r(t=>({mode:c(n(o)),setMode:e=>{a(o,e),t({mode:e})}}));export{s as u};
