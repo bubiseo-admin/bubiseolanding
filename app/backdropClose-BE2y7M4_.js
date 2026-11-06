@@ -1,0 +1,1 @@
+function n(t){return{onMouseDown:r=>{r.currentTarget.dataset.downOnBackdrop=r.target===r.currentTarget?"1":"0"},onClick:r=>{const a=r.currentTarget.dataset.downOnBackdrop==="1";r.currentTarget.dataset.downOnBackdrop="0",a&&r.target===r.currentTarget&&t()}}}export{n as b};
